@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { Appointment } from '../types';
 import * as Storage from '../services/storage';
 import * as GeminiService from '../services/geminiService';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const AdminPage: React.FC = () => {
   const navigate = useNavigate();
+  const { t, language } = useLanguage();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [aiAnalysis, setAiAnalysis] = useState<string>('');
   const [loadingAnalysis, setLoadingAnalysis] = useState(false);
@@ -39,7 +41,7 @@ const AdminPage: React.FC = () => {
 
   const runAnalysis = async () => {
     setLoadingAnalysis(true);
-    const analysis = await GeminiService.analyzeSchedule(appointments);
+    const analysis = await GeminiService.analyzeSchedule(appointments, language);
     setAiAnalysis(analysis);
     setLoadingAnalysis(false);
   };
@@ -48,8 +50,8 @@ const AdminPage: React.FC = () => {
     <div className="space-y-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-500">Manage appointments and view schedule.</p>
+          <h1 className="text-3xl font-bold text-gray-900">{t.admin.title}</h1>
+          <p className="text-gray-500">{t.admin.subtitle}</p>
         </div>
         <div className="flex gap-2">
            <button 
@@ -57,13 +59,13 @@ const AdminPage: React.FC = () => {
              disabled={loadingAnalysis}
              className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent disabled:opacity-50"
            >
-             {loadingAnalysis ? 'Analyzing...' : 'AI Schedule Analysis'}
+             {loadingAnalysis ? t.admin.btn_analyzing : t.admin.btn_analysis}
            </button>
            <button 
              onClick={() => { localStorage.removeItem('nexus_admin_auth'); navigate('/login'); }}
              className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
            >
-             Logout
+             {t.admin.btn_logout}
            </button>
         </div>
       </div>
@@ -71,7 +73,7 @@ const AdminPage: React.FC = () => {
       {/* AI Insight Box */}
       {aiAnalysis && (
         <div className="bg-gradient-to-r from-indigo-50 to-blue-50 border border-blue-100 rounded-lg p-4 shadow-sm">
-            <h3 className="text-sm font-bold text-blue-800 uppercase tracking-wide mb-1">Gemini Insights</h3>
+            <h3 className="text-sm font-bold text-blue-800 uppercase tracking-wide mb-1">{t.admin.ai_insights}</h3>
             <p className="text-gray-700 italic">{aiAnalysis}</p>
         </div>
       )}
@@ -79,29 +81,29 @@ const AdminPage: React.FC = () => {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-100">
-          <div className="text-sm font-medium text-gray-500 uppercase">Total Bookings</div>
+          <div className="text-sm font-medium text-gray-500 uppercase">{t.admin.stats_total}</div>
           <div className="mt-2 text-3xl font-bold text-gray-900">{appointments.length}</div>
         </div>
         <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-100">
-          <div className="text-sm font-medium text-gray-500 uppercase">Confirmed Today</div>
+          <div className="text-sm font-medium text-gray-500 uppercase">{t.admin.stats_confirmed}</div>
           <div className="mt-2 text-3xl font-bold text-green-600">
             {appointments.filter(a => a.date === new Date().toISOString().split('T')[0] && a.status === 'confirmed').length}
           </div>
         </div>
         <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-100">
-          <div className="text-sm font-medium text-gray-500 uppercase">Pending Google Sync</div>
+          <div className="text-sm font-medium text-gray-500 uppercase">{t.admin.stats_pending}</div>
           <div className="mt-2 text-3xl font-bold text-accent">0</div> 
-          <span className="text-xs text-gray-400">(Real-time via API)</span>
+          <span className="text-xs text-gray-400">({t.admin.synced} via API)</span>
         </div>
       </div>
 
       <div className="bg-white shadow-sm rounded-lg border border-gray-200 overflow-hidden">
         <div className="px-4 py-5 sm:px-6 bg-gray-50 border-b border-gray-200">
-          <h3 className="text-lg leading-6 font-medium text-gray-900">Recent Appointments</h3>
+          <h3 className="text-lg leading-6 font-medium text-gray-900">{t.admin.recent_title}</h3>
         </div>
         <ul className="divide-y divide-gray-200 max-h-[600px] overflow-y-auto">
           {appointments.length === 0 ? (
-            <li className="p-8 text-center text-gray-500">No appointments found.</li>
+            <li className="p-8 text-center text-gray-500">{t.admin.empty}</li>
           ) : (
             appointments.map((apt) => (
               <li key={apt.id} className="p-4 hover:bg-gray-50 transition-colors">
@@ -116,7 +118,7 @@ const AdminPage: React.FC = () => {
                     <div className="mt-1 flex items-center text-xs text-gray-400 gap-2">
                         <span>{apt.user_email}</span>
                         <span>&bull;</span>
-                        <span>Synced: {apt.syncedToGoogle ? 'Yes' : 'No'}</span>
+                        <span>{t.admin.synced}: {apt.syncedToGoogle ? 'Yes' : 'No'}</span>
                     </div>
                   </div>
                   <div className="ml-4 flex-shrink-0 flex items-center gap-4">
@@ -131,7 +133,7 @@ const AdminPage: React.FC = () => {
                         onClick={() => handleCancel(apt.id)}
                         className="text-red-600 hover:text-red-900 text-sm font-medium"
                       >
-                        Cancel
+                        {t.admin.cancel}
                       </button>
                     )}
                   </div>

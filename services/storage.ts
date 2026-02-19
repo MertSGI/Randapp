@@ -12,9 +12,9 @@ const initStorage = () => {
         userId: 'guest_1',
         user_name: 'John Doe',
         user_email: 'john@example.com',
-        serviceId: 'srv_1',
+        serviceId: 'srv_1', // Men's Haircut
         date: new Date().toISOString().split('T')[0],
-        time: '09:00',
+        time: '10:00',
         status: 'confirmed',
         createdAt: new Date().toISOString(),
         syncedToGoogle: true,

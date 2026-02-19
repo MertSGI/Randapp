@@ -11,8 +11,10 @@ export interface User {
 export interface Service {
   id: string;
   name: string;
+  name_tr: string; // Turkish name
   duration: number; // in minutes
   price: number;
+  image?: string; // URL to service image
 }
 
 export interface Appointment {
@@ -35,14 +37,42 @@ export interface TimeSlot {
 }
 
 export const SERVICES: Service[] = [
-  { id: 'srv_1', name: 'General Consultation', duration: 30, price: 50 },
-  { id: 'srv_2', name: 'Deep Tissue Massage', duration: 60, price: 90 },
-  { id: 'srv_3', name: 'Dental Cleaning', duration: 45, price: 120 },
-  { id: 'srv_4', name: 'Physiotherapy', duration: 30, price: 75 },
+  { 
+    id: 'srv_1', 
+    name: "Men's Haircut", 
+    name_tr: 'Saç Kesimi', 
+    duration: 45, 
+    price: 30,
+    image: 'https://images.unsplash.com/photo-1593702295094-aea8c5c13d7b?auto=format&fit=crop&q=80&w=800'
+  },
+  { 
+    id: 'srv_2', 
+    name: 'Beard Trim & Shape', 
+    name_tr: 'Sakal Tıraşı & Şekillendirme', 
+    duration: 30, 
+    price: 20,
+    image: 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?auto=format&fit=crop&q=80&w=800'
+  },
+  { 
+    id: 'srv_3', 
+    name: 'Hair & Beard Combo', 
+    name_tr: 'Saç & Sakal Kombo', 
+    duration: 75, 
+    price: 45,
+    image: 'https://images.unsplash.com/photo-1503951914875-452162b7f30a?auto=format&fit=crop&q=80&w=800'
+  },
+  { 
+    id: 'srv_4', 
+    name: 'Hot Towel Shave', 
+    name_tr: 'Sıcak Havlu Tıraşı', 
+    duration: 45, 
+    price: 35,
+    image: 'https://images.unsplash.com/photo-1532710093739-9470acff878f?auto=format&fit=crop&q=80&w=800'
+  },
 ];
 
 export const BUSINESS_HOURS = {
-  start: 8, // 08:00
-  end: 22, // 22:00
-  interval: 30, // minutes
+  start: 9, // 09:00
+  end: 21, // 21:00
+  interval: 45, // minutes (adjusted for barber slots)
 };

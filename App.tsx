@@ -4,18 +4,21 @@ import Layout from './components/Layout';
 import BookingPage from './pages/BookingPage';
 import AdminPage from './pages/AdminPage';
 import LoginPage from './pages/LoginPage';
+import { LanguageProvider } from './contexts/LanguageContext';
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<BookingPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/admin" element={<AdminPage />} />
-        </Routes>
-      </Layout>
-    </Router>
+    <LanguageProvider>
+      <Router>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<BookingPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/admin" element={<AdminPage />} />
+          </Routes>
+        </Layout>
+      </Router>
+    </LanguageProvider>
   );
 };
 
