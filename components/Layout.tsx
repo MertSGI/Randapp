@@ -18,8 +18,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <Link to="/" className="flex-shrink-0 flex items-center gap-2">
-                <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center text-white font-bold">N</div>
-                <span className="font-semibold text-xl text-primary">Nexus</span>
+                <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center text-white font-bold">R</div>
+                <span className="font-semibold text-xl text-primary">RadApp</span>
               </Link>
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
                 <Link
@@ -64,7 +64,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <footer className="bg-white border-t border-gray-200 mt-auto">
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <p className="text-center text-sm text-gray-500">
-            &copy; 2024 Nexus Schedule. {t.footer}
+            &copy; 2024 RadApp. {t.footer}
           </p>
         </div>
       </footer>

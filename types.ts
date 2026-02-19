@@ -29,6 +29,7 @@ export interface Appointment {
   notes?: string;
   createdAt: string;
   syncedToGoogle: boolean;
+  phone?: string;
 }
 
 export interface TimeSlot {

@@ -28,6 +28,7 @@ export const translations = {
       step4_ai_title: 'AI Generated Confirmation (Simulated Email)',
       step4_subject: 'Subject:',
       book_another: 'Book Another Appointment',
+      add_to_calendar: 'Add to Google Calendar',
     },
     login: {
       title: 'Admin Login',
@@ -82,6 +83,7 @@ export const translations = {
       step4_ai_title: 'Yapay Zeka Onayı (Simüle E-posta)',
       step4_subject: 'Konu:',
       book_another: 'Başka Bir Randevu Al',
+      add_to_calendar: 'Google Takvimime Ekle',
     },
     login: {
       title: 'Yönetici Girişi',

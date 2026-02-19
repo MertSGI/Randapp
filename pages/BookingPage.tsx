@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { SERVICES, Service, BUSINESS_HOURS } from '../types';
 import * as Storage from '../services/storage';
 import * as GeminiService from '../services/geminiService';
+import * as NotificationService from '../services/notificationService';
+import * as CalendarService from '../services/calendarService';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const generateTimeSlots = (): string[] => {
@@ -29,6 +31,7 @@ const BookingPage: React.FC = () => {
   const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confirmation, setConfirmation] = useState<{ subject: string; body: string } | null>(null);
+  const [calendarLink, setCalendarLink] = useState<string>('');
 
   const timeSlots = generateTimeSlots();
 
@@ -59,24 +62,48 @@ const BookingPage: React.FC = () => {
       userId: `guest_${Date.now()}`,
       user_name: formData.name,
       user_email: formData.email,
+      phone: formData.phone,
       serviceId: selectedService.id,
       date: selectedDate,
       time: selectedTime,
       status: 'confirmed' as const,
       createdAt: new Date().toISOString(),
-      syncedToGoogle: true, // Simulated
+      syncedToGoogle: false, // Will be updated after sync
     };
 
+    // 1. Save locally
     Storage.saveAppointment(newAppointment);
 
-    // Generate AI Confirmation
+    // 2. Generate AI Confirmation Text
+    let aiResponse = { subject: 'Confirmation', body: 'Your appointment is booked.' };
     try {
       const serviceName = language === 'tr' ? selectedService.name_tr : selectedService.name;
-      const aiResponse = await GeminiService.generateBookingConfirmation(newAppointment, serviceName, language);
+      const generated = await GeminiService.generateBookingConfirmation(newAppointment, serviceName, language);
+      if (generated) aiResponse = generated;
       setConfirmation(aiResponse);
     } catch (err) {
       console.error("AI generation failed", err);
     }
+
+    // 3. Send Email & SMS (Async/Parallel)
+    const serviceName = language === 'tr' ? selectedService.name_tr : selectedService.name;
+    try {
+        await Promise.all([
+            NotificationService.sendBookingEmail(newAppointment, serviceName, aiResponse),
+            NotificationService.sendBookingSms(newAppointment, serviceName),
+            CalendarService.syncToBusinessCalendar(newAppointment)
+        ]);
+        
+        // Update sync status locally after "mock" success
+        newAppointment.syncedToGoogle = true;
+        Storage.updateAppointmentStatus(newAppointment.id, 'confirmed'); // Just triggering a save update basically
+    } catch (error) {
+        console.error("Notification/Sync infrastructure error:", error);
+    }
+
+    // 4. Generate User Calendar Link
+    const link = CalendarService.generateGoogleCalendarLink(newAppointment, selectedService);
+    setCalendarLink(link);
 
     setIsSubmitting(false);
     setStep(4);
@@ -270,7 +297,20 @@ const BookingPage: React.FC = () => {
               </svg>
             </div>
             <h2 className="text-3xl font-extrabold text-gray-900 mb-2">{t.booking.step4_title}</h2>
-            <p className="text-gray-500 mb-8">{t.booking.step4_subtitle}</p>
+            <p className="text-gray-500 mb-6">{t.booking.step4_subtitle}</p>
+
+            {/* Calendar Link Button */}
+            {calendarLink && (
+               <a 
+                 href={calendarLink} 
+                 target="_blank" 
+                 rel="noopener noreferrer"
+                 className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-lg font-medium mb-8 hover:bg-blue-200 transition"
+               >
+                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                 {t.booking.add_to_calendar}
+               </a>
+            )}
 
             {confirmation && (
               <div className="text-left bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8 shadow-sm">
