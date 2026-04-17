@@ -37,15 +37,16 @@ export const generateGoogleCalendarLink = (appointment: Appointment, service: Se
  * In a real app, this sends data to your Python backend, which uses a Service Account
  * to add the event to the Business's Master Calendar.
  */
-export const syncToBusinessCalendar = async (appointment: Appointment, staff: {name: string, id: string}): Promise<boolean> => {
+export const syncToBusinessCalendar = async (appointment: Appointment, staff: {name: string, id: string, calendarEmail?: string}): Promise<boolean> => {
     console.group(`📅 Syncing to ${staff.name}'s Business Google Calendar...`);
-    console.log(`Adding event for ${appointment.date} at ${appointment.time} to calendar ID: ${staff.id}@calendar.google.com`);
+    const calendarId = staff.calendarEmail || `${staff.id}@calendar.google.com`;
+    console.log(`Adding event for ${appointment.date} at ${appointment.time} to calendar ID: ${calendarId}`);
     console.groupEnd();
 
     // Simulate API Call
     return new Promise((resolve) => {
         setTimeout(() => {
-            console.log(`✅ Synced to ${staff.name}'s Calendar successfully.`);
+            console.log(`✅ Synced to ${calendarId} successfully.`);
             resolve(true);
         }, 1500);
     });

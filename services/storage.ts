@@ -8,9 +8,9 @@ const STAFF_KEY = 'nexus_staff';
 const initStorage = () => {
   if (!localStorage.getItem(STAFF_KEY)) {
     const dummyStaff: Staff[] = [
-      { id: 'stf_1', name: 'Mustafa Ali Yılmaz', title: 'Master Hair Designer', calendarEmail: 'mustafa@example.com' },
-      { id: 'stf_2', name: 'Ahmet Yılmaz', title: 'Senior Barber', calendarEmail: 'ahmet@example.com' },
-      { id: 'stf_3', name: 'Ayşe Kaya', title: 'Laser & Beauty Specialist', calendarEmail: 'ayse@example.com' }
+      { id: 'stf_1', name: 'Mustafa Ali Yılmaz', title: 'Master Hair Designer', calendarEmail: 'mustafa@example.com', phone: '+905550000001' },
+      { id: 'stf_2', name: 'Ahmet Yılmaz', title: 'Senior Barber', calendarEmail: 'ahmet@example.com', phone: '+905550000002' },
+      { id: 'stf_3', name: 'Ayşe Kaya', title: 'Laser & Beauty Specialist', calendarEmail: 'ayse@example.com', phone: '+905550000003' }
     ];
     localStorage.setItem(STAFF_KEY, JSON.stringify(dummyStaff));
   }
@@ -49,6 +49,12 @@ export const saveStaff = (staffMember: Staff): void => {
 export const updateStaff = (id: string, updatedFields: Partial<Staff>): void => {
   const current = getStaff();
   const updated = current.map(stf => stf.id === id ? { ...stf, ...updatedFields } : stf);
+  localStorage.setItem(STAFF_KEY, JSON.stringify(updated));
+};
+
+export const deleteStaff = (id: string): void => {
+  const current = getStaff();
+  const updated = current.filter(stf => stf.id !== id);
   localStorage.setItem(STAFF_KEY, JSON.stringify(updated));
 };
 

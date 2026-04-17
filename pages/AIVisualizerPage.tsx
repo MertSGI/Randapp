@@ -97,17 +97,17 @@ const AIVisualizerPage: React.FC = () => {
 
   return (
     <div className="max-w-6xl mx-auto py-8 px-4">
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
-        <h1 className="text-3xl font-extrabold text-gray-900 mb-2">{t.title}</h1>
-        <p className="text-gray-500 mb-8">{t.subtitle}</p>
+      <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-6 md:p-8 transition-colors duration-300">
+        <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-2 transition-colors duration-300">{t.title}</h1>
+        <p className="text-gray-500 dark:text-gray-400 mb-8 transition-colors duration-300">{t.subtitle}</p>
 
         <div className="flex flex-col lg:flex-row gap-8">
           {/* LEFT COLUMN - CONTROLS */}
           <div className="flex-1 space-y-8">
             
             {/* UPLOAD & ANALYSIS SECTION */}
-            <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200">
-              <h3 className="font-bold text-gray-900 mb-4">{t.uploadTitle}</h3>
+            <div className="bg-slate-50 dark:bg-slate-700/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-600 transition-colors duration-300">
+              <h3 className="font-bold text-gray-900 dark:text-white mb-4 transition-colors duration-300">{t.uploadTitle}</h3>
               
               <div className="flex flex-col sm:flex-row items-center gap-4">
                 <input 
@@ -119,12 +119,12 @@ const AIVisualizerPage: React.FC = () => {
                 />
                 
                 {uploadedImage ? (
-                  <div className="w-24 h-24 rounded-xl overflow-hidden shrink-0 border-2 border-accent">
+                  <div className="w-24 h-24 rounded-xl overflow-hidden shrink-0 border-2 border-accent dark:border-blue-400 transition-colors duration-300">
                     <img src={uploadedImage} alt="Uploaded" className="w-full h-full object-cover" />
                   </div>
                 ) : (
-                  <div className="w-24 h-24 rounded-xl bg-slate-200 flex items-center justify-center shrink-0">
-                    <svg className="w-8 h-8 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="w-24 h-24 rounded-xl bg-slate-200 dark:bg-slate-600 flex items-center justify-center shrink-0 transition-colors duration-300">
+                    <svg className="w-8 h-8 text-slate-400 dark:text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                   </div>
@@ -133,7 +133,7 @@ const AIVisualizerPage: React.FC = () => {
                 <div className="flex flex-col gap-2 w-full sm:w-auto">
                     <button 
                     onClick={() => fileInputRef.current?.click()}
-                    className="px-4 py-2 rounded-lg font-medium text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 transition-colors text-sm"
+                    className="px-4 py-2 rounded-lg font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors text-sm"
                     >
                     {uploadedImage ? (language === 'tr' ? 'Fotoğrafı Değiştir' : 'Change Photo') : t.uploadBtn}
                     </button>
@@ -142,7 +142,7 @@ const AIVisualizerPage: React.FC = () => {
                         <button
                         onClick={handleAnalyze}
                         disabled={isAnalyzing}
-                        className="px-4 py-2 rounded-lg font-medium text-white bg-slate-800 hover:bg-slate-900 disabled:opacity-50 transition-colors text-sm"
+                        className="px-4 py-2 rounded-lg font-medium text-white bg-slate-800 dark:bg-blue-600 hover:bg-slate-900 dark:hover:bg-blue-700 disabled:opacity-50 transition-colors text-sm"
                         >
                         {isAnalyzing ? t.analyzing : t.analyzeBtn}
                         </button>
@@ -151,7 +151,7 @@ const AIVisualizerPage: React.FC = () => {
               </div>
 
               {analysisResult && (
-                  <div className="mt-6 p-4 bg-white rounded-xl border border-slate-200 text-sm prose prose-slate">
+                  <div className="mt-6 p-4 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-600 text-sm prose prose-slate dark:prose-invert transition-colors duration-300">
                       <ReactMarkdown>{analysisResult}</ReactMarkdown>
                   </div>
               )}
@@ -159,9 +159,9 @@ const AIVisualizerPage: React.FC = () => {
 
             {/* GENERATE SECTION */}
             <div className="space-y-4">
-              <label className="block text-sm font-bold text-gray-900">{t.promptLabel}</label>
+              <label className="block text-sm font-bold text-gray-900 dark:text-white transition-colors duration-300">{t.promptLabel}</label>
               <textarea
-                className="w-full rounded-xl border-gray-300 shadow-sm focus:border-accent focus:ring-accent p-3 border"
+                className="w-full rounded-xl border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 dark:text-white shadow-sm focus:border-accent focus:ring-accent p-3 border transition-colors duration-300"
                 rows={3}
                 placeholder={t.promptPlaceholder}
                 value={prompt}
@@ -169,14 +169,14 @@ const AIVisualizerPage: React.FC = () => {
               />
 
               <div className="pt-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">{t.sizeLabel}</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-300">{t.sizeLabel}</label>
                 <div className="flex flex-wrap gap-3">
                   {(['1K', '2K', '4K'] as const).map(s => (
                     <button
                       key={s}
                       onClick={() => setSize(s)}
                       className={`px-5 py-2 rounded-lg text-sm font-medium border transition-colors ${
-                        size === s ? 'bg-accent text-white border-accent shadow-sm' : 'bg-white text-gray-700 hover:bg-gray-50 border-gray-200'
+                        size === s ? 'bg-accent text-white border-accent dark:bg-blue-600 dark:border-blue-600 shadow-sm' : 'bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 border-gray-200 dark:border-slate-600'
                       }`}
                     >
                       {s}
@@ -200,17 +200,17 @@ const AIVisualizerPage: React.FC = () => {
           <div className="w-full lg:w-1/2 flex flex-col shrink-0">
             {generatedImage ? (
               <div className="space-y-6">
-                <div className="w-full overflow-hidden rounded-2xl shadow-xl border border-gray-100 bg-white p-2">
+                <div className="w-full overflow-hidden rounded-2xl shadow-xl border border-gray-100 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 transition-colors duration-300">
                   <img src={generatedImage} alt="AI Generated Hairstyle" className="w-full h-auto rounded-xl object-cover" />
                 </div>
                 
                 {/* EDIT SECTION */}
-                <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200">
-                  <h3 className="font-bold text-gray-900 mb-3">{t.editTitle}</h3>
+                <div className="bg-slate-50 dark:bg-slate-700/50 p-5 rounded-2xl border border-slate-200 dark:border-slate-600 transition-colors duration-300">
+                  <h3 className="font-bold text-gray-900 dark:text-white mb-3 transition-colors duration-300">{t.editTitle}</h3>
                   <div className="space-y-3">
                     <input
                       type="text"
-                      className="w-full rounded-xl border-gray-300 shadow-sm focus:border-accent focus:ring-accent p-3 border"
+                      className="w-full rounded-xl border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 dark:text-white shadow-sm focus:border-accent focus:ring-accent p-3 border transition-colors duration-300"
                       placeholder={t.editPlaceholder}
                       value={editPrompt}
                       onChange={(e) => setEditPrompt(e.target.value)}
@@ -218,7 +218,7 @@ const AIVisualizerPage: React.FC = () => {
                     <button
                       onClick={handleEdit}
                       disabled={isEditing || !editPrompt}
-                      className="w-full py-3 rounded-xl font-bold text-slate-700 bg-white border border-slate-300 hover:bg-slate-100 shadow-sm disabled:opacity-50 transition-colors"
+                      className="w-full py-3 rounded-xl font-bold text-slate-700 dark:text-white bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 shadow-sm disabled:opacity-50 transition-colors"
                     >
                       {isEditing ? t.editing : t.editBtn}
                     </button>
@@ -226,14 +226,14 @@ const AIVisualizerPage: React.FC = () => {
                 </div>
               </div>
             ) : (
-              <div className="w-full h-full min-h-[400px] bg-slate-50 border-2 border-dashed border-slate-300 rounded-3xl flex flex-col items-center justify-center text-slate-400 p-8 text-center">
-                <svg className="w-16 h-16 mb-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="w-full h-full min-h-[400px] bg-slate-50 dark:bg-slate-800/50 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-3xl flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 p-8 text-center transition-colors duration-300">
+                <svg className="w-16 h-16 mb-4 text-slate-300 dark:text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                 </svg>
-                <p className="font-medium text-slate-500">
+                <p className="font-medium text-slate-500 dark:text-slate-400 transition-colors duration-300">
                     {language === 'tr' ? 'Sehpanız boş duruyor.' : 'Your canvas is empty.'}
                 </p>
-                <p className="text-sm mt-2 max-w-xs text-slate-400">
+                <p className="text-sm mt-2 max-w-xs text-slate-400 dark:text-slate-500 transition-colors duration-300">
                     {language === 'tr' 
                     ? 'Yeni bir görünüm oluşturmak için fotoğrafınızı yükleyin ve detayları girin.' 
                     : 'Upload your photo and provide details to generate a new look.'}

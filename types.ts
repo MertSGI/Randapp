@@ -5,6 +5,7 @@ export interface Staff {
   name: string;
   title: string;
   calendarEmail?: string;
+  phone?: string;
   image?: string;
 }
 
@@ -53,7 +54,7 @@ export const SERVICES: Service[] = [
     name_tr: 'Saç Kesimi', 
     duration: 45, 
     price: 300,
-    image: 'https://picsum.photos/seed/mens-haircut/800/600'
+    image: 'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=800&q=80'
   },
   { 
     id: 'srv_2', 
@@ -61,7 +62,7 @@ export const SERVICES: Service[] = [
     name_tr: 'Sakal Tıraşı & Şekillendirme', 
     duration: 30, 
     price: 200,
-    image: 'https://picsum.photos/seed/beard-trim/800/600'
+    image: 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?auto=format&fit=crop&w=800&q=80'
   },
   { 
     id: 'srv_3', 
@@ -69,7 +70,7 @@ export const SERVICES: Service[] = [
     name_tr: 'Manikür & Pedikür', 
     duration: 60, 
     price: 500,
-    image: 'https://picsum.photos/seed/manicure-pedicure/800/600'
+    image: 'https://images.unsplash.com/photo-1519014816548-bf5fe059e98b?auto=format&fit=crop&w=800&q=80'
   },
   { 
     id: 'srv_4', 
@@ -77,7 +78,7 @@ export const SERVICES: Service[] = [
     name_tr: 'Protez Saç', 
     duration: 120, 
     price: 3500,
-    image: 'https://picsum.photos/seed/hair-prosthesis/800/600'
+    image: 'https://images.unsplash.com/photo-1622286342621-4bd786c2447c?auto=format&fit=crop&w=800&q=80'
   },
   {
     id: 'srv_5',
@@ -85,7 +86,7 @@ export const SERVICES: Service[] = [
     name_tr: 'Lazer Epilasyon',
     duration: 45,
     price: 800,
-    image: 'https://picsum.photos/seed/laser-epilation/800/600'
+    image: 'https://images.unsplash.com/photo-1555820585-c5ae44394b79?auto=format&fit=crop&w=800&q=80'
   }
 ];
 
