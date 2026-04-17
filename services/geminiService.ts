@@ -2,12 +2,13 @@ import { GoogleGenAI } from "@google/genai";
 import { Appointment } from '../types';
 
 const getAi = () => {
-  // Ensure API Key is available
-  if (!process.env.API_KEY) {
+  // Use globally injected API key
+  const key = process.env.GEMINI_API_KEY;
+  if (!key) {
     console.warn("Gemini API Key is missing.");
     return null;
   }
-  return new GoogleGenAI({ apiKey: process.env.API_KEY });
+  return new GoogleGenAI({ apiKey: key });
 };
 
 export const generateBookingConfirmation = async (
@@ -21,7 +22,7 @@ export const generateBookingConfirmation = async (
   try {
     const langName = language === 'tr' ? 'Turkish' : 'English';
     const prompt = `
-      You are an automated assistant for a premium clinic called "Nexus Health".
+      You are an automated assistant for a premium clinic called "Mustafa Ali Yılmaz Hair Design".
       A customer named ${appointment.user_name} has just booked a ${serviceName} on ${appointment.date} at ${appointment.time}.
       
       Please draft a polite, professional, and concise confirmation email in ${langName}. 
@@ -30,7 +31,7 @@ export const generateBookingConfirmation = async (
     `;
 
     const response = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview',
+      model: 'gemini-2.5-flash',
       contents: prompt,
       config: {
         responseMimeType: 'application/json'
@@ -42,18 +43,13 @@ export const generateBookingConfirmation = async (
     return JSON.parse(text);
   } catch (error) {
     console.error("Gemini API Error:", error);
-    return {
-      subject: language === 'tr' ? "Randevu Onaylandı" : "Booking Confirmed",
-      body: language === 'tr' 
-        ? `Sayın ${appointment.user_name}, ${serviceName} randevunuz ${appointment.date} tarihinde saat ${appointment.time} için onaylanmıştır.`
-        : `Dear ${appointment.user_name}, your appointment for ${serviceName} is confirmed for ${appointment.date} at ${appointment.time}.`
-    };
+    return null;
   }
 };
 
 export const analyzeSchedule = async (appointments: Appointment[], language: 'en' | 'tr' = 'en'): Promise<string> => {
     const ai = getAi();
-    if (!ai) return language === 'tr' ? "Yapay Zeka Analizi kullanılamıyor (Eksik API Anahtarı)." : "AI Analysis unavailable (Missing API Key).";
+    if (!ai) return language === 'tr' ? "Yapay Zeka Analizi kullanılamıyor." : "AI Analysis unavailable.";
 
     try {
         const today = new Date().toISOString().split('T')[0];
@@ -70,7 +66,7 @@ export const analyzeSchedule = async (appointments: Appointment[], language: 'en
         `;
 
         const response = await ai.models.generateContent({
-            model: 'gemini-3.1-pro-preview',
+            model: 'gemini-2.5-pro',
             contents: prompt,
             config: {
                 thinkingConfig: {
@@ -79,35 +75,47 @@ export const analyzeSchedule = async (appointments: Appointment[], language: 'en
             }
         });
 
-        return response.text || (language === 'tr' ? "Analiz oluşturulamadı." : "No analysis generated.");
+        return response.text || "No analysis generated.";
     } catch (error) {
         console.error("Gemini Analysis Error:", error);
-        return language === 'tr' ? "Şu anda program analiz edilemiyor." : "Could not analyze schedule at this time.";
+        return "Could not analyze schedule at this time.";
     }
 }
 
-export const generateHaircutImage = async (promptText: string, size: '1K' | '2K' | '4K' = '1K'): Promise<string | null> => {
+export const generateHaircutImage = async (promptText: string, size: '1K' | '2K' | '4K' = '1K', base64ExtractedImage?: string): Promise<string | null> => {
     const ai = getAi();
     if (!ai) return null;
 
-    // Use gemini-3-pro-image-preview to generate high-quality images
     try {
-        let sizeDetails = 'Standard resolution';
-        if (size === '2K') sizeDetails = 'Intricately detailed 2K resolution';
-        if (size === '4K') sizeDetails = 'Ultra HD 4K resolution, photorealistic';
+        const parts: any[] = [];
+        if (base64ExtractedImage) {
+            parts.push({
+                inlineData: {
+                    data: base64ExtractedImage.replace(/^data:image\/\w+;base64,/, ''),
+                    mimeType: 'image/jpeg'
+                }
+            });
+            parts.push({
+                text: `Professional photo simulating this specific request: ${promptText}. Cinematic lighting, highly detailed.`
+            });
+        } else {
+            parts.push({
+                text: `Professional barbershop/salon photo: ${promptText}. Cinematic lighting, highly detailed.`
+            });
+        }
 
-        const response = await ai.models.generateImages({
-            model: 'gemini-3-pro-image-preview',
-            prompt: `Professional barbershop photo: ${promptText}. Cinematic lighting, highly detailed. ${sizeDetails}`,
-            config: {
-                outputMimeType: 'image/jpeg',
-                aspectRatio: '1:1'
-            }
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash-image',
+            contents: { parts }
         });
         
-        if (response.generatedImages && response.generatedImages.length > 0) {
-            // Note: depending on the SDK, image base64 might be located in `image.imageBytes` or `image.b64`
-            return `data:image/jpeg;base64,${response.generatedImages[0].image.imageBytes}`;
+        const candidate = response.candidates?.[0];
+        if (candidate && candidate.content && candidate.content.parts) {
+            for (const part of candidate.content.parts) {
+                if (part.inlineData) {
+                    return `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+                }
+            }
         }
         return null;
     } catch (error) {
@@ -120,28 +128,65 @@ export const editHaircutImage = async (base64Image: string, instructions: string
     const ai = getAi();
     if (!ai) return null;
 
-    // Use gemini-3.1-flash-image-preview to edit images with text prompts
     try {
-        const response = await ai.models.generateImages({
-            model: 'gemini-3.1-flash-image-preview',
-            prompt: instructions,
-            config: {
-                outputMimeType: 'image/jpeg',
-                editConfig: {
-                    referenceImages: [{
-                        base64: base64Image.replace(/^data:image\/\w+;base64,/, ''),
-                        mimeType: 'image/jpeg'
-                    }]
-                }
-            } as any // Use 'any' in case the exact types differ slightly
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash-image',
+            contents: {
+                parts: [
+                    {
+                        inlineData: {
+                            data: base64Image.replace(/^data:image\/\w+;base64,/, ''),
+                            mimeType: 'image/jpeg'
+                        }
+                    },
+                    {
+                        text: instructions
+                    }
+                ]
+            }
         });
         
-        if (response.generatedImages && response.generatedImages.length > 0) {
-            return `data:image/jpeg;base64,${response.generatedImages[0].image.imageBytes}`;
+        const candidate = response.candidates?.[0];
+        if (candidate && candidate.content && candidate.content.parts) {
+            for (const part of candidate.content.parts) {
+                if (part.inlineData) {
+                    return `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+                }
+            }
         }
         return null;
     } catch (error) {
         console.error("Error editing image:", error);
+        return null;
+    }
+};
+
+export const analyzeHairCondition = async (base64Image: string, language: 'en' | 'tr' = 'en'): Promise<string | null> => {
+    const ai = getAi();
+    if (!ai) return null;
+
+    try {
+        const langName = language === 'tr' ? 'Turkish' : 'English';
+        const prompt = `Analyze this photo of hair. Describe its current condition, type, and structure. Then recommend 3 specific haircare treatments or procedures suitable for this hair type. Finally, give an assessment if a color change is recommended and what colors would fit well. Translate everything into ${langName}. Respond in Markdown format with clear headings.`;
+        
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: {
+                parts: [
+                    {
+                        inlineData: {
+                            data: base64Image.replace(/^data:image\/\w+;base64,/, ''),
+                            mimeType: 'image/jpeg'
+                        }
+                    },
+                    { text: prompt }
+                ]
+            }
+        });
+
+        return response.text || null;
+    } catch (error) {
+        console.error("Error analyzing hair:", error);
         return null;
     }
 };
