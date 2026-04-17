@@ -5,17 +5,27 @@ import { Appointment, Service } from '../types';
  * This allows the user to click a link and immediately add it to their calendar
  * without requiring backend OAuth (Client-side solution).
  */
-export const generateGoogleCalendarLink = (appointment: Appointment, service: Service): string => {
+export const generateGoogleCalendarLink = (appointment: Appointment, service: Service, language: string = 'en'): string => {
   const startTime = new Date(`${appointment.date}T${appointment.time}`);
   const endTime = new Date(startTime.getTime() + service.duration * 60000);
 
   const formatTime = (date: Date) => date.toISOString().replace(/-|:|\.\d\d\d/g, "");
 
+  const serviceName = language === 'tr' ? service.name_tr : service.name;
+  
+  const title = language === 'tr' 
+    ? `Randevu: ${serviceName} - RadApp`
+    : `Appointment: ${serviceName} at RadApp`;
+  
+  const details = language === 'tr'
+    ? `Hizmet: ${serviceName}\nMüşteri: ${appointment.user_name}\nNot: RadApp üzerinden rezerve edildi.`
+    : `Service: ${serviceName}\nCustomer: ${appointment.user_name}\nNote: Booked via RadApp`;
+
   const params = new URLSearchParams({
     action: 'TEMPLATE',
-    text: `Appointment: ${service.name} at RadApp`,
-    details: `Service: ${service.name}\nCustomer: ${appointment.user_name}\nNote: Booked via RadApp`,
-    location: 'RadApp Barber Shop, Main St',
+    text: title,
+    details: details,
+    location: 'RadApp Barber Shop',
     dates: `${formatTime(startTime)}/${formatTime(endTime)}`
   });
 

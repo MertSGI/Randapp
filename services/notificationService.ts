@@ -44,3 +44,26 @@ export const sendBookingSms = async (appointment: Appointment, serviceName: stri
     }, 800);
   });
 };
+
+/**
+ * GENERATE WHATSAPP LINK
+ * Creates a wa.me link with pre-filled appointment details and a Google Calendar link.
+ */
+export const generateWhatsAppLink = (
+  appointment: Appointment,
+  serviceName: string,
+  calendarLink: string,
+  language: string
+): string => {
+  const phone = appointment.phone?.replace(/\D/g, '') || '';
+  
+  const text = language === 'tr' 
+    ? `Merhaba ${appointment.user_name}, ${serviceName} randevunuz onaylandı!\n\nTarih: ${appointment.date}\nSaat: ${appointment.time}\n\nTakviminize eklemek için tıklayın: ${calendarLink}`
+    : `Hello ${appointment.user_name}, your ${serviceName} appointment is confirmed!\n\nDate: ${appointment.date}\nTime: ${appointment.time}\n\nAdd to your calendar: ${calendarLink}`;
+
+  const encodedText = encodeURIComponent(text);
+  
+  return phone 
+    ? `https://wa.me/${phone}?text=${encodedText}` 
+    : `https://wa.me/?text=${encodedText}`;
+};

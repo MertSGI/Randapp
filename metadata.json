@@ -1,5 +1,6 @@
 {
   "name": "RadApp",
   "description": "A modern, AI-powered appointment scheduling application with real-time conflict prevention, admin dashboard, and automated notification drafting.",
-  "requestFramePermissions": []
+  "requestFramePermissions": [],
+  "majorCapabilities": []
 }
