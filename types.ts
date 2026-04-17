@@ -1,5 +1,13 @@
 export type Role = 'guest' | 'member' | 'admin';
 
+export interface Staff {
+  id: string;
+  name: string;
+  title: string;
+  calendarEmail?: string;
+  image?: string;
+}
+
 export interface User {
   id: string;
   name: string;
@@ -23,6 +31,7 @@ export interface Appointment {
   user_name: string;
   user_email: string;
   serviceId: string;
+  staffId: string;
   date: string; // ISO Date string YYYY-MM-DD
   time: string; // HH:mm
   status: 'confirmed' | 'cancelled' | 'completed';
@@ -43,33 +52,41 @@ export const SERVICES: Service[] = [
     name: "Men's Haircut", 
     name_tr: 'Saç Kesimi', 
     duration: 45, 
-    price: 30,
-    image: 'https://images.unsplash.com/photo-1593702295094-aea8c5c13d7b?auto=format&fit=crop&q=80&w=800'
+    price: 300,
+    image: 'https://picsum.photos/seed/mens-haircut/800/600'
   },
   { 
     id: 'srv_2', 
     name: 'Beard Trim & Shape', 
     name_tr: 'Sakal Tıraşı & Şekillendirme', 
     duration: 30, 
-    price: 20,
-    image: 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?auto=format&fit=crop&q=80&w=800'
+    price: 200,
+    image: 'https://picsum.photos/seed/beard-trim/800/600'
   },
   { 
     id: 'srv_3', 
-    name: 'Hair & Beard Combo', 
-    name_tr: 'Saç & Sakal Kombo', 
-    duration: 75, 
-    price: 45,
-    image: 'https://images.unsplash.com/photo-1503951914875-452162b7f30a?auto=format&fit=crop&q=80&w=800'
+    name: 'Manicure & Pedicure', 
+    name_tr: 'Manikür & Pedikür', 
+    duration: 60, 
+    price: 500,
+    image: 'https://picsum.photos/seed/manicure-pedicure/800/600'
   },
   { 
     id: 'srv_4', 
-    name: 'Hot Towel Shave', 
-    name_tr: 'Sıcak Havlu Tıraşı', 
-    duration: 45, 
-    price: 35,
-    image: 'https://images.unsplash.com/photo-1532710093739-9470acff878f?auto=format&fit=crop&q=80&w=800'
+    name: 'Hair Prosthesis', 
+    name_tr: 'Protez Saç', 
+    duration: 120, 
+    price: 3500,
+    image: 'https://picsum.photos/seed/hair-prosthesis/800/600'
   },
+  {
+    id: 'srv_5',
+    name: 'Laser Epilation',
+    name_tr: 'Lazer Epilasyon',
+    duration: 45,
+    price: 800,
+    image: 'https://picsum.photos/seed/laser-epilation/800/600'
+  }
 ];
 
 export const BUSINESS_HOURS = {

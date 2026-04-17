@@ -5,7 +5,7 @@ import { Appointment, Service } from '../types';
  * This allows the user to click a link and immediately add it to their calendar
  * without requiring backend OAuth (Client-side solution).
  */
-export const generateGoogleCalendarLink = (appointment: Appointment, service: Service, language: string = 'en'): string => {
+export const generateGoogleCalendarLink = (appointment: Appointment, service: Service, staff: {name: string} | null = null, language: string = 'en'): string => {
   const startTime = new Date(`${appointment.date}T${appointment.time}`);
   const endTime = new Date(startTime.getTime() + service.duration * 60000);
 
@@ -14,18 +14,18 @@ export const generateGoogleCalendarLink = (appointment: Appointment, service: Se
   const serviceName = language === 'tr' ? service.name_tr : service.name;
   
   const title = language === 'tr' 
-    ? `Randevu: ${serviceName} - RadApp`
-    : `Appointment: ${serviceName} at RadApp`;
+    ? `Randevu: ${serviceName} - MA Yılmaz Hair Design (Uzman: ${staff?.name || 'Bilinmiyor'})`
+    : `Appointment: ${serviceName} at MA Yılmaz Hair Design (Staff: ${staff?.name || 'Unknown'})`;
   
   const details = language === 'tr'
-    ? `Hizmet: ${serviceName}\nMüşteri: ${appointment.user_name}\nNot: RadApp üzerinden rezerve edildi.`
-    : `Service: ${serviceName}\nCustomer: ${appointment.user_name}\nNote: Booked via RadApp`;
+    ? `Hizmet: ${serviceName}\nUzman: ${staff?.name || ''}\nMüşteri: ${appointment.user_name}\nNot: MA Yılmaz Hair Design üzerinden rezerve edildi.`
+    : `Service: ${serviceName}\nStaff: ${staff?.name || ''}\nCustomer: ${appointment.user_name}\nNote: Booked via MA Yılmaz Hair Design`;
 
   const params = new URLSearchParams({
     action: 'TEMPLATE',
     text: title,
     details: details,
-    location: 'RadApp Barber Shop',
+    location: 'Mustafa Ali Yılmaz Hair Design',
     dates: `${formatTime(startTime)}/${formatTime(endTime)}`
   });
 
@@ -37,15 +37,15 @@ export const generateGoogleCalendarLink = (appointment: Appointment, service: Se
  * In a real app, this sends data to your Python backend, which uses a Service Account
  * to add the event to the Business's Master Calendar.
  */
-export const syncToBusinessCalendar = async (appointment: Appointment): Promise<boolean> => {
-    console.group("📅 Syncing to Business Google Calendar...");
-    console.log(`Adding event for ${appointment.date} at ${appointment.time}`);
+export const syncToBusinessCalendar = async (appointment: Appointment, staff: {name: string, id: string}): Promise<boolean> => {
+    console.group(`📅 Syncing to ${staff.name}'s Business Google Calendar...`);
+    console.log(`Adding event for ${appointment.date} at ${appointment.time} to calendar ID: ${staff.id}@calendar.google.com`);
     console.groupEnd();
 
     // Simulate API Call
     return new Promise((resolve) => {
         setTimeout(() => {
-            console.log("✅ Synced to Business Calendar successfully.");
+            console.log(`✅ Synced to ${staff.name}'s Calendar successfully.`);
             resolve(true);
         }, 1500);
     });

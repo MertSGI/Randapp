@@ -46,24 +46,27 @@ export const sendBookingSms = async (appointment: Appointment, serviceName: stri
 };
 
 /**
- * GENERATE WHATSAPP LINK
- * Creates a wa.me link with pre-filled appointment details and a Google Calendar link.
+ * MOCK AUTOMATED WHATSAPP BACKEND SERVICE
+ * In a real application, this would call your backed API (e.g., Python/Node)
+ * to send a WhatsApp message silently via the WhatsApp Business API.
  */
-export const generateWhatsAppLink = (
+export const sendAutomatedWhatsApp = async (
   appointment: Appointment,
-  serviceName: string,
-  calendarLink: string,
-  language: string
-): string => {
-  const phone = appointment.phone?.replace(/\D/g, '') || '';
+  messageText: string
+): Promise<boolean> => {
+  console.group("📲 Sending Automated WhatsApp...");
+  console.log(`To: ${appointment.phone || 'No phone provided'}`);
+  console.log(`Message: \n${messageText}`);
+  console.groupEnd();
   
-  const text = language === 'tr' 
-    ? `Merhaba ${appointment.user_name}, ${serviceName} randevunuz onaylandı!\n\nTarih: ${appointment.date}\nSaat: ${appointment.time}\n\nTakviminize eklemek için tıklayın: ${calendarLink}`
-    : `Hello ${appointment.user_name}, your ${serviceName} appointment is confirmed!\n\nDate: ${appointment.date}\nTime: ${appointment.time}\n\nAdd to your calendar: ${calendarLink}`;
+  if (!appointment.phone) return Promise.resolve(false);
 
-  const encodedText = encodeURIComponent(text);
-  
-  return phone 
-    ? `https://wa.me/${phone}?text=${encodedText}` 
-    : `https://wa.me/?text=${encodedText}`;
+  // Simulate API Network Delay
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      console.log("✅ Auto WhatsApp sent successfully via 'MockWhatsAppAPI'");
+      resolve(true);
+    }, 1200);
+  });
 };
+

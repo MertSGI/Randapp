@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { SERVICES, Service, BUSINESS_HOURS } from '../types';
+import { SERVICES, Service, BUSINESS_HOURS, Staff } from '../types';
 import * as Storage from '../services/storage';
 import * as GeminiService from '../services/geminiService';
 import * as NotificationService from '../services/notificationService';
@@ -23,7 +23,9 @@ const generateTimeSlots = (): string[] => {
 
 const BookingPage: React.FC = () => {
   const { t, language } = useLanguage();
-  const [step, setStep] = useState<number>(1);
+  const [step, setStep] = useState<number>(0);
+  const [staffList, setStaffList] = useState<Staff[]>([]);
+  const [selectedStaff, setSelectedStaff] = useState<Staff | null>(null);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [selectedTime, setSelectedTime] = useState<string>('');
@@ -32,15 +34,24 @@ const BookingPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confirmation, setConfirmation] = useState<{ subject: string; body: string } | null>(null);
   const [calendarLink, setCalendarLink] = useState<string>('');
-  const [whatsappLink, setWhatsappLink] = useState<string>('');
+  const [whatsappSent, setWhatsappSent] = useState(false);
 
   const timeSlots = generateTimeSlots();
 
   useEffect(() => {
-    if (selectedDate) {
-      setBookedSlots(Storage.getBookedSlots(selectedDate));
+    setStaffList(Storage.getStaff());
+  }, []);
+
+  useEffect(() => {
+    if (selectedDate && selectedStaff) {
+      setBookedSlots(Storage.getBookedSlots(selectedDate, selectedStaff.id));
     }
-  }, [selectedDate]);
+  }, [selectedDate, selectedStaff]);
+
+  const handleStaffSelect = (staff: Staff) => {
+    setSelectedStaff(staff);
+    setStep(1);
+  };
 
   const handleServiceSelect = (service: Service) => {
     setSelectedService(service);
@@ -54,7 +65,7 @@ const BookingPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedService || !selectedTime) return;
+    if (!selectedService || !selectedTime || !selectedStaff) return;
 
     setIsSubmitting(true);
 
@@ -65,17 +76,16 @@ const BookingPage: React.FC = () => {
       user_email: formData.email,
       phone: formData.phone,
       serviceId: selectedService.id,
+      staffId: selectedStaff.id,
       date: selectedDate,
       time: selectedTime,
       status: 'confirmed' as const,
       createdAt: new Date().toISOString(),
-      syncedToGoogle: false, // Will be updated after sync
+      syncedToGoogle: false, 
     };
 
-    // 1. Save locally
     Storage.saveAppointment(newAppointment);
 
-    // 2. Generate AI Confirmation Text
     let aiResponse = { subject: 'Confirmation', body: 'Your appointment is booked.' };
     try {
       const serviceName = language === 'tr' ? selectedService.name_tr : selectedService.name;
@@ -86,29 +96,29 @@ const BookingPage: React.FC = () => {
       console.error("AI generation failed", err);
     }
 
-    // 3. Send Email & SMS (Async/Parallel)
     const serviceName = language === 'tr' ? selectedService.name_tr : selectedService.name;
     try {
         await Promise.all([
             NotificationService.sendBookingEmail(newAppointment, serviceName, aiResponse),
             NotificationService.sendBookingSms(newAppointment, serviceName),
-            CalendarService.syncToBusinessCalendar(newAppointment)
+            CalendarService.syncToBusinessCalendar(newAppointment, selectedStaff)
         ]);
         
-        // Update sync status locally after "mock" success
         newAppointment.syncedToGoogle = true;
-        Storage.updateAppointmentStatus(newAppointment.id, 'confirmed'); // Just triggering a save update basically
+        Storage.updateAppointmentStatus(newAppointment.id, 'confirmed'); 
     } catch (error) {
         console.error("Notification/Sync infrastructure error:", error);
     }
 
-    // 4. Generate User Calendar Link
-    const link = CalendarService.generateGoogleCalendarLink(newAppointment, selectedService, language);
+    const link = CalendarService.generateGoogleCalendarLink(newAppointment, selectedService, selectedStaff, language);
     setCalendarLink(link);
 
-    // 5. Generate WhatsApp Link
-    const waLink = NotificationService.generateWhatsAppLink(newAppointment, serviceName, link, language);
-    setWhatsappLink(waLink);
+    const waText = language === 'tr'
+      ? `Merhaba ${newAppointment.user_name}, ${serviceName} randevunuz ${selectedStaff.name} ile onaylandı!\n\nTarih: ${newAppointment.date}\nSaat: ${newAppointment.time}\n\nTakviminize eklemek için tıklayın: ${link}`
+      : `Hello ${newAppointment.user_name}, your ${serviceName} appointment with ${selectedStaff.name} is confirmed!\n\nDate: ${newAppointment.date}\nTime: ${newAppointment.time}\n\nAdd to your calendar: ${link}`;
+
+    await NotificationService.sendAutomatedWhatsApp(newAppointment, waText);
+    setWhatsappSent(true);
 
     setIsSubmitting(false);
     setStep(4);
@@ -117,41 +127,78 @@ const BookingPage: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto">
       {/* Progress Bar */}
-      <div className="mb-8 max-w-2xl mx-auto">
-        <div className="flex items-center justify-between relative">
-          <div className="absolute left-0 top-1/2 w-full h-0.5 bg-gray-200 -z-10"></div>
-          {[1, 2, 3, 4].map((s) => (
+      <div className="mb-8 max-w-2xl mx-auto hidden sm:block">
+        <div className="flex items-center justify-between relative px-2">
+          <div className="absolute left-6 right-6 top-1/2 h-0.5 bg-gray-200 -z-10"></div>
+          {[0, 1, 2, 3, 4].map((s) => (
             <div key={s} className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors duration-300 ${step >= s ? 'bg-accent text-white' : 'bg-white border-2 border-gray-200 text-gray-400'}`}>
-              {s}
+              {s + 1}
             </div>
           ))}
         </div>
-        <div className="flex justify-between mt-2 text-xs text-gray-500">
+        <div className="flex justify-between mt-2 text-xs text-gray-500 px-1">
           {t.booking.steps.map((label, i) => (
-            <span key={i}>{label}</span>
+            <span key={i} className="text-center w-16">{label}</span>
           ))}
         </div>
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
         
+        {/* Step 0: Staff Selection */}
+        {step === 0 && (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-gray-900">{t.booking.step0_title}</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {staffList.map((staff) => (
+                <button
+                  key={staff.id}
+                  onClick={() => handleStaffSelect(staff)}
+                  className="relative flex flex-col items-center p-6 rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-lg hover:border-accent/50 transition-all duration-300 text-center group"
+                >
+                  <div className="w-24 h-24 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center border-4 border-white shadow-sm overflow-hidden mb-4">
+                    {staff.image ? (
+                        <img src={staff.image} alt={staff.name} className="w-full h-full object-cover" />
+                    ) : (
+                        <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                        </svg>
+                    )}
+                  </div>
+                  <h3 className="font-bold text-lg text-gray-900 group-hover:text-accent transition-colors">{staff.name}</h3>
+                  <p className="text-sm text-gray-500 mt-1">{staff.title}</p>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Step 1: Service Selection */}
         {step === 1 && (
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-900">{t.booking.step1_title}</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-gray-900">{t.booking.step1_title}</h2>
+              <button onClick={() => setStep(0)} className="text-sm text-gray-500 hover:text-gray-900 underline">{language === 'tr' ? 'Uzman Değiştir' : 'Change Staff'}</button>
+            </div>
+            
+            <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm justify-between shadow-sm flex items-center gap-3">
+               <span className="text-gray-500">{language === 'tr' ? 'Seçili Uzman:' : 'Selected Staff:'}</span>
+               <span className="font-bold text-gray-900">{selectedStaff?.name}</span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
               {SERVICES.map((service) => (
                 <button
                   key={service.id}
                   onClick={() => handleServiceSelect(service)}
                   className="group relative flex flex-col rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-lg hover:border-accent/50 transition-all duration-300 overflow-hidden text-left"
                 >
-                  {/* Image Container */}
                   <div className="w-full h-48 bg-gray-200 relative overflow-hidden">
                     {service.image ? (
                         <img
                         src={service.image}
                         alt={service.name}
+                        referrerPolicy="no-referrer"
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                         />
                     ) : (
@@ -159,13 +206,10 @@ const BookingPage: React.FC = () => {
                             <span className="text-sm">No Image</span>
                         </div>
                     )}
-                    {/* Price Tag */}
                     <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-sm font-bold text-gray-900 shadow-sm border border-gray-100">
                         ${service.price}
                     </div>
                   </div>
-
-                  {/* Content */}
                   <div className="p-5 w-full">
                     <h3 className="font-bold text-lg text-gray-900 group-hover:text-accent transition-colors">
                       {language === 'tr' ? service.name_tr : service.name}
@@ -242,9 +286,12 @@ const BookingPage: React.FC = () => {
             <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm text-gray-600 mb-4 flex justify-between items-center shadow-sm">
               <div className="flex items-center gap-3">
                   {selectedService?.image && (
-                      <img src={selectedService.image} alt="" className="w-10 h-10 rounded-full object-cover" />
+                      <img src={selectedService.image} alt="" referrerPolicy="no-referrer" className="w-10 h-10 rounded-full object-cover" />
                   )}
-                  <span className="font-medium text-gray-900">{language === 'tr' ? selectedService?.name_tr : selectedService?.name}</span>
+                  <div className="flex flex-col">
+                    <span className="font-bold text-gray-900">{language === 'tr' ? selectedService?.name_tr : selectedService?.name}</span>
+                    <span className="text-xs text-gray-500">with {selectedStaff?.name}</span>
+                  </div>
               </div>
               <span className="font-semibold bg-white px-3 py-1 rounded-md border border-gray-200">{selectedDate} @ {selectedTime}</span>
             </div>
@@ -303,8 +350,15 @@ const BookingPage: React.FC = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h2 className="text-3xl font-extrabold text-gray-900 mb-2">{t.booking.step4_title}</h2>
-            <p className="text-gray-500 mb-6">{t.booking.step4_subtitle}</p>
+            <h2 className="text-3xl font-extrabold text-gray-900 mb-2">{t.booking.step5_title}</h2>
+            <p className="text-gray-500 mb-6">{t.booking.step5_subtitle}</p>
+
+            {whatsappSent && formData.phone && (
+              <div className="bg-green-50 text-green-700 p-4 rounded-xl border border-green-200 mb-6 text-sm font-medium flex items-center gap-3 shadow-sm mx-auto max-w-sm">
+                <svg className="w-6 h-6 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                {t.booking.step5_whatsapp_sent_to} {formData.phone}
+              </div>
+            )}
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
               {/* Calendar Link Button */}
@@ -319,29 +373,30 @@ const BookingPage: React.FC = () => {
                   {t.booking.add_to_calendar}
                 </a>
               )}
-
-              {/* WhatsApp Share Button */}
-              {whatsappLink && (
-                <a 
-                  href={whatsappLink} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 bg-green-500 text-white px-6 py-3 rounded-xl font-bold transition hover:bg-green-600 shadow-lg shadow-green-200"
-                >
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                  {t.booking.step4_whatsapp_share}
-                </a>
-              )}
+              {/* Free WA Share Fallback */}
+              <a 
+                href={`https://wa.me/?text=${encodeURIComponent(
+                  language === 'tr' 
+                    ? `Merhaba! Mustafa Ali Yılmaz Hair Design'dan randevumu oluşturdum.\nUzman: ${selectedStaff?.name || ''}\nHizmet: ${selectedService?.name_tr || ''}\nTarih: ${selectedDate} ${selectedTime}\nRandevuyu Takvime Ekle: ${calendarLink}` 
+                    : `Hello! I booked an appointment at Mustafa Ali Yılmaz Hair Design.\nStaff: ${selectedStaff?.name || ''}\nService: ${selectedService?.name || ''}\nDate: ${selectedDate} ${selectedTime}\nAdd to Calendar: ${calendarLink}`
+                )}`} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 bg-[#25D366] text-white px-6 py-3 rounded-xl font-bold transition hover:bg-green-600 shadow-sm"
+              >
+                <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                {t.booking.step5_whatsapp_share}
+              </a>
             </div>
 
             {confirmation && (
               <div className="text-left bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8 shadow-sm">
                 <h4 className="text-xs uppercase tracking-wide text-gray-400 font-semibold mb-3 flex items-center gap-2">
                    <svg className="w-4 h-4 text-accent" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                   {t.booking.step4_ai_title}
+                   {t.booking.step5_ai_title}
                 </h4>
                 <div className="space-y-2 text-sm text-gray-700">
-                    <p><span className="font-semibold text-gray-900">{t.booking.step4_subject}</span> {confirmation.subject}</p>
+                    <p><span className="font-semibold text-gray-900">{t.booking.step5_subject}</span> {confirmation.subject}</p>
                     <hr className="border-gray-200 my-2"/>
                     <p className="whitespace-pre-line leading-relaxed">{confirmation.body}</p>
                 </div>

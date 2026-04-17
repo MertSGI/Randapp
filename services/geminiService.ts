@@ -65,13 +65,18 @@ export const analyzeSchedule = async (appointments: Appointment[], language: 'en
             Here is the list of confirmed appointments for today (${today}):
             ${JSON.stringify(todaysAppointments.map(a => ({ time: a.time, name: a.user_name })))}
 
-            Please provide a brief 2-sentence summary of the day's workload and suggest the best time for a lunch break (a gap of at least 30 mins, preferably around 12:00-14:00).
+            Please provide a detailed deep analysis of the workload, suggest lunch breaks, and prepare a plan for potential delays.
             Answer in ${langName}.
         `;
 
         const response = await ai.models.generateContent({
-            model: 'gemini-3-flash-preview',
+            model: 'gemini-3.1-pro-preview',
             contents: prompt,
+            config: {
+                thinkingConfig: {
+                    thinkingLevel: "HIGH"
+                }
+            }
         });
 
         return response.text || (language === 'tr' ? "Analiz oluşturulamadı." : "No analysis generated.");
@@ -80,3 +85,63 @@ export const analyzeSchedule = async (appointments: Appointment[], language: 'en
         return language === 'tr' ? "Şu anda program analiz edilemiyor." : "Could not analyze schedule at this time.";
     }
 }
+
+export const generateHaircutImage = async (promptText: string, size: '1K' | '2K' | '4K' = '1K'): Promise<string | null> => {
+    const ai = getAi();
+    if (!ai) return null;
+
+    // Use gemini-3-pro-image-preview to generate high-quality images
+    try {
+        let sizeDetails = 'Standard resolution';
+        if (size === '2K') sizeDetails = 'Intricately detailed 2K resolution';
+        if (size === '4K') sizeDetails = 'Ultra HD 4K resolution, photorealistic';
+
+        const response = await ai.models.generateImages({
+            model: 'gemini-3-pro-image-preview',
+            prompt: `Professional barbershop photo: ${promptText}. Cinematic lighting, highly detailed. ${sizeDetails}`,
+            config: {
+                outputMimeType: 'image/jpeg',
+                aspectRatio: '1:1'
+            }
+        });
+        
+        if (response.generatedImages && response.generatedImages.length > 0) {
+            // Note: depending on the SDK, image base64 might be located in `image.imageBytes` or `image.b64`
+            return `data:image/jpeg;base64,${response.generatedImages[0].image.imageBytes}`;
+        }
+        return null;
+    } catch (error) {
+        console.error("Error generating image:", error);
+        return null;
+    }
+};
+
+export const editHaircutImage = async (base64Image: string, instructions: string): Promise<string | null> => {
+    const ai = getAi();
+    if (!ai) return null;
+
+    // Use gemini-3.1-flash-image-preview to edit images with text prompts
+    try {
+        const response = await ai.models.generateImages({
+            model: 'gemini-3.1-flash-image-preview',
+            prompt: instructions,
+            config: {
+                outputMimeType: 'image/jpeg',
+                editConfig: {
+                    referenceImages: [{
+                        base64: base64Image.replace(/^data:image\/\w+;base64,/, ''),
+                        mimeType: 'image/jpeg'
+                    }]
+                }
+            } as any // Use 'any' in case the exact types differ slightly
+        });
+        
+        if (response.generatedImages && response.generatedImages.length > 0) {
+            return `data:image/jpeg;base64,${response.generatedImages[0].image.imageBytes}`;
+        }
+        return null;
+    } catch (error) {
+        console.error("Error editing image:", error);
+        return null;
+    }
+};
