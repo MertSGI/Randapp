@@ -24,8 +24,10 @@ Gemini yapay zeka entegrasyonu sayesinde kullanıcılar fotoğraflarını yükle
 
 ## 🌟 Öne Çıkan Özellikler
 
-- **Gelişmiş Çalışan Yönetimi:** "Mustafa Ali Yılmaz" her zaman master kullanıcı olarak en üstte görünür, silinemez. Diğer çalışanlar admin panelinden dinamik olarak eklenebilir, silinebilir ve güncellenebilir.
-- **WhatsApp ve İletişim:** Seçilen uzmanın telefon numarası, randevu sonrası çıkan WhatsApp yönlendirme linkinde doğrudan müşteriye iletilir.
+- **Gelişmiş Çalışan ve Hizmet Yönetimi:** "Mustafa Ali Yılmaz" her zaman master kullanıcı olarak en üstte görünür, silinemez (anca profili güncellenebilir). Diğer çalışanlar admin panelinden dinamik olarak eklenebilir, silinebilir ve güncellenebilir.
+- **SaaS (Yazılım Hizmeti) Altyapısı (Multi-Tenant):** Proje, ileride birden fazla işletmenin kendi alt alan adlarıyla aynı platformu kullanabileceği (Multi-Tenant) mimariyle yeniden yapılandırılmıştır. Tüm veriler `TenantContext` aracılığıyla izole edilmiştir. Veri çekme ve kaydetme işlemleri, simüle edilmiş bir Asenkron API katmanı (`apiClient.ts`) aracılığıyla yönetilmektedir.
+- **Katalog Görselleri:** Hizmet katalogları için dinamik görsel yükleme desteği bulunmaktadır (Admin paneli hizmetlerinden eklenebilir veya dummy data olarak sunulan görseller mevcuttur).
+- **WhatsApp ve İletişim:** Seçili uzmanın telefon numarası, randevu sonrası çıkan WhatsApp yönlendirme linkinde doğrudan müşteriye iletilir.
 - **Google Takvim (Simüle Edilmiş):** Eklenen uzmanların e-posta adresleri üzerinden Google Calendar etkinlik senkronizasyonu yönetilebilir.
 - **Dinamik Dil Desteği:** Tek tıkla Türkçe (Varsayılan) ve İngilizce arasında geçiş imkanı.
 - **Karanlık / Aydınlık Mod (Theme Toggle):** Kullanıcı dostu arayüz ve kalıcı (Local Storage üzerinden hatırlanan) gece/gündüz modu.
@@ -83,8 +85,11 @@ Oluşan `dist/` klasörü projenizin tamamen web ortamında çalışmaya hazır 
 
 ## 🔐 Yönetici (Admin) Paneli Bilgileri
 
-Varsayılan ayarlarla Yönetim Paneline girmek için `localhost:3000/#/login` (veya yayınladığınız site adresi) üzerinden giriş yapmalısınız:
-- **Şifre:** `admin123` *(Bu test amaçlıdır, canlıda kullanmadan önce `pages/LoginPage.tsx` içerisinde değiştirmeniz önerilir).*
+Varsayılan ayarlarla Yönetim Paneline girmek için uygulamanın sağ üst köşesinden 'Yönetim' butonuna veya doğrudan `/login` adresine gidin:
+- **E-posta:** `admin@randapp.com` (Simülasyon/Test)
+- **Şifre:** `admin123` 
+
+*(Not: Multi-tenant (SaaS) altyapısına hazırlık aşamasında giriş bilgileri `AuthContext` üzerinden mock olarak yönetilmektedir. İleride gerçek bir backend API ile değiştirilecektir).*
 
 ---
 

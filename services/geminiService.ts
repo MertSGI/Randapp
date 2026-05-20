@@ -67,12 +67,7 @@ export const analyzeSchedule = async (appointments: Appointment[], language: 'en
 
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-pro',
-            contents: prompt,
-            config: {
-                thinkingConfig: {
-                    thinkingLevel: "HIGH"
-                }
-            }
+            contents: prompt
         });
 
         return response.text || "No analysis generated.";

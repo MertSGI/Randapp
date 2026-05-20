@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Appointment, Staff } from '../types';
-import * as Storage from '../services/storage';
 import * as GeminiService from '../services/geminiService';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useTenant } from '../contexts/TenantContext';
+import { useAuth } from '../contexts/AuthContext';
+import { getAppointments, updateAppointmentStatus } from '../services/appointmentService';
+import { getStaffList, createStaff, updateStaff, deleteStaff } from '../services/staffService';
 
 const AdminPage: React.FC = () => {
   const navigate = useNavigate();
   const { t, language } = useLanguage();
+  const { tenant } = useTenant();
+  const { currentUser, isLoading: authLoading, logout } = useAuth();
   const [activeTab, setActiveTab] = useState<'appointments' | 'staff'>('appointments');
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [staffList, setStaffList] = useState<Staff[]>([]);
@@ -23,28 +28,35 @@ const AdminPage: React.FC = () => {
   const [newStaffPhone, setNewStaffPhone] = useState('');
 
   useEffect(() => {
-    const isAuth = localStorage.getItem('nexus_admin_auth');
-    if (!isAuth) {
+    if (authLoading) return;
+    
+    if (!currentUser) {
       navigate('/login');
       return;
     }
-    loadData();
-  }, [navigate]);
+    if (tenant) {
+      loadData();
+    }
+  }, [navigate, tenant, currentUser, authLoading]);
 
-  const loadData = () => {
-    const data = Storage.getAppointments();
+  const loadData = async () => {
+    if (!tenant) return;
+    const data = await getAppointments(tenant.id);
     data.sort((a, b) => {
         const dateA = new Date(`${a.date}T${a.time}`);
         const dateB = new Date(`${b.date}T${b.time}`);
         return dateA.getTime() - dateB.getTime();
     });
     setAppointments(data);
-    setStaffList(Storage.getStaff());
+    
+    const staffData = await getStaffList(tenant.id);
+    setStaffList(staffData);
   };
 
-  const handleCancel = (id: string) => {
+  const handleCancel = async (id: string) => {
+    if (!tenant) return;
     if (window.confirm('Emin misiniz?' /* simplified confirm for both langs*/)) {
-      Storage.updateAppointmentStatus(id, 'cancelled');
+      await updateAppointmentStatus(tenant.id, id, 'cancelled');
       loadData();
     }
   };
@@ -56,23 +68,24 @@ const AdminPage: React.FC = () => {
     setLoadingAnalysis(false);
   };
 
-  const handleDeleteStaff = (id: string, name: string) => {
+  const handleDeleteStaff = async (id: string, name: string) => {
+    if (!tenant) return;
     if (id === 'stf_1' || name.toLowerCase().includes('mustafa ali yılmaz')) {
       alert(language === 'tr' ? 'Bu çalışanı silemezsiniz.' : 'You cannot delete the master owner.');
       return;
     }
     if (window.confirm(language === 'tr' ? 'Bu çalışanı silmek istediğinize emin misiniz?' : 'Are you sure you want to delete this staff member?')) {
-      Storage.deleteStaff(id);
+      await deleteStaff(tenant.id, id);
       loadData();
     }
   };
 
-  const handleAddStaff = (e: React.FormEvent) => {
+  const handleAddStaff = async (e: React.FormEvent) => {
     e.preventDefault();
-    if(!newStaffName || !newStaffTitle) return;
+    if(!newStaffName || !newStaffTitle || !tenant) return;
 
     if (editingStaffId) {
-      Storage.updateStaff(editingStaffId, {
+      await updateStaff(tenant.id, editingStaffId, {
         name: newStaffName,
         title: newStaffTitle,
         image: newStaffImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(newStaffName)}&background=random`,
@@ -80,15 +93,13 @@ const AdminPage: React.FC = () => {
         phone: newStaffPhone || undefined
       });
     } else {
-      const newStaff: Staff = {
-        id: `stf_${Date.now()}`,
+      await createStaff(tenant.id, {
         name: newStaffName,
         title: newStaffTitle,
         image: newStaffImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(newStaffName)}&background=random`,
         calendarEmail: newStaffEmail || undefined,
         phone: newStaffPhone || undefined
-      };
-      Storage.saveStaff(newStaff);
+      });
     }
     
     loadData();
@@ -130,7 +141,7 @@ const AdminPage: React.FC = () => {
              {loadingAnalysis ? t.admin.btn_analyzing : t.admin.btn_analysis}
            </button>
            <button 
-             onClick={() => { localStorage.removeItem('nexus_admin_auth'); navigate('/login'); }}
+             onClick={() => { logout(); navigate('/login'); }}
              className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
            >
              {t.admin.btn_logout}

@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
+import { useTenant } from '../contexts/TenantContext';
 import { usePWAInstall } from '../utils/usePWAInstall';
 
 interface LayoutProps {
@@ -30,6 +31,22 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const isAdmin = location.pathname.includes('admin');
   const { language, setLanguage, t } = useLanguage();
   const { isInstallable, promptInstall } = usePWAInstall();
+  const { branding, isLoadingTenant, tenantStatus } = useTenant();
+
+  if (isLoadingTenant) {
+    return <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-900"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent"></div></div>;
+  }
+
+  if (tenantStatus === 'not_found') {
+    return <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-900"><div className="text-center"><h1 className="text-3xl font-bold dark:text-white">Salon Not Found</h1><p className="mt-2 text-gray-500">This booking site is not active or doesn't exist.</p></div></div>;
+  }
+
+  if (tenantStatus === 'suspended') {
+     return <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-900"><div className="text-center"><h1 className="text-3xl font-bold dark:text-white">Account Suspended</h1><p className="mt-2 text-gray-500">This salon's account is currently suspended.</p></div></div>;
+  }
+
+  const businessName = branding?.businessName || 'Salon';
+  const logoInitial = businessName.charAt(0).toUpperCase();
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-slate-900 transition-colors duration-300">
@@ -58,8 +75,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <Link to="/" className="flex-shrink-0 flex items-center gap-2">
-                <div className="w-8 h-8 bg-black dark:bg-white rounded-lg flex items-center justify-center text-white dark:text-black font-bold tracking-tighter transition-colors duration-300">M</div>
-                <span className="font-semibold text-xl text-primary dark:text-white transition-colors duration-300">MA Yılmaz Design</span>
+                {branding?.logoUrl ? (
+                   <img src={branding.logoUrl} alt={businessName} className="h-8 w-auto rounded" />
+                ) : (
+                   <div className="w-8 h-8 bg-black dark:bg-white rounded-lg flex items-center justify-center text-white dark:text-black font-bold tracking-tighter transition-colors duration-300">{logoInitial}</div>
+                )}
+                <span className="font-semibold text-xl text-primary dark:text-white transition-colors duration-300">{businessName}</span>
               </Link>
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
                 <Link
@@ -128,8 +149,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {/* Mobile Top Header */}
       <div className="sm:hidden bg-white dark:bg-slate-800 shadow-sm sticky top-0 z-40 px-4 py-3 flex justify-between items-center transition-colors duration-300">
         <Link to="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-black dark:bg-white rounded-lg flex items-center justify-center text-white dark:text-black font-bold tracking-tighter">M</div>
-          <span className="font-semibold text-lg text-primary dark:text-white">MA Yılmaz Design</span>
+           {branding?.logoUrl ? (
+                   <img src={branding.logoUrl} alt={businessName} className="h-8 w-auto rounded" />
+                ) : (
+                   <div className="w-8 h-8 bg-black dark:bg-white rounded-lg flex items-center justify-center text-white dark:text-black font-bold tracking-tighter transition-colors duration-300">{logoInitial}</div>
+           )}
+          <span className="font-semibold text-lg text-primary dark:text-white">{businessName}</span>
         </Link>
         <div className="flex items-center gap-3">
           <ThemeToggle />
@@ -153,7 +178,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <footer className="hidden sm:block bg-white dark:bg-slate-800 border-t border-gray-200 dark:border-slate-700 mt-auto transition-colors duration-300">
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <p className="text-center text-sm text-gray-500 dark:text-gray-400">
-            &copy; {new Date().getFullYear()} {t.footer}
+            &copy; {new Date().getFullYear()} {branding?.footerText || t.footer}
           </p>
         </div>
       </footer>

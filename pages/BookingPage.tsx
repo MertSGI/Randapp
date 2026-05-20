@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { SERVICES, Service, BUSINESS_HOURS, Staff } from '../types';
-import * as Storage from '../services/storage';
+import { Service, BUSINESS_HOURS, Staff } from '../types';
 import * as GeminiService from '../services/geminiService';
 import * as NotificationService from '../services/notificationService';
 import * as CalendarService from '../services/calendarService';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useTenant } from '../contexts/TenantContext';
+import { getStaffList } from '../services/staffService';
+import { getServices } from '../services/serviceCatalogService';
+import { createAppointment, getBookedSlots, updateAppointmentStatus } from '../services/appointmentService';
+
 
 const generateTimeSlots = (): string[] => {
   const slots: string[] = [];
@@ -23,8 +27,10 @@ const generateTimeSlots = (): string[] => {
 
 const BookingPage: React.FC = () => {
   const { t, language } = useLanguage();
+  const { tenant } = useTenant();
   const [step, setStep] = useState<number>(0);
   const [staffList, setStaffList] = useState<Staff[]>([]);
+  const [servicesList, setServicesList] = useState<Service[]>([]);
   const [selectedStaff, setSelectedStaff] = useState<Staff | null>(null);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
@@ -39,14 +45,17 @@ const BookingPage: React.FC = () => {
   const timeSlots = generateTimeSlots();
 
   useEffect(() => {
-    setStaffList(Storage.getStaff());
-  }, []);
+    if (tenant) {
+      getStaffList(tenant.id).then(setStaffList);
+      getServices(tenant.id).then(setServicesList);
+    }
+  }, [tenant]);
 
   useEffect(() => {
-    if (selectedDate && selectedStaff) {
-      setBookedSlots(Storage.getBookedSlots(selectedDate, selectedStaff.id));
+    if (tenant && selectedDate && selectedStaff) {
+      getBookedSlots(tenant.id, selectedDate, selectedStaff.id).then(setBookedSlots);
     }
-  }, [selectedDate, selectedStaff]);
+  }, [tenant, selectedDate, selectedStaff]);
 
   const handleStaffSelect = (staff: Staff) => {
     setSelectedStaff(staff);
@@ -65,12 +74,11 @@ const BookingPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedService || !selectedTime || !selectedStaff) return;
+    if (!selectedService || !selectedTime || !selectedStaff || !tenant) return;
 
     setIsSubmitting(true);
 
-    const newAppointment = {
-      id: `apt_${Date.now()}`,
+    const newAppointmentPayload = {
       userId: `guest_${Date.now()}`,
       user_name: formData.name,
       user_email: formData.email,
@@ -80,11 +88,10 @@ const BookingPage: React.FC = () => {
       date: selectedDate,
       time: selectedTime,
       status: 'confirmed' as const,
-      createdAt: new Date().toISOString(),
       syncedToGoogle: false, 
     };
 
-    Storage.saveAppointment(newAppointment);
+    const newAppointment = await createAppointment(tenant.id, newAppointmentPayload);
 
     let aiResponse = { subject: 'Confirmation', body: 'Your appointment is booked.' };
     try {
@@ -104,8 +111,7 @@ const BookingPage: React.FC = () => {
             CalendarService.syncToBusinessCalendar(newAppointment, selectedStaff)
         ]);
         
-        newAppointment.syncedToGoogle = true;
-        Storage.updateAppointmentStatus(newAppointment.id, 'confirmed'); 
+        await updateAppointmentStatus(tenant.id, newAppointment.id, 'confirmed'); 
     } catch (error) {
         console.error("Notification/Sync infrastructure error:", error);
     }
@@ -226,7 +232,7 @@ const BookingPage: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
-              {SERVICES.map((service) => (
+              {servicesList.map((service) => (
                 <button
                   key={service.id}
                   onClick={() => handleServiceSelect(service)}

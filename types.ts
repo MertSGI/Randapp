@@ -1,34 +1,105 @@
-export type Role = 'guest' | 'member' | 'admin';
+export type Role = 'super_admin' | 'salon_owner' | 'staff' | 'customer';
+
+export interface TenantBranding {
+  tenantId: string;
+  logoUrl?: string;
+  primaryColor?: string;
+  secondaryColor?: string;
+  businessName: string;
+  tagline?: string;
+  instagramUrl?: string;
+  whatsappNumber?: string;
+  address?: string;
+  footerText?: string;
+}
+
+export interface Tenant {
+  id: string;
+  name: string;
+  slug: string;
+  subdomain?: string;
+  customDomain?: string;
+  status: 'trial' | 'active' | 'past_due' | 'suspended';
+  planId?: string;
+  createdAt: string;
+  updatedAt: string;
+  branding: TenantBranding;
+}
 
 export interface Staff {
   id: string;
+  tenantId?: string;
   name: string;
   title: string;
   calendarEmail?: string;
   phone?: string;
   image?: string;
+  isOwner?: boolean;
+  active?: boolean;
 }
 
 export interface User {
   id: string;
+  tenantId?: string;
   name: string;
   email: string;
+  passwordHash?: string;
   phone?: string;
   role: Role;
+  active?: boolean;
 }
 
 export interface Service {
   id: string;
+  tenantId?: string;
   name: string;
   name_tr: string; // Turkish name
   duration: number; // in minutes
   price: number;
   image?: string; // URL to service image
+  active?: boolean;
+  category?: string;
+}
+
+export interface Customer {
+  id: string;
+  tenantId: string;
+  name: string;
+  email: string;
+  phone?: string;
+  notes?: string;
+  segment?: string;
+  createdAt: string;
+}
+
+export interface Subscription {
+  id: string;
+  tenantId: string;
+  planId: string;
+  status: 'active' | 'past_due' | 'canceled';
+  currentPeriodStart: string;
+  currentPeriodEnd: string;
+  paymentProviderCustomerId?: string;
+  paymentProviderSubscriptionId?: string;
+}
+
+export interface Payment {
+  id: string;
+  tenantId: string;
+  subscriptionId: string;
+  amount: number;
+  currency: string;
+  status: 'succeeded' | 'pending' | 'failed';
+  provider: string;
+  providerPaymentId: string;
+  createdAt: string;
 }
 
 export interface Appointment {
   id: string;
-  userId: string;
+  tenantId?: string;
+  userId?: string;
+  customerId?: string;
   user_name: string;
   user_email: string;
   serviceId: string;
