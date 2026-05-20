@@ -7,6 +7,7 @@ Bu proje, bir kuaför, güzellik salonu veya herhangi bir randevulu sistem için
 ## 🌟 Öne Çıkan Özellikler
 
 - **Multi-Tenant SaaS Altyapısı:** İşletmeler, kendi alt alan adlarıyla veya URL yapılarıyla platforma erişebilirler. Tüm uygulama `TenantContext` aracılığıyla sınırlandırılmış işletme kimliğine (`tenant_id`) bağlı olarak şekillenir.
+- **Satış ve Önizleme Portalı (Demo Generator):** Kuaförler, platforma katılmadan önce `/demo` rotası üzerinden anında kendi salon isimleri, renkleri ve logolarıyla kişiselleştirilmiş bir demo oluşturabilirler. Bu arayüz tam olarak saha satışı için optimize edilmiştir.
 - **İki Modlu Veri Akışı (Data Providers):** Mimari, esnek bir `dataProvider` katmanı (Strategy Pattern) üzerine kurulmuştur. Çevre değişkenlerine (`VITE_DATA_MODE`) bağlı olarak proje;
   - `mock`: Tamamen yerel, tarayıcıda çalışan, offline ve sunucuya ihtiyaç duymayan simüle JSON tabanlı mod ile,
   - `supabase`: Uzak veritabanlarına (PostgreSQL/Supabase) doğrudan okuma ve yazma yapabilen üretim modunda çalışabilir.

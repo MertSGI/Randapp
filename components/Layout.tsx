@@ -85,9 +85,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
                 <Link
                   to="/"
-                  className={`${!isAdmin ? 'border-accent text-gray-900 dark:text-white' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-slate-600'} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors duration-300`}
+                  className={`${location.pathname === '/' ? 'border-accent text-gray-900 dark:text-white' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-slate-600'} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors duration-300`}
                 >
                   {t.nav.book}
+                </Link>
+                <Link
+                  to="/demo"
+                  className={`${location.pathname === '/demo' ? 'border-accent text-gray-900 dark:text-white' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-slate-600'} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors duration-300`}
+                >
+                  {t.nav.demo}
                 </Link>
                 <Link
                   to="/admin"
@@ -131,12 +137,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       </main>
 
       {/* Mobile Bottom Navigation */}
-      <nav className="sm:hidden fixed bottom-0 w-full bg-white dark:bg-slate-800 border-t border-gray-200 dark:border-slate-700 z-50 flex justify-around items-center px-2 py-3 pb-safe shadow-[0_-4px_10px_rgba(0,0,0,0.05)] transition-colors duration-300">
-        <Link to="/" className={`flex flex-col items-center p-2 rounded-xl transition ${!isAdmin && !location.pathname.includes('ai-visualizer') ? 'text-accent dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'}`}>
+      <nav className="sm:hidden fixed bottom-0 w-full bg-white dark:bg-slate-800 border-t border-gray-200 dark:border-slate-700 z-50 flex justify-around items-center px-1 py-2 pb-safe shadow-[0_-4px_10px_rgba(0,0,0,0.05)] transition-colors duration-300">
+        <Link to="/" className={`flex flex-col items-center p-2 rounded-xl transition ${location.pathname === '/' ? 'text-accent dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'}`}>
           <svg className="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
           <span className="text-[10px] font-semibold">{t.nav.book}</span>
         </Link>
-        <Link to="/ai-visualizer" className={`flex flex-col items-center p-2 rounded-xl transition ${location.pathname.includes('ai-visualizer') ? 'text-accent dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'}`}>
+        <Link to="/demo" className={`flex flex-col items-center p-2 rounded-xl transition ${location.pathname === '/demo' ? 'text-accent dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'}`}>
+          <svg className="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
+          <span className="text-[10px] font-semibold">Demo</span>
+        </Link>
+        <Link to="/ai-visualizer" className={`flex flex-col items-center p-2 rounded-xl transition ${location.pathname === '/ai-visualizer' ? 'text-accent dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'}`}>
           <svg className="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
           <span className="text-[10px] font-semibold">{t.nav.ai_visualizer}</span>
         </Link>

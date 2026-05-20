@@ -5,6 +5,7 @@ import BookingPage from './pages/BookingPage';
 import AdminPage from './pages/AdminPage';
 import LoginPage from './pages/LoginPage';
 import AIVisualizerPage from './pages/AIVisualizerPage';
+import DemoLandingPage from './pages/DemoLandingPage';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { TenantProvider } from './contexts/TenantContext';
@@ -28,6 +29,7 @@ const App: React.FC = () => {
                 <Layout>
                   <Routes>
                     <Route path="/" element={<BookingPage />} />
+                    <Route path="/demo" element={<DemoLandingPage />} />
                     <Route path="/login" element={<LoginPage />} />
                     <Route 
                       path="/admin" 
