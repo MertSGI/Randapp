@@ -22,13 +22,29 @@ export const tenantService = {
   async resolveTenantFromHost(hostname: string): Promise<Tenant | null> {
     const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
     if (mode === 'supabase') {
-      // Query tenant by custom domain, or if not found (or subdomain is tested), by slug.
-      // This is a basic implementation of subdomain/custom domain resolution
+      // If local dev, we could fallback, but let's strictly attempt resolution.
+      if (hostname === 'localhost' || hostname.startsWith('127.0.0.1')) {
+        console.warn('Local environment detected, falling back to demo tenant for testability.');
+        return DEMO_TENANT;
+      }
+
+      const baseDomain = (import.meta as any).env.VITE_APP_BASE_DOMAIN;
+      let querySlug = '';
+      let isSubdomain = false;
       
+      if (baseDomain && hostname.endsWith(`.${baseDomain}`)) {
+        querySlug = hostname.replace(`.${baseDomain}`, '');
+        isSubdomain = true;
+      }
+
+      const queryParams = isSubdomain 
+        ? `slug.eq.${querySlug}` 
+        : `custom_domain.eq.${hostname},slug.eq.${hostname.split('.')[0]}`; // Fallback to splitting host if no base domain logic matched
+
       const { data: tenant, error } = await supabase
         .from('tenants')
         .select('*')
-        .or(`custom_domain.eq.${hostname},slug.eq.${hostname.split('.')[0]}`)
+        .or(queryParams)
         .single();
         
       if (tenant) {
@@ -67,13 +83,16 @@ export const tenantService = {
       if (branding) {
         return {
           tenantId: branding.tenant_id,
-          businessName: DEMO_TENANT.branding?.businessName || '',
-          tagline: DEMO_TENANT.branding?.tagline || '',
-          footerText: DEMO_TENANT.branding?.footerText || '',
+          businessName: branding.business_name || '',
+          tagline: branding.tagline || '',
+          footerText: branding.footer_text || '',
           logoUrl: branding.logo_url,
           primaryColor: branding.primary_color,
-          accentColor: branding.accent_color,
-        } as TenantBranding; // Coercing shape until types fully match DB
+          secondaryColor: branding.accent_color,
+          instagramUrl: branding.instagram_url,
+          whatsappNumber: branding.whatsapp_number,
+          address: branding.address,
+        } as TenantBranding;
       }
       return null;
     }

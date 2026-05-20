@@ -13,6 +13,8 @@ const dbAppointmentToAppointment = (dbAppt: any): Appointment => {
     customerId: dbAppt.customer_id,
     user_name: dbAppt.user_name,
     user_email: dbAppt.user_email,
+    phone: dbAppt.phone || '',
+    notes: dbAppt.notes || '',
     serviceId: dbAppt.service_id || '',
     staffId: dbAppt.staff_id || '',
     date: dbAppt.appointment_date,
@@ -28,7 +30,9 @@ export const getAppointments = async (tenantId: string): Promise<Appointment[]> 
     const { data, error } = await supabase
       .from('appointments')
       .select('*')
-      .eq('tenant_id', tenantId);
+      .eq('tenant_id', tenantId)
+      .order('appointment_date', { ascending: true })
+      .order('appointment_time', { ascending: true });
     
     if (error) {
       console.error('Error fetching appointments:', error);
@@ -48,6 +52,8 @@ export const createAppointment = async (tenantId: string, appointment: Omit<Appo
       service_id: appointment.serviceId || null,
       user_name: appointment.user_name,
       user_email: appointment.user_email,
+      phone: appointment.phone || null,
+      notes: appointment.notes || null,
       appointment_date: appointment.date,
       appointment_time: appointment.time,
       status: appointment.status,

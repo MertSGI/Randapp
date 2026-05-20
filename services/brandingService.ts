@@ -20,9 +20,12 @@ export const updateBranding = async (tenantId: string, branding: TenantBranding)
         logo_url: branding.logoUrl,
         primary_color: branding.primaryColor,
         accent_color: branding.secondaryColor,
-        // Wait: what about businessName and tagline? They would go to tenants table.
-        // We will just update tenant_branding here for now, as businessName etc. 
-        // are not originally in this table, but they are in the tenant model/DB?
+        business_name: branding.businessName,
+        tagline: branding.tagline,
+        footer_text: branding.footerText,
+        instagram_url: branding.instagramUrl,
+        whatsapp_number: branding.whatsappNumber,
+        address: branding.address,
       }, { onConflict: 'tenant_id' });
       
     if (error) {

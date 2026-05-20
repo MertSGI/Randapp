@@ -56,7 +56,8 @@ export const createService = async (tenantId: string, service: Omit<Service, 'id
         duration: service.duration,
         price: service.price,
         image: service.image || null,
-        // active and category are not in the current SQL schema, skip or default
+        active: service.active ?? true,
+        category: service.category || null,
       })
       .select()
       .single();
@@ -91,6 +92,8 @@ export const updateService = async (tenantId: string, serviceId: string, updates
         ...(updates.duration !== undefined && { duration: updates.duration }),
         ...(updates.price !== undefined && { price: updates.price }),
         ...(updates.image !== undefined && { image: updates.image }),
+        ...(updates.active !== undefined && { active: updates.active }),
+        ...(updates.category !== undefined && { category: updates.category }),
       })
       .eq('id', serviceId)
       .eq('tenant_id', tenantId)

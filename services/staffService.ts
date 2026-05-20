@@ -26,6 +26,7 @@ const dbStaffToStaff = (dbStaff: any): Staff => ({
   isOwner: dbStaff.is_owner || false,
   phone: dbStaff.phone || '',
   calendarEmail: dbStaff.calendar_email || '',
+  active: dbStaff.active ?? true,
 });
 
 export const getStaffList = async (tenantId: string): Promise<Staff[]> => {
@@ -101,6 +102,7 @@ export const updateStaff = async (tenantId: string, staffId: string, updates: Pa
         ...(updates.isOwner !== undefined && { is_owner: updates.isOwner }),
         ...(updates.phone !== undefined && { phone: updates.phone }),
         ...(updates.calendarEmail !== undefined && { calendar_email: updates.calendarEmail }),
+        ...(updates.active !== undefined && { active: updates.active }),
       })
       .eq('id', staffId)
       .eq('tenant_id', tenantId)

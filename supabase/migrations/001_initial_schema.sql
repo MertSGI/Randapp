@@ -31,6 +31,12 @@ CREATE TABLE public.tenant_branding (
     logo_url VARCHAR(1024),
     primary_color VARCHAR(50),
     accent_color VARCHAR(50),
+    business_name VARCHAR(255),
+    tagline VARCHAR(255),
+    footer_text VARCHAR(1024),
+    instagram_url VARCHAR(1024),
+    whatsapp_number VARCHAR(50),
+    address TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     UNIQUE(tenant_id)
@@ -60,6 +66,7 @@ CREATE TABLE public.staff (
     is_owner BOOLEAN DEFAULT false,
     phone VARCHAR(50),
     calendar_email VARCHAR(255),
+    active BOOLEAN DEFAULT true,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -74,6 +81,8 @@ CREATE TABLE public.services (
     duration INTEGER NOT NULL,
     price INTEGER NOT NULL,
     image VARCHAR(1024),
+    active BOOLEAN DEFAULT true,
+    category VARCHAR(255),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -101,6 +110,8 @@ CREATE TABLE public.appointments (
     service_id UUID REFERENCES public.services(id) ON DELETE SET NULL,
     user_name VARCHAR(255),
     user_email VARCHAR(255),
+    phone VARCHAR(50),
+    notes TEXT,
     appointment_date DATE NOT NULL,
     appointment_time TIME NOT NULL,
     status VARCHAR(50) DEFAULT 'pending',
