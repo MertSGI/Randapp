@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -8,16 +8,35 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useLanguage();
-  const { login } = useAuth();
+  const { login, currentUser, isLoading } = useAuth();
+
+  useEffect(() => {
+    if (!isLoading && currentUser) {
+      if (currentUser.role === 'salon_owner' || currentUser.role === 'super_admin') {
+        navigate('/admin', { replace: true });
+      } else {
+        // Future route for staff or custom dash. For now, home or staff dashboard route.
+        navigate('/', { replace: true });
+      }
+    }
+  }, [currentUser, isLoading, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const success = await login(email, password);
-    if (success) {
-      navigate('/admin');
-    } else {
-      setError(t.login.error);
+    setError('');
+    
+    try {
+      const success = await login(email, password);
+      if (success) {
+        // Navigation is handled by the useEffect above reacting to currentUser change
+      } else {
+        setError(t.login.error || 'Invalid email or password.');
+      }
+    } catch (err) {
+      setError('An error occurred during authentication.');
+      console.error(err);
     }
   };
 

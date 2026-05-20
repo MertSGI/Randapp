@@ -1,5 +1,5 @@
 import React from 'react';
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import BookingPage from './pages/BookingPage';
 import AdminPage from './pages/AdminPage';
@@ -9,6 +9,7 @@ import { LanguageProvider } from './contexts/LanguageContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { TenantProvider } from './contexts/TenantContext';
 import { AuthProvider } from './contexts/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const App: React.FC = () => {
   return (
@@ -21,8 +22,14 @@ const App: React.FC = () => {
             <Routes>
               <Route path="/" element={<BookingPage />} />
               <Route path="/login" element={<LoginPage />} />
-              {/* Note: In a real app we'd use a ProtectedRoute component here */}
-              <Route path="/admin" element={<AdminPage />} />
+              <Route 
+                path="/admin" 
+                element={
+                  <ProtectedRoute allowedRoles={['salon_owner', 'super_admin']}>
+                    <AdminPage />
+                  </ProtectedRoute>
+                } 
+              />
               <Route path="/ai-visualizer" element={<AIVisualizerPage />} />
             </Routes>
           </Layout>
