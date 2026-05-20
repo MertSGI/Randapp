@@ -13,7 +13,6 @@ interface TenantContextType {
 const TenantContext = createContext<TenantContextType | undefined>(undefined);
 
 export const TenantProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  console.log('[BOOT] TenantProvider start');
   const [tenant, setTenant] = useState<Tenant | null>(null);
   const [branding, setBranding] = useState<TenantBranding | null>(null);
   const [isLoadingTenant, setIsLoadingTenant] = useState(true);

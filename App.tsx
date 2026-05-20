@@ -12,20 +12,12 @@ import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import AppErrorBoundary from './components/AppErrorBoundary';
 
-console.log('[BOOT] App module loaded');
-
 // Use hash routing for embedded previews and browser routing for production
 const Router = (import.meta as any).env.VITE_ROUTER_MODE === 'browser' 
   ? BrowserRouter 
   : HashRouter;
 
 const App: React.FC = () => {
-  console.log('[BOOT] App rendered');
-
-  const dataMode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
-  const routerMode = (import.meta as any).env.VITE_ROUTER_MODE || 'hash';
-  console.log('[ENV]', { dataMode, routerMode });
-
   return (
     <AppErrorBoundary>
       <ThemeProvider>
