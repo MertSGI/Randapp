@@ -6,12 +6,14 @@ As we migrate from the mock architecture to a real Supabase/PostgreSQL SaaS setu
    - The mock credentials (`admin@randapp.com` / `admin123`) currently located in `authService.ts` must be destroyed.
 
 2. **Backend / Edge Functions for Secrets**
-   - Gemini API calls requiring `VITE_GEMINI_API_KEY` MUST be moved to a secure backend endpoint or edge function.
-   - WhatsApp provider tokens and Google Calendar OAuth tokens/refresh logic MUST live securely on the backend. Never store or interact with these tokens directly on the frontend.
+   - Gemini API calls requiring `VITE_GEMINI_API_KEY` MUST be moved to a secure backend endpoint or edge function. Gemini image/text calls should go through backend/Edge Function in production.
+   - WhatsApp provider tokens must be server-side.
+   - Never store Google refresh tokens in frontend-accessible flows. `calendar_integrations` tokens must be handled server-side or encrypted.
+   - Payment webhooks must be server-side.
    - NEVER expose the `SUPABASE_SERVICE_ROLE_KEY` in the frontend (`.env` or code). The frontend should strictly use the `VITE_SUPABASE_ANON_KEY`, relying on Row Level Security (RLS) for data protection.
 
 3. **Tenant Data Isolation & RLS**
-   - RLS (Row Level Security) is partially scaffolded in `001_initial_schema.sql`. It MUST be comprehensively audited. 
+   - RLS (Row Level Security) is partially scaffolded in `001_initial_schema.sql`. It MUST be comprehensively audited. RLS is mandatory for production.
    - Tenants must absolutely not be able to cross-pollinate data, even if manipulated by a malicious actor bypassing the frontend UI.
    - All tenant-owned tables must strictly enforce `tenant_id` boundaries.
 

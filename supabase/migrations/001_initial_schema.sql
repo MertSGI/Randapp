@@ -3,6 +3,15 @@
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+-- Define trigger function for updated_at
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
 -- 1. tenants
 CREATE TABLE public.tenants (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -13,6 +22,7 @@ CREATE TABLE public.tenants (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+CREATE TRIGGER update_tenants_modtime BEFORE UPDATE ON public.tenants FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- 2. tenant_branding
 CREATE TABLE public.tenant_branding (
@@ -25,6 +35,7 @@ CREATE TABLE public.tenant_branding (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     UNIQUE(tenant_id)
 );
+CREATE TRIGGER update_tenant_branding_modtime BEFORE UPDATE ON public.tenant_branding FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- 3. users_profile (Connecting Auth users to a tenant and managing roles)
 CREATE TABLE public.users_profile (
@@ -36,6 +47,7 @@ CREATE TABLE public.users_profile (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+CREATE TRIGGER update_users_profile_modtime BEFORE UPDATE ON public.users_profile FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- 4. staff
 CREATE TABLE public.staff (
@@ -51,6 +63,7 @@ CREATE TABLE public.staff (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+CREATE TRIGGER update_staff_modtime BEFORE UPDATE ON public.staff FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- 5. services
 CREATE TABLE public.services (
@@ -64,6 +77,7 @@ CREATE TABLE public.services (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+CREATE TRIGGER update_services_modtime BEFORE UPDATE ON public.services FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- 6. customers
 CREATE TABLE public.customers (
@@ -76,6 +90,7 @@ CREATE TABLE public.customers (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+CREATE TRIGGER update_customers_modtime BEFORE UPDATE ON public.customers FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- 7. appointments
 CREATE TABLE public.appointments (
@@ -93,6 +108,7 @@ CREATE TABLE public.appointments (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+CREATE TRIGGER update_appointments_modtime BEFORE UPDATE ON public.appointments FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- 8. campaigns
 CREATE TABLE public.campaigns (
@@ -135,6 +151,7 @@ CREATE TABLE public.calendar_integrations (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+CREATE TRIGGER update_calendar_integrations_modtime BEFORE UPDATE ON public.calendar_integrations FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- 12. ai_recommendations
 CREATE TABLE public.ai_recommendations (
@@ -164,6 +181,7 @@ CREATE TABLE public.subscriptions (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+CREATE TRIGGER update_subscriptions_modtime BEFORE UPDATE ON public.subscriptions FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- 15. payments
 CREATE TABLE public.payments (
@@ -186,7 +204,9 @@ CREATE TABLE public.audit_logs (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+
 -- Indexes
+CREATE INDEX idx_users_profile_tenant ON public.users_profile(tenant_id);
 CREATE INDEX idx_staff_tenant ON public.staff(tenant_id);
 CREATE INDEX idx_services_tenant ON public.services(tenant_id);
 CREATE INDEX idx_customers_tenant ON public.customers(tenant_id);
@@ -213,38 +233,71 @@ ALTER TABLE public.subscriptions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.payments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.audit_logs ENABLE ROW LEVEL SECURITY;
 
--- Scaffold policies for 'appointments' as an example:
+-- Helper SQL snippets for RLS:
+-- Current User Tenant Filter
+-- tenant_id IN (SELECT tenant_id FROM public.users_profile WHERE id = auth.uid())
 
--- Super admin (can access all)
--- Assuming a function is_super_admin(uid) exists, or a claim in JWT.
--- CREATE POLICY "Super admins can access all appointments" ON appointments FOR ALL USING (is_super_admin(auth.uid()));
+-- Policies for public.tenants
+CREATE POLICY "Public read tenants" ON public.tenants FOR SELECT USING (true);
+CREATE POLICY "Only super admins can modify tenants" ON public.tenants FOR ALL USING (
+    EXISTS (SELECT 1 FROM public.users_profile WHERE id = auth.uid() AND role = 'super_admin')
+);
 
--- Salon Owner (can access their tenant's data)
-CREATE POLICY "Salon owners can access their tenant appointments" ON appointments
-    FOR ALL
-    USING (
-        tenant_id IN (
-            SELECT tenant_id FROM public.users_profile
-            WHERE id = auth.uid() AND role = 'salon_owner'
-        )
-    );
+-- Policies for public.tenant_branding
+CREATE POLICY "Public read branding" ON public.tenant_branding FOR SELECT USING (true);
+CREATE POLICY "Tenant owners can modify branding" ON public.tenant_branding FOR ALL USING (
+    tenant_id IN (SELECT tenant_id FROM public.users_profile WHERE id = auth.uid() AND role IN ('salon_owner', 'admin', 'super_admin'))
+);
 
--- Staff (can access their tenant's data, maybe restricted to own appointments later)
-CREATE POLICY "Staff can access their tenant appointments" ON appointments
-    FOR ALL
-    USING (
-        tenant_id IN (
-            SELECT tenant_id FROM public.users_profile
-            WHERE id = auth.uid() AND role = 'staff'
-        )
-    );
+-- Policies for public.users_profile
+CREATE POLICY "Users can read own profile" ON public.users_profile FOR SELECT USING (id = auth.uid());
+CREATE POLICY "Tenant admins can read all profiles in their tenant" ON public.users_profile FOR SELECT USING (
+    tenant_id IN (SELECT tenant_id FROM public.users_profile WHERE id = auth.uid() AND role IN ('salon_owner', 'admin', 'super_admin'))
+);
 
--- Customers (can access their own appointments)
-CREATE POLICY "Customers can view own appointments" ON appointments
-    FOR SELECT
-    USING (
-        customer_id IN (
-            SELECT id FROM public.customers
-            WHERE user_profile_id = auth.uid()
-        )
-    );
+-- Policies for public.staff
+CREATE POLICY "Public read staff" ON public.staff FOR SELECT USING (true);
+CREATE POLICY "Tenant admins can manage staff" ON public.staff FOR ALL USING (
+    tenant_id IN (SELECT tenant_id FROM public.users_profile WHERE id = auth.uid() AND role IN ('salon_owner', 'admin', 'super_admin'))
+);
+
+-- Policies for public.services
+CREATE POLICY "Public read services" ON public.services FOR SELECT USING (true);
+CREATE POLICY "Tenant admins can manage services" ON public.services FOR ALL USING (
+    tenant_id IN (SELECT tenant_id FROM public.users_profile WHERE id = auth.uid() AND role IN ('salon_owner', 'admin', 'super_admin'))
+);
+
+-- Policies for public.customers
+CREATE POLICY "Tenant admins can read/manage customers" ON public.customers FOR ALL USING (
+    tenant_id IN (SELECT tenant_id FROM public.users_profile WHERE id = auth.uid() AND role IN ('salon_owner', 'admin', 'staff', 'super_admin'))
+);
+CREATE POLICY "Customers can read own customer record" ON public.customers FOR SELECT USING (
+    user_profile_id = auth.uid()
+);
+
+-- Policies for public.appointments
+CREATE POLICY "Public can insert new appointments (guest booking)" ON public.appointments FOR INSERT WITH CHECK (true);
+CREATE POLICY "Tenant staff can read/manage appointments" ON public.appointments FOR ALL USING (
+    tenant_id IN (SELECT tenant_id FROM public.users_profile WHERE id = auth.uid() AND role IN ('salon_owner', 'admin', 'staff', 'super_admin'))
+);
+CREATE POLICY "Customers can view own appointments" ON public.appointments FOR SELECT USING (
+    customer_id IN (SELECT id FROM public.customers WHERE user_profile_id = auth.uid())
+);
+
+-- Policies for public.subscriptions
+CREATE POLICY "Tenant admins can view subscriptions" ON public.subscriptions FOR SELECT USING (
+    tenant_id IN (SELECT tenant_id FROM public.users_profile WHERE id = auth.uid() AND role IN ('salon_owner', 'admin', 'super_admin'))
+);
+
+-- Policies for public.payments
+CREATE POLICY "Tenant admins can view payments" ON public.payments FOR SELECT USING (
+    tenant_id IN (SELECT tenant_id FROM public.users_profile WHERE id = auth.uid() AND role IN ('salon_owner', 'admin', 'super_admin'))
+);
+
+-- Policies for public.audit_logs
+CREATE POLICY "Tenant admins can view audit logs" ON public.audit_logs FOR SELECT USING (
+    tenant_id IN (SELECT tenant_id FROM public.users_profile WHERE id = auth.uid() AND role IN ('salon_owner', 'admin', 'super_admin'))
+);
+CREATE POLICY "Super admins can manage audit logs" ON public.audit_logs FOR ALL USING (
+    EXISTS (SELECT 1 FROM public.users_profile WHERE id = auth.uid() AND role = 'super_admin')
+);

@@ -13,26 +13,30 @@ const MOCK_ADMIN_USER: User = {
 
 export const authService = {
   async login(email: string, passwordHash: string): Promise<User | null> {
-    const mode = import.meta.env.VITE_DATA_MODE || 'mock';
+    const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
     if (mode === 'supabase') {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
-        password: passwordHash,
+        password: passwordHash, // In real impl, Supabase expects plain password here. We map it to password field.
       });
       if (error || !data.user) {
         console.error('Supabase login error', error);
         return null;
       }
       
-      // We would ideally fetch the users_profile table here to get the full User object
-      // For scaffold, we return a hybrid object 
+      const { data: profile } = await supabase
+        .from('users_profile')
+        .select('*')
+        .eq('id', data.user.id)
+        .single();
+        
       return {
         id: data.user.id,
-        tenantId: 'tenant_demo', // Fetch from users_profile in real impl
-        name: data.user.email || 'User',
+        tenantId: profile?.tenant_id || 'tenant_demo', // TODO: strictly derive from profile in prod
+        name: profile?.name || data.user.email || 'User',
         email: data.user.email || email,
-        role: 'salon_owner', // Fetch from users_profile in real impl
-        active: true,
+        role: (profile?.role as Role) || 'salon_owner', // TODO: strictly derive from profile in prod
+        active: profile?.active ?? true,
       };
     }
     
@@ -50,7 +54,7 @@ export const authService = {
   },
 
   async logout(): Promise<void> {
-    const mode = import.meta.env.VITE_DATA_MODE || 'mock';
+    const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
     if (mode === 'supabase') {
       await supabase.auth.signOut();
       return;
@@ -60,18 +64,24 @@ export const authService = {
   },
 
   async getCurrentUser(): Promise<User | null> {
-    const mode = import.meta.env.VITE_DATA_MODE || 'mock';
+    const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
     if (mode === 'supabase') {
       const { data, error } = await supabase.auth.getUser();
       if (error || !data.user) return null;
-      // Real impl would join with users_profile
+      
+      const { data: profile } = await supabase
+        .from('users_profile')
+        .select('*')
+        .eq('id', data.user.id)
+        .single();
+
       return {
         id: data.user.id,
-        tenantId: 'tenant_demo', 
-        name: data.user.email || 'User',
+        tenantId: profile?.tenant_id || 'tenant_demo', // TODO: strictly derive from profile in prod
+        name: profile?.name || data.user.email || 'User',
         email: data.user.email || '',
-        role: 'salon_owner',
-        active: true,
+        role: (profile?.role as Role) || 'salon_owner', // TODO: strictly derive from profile in prod
+        active: profile?.active ?? true,
       };
     }
     

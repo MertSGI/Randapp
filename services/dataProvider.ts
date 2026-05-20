@@ -9,7 +9,7 @@ export interface DataProvider {
 }
 
 export const getDataProvider = (): DataProvider => {
-  const mode = import.meta.env.VITE_DATA_MODE || 'mock';
+  const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
   if (mode === 'supabase') {
     return supabaseProvider;
   }
