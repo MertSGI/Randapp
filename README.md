@@ -19,6 +19,22 @@ Bu proje, bir kuaför, güzellik salonu veya herhangi bir randevulu sistem için
 
 ---
 
+## 💼 Satış ve Demo Modu (Sales Demo Mode)
+
+Randapp satış süreçlerini desteklemek amacıyla özel bir `/demo` landing page altyapısına sahiptir. Bu sayfa sayesinde saha satış ekipleri, müşterilere saniyeler içinde "Kendi markalarıyla uyumlu ve hazır" bir akıllı restoran veya salon web sitesi sunabiliyor.
+
+**Demo Modu Özellikleri:**
+- **Local Logo Yükleme:** Kuaförler, sunucu yüklemesi (backend storage) olmadan cihazlarındaki logoları doğrudan sayfada yükleyip saniyeler içinde canlı randevu bileşeninde test edebilir. Logolar kalıcı olarak saklanmaz, anlık `FileReader` API tabanlı önizleme mantığı ile çalışır.
+- **WhatsApp Satış Yakalama (Lead Capture):** "WhatsApp'tan Demo Talep Et" butonu, kullanıcının o an ekrandaki yapılandırmasını (marka adı, logo, adres, vs.) dinamik URL encode'lu bir formatla direkt olarak önceden ayarlanmış satış numarasına (`VITE_SALES_WHATSAPP_NUMBER`) göndererek etkili Lead toplar.
+- **Satış Çıktısı Paylaşımı:** İşletmeciler, yaptıkları simülasyonun tam URL yapısını (parametre veya anlık yollar) "Önizleme Linkini Kopyala" ile saklayabilir veya direkt paylaşabilir.
+- **Admin Setup Akışı:** İlk kurulum esnasında mock panele bağlanan (veya sisteme onboarding yapan) yöneticiler, "Kurulum" sekmesi üzerinden işletme kimlikleri, renkleri ve logolarını esnek bir formatta atayabilir, tüm atanan değerlerin durumunu izleyen dinamik bir Onboarding CheckList'i kullanabilir.
+
+**Notlar:** 
+* Saha satış demosu için `VITE_DATA_MODE=mock` kullanılması en yüksek stabiliteyi sunar.
+* White Screen hatalarından kaçınmak (önizleme ekranlarının offline cache durumlarında asılı kalmasını engellemek) amacıyla PWA Service Worker (Vite PWA) geçici olarak `main.tsx` içinde deaktive edilmiştir.
+
+---
+
 ## 🚀 Web Tabanlı Kurulum ve Çalıştırma (Adım Adım)
 
 Prosedürü doğrudan test edip, geliştirebilmek için aşağıdaki adımları tamamlayabilirsiniz.

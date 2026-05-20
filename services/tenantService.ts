@@ -99,5 +99,40 @@ export const tenantService = {
     
     const key = `randapp:${tenantId}:branding`;
     return dataProvider.get<TenantBranding>(key);
+  },
+
+  async updateTenantBranding(tenantId: string, updates: Partial<TenantBranding>): Promise<TenantBranding | null> {
+    const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
+    
+    // Get existing to merge
+    const current = await this.getTenantBranding(tenantId) || { tenantId } as TenantBranding;
+    const next = { ...current, ...updates };
+
+    if (mode === 'supabase') {
+      const { data, error } = await supabase
+        .from('tenant_branding')
+        .upsert({
+          tenant_id: tenantId,
+          business_name: next.businessName,
+          tagline: next.tagline,
+          footer_text: next.footerText,
+          logo_url: next.logoUrl,
+          primary_color: next.primaryColor,
+          accent_color: next.secondaryColor,
+          instagram_url: next.instagramUrl,
+          whatsapp_number: next.whatsappNumber,
+          address: next.address
+        }, { onConflict: 'tenant_id' });
+        
+      if (error) {
+        console.error("Error updating branding:", error);
+        return null;
+      }
+      return next;
+    }
+
+    const key = `randapp:${tenantId}:branding`;
+    await dataProvider.set(key, next);
+    return next;
   }
 };

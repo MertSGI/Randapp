@@ -13,9 +13,16 @@ const DemoLandingPage: React.FC = () => {
   const [service2Price, setService2Price] = useState('1200');
   
   const [staff1Name, setStaff1Name] = useState('Jane Smith');
+  const [staff1Title, setStaff1Title] = useState('Master');
   const [staff2Name, setStaff2Name] = useState('John Doe');
+  const [staff2Title, setStaff2Title] = useState('Uzman');
 
   const [whatsappNumber, setWhatsappNumber] = useState('');
+  const [instagram, setInstagram] = useState('');
+  const [address, setAddress] = useState('');
+  
+  const [service3Name, setService3Name] = useState('Manicure');
+  const [service3Price, setService3Price] = useState('300');
 
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -43,9 +50,42 @@ const DemoLandingPage: React.FC = () => {
   };
 
   const handleWhatsappLead = () => {
-    const text = `Merhaba, ${salonName} için Randapp akıllı randevu sistemini denemek istiyorum.`;
-    const targetPhone = "905550000000"; // Sales phone number
-    window.open(`https://wa.me/${targetPhone}?text=${encodeURIComponent(text)}`, '_blank');
+    if (!salonName.trim()) {
+       alert("Lütfen salon adını girin.");
+       return;
+    }
+
+    const salesNumber = import.meta.env.VITE_SALES_WHATSAPP_NUMBER;
+    if (!salesNumber) {
+       console.warn("Satış WhatsApp numarası .env içinde tanımlı değil.");
+       alert("Sistem yapılandırma eksikliği: WhatsApp yönlendirmesi şu an çalışmıyor.");
+       return;
+    }
+
+    const text = `Merhaba, salonum için oluşturduğum randevu sistemi önizlemesini beğendim. Kısa bir demo görüşmesi yapmak istiyorum.
+
+Salon adı: ${salonName}
+Telefon: ${whatsappNumber}
+Instagram: ${instagram}
+Adres: ${address}
+
+Örnek hizmetler:
+- ${service1Name} - ${service1Price} TL
+- ${service2Name} - ${service2Price} TL
+- ${service3Name} - ${service3Price} TL
+
+Örnek çalışanlar:
+- ${staff1Name} - ${staff1Title}
+- ${staff2Name} - ${staff2Title}
+
+Not: Sistemin WhatsApp, Google Takvim, personel müsaitliği, hizmet/fiyat seçimi ve yapay zeka öneri özelliklerini görmek istiyorum.`;
+    
+    window.open(`https://wa.me/${salesNumber}?text=${encodeURIComponent(text)}`, '_blank');
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    alert('Önizleme linki kopyalandı.');
   };
 
   return (
@@ -156,6 +196,30 @@ const DemoLandingPage: React.FC = () => {
                 </div>
               </div>
 
+              <div className="flex gap-4">
+                <div className="flex-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Instagram (@kullaniciadi)</label>
+                  <input 
+                    type="text" 
+                    value={instagram} 
+                    onChange={e => setInstagram(e.target.value)}
+                    className="w-full rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-3 border shadow-sm"
+                    placeholder="@guzelliksalonum"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Adres</label>
+                <textarea 
+                  value={address} 
+                  onChange={e => setAddress(e.target.value)}
+                  className="w-full rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-3 border shadow-sm"
+                  placeholder="Açık adresiniz..."
+                  rows={2}
+                />
+              </div>
+
               <div className="border-t border-gray-200 dark:border-slate-700 pt-6">
                 <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Örnek Hizmetler</h3>
                 <div className="grid grid-cols-2 gap-4 mb-3">
@@ -165,11 +229,18 @@ const DemoLandingPage: React.FC = () => {
                       <input type="number" value={service1Price} onChange={e => setService1Price(e.target.value)} className="w-full rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-2 pl-8 border shadow-sm" placeholder="Fiyat"/>
                    </div>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                    <input type="text" value={service2Name} onChange={e => setService2Name(e.target.value)} className="rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-2 border shadow-sm" placeholder="Hizmet Adı"/>
                    <div className="relative">
                       <span className="absolute left-3 top-2 text-gray-500">₺</span>
                       <input type="number" value={service2Price} onChange={e => setService2Price(e.target.value)} className="w-full rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-2 pl-8 border shadow-sm" placeholder="Fiyat"/>
+                   </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                   <input type="text" value={service3Name} onChange={e => setService3Name(e.target.value)} className="rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-2 border shadow-sm" placeholder="Hizmet Adı"/>
+                   <div className="relative">
+                      <span className="absolute left-3 top-2 text-gray-500">₺</span>
+                      <input type="number" value={service3Price} onChange={e => setService3Price(e.target.value)} className="w-full rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-2 pl-8 border shadow-sm" placeholder="Fiyat"/>
                    </div>
                 </div>
               </div>
@@ -178,11 +249,11 @@ const DemoLandingPage: React.FC = () => {
                 <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Örnek Uzmanlar</h3>
                 <div className="grid grid-cols-2 gap-4 mb-3">
                    <input type="text" value={staff1Name} onChange={e => setStaff1Name(e.target.value)} className="rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-2 border shadow-sm" placeholder="Uzman Adı"/>
-                   <input type="text" value="Master" disabled className="rounded-lg border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-800 text-gray-500 p-2 border shadow-sm" placeholder="Unvan"/>
+                   <input type="text" value={staff1Title} onChange={e => setStaff1Title(e.target.value)} className="rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-2 border shadow-sm" placeholder="Unvan"/>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                    <input type="text" value={staff2Name} onChange={e => setStaff2Name(e.target.value)} className="rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-2 border shadow-sm" placeholder="Uzman Adı"/>
-                   <input type="text" value="Uzman" disabled className="rounded-lg border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-800 text-gray-500 p-2 border shadow-sm" placeholder="Unvan"/>
+                   <input type="text" value={staff2Title} onChange={e => setStaff2Title(e.target.value)} className="rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-2 border shadow-sm" placeholder="Unvan"/>
                 </div>
               </div>
             </div>
@@ -218,14 +289,15 @@ const DemoLandingPage: React.FC = () => {
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Bir Uzman Seçin</h3>
                   <div className="space-y-3">
                     <div className="bg-white dark:bg-slate-800 p-3 rounded-xl border border-accent flex items-center gap-3 relative shadow-sm">
-                      <div className="absolute -top-2 right-2 bg-gradient-to-r from-yellow-400 to-yellow-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">MASTER</div>
+                      <div className="absolute -top-2 right-2 bg-gradient-to-r from-yellow-400 to-yellow-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">{staff1Title || 'MASTER'}</div>
                       <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(staff1Name)}&background=random`} alt="Staff" className="w-12 h-12 rounded-full" />
                       <div>
                         <div className="font-bold text-gray-900 dark:text-white">{staff1Name || 'Uzman Adı'}</div>
                         <div className="text-xs text-gray-500">Müsait: Bugün</div>
                       </div>
                     </div>
-                    <div className="bg-white dark:bg-slate-800 p-3 rounded-xl border border-gray-100 dark:border-slate-700 flex items-center gap-3">
+                    <div className="bg-white dark:bg-slate-800 p-3 rounded-xl border border-gray-100 dark:border-slate-700 flex items-center gap-3 relative">
+                      {staff2Title && <div className="absolute -top-2 right-2 bg-gradient-to-r from-gray-400 to-gray-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">{staff2Title}</div>}
                       <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(staff2Name)}&background=random`} alt="Staff" className="w-12 h-12 rounded-full opacity-80" />
                       <div>
                         <div className="font-bold text-gray-900 dark:text-white">{staff2Name || 'Uzman Adı'}</div>
@@ -245,6 +317,10 @@ const DemoLandingPage: React.FC = () => {
                     <div className="bg-white dark:bg-slate-800 p-3 rounded-xl border border-gray-100 dark:border-slate-700 flex flex-col justify-between" style={{ minHeight: '100px' }}>
                       <div className="font-medium text-sm text-gray-900 dark:text-white">{service2Name || 'Hizmet 2'}</div>
                       <div className="font-bold mt-2" style={{ color: primaryColor }}>₺{service2Price || '0'}</div>
+                    </div>
+                    <div className="col-span-2 bg-white dark:bg-slate-800 p-3 rounded-xl border border-gray-100 dark:border-slate-700 flex justify-between items-center">
+                      <div className="font-medium text-sm text-gray-900 dark:text-white">{service3Name || 'Hizmet 3'}</div>
+                      <div className="font-bold" style={{ color: primaryColor }}>₺{service3Price || '0'}</div>
                     </div>
                   </div>
                 </div>
@@ -266,7 +342,13 @@ const DemoLandingPage: React.FC = () => {
                   className="w-full text-white px-6 py-4 rounded-xl font-bold shadow-lg hover:opacity-90 transition-opacity text-lg text-center"
                   style={{ backgroundColor: primaryColor }}
                 >
-                  Bu Sistemi Salonum İçin İstiyorum
+                  WhatsApp'tan Demo Talep Et
+                </button>
+                <button 
+                  onClick={handleCopyLink}
+                  className="w-full bg-white dark:bg-slate-800 text-slate-800 dark:text-white border border-gray-200 dark:border-slate-700 px-6 py-4 rounded-xl font-bold hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors text-lg text-center"
+                >
+                  Önizleme Linkini Kopyala
                 </button>
              </div>
           </div>

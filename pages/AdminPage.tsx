@@ -13,14 +13,36 @@ import { Service } from '../types';
 const AdminPage: React.FC = () => {
   const navigate = useNavigate();
   const { t, language } = useLanguage();
-  const { tenant } = useTenant();
+  const { tenant, refreshTenant } = useTenant();
   const { currentUser, isLoading: authLoading, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState<'appointments' | 'staff' | 'services'>('appointments');
+  const [activeTab, setActiveTab] = useState<'setup' | 'appointments' | 'staff' | 'services'>('setup');
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [staffList, setStaffList] = useState<Staff[]>([]);
   const [servicesList, setServicesList] = useState<Service[]>([]);
   const [aiAnalysis, setAiAnalysis] = useState<string>('');
   const [loadingAnalysis, setLoadingAnalysis] = useState(false);
+
+  // Setup form state
+  const [setupSalonName, setSetupSalonName] = useState(tenant?.name || '');
+  const [setupLogoUrl, setSetupLogoUrl] = useState(tenant?.branding?.logoUrl || '');
+  const [setupPrimaryColor, setSetupPrimaryColor] = useState(tenant?.branding?.primaryColor || '#000000');
+  const [setupWhatsapp, setSetupWhatsapp] = useState(tenant?.branding?.whatsappNumber || '');
+  const [setupInstagram, setSetupInstagram] = useState(tenant?.branding?.instagramUrl || '');
+  const [setupAddress, setSetupAddress] = useState(tenant?.branding?.address || '');
+  const [setupFooter, setSetupFooter] = useState(tenant?.branding?.footerText || '');
+  const [setupSaving, setSetupSaving] = useState(false);
+
+  useEffect(() => {
+    if (tenant) {
+      setSetupSalonName(tenant.name || '');
+      setSetupLogoUrl(tenant.branding?.logoUrl || '');
+      setSetupPrimaryColor(tenant.branding?.primaryColor || '#000000');
+      setSetupWhatsapp(tenant.branding?.whatsappNumber || '');
+      setSetupInstagram(tenant.branding?.instagramUrl || '');
+      setSetupAddress(tenant.branding?.address || '');
+      setSetupFooter(tenant.branding?.footerText || '');
+    }
+  }, [tenant]);
 
   // New/Edit staff form state
   const [editingStaffId, setEditingStaffId] = useState<string | null>(null);
@@ -210,6 +232,33 @@ const AdminPage: React.FC = () => {
     setNewStaffActive(true);
   };
 
+  const handleSaveSetup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!tenant) return;
+    setSetupSaving(true);
+    try {
+      // Need to import tenantService in AdminPage
+      const { tenantService } = await import('../services/tenantService');
+      await tenantService.updateTenantBranding(tenant.id, {
+        businessName: setupSalonName,
+        logoUrl: setupLogoUrl,
+        primaryColor: setupPrimaryColor,
+        whatsappNumber: setupWhatsapp,
+        instagramUrl: setupInstagram,
+        address: setupAddress,
+        footerText: setupFooter
+      });
+      // Optionally update the tenant object if needed, but refreshTenant handles it
+      await refreshTenant();
+      alert('Kurulum başarıyla kaydedildi!');
+    } catch (error) {
+      console.error(error);
+      alert('Kayıt sırasında hata oluştu.');
+    } finally {
+      setSetupSaving(false);
+    }
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -238,6 +287,12 @@ const AdminPage: React.FC = () => {
       <div className="border-b border-gray-200 dark:border-slate-700 transition-colors duration-300">
         <nav className="-mb-px flex space-x-8">
           <button
+            onClick={() => setActiveTab('setup')}
+            className={`${activeTab === 'setup' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
+          >
+            Kurulum
+          </button>
+          <button
             onClick={() => setActiveTab('appointments')}
             className={`${activeTab === 'appointments' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
           >
@@ -257,6 +312,115 @@ const AdminPage: React.FC = () => {
           </button>
         </nav>
       </div>
+
+      {activeTab === 'setup' && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          
+          <div className="md:col-span-2 space-y-6">
+            <div className="bg-white dark:bg-slate-800 shadow-sm rounded-lg border border-gray-200 dark:border-slate-700 p-6 transition-colors duration-300">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Salon Marka Ayarları</h2>
+              <form onSubmit={handleSaveSetup} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Salon Adı</label>
+                    <input type="text" required value={setupSalonName} onChange={e => setSetupSalonName(e.target.value)} className="w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white shadow-sm focus:border-accent focus:ring-accent" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Logo URL</label>
+                    <input type="text" value={setupLogoUrl} onChange={e => setSetupLogoUrl(e.target.value)} className="w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white shadow-sm focus:border-accent focus:ring-accent" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Marka Rengi</label>
+                    <div className="flex gap-2 items-center">
+                       <input type="color" value={setupPrimaryColor} onChange={e => setSetupPrimaryColor(e.target.value)} className="h-10 w-16 p-1 rounded border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700" />
+                       <span className="text-sm font-mono text-gray-500">{setupPrimaryColor}</span>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">WhatsApp Numarası</label>
+                    <input type="text" value={setupWhatsapp} onChange={e => setSetupWhatsapp(e.target.value)} placeholder="Örn: 905550000000" className="w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white shadow-sm focus:border-accent focus:ring-accent" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Instagram (@kullaniciadi)</label>
+                    <input type="text" value={setupInstagram} onChange={e => setSetupInstagram(e.target.value)} className="w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white shadow-sm focus:border-accent focus:ring-accent" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Footer Metni</label>
+                    <input type="text" value={setupFooter} onChange={e => setSetupFooter(e.target.value)} className="w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white shadow-sm focus:border-accent focus:ring-accent" />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Adres</label>
+                    <textarea value={setupAddress} onChange={e => setSetupAddress(e.target.value)} rows={2} className="w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white shadow-sm focus:border-accent focus:ring-accent"></textarea>
+                  </div>
+                </div>
+                <div>
+                  <button type="submit" disabled={setupSaving} className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-accent hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent disabled:opacity-50">
+                    {setupSaving ? 'Kaydediliyor...' : 'Ayarları Kaydet'}
+                  </button>
+                </div>
+              </form>
+            </div>
+            
+            <div className="bg-white dark:bg-slate-800 shadow-sm rounded-lg border border-gray-200 dark:border-slate-700 p-6 transition-colors duration-300">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Randevu Linkiniz</h2>
+              <div className="flex gap-4 items-center">
+                <input type="text" readOnly value={`${window.location.origin}/${(import.meta as any).env.VITE_ROUTER_MODE === 'hash' ? '#/' : ''}`} className="w-full rounded-md border-gray-300 dark:border-slate-600 bg-gray-50 dark:bg-slate-900 text-gray-500 p-3 text-sm font-mono border shadow-sm outline-none" />
+                <button onClick={() => {
+                  navigator.clipboard.writeText(`${window.location.origin}/${(import.meta as any).env.VITE_ROUTER_MODE === 'hash' ? '#/' : ''}`);
+                  alert('Link kopyalandı.');
+                }} className="bg-white dark:bg-slate-700 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-white px-4 py-3 rounded-md hover:bg-gray-50 dark:hover:bg-slate-600 transition-colors font-medium whitespace-nowrap">
+                  Kopyala
+                </button>
+              </div>
+              <p className="text-sm text-gray-500 mt-3">Kurulumdan sonra bu linki gizli sekmede açıp test randevusu oluşturabilirsiniz.</p>
+            </div>
+          </div>
+
+          <div className="md:col-span-1">
+            <div className="bg-white dark:bg-slate-800 shadow-sm rounded-lg border border-gray-200 dark:border-slate-700 p-6 sticky top-24 transition-colors duration-300">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Başlangıç Kurulumu</h2>
+              <ul className="space-y-4">
+                <li className="flex items-center gap-3">
+                  <div className={`w-5 h-5 rounded-full flex items-center justify-center ${setupSalonName ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                  </div>
+                  <span className={`text-sm ${setupSalonName ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400'}`}>Salon bilgileri tamamlandı</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <div className={`w-5 h-5 rounded-full flex items-center justify-center ${(setupLogoUrl || setupPrimaryColor !== '#000000') ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                  </div>
+                  <span className={`text-sm ${(setupLogoUrl || setupPrimaryColor !== '#000000') ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400'}`}>Logo / marka rengi eklendi</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <div className={`w-5 h-5 rounded-full flex items-center justify-center ${setupWhatsapp ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                  </div>
+                  <span className={`text-sm ${setupWhatsapp ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400'}`}>WhatsApp numarası eklendi</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <div className={`w-5 h-5 rounded-full flex items-center justify-center ${staffList.length > 0 ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                  </div>
+                  <span className={`text-sm ${staffList.length > 0 ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400'}`}>En az 1 çalışan eklendi</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <div className={`w-5 h-5 rounded-full flex items-center justify-center ${servicesList.length > 0 ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                  </div>
+                  <span className={`text-sm ${servicesList.length > 0 ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400'}`}>En az 1 hizmet eklendi</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <div className={`w-5 h-5 rounded-full flex items-center justify-center ${appointments.length > 0 ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                  </div>
+                  <span className={`text-sm ${appointments.length > 0 ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400'}`}>Test randevusu oluşturuldu</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
 
       {activeTab === 'appointments' && (
         <div className="space-y-8">
