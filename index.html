@@ -54,36 +54,29 @@
     </div>
     <script>
       console.log('[HTML BOOT] index.html loaded');
+
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(registrations => {
+          registrations.forEach(registration => registration.unregister());
+          console.log('[DEV] All service workers unregistered');
+        });
+      }
+
+      if (window.caches) {
+        caches.keys().then(keys => {
+          keys.forEach(key => caches.delete(key));
+          console.log('[DEV] All caches cleared');
+        });
+      }
+
       window.addEventListener('error', function (event) {
         console.error('[GLOBAL ERROR]', event.error || event.message);
       });
+
       window.addEventListener('unhandledrejection', function (event) {
         console.error('[GLOBAL PROMISE REJECTION]', event.reason);
       });
     </script>
     <script type="module" src="/index.tsx"></script>
-  <script>
-    const isProduction = location.hostname !== 'localhost' && !location.hostname.includes('preview');
-
-    if ('serviceWorker' in navigator && isProduction) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-          .then(registration => console.log('SW registered:', registration))
-          .catch(error => console.log('SW registration failed:', error));
-      });
-    } else if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(registrations => {
-        registrations.forEach(registration => registration.unregister());
-        console.log('[DEV] Service workers unregistered for preview/dev');
-      });
-
-      if (window.caches) {
-        caches.keys().then(keys => {
-          keys.forEach(key => caches.delete(key));
-          console.log('[DEV] Service worker caches cleared');
-        });
-      }
-    }
-  </script>
-</body>
+  </body>
 </html>
