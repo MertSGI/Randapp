@@ -1,9 +1,37 @@
 import { dataProvider } from './dataProvider';
+import { supabase } from './supabaseClient';
 import { Service, SERVICES as DEMO_SERVICES } from '../types';
 
 const getServicesKey = (tenantId: string) => `randapp:${tenantId}:services`;
 
+const isSupabaseMode = () => ((import.meta as any).env.VITE_DATA_MODE || 'mock') === 'supabase';
+
+const dbServiceToService = (dbService: any): Service => ({
+  id: dbService.id,
+  tenantId: dbService.tenant_id,
+  name: dbService.name,
+  name_tr: dbService.name_tr || '',
+  duration: dbService.duration,
+  price: dbService.price,
+  image: dbService.image || '',
+  active: dbService.active ?? true, 
+  category: dbService.category || '',
+});
+
 export const getServices = async (tenantId: string): Promise<Service[]> => {
+  if (isSupabaseMode()) {
+    const { data, error } = await supabase
+      .from('services')
+      .select('*')
+      .eq('tenant_id', tenantId);
+      
+    if (error) {
+      console.error('Error fetching services:', error);
+      return [];
+    }
+    return (data || []).map(dbServiceToService);
+  }
+
   const key = getServicesKey(tenantId);
   const existingServices = await dataProvider.getList<Service>(key);
   
@@ -18,6 +46,28 @@ export const getServices = async (tenantId: string): Promise<Service[]> => {
 };
 
 export const createService = async (tenantId: string, service: Omit<Service, 'id' | 'tenantId'>): Promise<Service> => {
+  if (isSupabaseMode()) {
+    const { data, error } = await supabase
+      .from('services')
+      .insert({
+        tenant_id: tenantId,
+        name: service.name,
+        name_tr: service.name_tr,
+        duration: service.duration,
+        price: service.price,
+        image: service.image || null,
+        // active and category are not in the current SQL schema, skip or default
+      })
+      .select()
+      .single();
+      
+    if (error || !data) {
+      console.error('Error creating service:', error);
+      throw new Error(error?.message || 'Failed to create service');
+    }
+    return dbServiceToService(data);
+  }
+
   const key = getServicesKey(tenantId);
   const existingServices = await dataProvider.getList<Service>(key);
   
@@ -32,6 +82,28 @@ export const createService = async (tenantId: string, service: Omit<Service, 'id
 };
 
 export const updateService = async (tenantId: string, serviceId: string, updates: Partial<Service>): Promise<Service | null> => {
+  if (isSupabaseMode()) {
+    const { data, error } = await supabase
+      .from('services')
+      .update({
+        ...(updates.name !== undefined && { name: updates.name }),
+        ...(updates.name_tr !== undefined && { name_tr: updates.name_tr }),
+        ...(updates.duration !== undefined && { duration: updates.duration }),
+        ...(updates.price !== undefined && { price: updates.price }),
+        ...(updates.image !== undefined && { image: updates.image }),
+      })
+      .eq('id', serviceId)
+      .eq('tenant_id', tenantId)
+      .select()
+      .single();
+      
+    if (error || !data) {
+      console.error('Error updating service:', error);
+      return null;
+    }
+    return dbServiceToService(data);
+  }
+
   const key = getServicesKey(tenantId);
   const existingServices = await dataProvider.getList<Service>(key);
   
@@ -46,6 +118,20 @@ export const updateService = async (tenantId: string, serviceId: string, updates
 };
 
 export const deleteService = async (tenantId: string, serviceId: string): Promise<boolean> => {
+  if (isSupabaseMode()) {
+    const { error } = await supabase
+      .from('services')
+      .delete()
+      .eq('id', serviceId)
+      .eq('tenant_id', tenantId);
+      
+    if (error) {
+      console.error('Error deleting service:', error);
+      return false;
+    }
+    return true;
+  }
+
   const key = getServicesKey(tenantId);
   const existingServices = await dataProvider.getList<Service>(key);
   

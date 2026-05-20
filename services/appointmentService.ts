@@ -1,13 +1,73 @@
 import { dataProvider } from './dataProvider';
+import { supabase } from './supabaseClient';
 import { Appointment } from '../types';
 
 const getAppointmentsKey = (tenantId: string) => `randapp:${tenantId}:appointments`;
 
+const isSupabaseMode = () => ((import.meta as any).env.VITE_DATA_MODE || 'mock') === 'supabase';
+
+const dbAppointmentToAppointment = (dbAppt: any): Appointment => {
+  return {
+    id: dbAppt.id,
+    tenantId: dbAppt.tenant_id,
+    customerId: dbAppt.customer_id,
+    user_name: dbAppt.user_name,
+    user_email: dbAppt.user_email,
+    serviceId: dbAppt.service_id || '',
+    staffId: dbAppt.staff_id || '',
+    date: dbAppt.appointment_date,
+    time: dbAppt.appointment_time,
+    status: dbAppt.status,
+    syncedToGoogle: dbAppt.synced_to_google,
+    createdAt: dbAppt.created_at,
+  };
+};
+
 export const getAppointments = async (tenantId: string): Promise<Appointment[]> => {
+  if (isSupabaseMode()) {
+    const { data, error } = await supabase
+      .from('appointments')
+      .select('*')
+      .eq('tenant_id', tenantId);
+    
+    if (error) {
+      console.error('Error fetching appointments:', error);
+      return [];
+    }
+    return (data || []).map(dbAppointmentToAppointment);
+  }
   return dataProvider.getList<Appointment>(getAppointmentsKey(tenantId));
 };
 
 export const createAppointment = async (tenantId: string, appointment: Omit<Appointment, 'id' | 'tenantId' | 'createdAt'>): Promise<Appointment> => {
+  if (isSupabaseMode()) {
+    const dbAppt = {
+      tenant_id: tenantId,
+      customer_id: appointment.customerId || null,
+      staff_id: appointment.staffId || null,
+      service_id: appointment.serviceId || null,
+      user_name: appointment.user_name,
+      user_email: appointment.user_email,
+      appointment_date: appointment.date,
+      appointment_time: appointment.time,
+      status: appointment.status,
+      synced_to_google: appointment.syncedToGoogle || false,
+    };
+    
+    const { data, error } = await supabase
+      .from('appointments')
+      .insert(dbAppt)
+      .select()
+      .single();
+      
+    if (error || !data) {
+      console.error('Error creating appointment:', error);
+      throw new Error(error?.message || 'Failed to create appointment');
+    }
+    
+    return dbAppointmentToAppointment(data);
+  }
+
   const key = getAppointmentsKey(tenantId);
   const existing = await dataProvider.getList<Appointment>(key);
   
@@ -23,6 +83,22 @@ export const createAppointment = async (tenantId: string, appointment: Omit<Appo
 };
 
 export const updateAppointmentStatus = async (tenantId: string, appointmentId: string, status: Appointment['status']): Promise<Appointment | null> => {
+  if (isSupabaseMode()) {
+    const { data, error } = await supabase
+      .from('appointments')
+      .update({ status })
+      .eq('id', appointmentId)
+      .eq('tenant_id', tenantId)
+      .select()
+      .single();
+      
+    if (error || !data) {
+      console.error('Error updating appointment:', error);
+      return null;
+    }
+    return dbAppointmentToAppointment(data);
+  }
+
   const key = getAppointmentsKey(tenantId);
   const existing = await dataProvider.getList<Appointment>(key);
   
@@ -35,6 +111,20 @@ export const updateAppointmentStatus = async (tenantId: string, appointmentId: s
 };
 
 export const deleteAppointment = async (tenantId: string, appointmentId: string): Promise<boolean> => {
+  if (isSupabaseMode()) {
+    const { error } = await supabase
+      .from('appointments')
+      .delete()
+      .eq('id', appointmentId)
+      .eq('tenant_id', tenantId);
+      
+    if (error) {
+      console.error('Error deleting appointment:', error);
+      return false;
+    }
+    return true;
+  }
+
   const key = getAppointmentsKey(tenantId);
   const existing = await dataProvider.getList<Appointment>(key);
   

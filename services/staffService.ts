@@ -1,4 +1,5 @@
 import { dataProvider } from './dataProvider';
+import { supabase } from './supabaseClient';
 import { Staff } from '../types';
 
 const getStaffKey = (tenantId: string) => `randapp:${tenantId}:staff`;
@@ -14,7 +15,33 @@ const DEMO_STAFF: Staff[] = [
   }
 ];
 
+const isSupabaseMode = () => ((import.meta as any).env.VITE_DATA_MODE || 'mock') === 'supabase';
+
+const dbStaffToStaff = (dbStaff: any): Staff => ({
+  id: dbStaff.id,
+  tenantId: dbStaff.tenant_id,
+  name: dbStaff.name,
+  title: dbStaff.title || '',
+  image: dbStaff.image || '',
+  isOwner: dbStaff.is_owner || false,
+  phone: dbStaff.phone || '',
+  calendarEmail: dbStaff.calendar_email || '',
+});
+
 export const getStaffList = async (tenantId: string): Promise<Staff[]> => {
+  if (isSupabaseMode()) {
+    const { data, error } = await supabase
+      .from('staff')
+      .select('*')
+      .eq('tenant_id', tenantId);
+      
+    if (error) {
+      console.error('Error fetching staff list:', error);
+      return [];
+    }
+    return (data || []).map(dbStaffToStaff);
+  }
+
   const key = getStaffKey(tenantId);
   const existingStaff = await dataProvider.getList<Staff>(key);
   
@@ -28,6 +55,28 @@ export const getStaffList = async (tenantId: string): Promise<Staff[]> => {
 };
 
 export const createStaff = async (tenantId: string, staff: Omit<Staff, 'id' | 'tenantId'>): Promise<Staff> => {
+  if (isSupabaseMode()) {
+    const { data, error } = await supabase
+      .from('staff')
+      .insert({
+        tenant_id: tenantId,
+        name: staff.name,
+        title: staff.title,
+        image: staff.image,
+        is_owner: staff.isOwner || false,
+        phone: staff.phone || null,
+        calendar_email: staff.calendarEmail || null,
+      })
+      .select()
+      .single();
+      
+    if (error || !data) {
+      console.error('Error creating staff:', error);
+      throw new Error(error?.message || 'Failed to create staff');
+    }
+    return dbStaffToStaff(data);
+  }
+
   const key = getStaffKey(tenantId);
   const existingStaff = await dataProvider.getList<Staff>(key);
   
@@ -42,6 +91,29 @@ export const createStaff = async (tenantId: string, staff: Omit<Staff, 'id' | 't
 };
 
 export const updateStaff = async (tenantId: string, staffId: string, updates: Partial<Staff>): Promise<Staff | null> => {
+  if (isSupabaseMode()) {
+    const { data, error } = await supabase
+      .from('staff')
+      .update({
+        ...(updates.name !== undefined && { name: updates.name }),
+        ...(updates.title !== undefined && { title: updates.title }),
+        ...(updates.image !== undefined && { image: updates.image }),
+        ...(updates.isOwner !== undefined && { is_owner: updates.isOwner }),
+        ...(updates.phone !== undefined && { phone: updates.phone }),
+        ...(updates.calendarEmail !== undefined && { calendar_email: updates.calendarEmail }),
+      })
+      .eq('id', staffId)
+      .eq('tenant_id', tenantId)
+      .select()
+      .single();
+      
+    if (error || !data) {
+      console.error('Error updating staff:', error);
+      return null;
+    }
+    return dbStaffToStaff(data);
+  }
+
   const key = getStaffKey(tenantId);
   const existingStaff = await dataProvider.getList<Staff>(key);
   
@@ -56,6 +128,24 @@ export const updateStaff = async (tenantId: string, staffId: string, updates: Pa
 };
 
 export const deleteStaff = async (tenantId: string, staffId: string): Promise<boolean> => {
+  if (isSupabaseMode()) {
+    // Quick check to prevent owner deletion if that logic is strictly enforced in API
+    const { data } = await supabase.from('staff').select('is_owner').eq('id', staffId).single();
+    if (data?.is_owner) return false;
+    
+    const { error } = await supabase
+      .from('staff')
+      .delete()
+      .eq('id', staffId)
+      .eq('tenant_id', tenantId);
+      
+    if (error) {
+      console.error('Error deleting staff:', error);
+      return false;
+    }
+    return true;
+  }
+
   const key = getStaffKey(tenantId);
   const existingStaff = await dataProvider.getList<Staff>(key);
   

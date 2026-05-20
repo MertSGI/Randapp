@@ -19,7 +19,7 @@ const DEMO_TENANT: Tenant = {
 };
 
 export const tenantService = {
-  async resolveTenantFromHost(hostname: string): Promise<Tenant> {
+  async resolveTenantFromHost(hostname: string): Promise<Tenant | null> {
     const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
     if (mode === 'supabase') {
       // Query tenant by custom domain, or if not found (or subdomain is tested), by slug.
@@ -43,19 +43,14 @@ export const tenantService = {
       }
       
       console.warn('Supabase tenant resolution failed. Tenant not found for host:', hostname);
-      // Fallback for development if configured, otherwise returning a suspended or error state is better.
-      // TODO: strictly handle not_found in production
-      return {
-        ...DEMO_TENANT,
-        status: 'suspended'
-      };
+      return null;
     }
     
     // Fallback or mock behavior
     return DEMO_TENANT;
   },
 
-  async getCurrentTenant(): Promise<Tenant> {
+  async getCurrentTenant(): Promise<Tenant | null> {
     const hostname = window.location.hostname;
     return this.resolveTenantFromHost(hostname);
   },

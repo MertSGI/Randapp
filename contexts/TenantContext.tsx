@@ -27,16 +27,17 @@ export const TenantProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         setTenantStatus('not_found');
         setTenant(null);
         setBranding(null);
-      } else if (resolvedTenant.status !== 'active') {
-        setTenantStatus('suspended');
-        setTenant(resolvedTenant);
-        // Will properly fetch dynamic branding later, fallback to static here to avoid breaking type for now
-        setBranding((resolvedTenant as any).branding || null); 
       } else {
-        setTenantStatus('active');
+        const fetchedBranding = await tenantService.getTenantBranding(resolvedTenant.id);
+        
+        if (resolvedTenant.status !== 'active') {
+          setTenantStatus('suspended');
+        } else {
+          setTenantStatus('active');
+        }
+        
         setTenant(resolvedTenant);
-        // Same fallback
-        setBranding((resolvedTenant as any).branding || null);
+        setBranding(fetchedBranding || (resolvedTenant as any).branding || null);
       }
     } catch (error) {
       console.error("Failed to load tenant", error);
