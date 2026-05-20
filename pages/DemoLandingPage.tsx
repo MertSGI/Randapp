@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 const DemoLandingPage: React.FC = () => {
   const [salonName, setSalonName] = useState('My Salon');
   const [logoUrl, setLogoUrl] = useState('');
+  const [localLogo, setLocalLogo] = useState<string | null>(null);
   const [primaryColor, setPrimaryColor] = useState('#2563eb');
   
   const [service1Name, setService1Name] = useState('Haircut');
@@ -15,6 +16,31 @@ const DemoLandingPage: React.FC = () => {
   const [staff2Name, setStaff2Name] = useState('John Doe');
 
   const [whatsappNumber, setWhatsappNumber] = useState('');
+
+  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      alert('Lütfen geçerli bir resim dosyası seçin.');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Dosya boyutu 5MB'dan küçük olmalıdır.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      setLocalLogo(event.target?.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleClearLocalLogo = () => {
+    setLocalLogo(null);
+  };
 
   const handleWhatsappLead = () => {
     const text = `Merhaba, ${salonName} için Randapp akıllı randevu sistemini denemek istiyorum.`;
@@ -70,12 +96,37 @@ const DemoLandingPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Logo URL (İsteğe Bağlı)</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Logoyu bilgisayardan yükle</label>
+                <div className="flex items-center gap-4 mb-2">
+                  <input 
+                    type="file" 
+                    accept="image/*"
+                    onChange={handleLogoUpload}
+                    className="block w-full text-sm text-gray-500 dark:text-gray-400
+                      file:mr-4 file:py-2 file:px-4
+                      file:rounded-full file:border-0
+                      file:text-sm file:font-semibold
+                      file:bg-accent/10 file:text-accent
+                      hover:file:bg-accent/20 cursor-pointer"
+                  />
+                  {localLogo && (
+                    <button 
+                      onClick={handleClearLocalLogo} 
+                      className="text-red-500 dark:text-red-400 text-sm font-medium hover:underline whitespace-nowrap"
+                    >
+                      Logoyu kaldır
+                    </button>
+                  )}
+                </div>
+                <p className="text-xs text-gray-500 mb-4">Bu logo yalnızca önizleme içindir; henüz sisteme kaydedilmez.</p>
+
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">...veya Logo URL Kullan (İsteğe Bağlı)</label>
                 <input 
                   type="text" 
                   value={logoUrl} 
                   onChange={e => setLogoUrl(e.target.value)}
-                  className="w-full rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-3 border shadow-sm focus:ring-accent focus:border-accent"
+                  disabled={!!localLogo}
+                  className="w-full rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-3 border shadow-sm focus:ring-accent focus:border-accent disabled:opacity-50"
                   placeholder="https://..."
                 />
               </div>
@@ -149,8 +200,8 @@ const DemoLandingPage: React.FC = () => {
               {/* Fake Mobile Header */}
               <div className="bg-white dark:bg-slate-800 border-b border-gray-100 dark:border-slate-700 px-4 py-3 flex items-center justify-between z-10 relative">
                 <div className="flex items-center gap-2">
-                  {logoUrl ? (
-                    <img src={logoUrl} alt="Logo" className="h-8 w-8 rounded-md object-cover" />
+                  {(localLogo || logoUrl) ? (
+                    <img src={localLogo || logoUrl} alt="Logo" className="h-8 w-8 rounded-md object-cover" />
                   ) : (
                     <div className="w-8 h-8 rounded-md flex items-center justify-center text-white font-bold" style={{ backgroundColor: primaryColor }}>
                       {salonName.charAt(0)}
