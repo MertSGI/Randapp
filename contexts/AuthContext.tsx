@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import { User, Role } from '../types';
+import { authService } from '../services/authService';
 
 interface AuthContextType {
   currentUser: User | null;
@@ -11,54 +12,33 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Mock implementation of user data
-const MOCK_ADMIN_USER: User = {
-  id: 'user_admin',
-  tenantId: 'tenant_demo',
-  name: 'Demo Admin',
-  email: 'admin@randapp.com', // mock email
-  role: 'salon_owner',
-  active: true,
-};
-
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Load session on startup
-    const checkSession = () => {
-      // In a real app, this would validate a token
-      const isAuth = localStorage.getItem('nexus_admin_auth');
-      if (isAuth === 'true') {
-        setCurrentUser(MOCK_ADMIN_USER);
-      }
+    const checkSession = async () => {
+      const user = await authService.getCurrentUser();
+      setCurrentUser(user);
       setIsLoading(false);
     };
     checkSession();
   }, []);
 
   const login = async (email: string, passwordHash: string): Promise<boolean> => {
-    // Phase 7: Authentication Mock
-    // In a real backend, we'd do a POST /api/auth/login
-    return new Promise(resolve => {
-      setTimeout(() => {
-        // We simulate that the only allowed login right now is the hardcoded one (admin123)
-        // Note: passwordHash here is essentially the raw password in this mock phase
-        if (passwordHash === 'admin123') {
-          localStorage.setItem('nexus_admin_auth', 'true');
-          setCurrentUser(MOCK_ADMIN_USER);
-          resolve(true);
-        } else {
-          resolve(false);
-        }
-      }, 500); // Simulate API latency
-    });
+    setIsLoading(true);
+    const user = await authService.login(email, passwordHash);
+    setCurrentUser(user);
+    setIsLoading(false);
+    return !!user;
   };
 
-  const logout = () => {
-    localStorage.removeItem('nexus_admin_auth');
+  const logout = async () => {
+    setIsLoading(true);
+    await authService.logout();
     setCurrentUser(null);
+    setIsLoading(false);
   };
 
   const hasRole = (roles: Role[]) => {

@@ -1,4 +1,4 @@
-import { apiClient } from './apiClient';
+import { dataProvider } from './dataProvider';
 import { Staff } from '../types';
 
 const getStaffKey = (tenantId: string) => `randapp:${tenantId}:staff`;
@@ -16,11 +16,11 @@ const DEMO_STAFF: Staff[] = [
 
 export const getStaffList = async (tenantId: string): Promise<Staff[]> => {
   const key = getStaffKey(tenantId);
-  const existingStaff = await apiClient.getList<Staff>(key);
+  const existingStaff = await dataProvider.getList<Staff>(key);
   
   if (!existingStaff || existingStaff.length === 0) {
     const seededStaff = DEMO_STAFF.map(s => ({ ...s, tenantId }));
-    await apiClient.set(key, seededStaff);
+    await dataProvider.set(key, seededStaff);
     return seededStaff;
   }
   
@@ -29,7 +29,7 @@ export const getStaffList = async (tenantId: string): Promise<Staff[]> => {
 
 export const createStaff = async (tenantId: string, staff: Omit<Staff, 'id' | 'tenantId'>): Promise<Staff> => {
   const key = getStaffKey(tenantId);
-  const existingStaff = await apiClient.getList<Staff>(key);
+  const existingStaff = await dataProvider.getList<Staff>(key);
   
   const newStaff: Staff = {
     ...staff,
@@ -37,13 +37,13 @@ export const createStaff = async (tenantId: string, staff: Omit<Staff, 'id' | 't
     tenantId,
   };
   
-  await apiClient.set(key, [...existingStaff, newStaff]);
+  await dataProvider.set(key, [...existingStaff, newStaff]);
   return newStaff;
 };
 
 export const updateStaff = async (tenantId: string, staffId: string, updates: Partial<Staff>): Promise<Staff | null> => {
   const key = getStaffKey(tenantId);
-  const existingStaff = await apiClient.getList<Staff>(key);
+  const existingStaff = await dataProvider.getList<Staff>(key);
   
   const idx = existingStaff.findIndex((s) => s.id === staffId);
   if (idx === -1) return null;
@@ -51,13 +51,13 @@ export const updateStaff = async (tenantId: string, staffId: string, updates: Pa
   const updatedStaff = { ...existingStaff[idx], ...updates };
   existingStaff[idx] = updatedStaff;
   
-  await apiClient.set(key, existingStaff);
+  await dataProvider.set(key, existingStaff);
   return updatedStaff;
 };
 
 export const deleteStaff = async (tenantId: string, staffId: string): Promise<boolean> => {
   const key = getStaffKey(tenantId);
-  const existingStaff = await apiClient.getList<Staff>(key);
+  const existingStaff = await dataProvider.getList<Staff>(key);
   
   const idx = existingStaff.findIndex((s) => s.id === staffId);
   if (idx === -1) return false;
@@ -68,6 +68,6 @@ export const deleteStaff = async (tenantId: string, staffId: string): Promise<bo
   }
   
   const filtered = existingStaff.filter((s) => s.id !== staffId);
-  await apiClient.set(key, filtered);
+  await dataProvider.set(key, filtered);
   return true;
 };

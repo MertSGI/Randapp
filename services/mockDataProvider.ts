@@ -1,7 +1,6 @@
-// TODO: Replace localStorage adapter with real backend API
+import { DataProvider } from './dataProvider';
 
-export const apiClient = {
-  // Simulates a GET request
+export const mockProvider: DataProvider = {
   async get<T>(key: string): Promise<T | null> {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -11,13 +10,11 @@ export const apiClient = {
     });
   },
 
-  // Simulates a GET list request, returns [] if empty
   async getList<T>(key: string): Promise<T[]> {
-    const data = await apiClient.get<T[]>(key);
+    const data = await mockProvider.get<T[]>(key);
     return data || [];
   },
 
-  // Simulates a POST/PUT request
   async set<T>(key: string, value: T): Promise<void> {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -27,7 +24,6 @@ export const apiClient = {
     });
   },
 
-  // Simulates an item deletion or a DELETE request
   async remove(key: string): Promise<void> {
     return new Promise((resolve) => {
       setTimeout(() => {

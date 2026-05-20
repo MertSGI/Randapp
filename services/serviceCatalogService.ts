@@ -1,16 +1,16 @@
-import { apiClient } from './apiClient';
+import { dataProvider } from './dataProvider';
 import { Service, SERVICES as DEMO_SERVICES } from '../types';
 
 const getServicesKey = (tenantId: string) => `randapp:${tenantId}:services`;
 
 export const getServices = async (tenantId: string): Promise<Service[]> => {
   const key = getServicesKey(tenantId);
-  const existingServices = await apiClient.getList<Service>(key);
+  const existingServices = await dataProvider.getList<Service>(key);
   
   if (!existingServices || existingServices.length === 0) {
     // Seed with demo services if none exist for this tenant
     const seededServices = DEMO_SERVICES.map(s => ({ ...s, tenantId }));
-    await apiClient.set(key, seededServices);
+    await dataProvider.set(key, seededServices);
     return seededServices;
   }
   
@@ -19,7 +19,7 @@ export const getServices = async (tenantId: string): Promise<Service[]> => {
 
 export const createService = async (tenantId: string, service: Omit<Service, 'id' | 'tenantId'>): Promise<Service> => {
   const key = getServicesKey(tenantId);
-  const existingServices = await apiClient.getList<Service>(key);
+  const existingServices = await dataProvider.getList<Service>(key);
   
   const newService: Service = {
     ...service,
@@ -27,13 +27,13 @@ export const createService = async (tenantId: string, service: Omit<Service, 'id
     tenantId,
   };
   
-  await apiClient.set(key, [...existingServices, newService]);
+  await dataProvider.set(key, [...existingServices, newService]);
   return newService;
 };
 
 export const updateService = async (tenantId: string, serviceId: string, updates: Partial<Service>): Promise<Service | null> => {
   const key = getServicesKey(tenantId);
-  const existingServices = await apiClient.getList<Service>(key);
+  const existingServices = await dataProvider.getList<Service>(key);
   
   const serviceIndex = existingServices.findIndex((s) => s.id === serviceId);
   if (serviceIndex === -1) return null;
@@ -41,17 +41,17 @@ export const updateService = async (tenantId: string, serviceId: string, updates
   const updatedService = { ...existingServices[serviceIndex], ...updates };
   existingServices[serviceIndex] = updatedService;
   
-  await apiClient.set(key, existingServices);
+  await dataProvider.set(key, existingServices);
   return updatedService;
 };
 
 export const deleteService = async (tenantId: string, serviceId: string): Promise<boolean> => {
   const key = getServicesKey(tenantId);
-  const existingServices = await apiClient.getList<Service>(key);
+  const existingServices = await dataProvider.getList<Service>(key);
   
   const filtered = existingServices.filter((s) => s.id !== serviceId);
   if (filtered.length === existingServices.length) return false;
   
-  await apiClient.set(key, filtered);
+  await dataProvider.set(key, filtered);
   return true;
 };
