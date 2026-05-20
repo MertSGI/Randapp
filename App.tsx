@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import BookingPage from './pages/BookingPage';
 import AdminPage from './pages/AdminPage';
@@ -10,34 +10,44 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { TenantProvider } from './contexts/TenantContext';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import AppErrorBoundary from './components/AppErrorBoundary';
+
+// Use hash routing for embedded previews and browser routing for production
+const Router = (import.meta as any).env.VITE_ROUTER_MODE === 'browser' 
+  ? BrowserRouter 
+  : HashRouter;
 
 const App: React.FC = () => {
   return (
-    <TenantProvider>
-    <AuthProvider>
-    <ThemeProvider>
-      <LanguageProvider>
-        <Router>
-          <Layout>
-            <Routes>
-              <Route path="/" element={<BookingPage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route 
-                path="/admin" 
-                element={
-                  <ProtectedRoute allowedRoles={['salon_owner', 'super_admin']}>
-                    <AdminPage />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route path="/ai-visualizer" element={<AIVisualizerPage />} />
-            </Routes>
-          </Layout>
-        </Router>
-      </LanguageProvider>
-    </ThemeProvider>
-    </AuthProvider>
-    </TenantProvider>
+    <AppErrorBoundary>
+      <ThemeProvider>
+        <LanguageProvider>
+          <TenantProvider>
+            <AuthProvider>
+              <Router>
+                <Layout>
+                  <Routes>
+                    <Route path="/" element={<BookingPage />} />
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route 
+                      path="/admin" 
+                      element={
+                        <ProtectedRoute allowedRoles={['salon_owner', 'super_admin']}>
+                          <AdminPage />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route path="/ai-visualizer" element={<AIVisualizerPage />} />
+                    {/* Catch-all route to prevent white screens on unknown paths */}
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                  </Routes>
+                </Layout>
+              </Router>
+            </AuthProvider>
+          </TenantProvider>
+        </LanguageProvider>
+      </ThemeProvider>
+    </AppErrorBoundary>
   );
 };
 
