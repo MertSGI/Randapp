@@ -1,16 +1,16 @@
 import React from 'react';
-import HealthCheckPage from './pages/HealthCheckPage';
 
-console.log('[BOOT] App loaded in module scope');
+console.log('[BOOT] App module loaded');
 
 const App: React.FC = () => {
   console.log('[BOOT] App rendered');
-  
-  const dataMode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
-  const routerMode = (import.meta as any).env.VITE_ROUTER_MODE || 'hash';
-  console.log('[ENV]', { dataMode, routerMode });
 
-  return <HealthCheckPage />;
+  return (
+    <div style={{ padding: 40, fontFamily: 'sans-serif', background: '#0f172a', color: '#fff', minHeight: '100vh' }}>
+      <h1>REACT BOOT OK</h1>
+      <p>If you see this, React mounted successfully.</p>
+    </div>
+  );
 };
 
 export default App;

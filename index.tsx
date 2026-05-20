@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import AppErrorBoundary from './components/AppErrorBoundary';
 
 console.log('[BOOT] index.tsx loaded');
 
@@ -15,8 +14,6 @@ console.log('[BOOT] root element:', rootElement);
 const root = ReactDOM.createRoot(rootElement);
 root.render(
   <React.StrictMode>
-    <AppErrorBoundary>
-      <App />
-    </AppErrorBoundary>
+    <App />
   </React.StrictMode>
 );
