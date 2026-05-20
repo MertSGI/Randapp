@@ -1,96 +1,77 @@
-# 💈 MA Yılmaz Design - Akıllı Randevu ve Yapay Zeka Stüdyosu
+# 💈 Randapp - Akıllı Randevu ve Yapay Zeka SaaS Platformu
 
-Bu proje, bir kuaför ve güzellik salonu için geliştirilmiş, Google Gemini yapay zeka ile güçlendirilmiş, modern, duyarlı (responsive) ve karanlık/aydınlık (dark/light) mod destekli bir SPA (Tek Sayfalı Web Uygulaması) projesidir.
-
----
-
-## 📸 Ekran Görüntüleri ve Arayüz Tasarımı
-
-Aşağıda uygulamanın temel sayfalarının nasıl göründüğüne dair temsilî ekran görüntüleri (veya konsept vizyonu) bulunmaktadır. *(Not: Gerçek ekran görüntülerinizi projeyi canlıya aldıktan sonra buradaki linklerle değiştirebilirsiniz).*
-
-### 1. Kullanıcı Randevu Akışı (Booking Flow) & Karanlık Mod
-Müşteriler uzman seçimi ile başlar, Master Designer (Mustafa Ali Yılmaz) en üstte öne çıkarılır. Tarih, saat ve iletişim bilgilerini girip randevularını AI destekli onay mesajları eşliğinde tamamlarlar. Karanlık mod desteğiyle göz yormaz.
-![Booking Flow](https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&q=80&w=800&h=400)
-
-### 2. Admin Yönetim Paneli (Staff & Appointments)
-Kullanıcıların randevu taleplerinin yönetildiği, yeni uzman ve çalışanların (profil URL'si, Google Takvim maili, telefon numarası) eklenebildiği gelişmiş panel.
-![Admin Dashboard](https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800&h=400)
-
-### 3. AI Stil Görselleştirici (AI Visualizer)
-Gemini yapay zeka entegrasyonu sayesinde kullanıcılar fotoğraflarını yükleyerek saç analizi yaptırabilir ve yeni saç kesim modellerini/renklerini kendi üzerilerinde sanal olarak deneyebilirler.
-![AI Visualizer](https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&q=80&w=800&h=400)
+Bu proje, bir kuaför, güzellik salonu veya herhangi bir randevulu sistem için geliştirilmiş, Google Gemini yapay zeka ile güçlendirilmiş, modern, duyarlı (responsive) ve karanlık/aydınlık (dark/light) mod destekli bir SPA (Tek Sayfalı Web Uygulaması) projesidir. Proje Multi-Tenant (SaaS) yapısında tasarlanmış olup, tek bir kod tabanıyla birden fazla işletmeye hizmet verebilir.
 
 ---
 
 ## 🌟 Öne Çıkan Özellikler
 
-- **Gelişmiş Çalışan ve Hizmet Yönetimi:** "Mustafa Ali Yılmaz" her zaman master kullanıcı olarak en üstte görünür, silinemez (anca profili güncellenebilir). Diğer çalışanlar admin panelinden dinamik olarak eklenebilir, silinebilir ve güncellenebilir.
-- **SaaS (Yazılım Hizmeti) Altyapısı (Multi-Tenant):** Proje, ileride birden fazla işletmenin kendi alt alan adlarıyla aynı platformu kullanabileceği (Multi-Tenant) mimariyle yeniden yapılandırılmıştır. Tüm veriler `TenantContext` aracılığıyla izole edilmiştir. Veri çekme ve kaydetme işlemleri, simüle edilmiş bir Asenkron API katmanı (`apiClient.ts`) aracılığıyla yönetilmektedir.
-- **Katalog Görselleri:** Hizmet katalogları için dinamik görsel yükleme desteği bulunmaktadır (Admin paneli hizmetlerinden eklenebilir veya dummy data olarak sunulan görseller mevcuttur).
-- **WhatsApp ve İletişim:** Seçili uzmanın telefon numarası, randevu sonrası çıkan WhatsApp yönlendirme linkinde doğrudan müşteriye iletilir.
-- **Google Takvim (Simüle Edilmiş):** Eklenen uzmanların e-posta adresleri üzerinden Google Calendar etkinlik senkronizasyonu yönetilebilir.
-- **Dinamik Dil Desteği:** Tek tıkla Türkçe (Varsayılan) ve İngilizce arasında geçiş imkanı.
-- **Karanlık / Aydınlık Mod (Theme Toggle):** Kullanıcı dostu arayüz ve kalıcı (Local Storage üzerinden hatırlanan) gece/gündüz modu.
-- **Yapay Zeka Destekli Metin ve Temsiller:** Gemini API aracılığıyla onay maillerinin kişiselleştirilmesi ve AI görselleştirici.
+- **Multi-Tenant SaaS Altyapısı:** İşletmeler, kendi alt alan adlarıyla veya URL yapılarıyla platforma erişebilirler. Tüm uygulama `TenantContext` aracılığıyla sınırlandırılmış işletme kimliğine (`tenant_id`) bağlı olarak şekillenir.
+- **İki Modlu Veri Akışı (Data Providers):** Mimari, esnek bir `dataProvider` katmanı (Strategy Pattern) üzerine kurulmuştur. Çevre değişkenlerine (`VITE_DATA_MODE`) bağlı olarak proje;
+  - `mock`: Tamamen yerel, tarayıcıda çalışan, offline ve sunucuya ihtiyaç duymayan simüle JSON tabanlı mod ile,
+  - `supabase`: Uzak veritabanlarına (PostgreSQL/Supabase) doğrudan okuma ve yazma yapabilen üretim modunda çalışabilir.
+- **Gelişmiş Çalışan ve Hizmet Yönetimi:** İşletmeler, kendi çalışanlarını ve sundukları hizmetleri esnek bir altyapıda yönetebilir. Hizmetler; fiyat, süre ve resim içerecek şekilde detaylandırılır. Çalışan ve hizmetlere aktiflik kazandırılarak görünürlük kontrol edilebilir. Yalnızca *aktif* personeller ve hizmetler müşteri karşısına çıkar.
+- **Dinamik Yönlendirme (Router Mode):** Önizleme, statik dosya barındırma ve production ortamlarına esnek uyum için `VITE_ROUTER_MODE` çevre değişkeniyle uygulamanın Yönlendiricisi dinamiğe alınmıştır. `hash` tabanlı yönderlendirme statik kolaylık sağlarken, `browser` modu temiz URL yapıları için Vercel veya Nginx rewrite kuralları üzerinden çalışır (Örn: `public/_redirects`, `vercel.json`).
+- **AI Stil Görselleştirici (AI Visualizer):** Gemini yapay zeka entegrasyonu sayesinde kullanıcılar fotoğraflarını yükleyerek analiz yaptırabilir ve sanal deneyimlerde bulunabilirler.
+- **Dinamik Dil Desteği & Temalar:** Göz yormayan Karanlık / Aydınlık Mod (Local Storage) entegrasyonu ve TR / EN tam dil desteği.
+- **Uygulama İçi Ön Bellekleme (Service Worker Yönetimi):** Geliştirme kolaylığı için Service Worker bilinçli olarak kapatılabilir (`docs/WHITE_SCREEN_RECOVERY.md`), veya performans odaklı offline mod için açılabilir.
 
 ---
 
 ## 🚀 Web Tabanlı Kurulum ve Çalıştırma (Adım Adım)
 
-Projeyi kendi bilgisayarınızda veya bir sunucuda tek seferde başarıyla çalıştırabilmek için aşağıdaki adımları izleyin.
-
-### Ön Koşullar
-- Bilgisayarınızda (veya sunucunuzda) **Node.js** (v16 veya üzeri tavsiye edilir) kurulu olmalıdır.
-- (Opsiyonel ama tavsiye edilir) Ücretsiz bir Gemini API Anahtarı alın. (Bkz. `.env.example`)
+Prosedürü doğrudan test edip, geliştirebilmek için aşağıdaki adımları tamamlayabilirsiniz.
 
 ### 1️⃣ Projeyi İndirin ve Bağımlılıkları Yükleyin
-
-Proje dosyalarını cihazınıza indirdikten sonra terminal veya komut satırını bu projenin bulunduğu klasörde açın ve aşağıdaki komutu çalıştırın:
 
 ```bash
 npm install
 ```
-*Bu komut projenin ihtiyaç duyduğu Tailwind CSS, React, React-Router-Dom gibi tüm paketleri anında indirip ayarlayacaktır.*
 
 ### 2️⃣ Çevre Değişkenleri (Environment Variables) Ayarı
 
-Proje ana dizininde bulunan `.env.example` dosyasının bir kopyasını oluşturun ve adını `.env` olarak değiştirin. Ardından içindeki Gemini API Anahtarını kendinize uygun şekilde doldurun:
+Proje ana dizininde bulunan `.env.example` dosyasının bir kopyasını oluşturun ve adını `.env` olarak değiştirin. Projenin çalışma şekline veya bağlamak istediğiniz sistemlere göre konfigüre edin.
 
 ```env
-VITE_GEMINI_API_KEY=sizin_kendi_api_anahtariniz_buraya_gelecek
+# MOCK veya SUPABASE Veri Akış Modu
+VITE_DATA_MODE=mock
+
+# SPA Routing Tipi (Vercel gibi ortamlarda browser, yerel testlerde hash).
+VITE_ROUTER_MODE=hash
+
+# (Opsiyonel) Supabase ortam değişkenleri, eğer VITE_DATA_MODE=supabase ise zorunlu
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+VITE_GEMINI_API_KEY=sizin_gemini_api_anahtariniz
 ```
 
-### 3️⃣ Geliştirme (Development) Sunucusunu Başlatma
+ℹ️ **Not:** Gemini API anahtarı şuanda *sadece geliştirme amaçlı* istemci (client) tarafında tutulmaktadır. *Production için kendi backend proxy mimarinize almalısınız.*
 
-Bağımlılıklar indirildikten ve `.env` dosyası ayarlandıktan sonra projeyi test etmek için şu komutu girin:
+### 3️⃣ Geliştirme (Development) Sunucusunu Başlatma
 
 ```bash
 npm run dev
 ```
-*Terminal size uygulamanın önizlemesi için bir adres verecektir (genellikle `http://localhost:3000`). Bu adresi tarayıcınızda açıp uygulamayı kullanabilirsiniz.*
 
-### 4️⃣ Canlıya Alma (Production Build) - Web Tabanlı Yayın 
+### 4️⃣ Canlıya Alma (Production Build)
 
-Uygulamanın internetteki bir web sitesi olarak barındırılmasına hazır halini (optimize edilmiş kod) "Build" etmek için şu komutu çalıştırın:
+Uygulamanın optimize edilmiş dağıtım paketini çıkartmak için:
 
 ```bash
 npm run build
 ```
-Oluşan `dist/` klasörü projenizin tamamen web ortamında çalışmaya hazır halidir. Bu `dist/` klasörünü aşağıdaki modern hosting firmalarına ücretsiz yükleyebilirsiniz:
-
-- **Vercel** veya **Netlify**: Projeyi GitHub'a atıp Vercel/Netlify üzerinden doğrudan bağlayabilirsiniz (Build Comment: `npm run build`, Output Directory: `dist`).
-- **Firebase Hosting**: Terminale sırasıyla `npm install -g firebase-tools`, `firebase login`, `firebase init hosting` ve `firebase deploy` yazarak yayınlayabilirsiniz.
+Oluşan `dist/` klasörü, modern bir hosting paneline doğrudan yüklenebilir.
 
 ---
 
 ## 🔐 Yönetici (Admin) Paneli Bilgileri
 
-Varsayılan ayarlarla Yönetim Paneline girmek için uygulamanın sağ üst köşesinden 'Yönetim' butonuna veya doğrudan `/login` adresine gidin:
+Yerel (Mock) Mod (`VITE_DATA_MODE=mock`) ile test ederken örnek admin panelini şu bilgilerle deneyebilirsiniz:
 - **E-posta:** `admin@randapp.com` (Simülasyon/Test)
 - **Şifre:** `admin123` 
 
-*(Not: Multi-tenant (SaaS) altyapısına hazırlık aşamasında giriş bilgileri `AuthContext` üzerinden mock olarak yönetilmektedir. İleride gerçek bir backend API ile değiştirilecektir).*
+Eğer VITE_DATA_MODE `supabase` ise, uygulama Supabase yetkilendirmesi üzerinden çalışacaktır, ancak `salon_owner` veya `super_admin` rolu atanmış ve platforma dahil edilmiş kurumsal üyeliğiniz olması gerekir.
 
 ---
 
-_MA Yılmaz Design için sevgiyle <3 ve Yapay Zeka destekli hazırlandı._
+_Akıllı Randevu Sistemleri için Sevgiyle <3 hazırlanmıştır._

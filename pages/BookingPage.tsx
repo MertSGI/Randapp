@@ -46,8 +46,8 @@ const BookingPage: React.FC = () => {
 
   useEffect(() => {
     if (tenant) {
-      getStaffList(tenant.id).then(setStaffList);
-      getServices(tenant.id).then(setServicesList);
+      getStaffList(tenant.id, { activeOnly: true }).then(setStaffList);
+      getServices(tenant.id, { activeOnly: true }).then(setServicesList);
     }
   }, [tenant]);
 
@@ -156,6 +156,16 @@ const BookingPage: React.FC = () => {
           <div className="space-y-6">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-10 transition-colors duration-300">{t.booking.step0_title}</h2>
             
+            {/* Empty State */}
+            {staffList.length === 0 && (
+              <div className="text-center py-12">
+                <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <p className="mt-4 text-gray-500 dark:text-gray-400 text-lg">{language === 'tr' ? 'Şu anda aktif personel bulunmuyor.' : 'No active staff members available at the moment.'}</p>
+              </div>
+            )}
+
             {/* Master Featured Card */}
             {staffList.filter(s => s.id === 'stf_1' || s.name.toLowerCase().includes('mustafa ali yılmaz')).map(owner => (
                 <button
@@ -231,44 +241,53 @@ const BookingPage: React.FC = () => {
                <span className="font-bold text-gray-900 dark:text-white">{selectedStaff?.name}</span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
-              {servicesList.map((service) => (
-                <button
-                  key={service.id}
-                  onClick={() => handleServiceSelect(service)}
-                  className="group relative flex flex-col rounded-2xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:shadow-lg hover:border-accent/50 transition-all duration-300 overflow-hidden text-left"
-                >
-                  <div className="w-full h-48 bg-gray-200 dark:bg-slate-700 relative overflow-hidden">
-                    {service.image ? (
-                        <img
-                        src={service.image}
-                        alt={service.name}
-                        referrerPolicy="no-referrer"
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                        />
-                    ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400">
-                            <span className="text-sm">No Image</span>
-                        </div>
-                    )}
-                    <div className="absolute top-3 right-3 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md px-3 py-1 rounded-full text-sm font-bold text-gray-900 dark:text-white shadow-sm border border-gray-100 dark:border-slate-700 transition-colors duration-300">
-                        ${service.price}
+            {servicesList.length === 0 ? (
+              <div className="text-center py-12">
+                <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+                <p className="mt-4 text-gray-500 dark:text-gray-400 text-lg">{language === 'tr' ? 'Şu anda seçilebilir aktif hizmet bulunmuyor.' : 'No active services available at the moment.'}</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
+                {servicesList.map((service) => (
+                  <button
+                    key={service.id}
+                    onClick={() => handleServiceSelect(service)}
+                    className="group relative flex flex-col rounded-2xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:shadow-lg hover:border-accent/50 transition-all duration-300 overflow-hidden text-left"
+                  >
+                    <div className="w-full h-48 bg-gray-200 dark:bg-slate-700 relative overflow-hidden">
+                      {service.image ? (
+                          <img
+                          src={service.image}
+                          alt={service.name}
+                          referrerPolicy="no-referrer"
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                          />
+                      ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400">
+                              <span className="text-sm">No Image</span>
+                          </div>
+                      )}
+                      <div className="absolute top-3 right-3 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md px-3 py-1 rounded-full text-sm font-bold text-gray-900 dark:text-white shadow-sm border border-gray-100 dark:border-slate-700 transition-colors duration-300">
+                          ${service.price}
+                      </div>
                     </div>
-                  </div>
-                  <div className="p-5 w-full">
-                    <h3 className="font-bold text-lg text-gray-900 dark:text-white group-hover:text-accent transition-colors">
-                      {language === 'tr' ? service.name_tr : service.name}
-                    </h3>
-                    <div className="mt-3 flex items-center text-sm text-gray-500 dark:text-gray-400 gap-2 transition-colors duration-300">
-                        <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span>{service.duration} {language === 'tr' ? 'dk' : 'mins'}</span>
+                    <div className="p-5 w-full">
+                      <h3 className="font-bold text-lg text-gray-900 dark:text-white group-hover:text-accent transition-colors">
+                        {language === 'tr' ? service.name_tr : service.name}
+                      </h3>
+                      <div className="mt-3 flex items-center text-sm text-gray-500 dark:text-gray-400 gap-2 transition-colors duration-300">
+                          <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <span>{service.duration} {language === 'tr' ? 'dk' : 'mins'}</span>
+                      </div>
                     </div>
-                  </div>
-                </button>
-              ))}
-            </div>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
@@ -422,8 +441,8 @@ const BookingPage: React.FC = () => {
               <a 
                 href={`https://wa.me/?text=${encodeURIComponent(
                   language === 'tr' 
-                    ? `Merhaba! Mustafa Ali Yılmaz Hair Design'dan randevumu oluşturdum.\nUzman: ${selectedStaff?.name || ''}\nİletişim: ${selectedStaff?.phone || '-'}\nHizmet: ${selectedService?.name_tr || ''}\nTarih: ${selectedDate} ${selectedTime}\nRandevuyu Takvime Ekle: ${calendarLink}` 
-                    : `Hello! I booked an appointment at Mustafa Ali Yılmaz Hair Design.\nStaff: ${selectedStaff?.name || ''}\nContact: ${selectedStaff?.phone || '-'}\nService: ${selectedService?.name || ''}\nDate: ${selectedDate} ${selectedTime}\nAdd to Calendar: ${calendarLink}`
+                    ? `Merhaba! ${tenant?.businessName || 'Randevu Sistemi'}'ndan randevumu oluşturdum.\nUzman: ${selectedStaff?.name || ''}\nİletişim: ${selectedStaff?.phone || '-'}\nHizmet: ${selectedService?.name_tr || ''}\nTarih: ${selectedDate} ${selectedTime}\nRandevuyu Takvime Ekle: ${calendarLink}` 
+                    : `Hello! I booked an appointment at ${tenant?.businessName || 'the salon'}.\nStaff: ${selectedStaff?.name || ''}\nContact: ${selectedStaff?.phone || '-'}\nService: ${selectedService?.name || ''}\nDate: ${selectedDate} ${selectedTime}\nAdd to Calendar: ${calendarLink}`
                 )}`} 
                 target="_blank" 
                 rel="noopener noreferrer"

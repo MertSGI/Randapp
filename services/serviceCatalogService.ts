@@ -18,12 +18,18 @@ const dbServiceToService = (dbService: any): Service => ({
   category: dbService.category || '',
 });
 
-export const getServices = async (tenantId: string): Promise<Service[]> => {
+export const getServices = async (tenantId: string, options?: { activeOnly?: boolean }): Promise<Service[]> => {
   if (isSupabaseMode()) {
-    const { data, error } = await supabase
+    let query = supabase
       .from('services')
       .select('*')
       .eq('tenant_id', tenantId);
+      
+    if (options?.activeOnly) {
+      query = query.eq('active', true);
+    }
+      
+    const { data, error } = await query;
       
     if (error) {
       console.error('Error fetching services:', error);
@@ -39,10 +45,10 @@ export const getServices = async (tenantId: string): Promise<Service[]> => {
     // Seed with demo services if none exist for this tenant
     const seededServices = DEMO_SERVICES.map(s => ({ ...s, tenantId }));
     await dataProvider.set(key, seededServices);
-    return seededServices;
+    return options?.activeOnly ? seededServices.filter(s => s.active !== false) : seededServices;
   }
   
-  return existingServices;
+  return options?.activeOnly ? existingServices.filter(s => s.active !== false) : existingServices;
 };
 
 export const createService = async (tenantId: string, service: Omit<Service, 'id' | 'tenantId'>): Promise<Service> => {

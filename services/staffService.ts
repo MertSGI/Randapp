@@ -29,12 +29,18 @@ const dbStaffToStaff = (dbStaff: any): Staff => ({
   active: dbStaff.active ?? true,
 });
 
-export const getStaffList = async (tenantId: string): Promise<Staff[]> => {
+export const getStaffList = async (tenantId: string, options?: { activeOnly?: boolean }): Promise<Staff[]> => {
   if (isSupabaseMode()) {
-    const { data, error } = await supabase
+    let query = supabase
       .from('staff')
       .select('*')
       .eq('tenant_id', tenantId);
+      
+    if (options?.activeOnly) {
+      query = query.eq('active', true);
+    }
+      
+    const { data, error } = await query;
       
     if (error) {
       console.error('Error fetching staff list:', error);
@@ -49,10 +55,10 @@ export const getStaffList = async (tenantId: string): Promise<Staff[]> => {
   if (!existingStaff || existingStaff.length === 0) {
     const seededStaff = DEMO_STAFF.map(s => ({ ...s, tenantId }));
     await dataProvider.set(key, seededStaff);
-    return seededStaff;
+    return options?.activeOnly ? seededStaff.filter(s => s.active !== false) : seededStaff;
   }
   
-  return existingStaff;
+  return options?.activeOnly ? existingStaff.filter(s => s.active !== false) : existingStaff;
 };
 
 export const createStaff = async (tenantId: string, staff: Omit<Staff, 'id' | 'tenantId'>): Promise<Staff> => {
