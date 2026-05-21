@@ -10,12 +10,14 @@ import { getStaffList, createStaff, updateStaff, deleteStaff } from '../services
 import { getServices, createService, updateService, deleteService } from '../services/serviceCatalogService';
 import { Service } from '../types';
 
+import BillingTab from '../components/BillingTab';
+
 const AdminPage: React.FC = () => {
   const navigate = useNavigate();
   const { t, language } = useLanguage();
   const { tenant, refreshTenant } = useTenant();
   const { currentUser, isLoading: authLoading, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState<'setup' | 'appointments' | 'staff' | 'services'>('setup');
+  const [activeTab, setActiveTab] = useState<'setup' | 'appointments' | 'staff' | 'services' | 'billing'>('setup');
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [staffList, setStaffList] = useState<Staff[]>([]);
   const [servicesList, setServicesList] = useState<Service[]>([]);
@@ -131,6 +133,15 @@ const AdminPage: React.FC = () => {
     e.preventDefault();
     if(!newServiceName || !tenant) return;
 
+    if (!editingServiceId) {
+      const { subscriptionService } = await import('../services/subscriptionService');
+      const canAdd = await subscriptionService.canAddService(tenant.id);
+      if (!canAdd) {
+        alert('Mevcut planınız daha fazla hizmet eklemeyi desteklemiyor. Planınızı yükseltin.');
+        return;
+      }
+    }
+
     const payload = {
       name: newServiceName,
       name_tr: newServiceNameTr || newServiceName,
@@ -186,6 +197,15 @@ const AdminPage: React.FC = () => {
   const handleAddStaff = async (e: React.FormEvent) => {
     e.preventDefault();
     if(!newStaffName || !newStaffTitle || !tenant) return;
+
+    if (!editingStaffId) {
+      const { subscriptionService } = await import('../services/subscriptionService');
+      const canAdd = await subscriptionService.canAddStaff(tenant.id);
+      if (!canAdd) {
+        alert('Mevcut planınız daha fazla çalışan eklemeyi desteklemiyor. Planınızı yükseltin.');
+        return;
+      }
+    }
 
     if (editingStaffId) {
       await updateStaff(tenant.id, editingStaffId, {
@@ -309,6 +329,12 @@ const AdminPage: React.FC = () => {
             className={`${activeTab === 'services' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
           >
             {language === 'tr' ? 'Hizmetler' : 'Services'}
+          </button>
+          <button
+            onClick={() => setActiveTab('billing')}
+            className={`${activeTab === 'billing' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
+          >
+            Abonelik
           </button>
         </nav>
       </div>
@@ -710,6 +736,8 @@ const AdminPage: React.FC = () => {
           </div>
         </div>
       )}
+      
+      {activeTab === 'billing' && <BillingTab />}
     </div>
   );
 };

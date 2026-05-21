@@ -29,6 +29,15 @@ Randapp satış süreçlerini desteklemek amacıyla özel bir `/demo` landing pa
 - **Satış Çıktısı Paylaşımı:** İşletmeciler, yaptıkları simülasyonun tam URL yapısını (parametre veya anlık yollar) "Önizleme Linkini Kopyala" ile saklayabilir veya direkt paylaşabilir.
 - **Admin Setup Akışı:** İlk kurulum esnasında mock panele bağlanan (veya sisteme onboarding yapan) yöneticiler, "Kurulum" sekmesi üzerinden işletme kimlikleri, renkleri ve logolarını esnek bir formatta atayabilir, tüm atanan değerlerin durumunu izleyen dinamik bir Onboarding CheckList'i kullanabilir.
 
+## 💳 Abonelik ve Ödeme Modeli Altyapısı (Subscription Scaffold)
+Sisteme ücretli planlar, limit kontrolleri ve fatura portalı entegrasyonu hazırlığı yapılmıştır. Bu aşama tamamen planların ve yetkilerin mock tabanlı simülasyonunu içerir. Hiçbir gerçek ödeme veya kart işlemi gerçekleşmez.
+
+Özellikler:
+- Starter, Professional, Premium plan senaryoları tasarlanmıştır.
+- Frontend'ten Edge Functions / Supabase tetiklemeleri hazırlanmıştır (`subscriptionService.ts`).
+- Admin panelinde abonelik durumu, limit izleme, yetki kısıtlamaları simüle edilmiştir.
+- Gerçek ödeme (Stripe, iyzico) altyapısı Node.js tabanlı sunucu fonksiyonlarında (Edge Functions) gerçekleştirilmek üzere projelendirilmiş ve belgelenmiştir (`/docs/PAYMENT_EDGE_FUNCTIONS_PLAN.md`).
+
 **Notlar:** 
 * Saha satış demosu için `VITE_DATA_MODE=mock` kullanılması en yüksek stabiliteyi sunar.
 * White Screen hatalarından kaçınmak (önizleme ekranlarının offline cache durumlarında asılı kalmasını engellemek) amacıyla PWA Service Worker (Vite PWA) geçici olarak `main.tsx` içinde deaktive edilmiştir.
