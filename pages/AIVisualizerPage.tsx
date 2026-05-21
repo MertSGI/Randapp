@@ -1,10 +1,13 @@
 import React, { useState, useRef } from 'react';
 import * as GeminiService from '../services/geminiService';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useTenant } from '../contexts/TenantContext';
+import { planService } from '../services/planService';
 import ReactMarkdown from 'react-markdown';
 
 const AIVisualizerPage: React.FC = () => {
   const { language } = useLanguage();
+  const { tenant } = useTenant();
   const [prompt, setPrompt] = useState<string>('');
   const [size, setSize] = useState<'1K' | '2K' | '4K'>('1K');
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
@@ -17,6 +20,19 @@ const AIVisualizerPage: React.FC = () => {
   const [analysisResult, setAnalysisResult] = useState<string | null>(null);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const planId = tenant?.planId || 'professional';
+  const plan = planService.getPlan(planId);
+  const aiEnabled = plan?.aiRecommendationsEnabled ?? false;
+
+  if (!aiEnabled) {
+    return (
+      <div className="max-w-4xl mx-auto py-16 px-4 text-center">
+        <h1 className="text-3xl font-bold dark:text-white mb-4">Özellik Kullanılamıyor</h1>
+        <p className="text-gray-500">Bu özellik mevcut paketinizde aktif değildir.</p>
+      </div>
+    );
+  }
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -108,6 +124,9 @@ const AIVisualizerPage: React.FC = () => {
             {/* UPLOAD & ANALYSIS SECTION */}
             <div className="bg-slate-50 dark:bg-slate-700/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-600 transition-colors duration-300">
               <h3 className="font-bold text-gray-900 dark:text-white mb-4 transition-colors duration-300">{t.uploadTitle}</h3>
+              <p className="text-xs text-gray-500 mb-4">
+                {language === 'tr' ? 'Fotoğrafınız yalnızca öneri oluşturmak için kullanılır. Lütfen hassas kişisel bilgi içeren görseller yüklemeyin.' : 'Your photo is only used to generate recommendations. Please do not upload images containing sensitive personal information.'}
+              </p>
               
               <div className="flex flex-col sm:flex-row items-center gap-4">
                 <input 

@@ -10,9 +10,10 @@ The application follows a strict separation of concerns regarding user experienc
 
 ## 2. Salon Public Booking Site (`SalonBookingLayout`)
 - **Target Audience:** Salon clients / end-users.
-- **Routes:** `/book` or root when a specific tenant domain/context is detected.
-- **Navigation:** Striped down completely. Only shows the specific salon's logo, business name, and theme toggle. 
-- **Rule:** It must *never* show "Demo Oluştur", "Yönetici Paneli" or global Randapp marketing links to avoid confusing end-users who are just trying to book a haircut.
+- **Routes:** `/book`, `/ai-visualizer`, or root when a specific tenant domain/context is detected.
+- **Navigation:** Striped down completely. Only shows the specific salon's logo, business name, "Randevu Al" (Book), and conditionally "Yapay Zeka" (if enabled on the salon's plan).
+- **Rule:** It must *never* show "Demo Oluştur", "Yönetici Paneli" or global Randapp marketing links.
+- **AI Integration:** The AI Visualizer (`/ai-visualizer`) acts as an inspiration and advisory layer *before* booking. It is feature-gated via `planService` and should NOT appear in global admin or marketing layouts.
 
 ## 3. Salon Admin Panel (`AdminLayout`)
 - **Target Audience:** The specific salon owner/staff.

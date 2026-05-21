@@ -60,6 +60,8 @@ const AppFlowSwitcher: React.FC = () => {
       {/* 2. Salon Booking Routes */}
       <Route element={<SalonBookingLayout />}>
         <Route path="/book" element={<BookingPage />} />
+        {/* AI Tool - Now part of the salon booking flow */}
+        <Route path="/ai-visualizer" element={<AIVisualizerPage />} />
       </Route>
 
       {/* 3. Admin Routes */}
@@ -73,9 +75,6 @@ const AppFlowSwitcher: React.FC = () => {
         <Route path="/super-admin" element={<SuperAdminDashboard />} />
         <Route path="/super-admin/*" element={<SuperAdminDashboard />} />
       </Route>
-
-      {/* AI Tool */}
-      <Route path="/ai-visualizer" element={<AIVisualizerPage />} />
       
       {/* Catch-all route to prevent white screens on unknown paths */}
       <Route path="*" element={<Navigate to="/" replace />} />
