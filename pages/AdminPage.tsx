@@ -137,6 +137,7 @@ const AdminPage: React.FC = () => {
       const { subscriptionService } = await import('../services/subscriptionService');
       const canAdd = await subscriptionService.canAddService(tenant.id);
       if (!canAdd) {
+        // Final enforcement must happen server-side via Supabase Edge Functions or RLS policies.
         alert('Mevcut planınız daha fazla hizmet eklemeyi desteklemiyor. Planınızı yükseltin.');
         return;
       }
@@ -202,6 +203,7 @@ const AdminPage: React.FC = () => {
       const { subscriptionService } = await import('../services/subscriptionService');
       const canAdd = await subscriptionService.canAddStaff(tenant.id);
       if (!canAdd) {
+        // Final enforcement must happen server-side via Supabase Edge Functions or RLS policies.
         alert('Mevcut planınız daha fazla çalışan eklemeyi desteklemiyor. Planınızı yükseltin.');
         return;
       }

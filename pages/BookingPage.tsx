@@ -8,7 +8,7 @@ import { useTenant } from '../contexts/TenantContext';
 import { getStaffList } from '../services/staffService';
 import { getServices } from '../services/serviceCatalogService';
 import { createAppointment, getBookedSlots, updateAppointmentStatus } from '../services/appointmentService';
-
+import { subscriptionService, SubscriptionStatus } from '../services/subscriptionService';
 
 const generateTimeSlots = (): string[] => {
   const slots: string[] = [];
@@ -41,11 +41,20 @@ const BookingPage: React.FC = () => {
   const [confirmation, setConfirmation] = useState<{ subject: string; body: string } | null>(null);
   const [calendarLink, setCalendarLink] = useState<string>('');
   const [whatsappSent, setWhatsappSent] = useState(false);
+  const [subStatus, setSubStatus] = useState<SubscriptionStatus>('active');
+  const [isCheckingSub, setIsCheckingSub] = useState(true);
 
   const timeSlots = generateTimeSlots();
 
   useEffect(() => {
     if (tenant) {
+      setIsCheckingSub(true);
+      subscriptionService.getCurrentSubscription(tenant.id).then(sub => {
+        if (sub) {
+          setSubStatus(sub.status);
+        }
+        setIsCheckingSub(false);
+      });
       getStaffList(tenant.id, { activeOnly: true }).then(setStaffList);
       getServices(tenant.id, { activeOnly: true }).then(setServicesList);
     }
@@ -132,6 +141,19 @@ const BookingPage: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto">
+      {isCheckingSub ? (
+         <div className="text-center py-12 text-gray-500">Yükleniyor...</div>
+      ) : subStatus === 'suspended' ? (
+         <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-red-200 dark:border-red-900/50 p-8 text-center text-red-600 dark:text-red-400">
+           <svg className="mx-auto h-16 w-16 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m0 0v2m0-2h2m-2 0H9m-3.5 4a2.5 2.5 0 01-2.5-2.5v-10A2.5 2.5 0 015.5 4h13A2.5 2.5 0 0121 6.5v10a2.5 2.5 0 01-2.5 2.5h-13z" />
+           </svg>
+           <h2 className="text-2xl font-bold mb-2">Hizmet Geçici Olarak Kapalı</h2>
+           <p>Bu salonun online randevu sistemi geçici olarak kullanılamıyor. Lütfen işletme ile iletişime geçin.</p>
+           {/* Final enforcement must happen server-side through Edge Functions, database constraints, RLS, or verified backend logic. */}
+         </div>
+      ) : (
+      <>
       {/* Progress Bar */}
       <div className="mb-8 max-w-2xl mx-auto hidden sm:block">
         <div className="flex items-center justify-between relative px-2">
@@ -474,6 +496,8 @@ const BookingPage: React.FC = () => {
         )}
 
       </div>
+      </>
+      )}
     </div>
   );
 };

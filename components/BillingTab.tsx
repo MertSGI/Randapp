@@ -51,6 +51,26 @@ const BillingTab: React.FC = () => {
 
   return (
     <div className="space-y-8">
+      {/* Dev Only Status Control */}
+      {(import.meta as any).env.VITE_DATA_MODE !== 'supabase' && (
+        <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 flex items-center justify-between">
+          <div className="text-purple-800 text-sm font-medium">
+             [Dev Only] Test Mock Subscription Status
+          </div>
+          <select 
+            value={subscription?.status || 'active'}
+            onChange={(e) => setSubscription(prev => prev ? {...prev, status: e.target.value as any} : null)}
+            className="text-sm bg-white border border-purple-300 rounded px-2 py-1 outline-none text-gray-800"
+          >
+            <option value="trial">Trial</option>
+            <option value="active">Active</option>
+            <option value="past_due">Past Due</option>
+            <option value="canceled">Canceled</option>
+            <option value="suspended">Suspended</option>
+          </select>
+        </div>
+      )}
+
       {/* Current Status */}
       <div className="bg-white dark:bg-slate-800 shadow-sm rounded-lg border border-gray-200 dark:border-slate-700 p-6">
         <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Mevcut Abonelik Durumu</h2>
@@ -66,6 +86,13 @@ const BillingTab: React.FC = () => {
           <div className="mb-6 bg-red-100 border border-red-500 p-4 rounded-md">
             <h3 className="text-red-900 font-bold">Hesap Askıya Alındı</h3>
             <p className="text-red-800 text-sm mt-1">Ödeme gecikmesi nedeniyle hesabınız askıya alınmıştır. Lütfen destek ekibiyle iletişime geçin veya ödeme yapın.</p>
+          </div>
+        )}
+
+        {subscription?.status === 'canceled' && (
+          <div className="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded-r-md">
+            <h3 className="text-red-800 font-medium">Abonelik İptal Edildi</h3>
+            <p className="text-red-700 text-sm mt-1">Aboneliğiniz sonlandırılmıştır. Sistem erişiminiz kısıtlanmıştır, hizmetinize devam etmek için lütfen yeni bir plan seçin.</p>
           </div>
         )}
 

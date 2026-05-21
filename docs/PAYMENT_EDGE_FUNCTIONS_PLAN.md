@@ -6,7 +6,23 @@ We plan to implement the following Supabase Edge Functions:
 
 ## 1. `POST /functions/v1/create-checkout-session`
 **Purpose:** Initialize a new checkout session (hosted payment page or widget token) for a given plan and tenant.
-**Payload:** `{ "planId": "professional", "tenantId": "..." }`
+**Input:**
+```json
+{
+  "tenantId": "uuid",
+  "planId": "professional",
+  "successUrl": "https://...",
+  "cancelUrl": "https://..."
+}
+```
+**Output:**
+```json
+{
+  "checkoutUrl": "https://...",
+  "provider": "iyzico",
+  "sessionId": "xyz_123"
+}
+```
 **Flow:**
 - Validate user's auth token (is admin of tenant).
 - Read plan details from server config (price, setup fee).
@@ -15,7 +31,19 @@ We plan to implement the following Supabase Edge Functions:
 
 ## 2. `POST /functions/v1/create-billing-portal-session`
 **Purpose:** Allow users to manage their subscription, download invoices, or update credit cards.
-**Payload:** `{ "tenantId": "..." }`
+**Input:**
+```json
+{
+  "tenantId": "uuid",
+  "returnUrl": "https://..."
+}
+```
+**Output:**
+```json
+{
+  "portalUrl": "https://..."
+}
+```
 **Flow:**
 - Validate user auth.
 - Retrieve provider `customer_id` from database.
@@ -24,13 +52,14 @@ We plan to implement the following Supabase Edge Functions:
 
 ## 3. `POST /functions/v1/payment-webhook`
 **Purpose:** Receive async notifications from the payment provider (e.g. successful charge, subscription canceled, trial ended).
-**Payload:** Sent by provider.
-**Security:** 
-- **Webhook signature verification MUST happen here.** Cannot be bypassed.
-**Flow:**
-- Verify signature.
-- Parse event type (`subscription.created`, `payment.failed`, etc.).
-- Update Supabase `subscriptions` table.
-- Revoke access or provision resources accordingly.
+**Input:**
+provider webhook payload
+
+**Security & Behavior:** 
+- **verify webhook signature server-side** Cannot be bypassed.
+- map provider event to subscription status
+- update subscriptions table
+- insert payment record
+- never trust frontend callbacks to activate subscription
 
 **CRITICAL NOTE:** Subscription table updates must ONLY be based on these verified webhooks, NOT on frontend callbacks or redirects, which can be easily spoofed.
