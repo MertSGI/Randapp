@@ -1,26 +1,35 @@
 # Go-Live Process
 
-## When a Tenant Can Go Live
-Before a tenant can accept public bookings, it must meet several criteria evaluated by `goLiveService.getGoLiveReadiness`. 
+## Overview
 
-Requirements:
-- Subscription status must be `active` or `trial`.
-- `provisioning_status` must be advanced beyond `onboarding_required`.
-- At least 1 active staff member exists.
-- At least 1 active service exists.
-- Core branding and business info is set.
+A new salon on the platform must be approved before they can accept live bookings from customers. This ensures data quality and payment readiness before exposure.
+
+## Workflow
+
+1. **Salon Registration & Onboarding**
+   - A salon owner registers or is provisioned an account.
+   - They complete the Onboarding Wizard (`/admin`).
+   - The provisioning status is `setup_in_progress`.
+
+2. **Submission for Review**
+   - Once all mandatory steps (Info, Services, Staff) are complete, the owner clicks "Mark as Ready for Review" in Step 7 of the wizard.
+   - The tenant status changes to `ready_for_review`.
+
+3. **Super Admin Review**
+   - The Super Admin logs in (`/super-admin`).
+   - The Dashboard shows a "Ready for Review" section.
+   - The Super Admin verifies the salon details.
+   - **Actions:**
+     - **Approve Go-Live**: Tenant status becomes `live`. The booking page is unlocked.
+     - **Send Back**: Tenant status becomes `setup_in_progress` (Go Live status `needs_changes`). The Super Admin can leave an internal note.
+     - **Pause Bookings**: If a live salon needs to be halted, the Super Admin can set status to `paused`.
+
+4. **Booking Gate Enforcement**
+   - The `BookingPage` calls `goLiveService.canTenantAcceptBookings(tenant.id)`.
+   - If the salon is `setup_in_progress`, `ready_for_review`, or `paused`, the booking page displays a "Service Temporarily Closed" banner and prevents form access.
 
 ## Manual Setup Support Process
-In cases where customers need configuration assistance (Setup Fee covered this), support agents or super-admins can access the tenant's view or a centralized dashboard to fill in remaining services, pricing, and settings. They can use the "Internal Notes" section to coordinate.
-
-## Public Booking Gate Behavior
-If `canTenantAcceptBookings` returns false, customers visiting the `/` endpoint will see a clean unavailability screen instead of the booking form.
-Possible reasons shown to users:
-- "Bu salon geçici olarak randevu kabul etmiyor."
-- "Salon kurulumu devam ediyor."
-- "Online randevu sistemi henüz aktif değil."
-
-Sensitive billing details are never exposed.
+In cases where customers need configuration assistance (e.g. they paid a Setup Fee), support agents or super-admins can help fill in remaining services, pricing, and settings, acting on their behalf before hitting "Approve Go-Live".
 
 ## Production Security Note
 The frontend UI enforces go-live mock steps, but **final go-live approval must happen server-side**. In Supabase mode, updating `go_live_status` or accepting DB writes to public endpoints MUST be secured by RLS policies or Edge Functions enforcing these state checks.

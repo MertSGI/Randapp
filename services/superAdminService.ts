@@ -126,5 +126,46 @@ export const superAdminService = {
       },
       tenants: tenantList
     };
+  },
+
+  async approveGoLive(tenantId: string): Promise<boolean> {
+    const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
+    if (mode === 'mock') {
+       return new Promise(resolve => setTimeout(() => resolve(true), 500));
+    }
+    const { error } = await supabase.from('tenants').update({ 
+      provisioning_status: 'live',
+      go_live_status: 'live' // if column exists
+    }).eq('id', tenantId);
+    if (error) {
+       console.error("Super admin live approval failed", error);
+       throw error;
+    }
+    return true;
+  },
+
+  async sendBackToSetup(tenantId: string, internalNote: string): Promise<boolean> {
+     const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
+     if (mode === 'mock') {
+       return new Promise(resolve => setTimeout(() => resolve(true), 500));
+     }
+     const { error } = await supabase.from('tenants').update({ 
+       provisioning_status: 'setup_in_progress',
+       go_live_status: 'needs_changes'
+     }).eq('id', tenantId);
+     if (error) throw error;
+     return true;
+  },
+
+  async pauseBookings(tenantId: string): Promise<boolean> {
+    const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
+     if (mode === 'mock') {
+       return new Promise(resolve => setTimeout(() => resolve(true), 500));
+     }
+     const { error } = await supabase.from('tenants').update({ 
+       go_live_status: 'paused'
+     }).eq('id', tenantId);
+     if (error) throw error;
+     return true;
   }
 };

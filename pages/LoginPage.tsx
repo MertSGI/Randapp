@@ -14,7 +14,9 @@ const LoginPage: React.FC = () => {
 
   useEffect(() => {
     if (!isLoading && currentUser) {
-      if (currentUser.role === 'salon_owner' || currentUser.role === 'super_admin') {
+      if (currentUser.role === 'super_admin') {
+        navigate('/super-admin', { replace: true });
+      } else if (currentUser.role === 'salon_owner') {
         navigate('/admin', { replace: true });
       } else {
         // Future route for staff or custom dash. For now, home or staff dashboard route.
@@ -46,7 +48,7 @@ const LoginPage: React.FC = () => {
         <h2 className="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-white transition-colors duration-300">{t.login.title}</h2>
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">Email (Mock: admin@randapp.com)</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">Email (Mock: admin@ or superadmin@)</label>
             <input
               type="email"
               value={email}
@@ -56,7 +58,7 @@ const LoginPage: React.FC = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">{t.login.password} (Mock: admin123)</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">{t.login.password} (Mock: admin123 / superadmin123)</label>
             <input
               type="password"
               value={password}

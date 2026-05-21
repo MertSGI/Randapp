@@ -11,6 +11,15 @@ const MOCK_ADMIN_USER: User = {
   active: true,
 };
 
+const MOCK_SUPER_ADMIN_USER: User = {
+  id: 'user_super_admin',
+  tenantId: 'system',
+  name: 'Super Admin',
+  email: 'superadmin@randapp.com', // mock email
+  role: 'super_admin',
+  active: true,
+};
+
 export const authService = {
   async login(email: string, passwordHash: string): Promise<User | null> {
     const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
@@ -43,8 +52,11 @@ export const authService = {
     // Mock mode logic
     return new Promise(resolve => {
       setTimeout(() => {
-        if (passwordHash === 'admin123') {
-          localStorage.setItem('nexus_admin_auth', 'true');
+        if (email === 'superadmin@randapp.com' && passwordHash === 'superadmin123') {
+          localStorage.setItem('nexus_admin_auth', 'super_admin');
+          resolve(MOCK_SUPER_ADMIN_USER);
+        } else if (passwordHash === 'admin123') {
+          localStorage.setItem('nexus_admin_auth', 'sandbox_owner');
           resolve(MOCK_ADMIN_USER);
         } else {
           resolve(null);
@@ -86,7 +98,9 @@ export const authService = {
     }
     
     const isAuth = localStorage.getItem('nexus_admin_auth');
-    if (isAuth === 'true') {
+    if (isAuth === 'super_admin') {
+      return MOCK_SUPER_ADMIN_USER;
+    } else if (isAuth === 'sandbox_owner' || isAuth === 'true') {
       return MOCK_ADMIN_USER;
     }
     return null;

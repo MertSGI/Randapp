@@ -311,6 +311,7 @@ const AdminPage: React.FC = () => {
           staffList={staffList}
           servicesList={servicesList}
           appointments={appointments}
+          onNavigateToTab={(tab) => setActiveTab(tab)}
           refreshData={() => {
              // In future, trigger individual fetches if needed
              if (tenant) {
@@ -620,8 +621,16 @@ const AdminPage: React.FC = () => {
       {activeTab === 'billing' && <BillingTab />}
       
       {activeTab === 'settings' && (
-        <div className="p-8 text-center text-gray-500">
-           {language === 'tr' ? 'Ayarlar menüsü yakında eklenecektir.' : 'Settings module coming soon.'}
+        <div className="bg-white dark:bg-slate-800 shadow-sm rounded-lg border border-gray-200 dark:border-slate-700 p-6">
+           <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Çalışma Saatleri</h3>
+           <p className="text-gray-600 dark:text-gray-400 mb-6 border-b border-gray-200 dark:border-slate-700 pb-4">
+               Şu anda varsayılan çalışma saatleri uygulanmaktadır. Personel özelinde mesai saatleri "Çalışanlar" sekmesinden ayarlanabilmektedir. Detaylı işletme çalışma saatleri ve tatil günleri yakında eklenecektir.
+           </p>
+           
+           <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">İptal Politikası</h3>
+           <p className="text-gray-600 dark:text-gray-400 mb-4">
+               Randevuların iptal edilebilmesi için geçmesi gereken minimum süreyi buradan ayarlayabileceksiniz (Yakında).
+           </p>
         </div>
       )}
     </div>
