@@ -53,10 +53,10 @@ export const authService = {
     return new Promise(resolve => {
       setTimeout(() => {
         if (email === 'superadmin@randapp.com' && passwordHash === 'superadmin123') {
-          localStorage.setItem('nexus_admin_auth', 'super_admin');
+          localStorage.setItem('randapp_mock_user', JSON.stringify(MOCK_SUPER_ADMIN_USER));
           resolve(MOCK_SUPER_ADMIN_USER);
         } else if (passwordHash === 'admin123') {
-          localStorage.setItem('nexus_admin_auth', 'sandbox_owner');
+          localStorage.setItem('randapp_mock_user', JSON.stringify(MOCK_ADMIN_USER));
           resolve(MOCK_ADMIN_USER);
         } else {
           resolve(null);
@@ -73,6 +73,7 @@ export const authService = {
     }
     
     localStorage.removeItem('nexus_admin_auth');
+    localStorage.removeItem('randapp_mock_user');
   },
 
   async getCurrentUser(): Promise<User | null> {
@@ -97,6 +98,16 @@ export const authService = {
       };
     }
     
+    const mockUserStr = localStorage.getItem('randapp_mock_user');
+    if (mockUserStr) {
+      try {
+        return JSON.parse(mockUserStr) as User;
+      } catch (e) {
+        console.error('Failed to parse mock user', e);
+      }
+    }
+    
+    // Fallback for legacy mock auth
     const isAuth = localStorage.getItem('nexus_admin_auth');
     if (isAuth === 'super_admin') {
       return MOCK_SUPER_ADMIN_USER;

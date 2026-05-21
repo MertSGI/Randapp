@@ -3,6 +3,9 @@ import { useTenant } from '../contexts/TenantContext';
 import { Staff, Service, Appointment } from '../types';
 import { goLiveService, GoLiveReadiness } from '../services/goLiveService';
 
+import { createService } from '../services/serviceCatalogService';
+import { createStaff } from '../services/staffService';
+
 interface OnboardingWizardProps {
   staffList: Staff[];
   servicesList: Service[];
@@ -33,6 +36,18 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   
   const [activeStep, setActiveStep] = useState(1);
   const [readiness, setReadiness] = useState<GoLiveReadiness | null>(null);
+
+  // Quick add states
+  const [newServiceName, setNewServiceName] = useState('');
+  const [newServicePrice, setNewServicePrice] = useState('500');
+  const [newServiceDuration, setNewServiceDuration] = useState('60');
+  const [newServiceActive, setNewServiceActive] = useState(true);
+  
+  const [newStaffName, setNewStaffName] = useState('');
+  const [newStaffTitle, setNewStaffTitle] = useState('Uzman');
+  const [newStaffActive, setNewStaffActive] = useState(true);
+  
+  const [isAdding, setIsAdding] = useState(false);
 
   // Business logic step completed checks
   const isInfoCompleted = !!setupSalonName && !!setupWhatsapp; // Enforced whatsapp here based on prompt
@@ -99,6 +114,52 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
       alert('Kayıt sırasında hata oluştu.');
     } finally {
       setSetupSaving(false);
+    }
+  };
+
+  const handleQuickAddService = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!tenant || !newServiceName) return;
+    setIsAdding(true);
+    try {
+      await createService(tenant.id, {
+        name: newServiceName,
+        name_tr: newServiceName,
+        price: Number(newServicePrice),
+        duration: Number(newServiceDuration),
+        active: newServiceActive,
+        category: 'Ek Hizmetler',
+        image: ''
+      } as any);
+      setNewServiceName('');
+      refreshData();
+    } catch (err) {
+      console.error(err);
+      alert('Hizmet eklenemedi.');
+    } finally {
+      setIsAdding(false);
+    }
+  };
+
+  const handleQuickAddStaff = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!tenant || !newStaffName) return;
+    setIsAdding(true);
+    try {
+      await createStaff(tenant.id, {
+        name: newStaffName,
+        title: newStaffTitle,
+        active: newStaffActive,
+        rating: 5,
+        reviewCount: 0
+      } as any); // using as any since types might conflict slightly without all properties
+      setNewStaffName('');
+      refreshData();
+    } catch (err) {
+      console.error(err);
+      alert('Çalışan eklenemedi.');
+    } finally {
+      setIsAdding(false);
     }
   };
 
@@ -216,16 +277,43 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                    </span>
                  </div>
                  <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400 mb-4">
-                   {servicesList.slice(0, 3).map(s => <li key={s.id}>• {s.name} {s.active ? '(Aktif)' : '(Pasif)'}</li>)}
+                   {servicesList.slice(0, 3).map(s => <li key={s.id}>• {s.name} {s.active ? '(Aktif)' : '(Pasif)'} - {s.price} TL</li>)}
                    {servicesList.length > 3 && <li>ve {servicesList.length - 3} daha...</li>}
-                   {servicesList.length === 0 && <li className="text-red-500 py-2">Yayına çıkmak için en az 1 aktif hizmet eklemelisiniz.</li>}
+                   {servicesList.length === 0 && <li className="text-red-500 py-2 font-medium">Yayına çıkmak için en az 1 aktif hizmet eklemelisiniz.</li>}
                  </ul>
+                 
+                 {!isServicesCompleted && (
+                   <form onSubmit={handleQuickAddService} className="mt-4 p-4 border border-dashed border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800">
+                     <h5 className="text-sm font-bold text-gray-800 dark:text-white mb-3">Hızlı Hizmet Ekle</h5>
+                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                       <div>
+                         <input type="text" placeholder="Hizmet Adı (Örn: Saç Kesimi)" required value={newServiceName} onChange={e => setNewServiceName(e.target.value)} className="w-full text-sm rounded-md border-gray-300 dark:border-slate-600 bg-gray-50 dark:bg-slate-900 p-2 border" />
+                       </div>
+                       <div>
+                         <input type="number" placeholder="Fiyat (TL)" required value={newServicePrice} onChange={e => setNewServicePrice(e.target.value)} className="w-full text-sm rounded-md border-gray-300 dark:border-slate-600 bg-gray-50 dark:bg-slate-900 p-2 border" />
+                       </div>
+                       <div>
+                         <input type="number" placeholder="Süre (Dk)" required value={newServiceDuration} onChange={e => setNewServiceDuration(e.target.value)} className="w-full text-sm rounded-md border-gray-300 dark:border-slate-600 bg-gray-50 dark:bg-slate-900 p-2 border" />
+                       </div>
+                       <div className="flex items-center">
+                         <label className="flex items-center text-sm cursor-pointer">
+                           <input type="checkbox" checked={newServiceActive} onChange={e => setNewServiceActive(e.target.checked)} className="mr-2" />
+                           Aktif
+                         </label>
+                       </div>
+                     </div>
+                     <button type="submit" disabled={isAdding || !newServiceName} className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded py-2 text-sm font-medium transition-colors disabled:opacity-50">
+                       Hizmeti Kaydet
+                     </button>
+                   </form>
+                 )}
+
                  {onNavigateToTab && (
                    <button 
                      onClick={() => onNavigateToTab('services')} 
-                     className="mt-2 text-sm text-accent dark:text-blue-400 hover:underline inline-flex items-center"
+                     className="mt-4 text-sm text-accent dark:text-blue-400 hover:underline inline-flex items-center w-full justify-center sm:justify-start"
                    >
-                     + Hizmetler menüsüne git ve hizmet ekle
+                     {isServicesCompleted ? 'Tüm Hizmetleri Yönet →' : 'Gelişmiş Hizmet Ayarlarına Git →'}
                    </button>
                  )}
               </div>
@@ -249,16 +337,40 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                    </span>
                  </div>
                  <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400 mb-4">
-                   {staffList.slice(0, 3).map(s => <li key={s.id}>• {s.name} {s.active ? '(Aktif)' : '(Pasif)'}</li>)}
+                   {staffList.slice(0, 3).map(s => <li key={s.id}>• {s.name} - {s.title} {s.active ? '(Aktif)' : '(Pasif)'}</li>)}
                    {staffList.length > 3 && <li>ve {staffList.length - 3} daha...</li>}
-                   {staffList.length === 0 && <li className="text-red-500 py-2">Yayına çıkmak için en az 1 aktif çalışan eklemelisiniz.</li>}
+                   {staffList.length === 0 && <li className="text-red-500 py-2 font-medium">Yayına çıkmak için en az 1 aktif çalışan eklemelisiniz.</li>}
                  </ul>
+
+                 {!isStaffCompleted && (
+                   <form onSubmit={handleQuickAddStaff} className="mt-4 p-4 border border-dashed border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800">
+                     <h5 className="text-sm font-bold text-gray-800 dark:text-white mb-3">Hızlı Çalışan Ekle</h5>
+                     <div className="grid grid-cols-1 gap-3 mb-3">
+                       <div>
+                         <input type="text" placeholder="Ad Soyad (Örn: Ayşe Yılmaz)" required value={newStaffName} onChange={e => setNewStaffName(e.target.value)} className="w-full text-sm rounded-md border-gray-300 dark:border-slate-600 bg-gray-50 dark:bg-slate-900 p-2 border" />
+                       </div>
+                       <div>
+                         <input type="text" placeholder="Unvan (Örn: Kıdemli Stilist)" value={newStaffTitle} onChange={e => setNewStaffTitle(e.target.value)} className="w-full text-sm rounded-md border-gray-300 dark:border-slate-600 bg-gray-50 dark:bg-slate-900 p-2 border" />
+                       </div>
+                       <div className="flex items-center">
+                         <label className="flex items-center text-sm cursor-pointer">
+                           <input type="checkbox" checked={newStaffActive} onChange={e => setNewStaffActive(e.target.checked)} className="mr-2" />
+                           Aktif (Randevu alabilir)
+                         </label>
+                       </div>
+                     </div>
+                     <button type="submit" disabled={isAdding || !newStaffName} className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded py-2 text-sm font-medium transition-colors disabled:opacity-50">
+                       Çalışanı Kaydet
+                     </button>
+                   </form>
+                 )}
+
                  {onNavigateToTab && (
                    <button 
                      onClick={() => onNavigateToTab('staff')} 
-                     className="mt-2 text-sm text-accent dark:text-blue-400 hover:underline inline-flex items-center"
+                     className="mt-4 text-sm text-accent dark:text-blue-400 hover:underline inline-flex items-center w-full justify-center sm:justify-start"
                    >
-                     + Çalışanlar menüsüne git ve çalışan ekle
+                     {isStaffCompleted ? 'Tüm Çalışanları Yönet →' : 'Gelişmiş Çalışan Ayarlarına Git →'}
                    </button>
                  )}
               </div>
@@ -375,7 +487,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                  </button>
               </div>
 
-              {tenant?.provisioning_status === 'ready_for_review' && (
+              {(tenant as any)?.provisioning_status === 'ready_for_review' && (
                   <div className="bg-blue-50 text-blue-800 p-4 rounded-lg text-center font-medium border border-blue-200">
                      Kurulumunuz inceleme için gönderildi. Lütfen yöneticinin onayını bekleyin.
                   </div>

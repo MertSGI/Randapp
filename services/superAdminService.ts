@@ -38,19 +38,11 @@ export const superAdminService = {
     const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
 
     if (mode === 'mock') {
-      return {
-        stats: {
-          totalSalons: 15,
-          activeSalons: 10,
-          trialSalons: 3,
-          pastDueSalons: 1,
-          suspendedSalons: 1,
-          monthlyRecurringRevenue: 12500,
-          setupFees: 4500,
-          awaitingSetup: 2,
-          liveSalons: 10
-        },
-        tenants: [
+      const { dataProvider } = await import('./dataProvider');
+      const provStatus1 = await dataProvider.get<string>(`randapp:mock_tenant_1:provisioning_status`) || 'live';
+      const provStatus2 = await dataProvider.get<string>(`randapp:tenant_demo:provisioning_status`) || 'setup_in_progress';
+      
+      const tenants = [
           {
             tenant: {
               id: 'mock_tenant_1',
@@ -61,25 +53,39 @@ export const superAdminService = {
             },
             subscriptionStatus: 'active',
             planId: 'professional',
-            setupStatus: 'live',
+            setupStatus: provStatus1,
             monthlyAppointments: 145,
             estimatedRevenue: 45000
           },
           {
             tenant: {
-              id: 'iyzico_mock',
-              businessName: 'Mock Salon',
-              ownerEmail: 'test@mock.com',
+              id: 'tenant_demo',
+              businessName: 'Sandbox Salon',
+              ownerEmail: 'admin@randapp.com',
               domain: null,
               created_at: new Date().toISOString()
             },
-            subscriptionStatus: 'trialing',
+            subscriptionStatus: 'active',
             planId: 'starter',
-            setupStatus: 'awaiting_live',
+            setupStatus: provStatus2,
             monthlyAppointments: 12,
             estimatedRevenue: 1200
           }
-        ]
+        ];
+        
+      return {
+        stats: {
+          totalSalons: 15,
+          activeSalons: 10,
+          trialSalons: 3,
+          pastDueSalons: 1,
+          suspendedSalons: 1,
+          monthlyRecurringRevenue: 12500,
+          setupFees: 4500,
+          awaitingSetup: tenants.filter(t => t.setupStatus !== 'live').length,
+          liveSalons: tenants.filter(t => t.setupStatus === 'live').length
+        },
+        tenants
       };
     }
 
@@ -131,6 +137,9 @@ export const superAdminService = {
   async approveGoLive(tenantId: string): Promise<boolean> {
     const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
     if (mode === 'mock') {
+       const { dataProvider } = await import('./dataProvider');
+       await dataProvider.set(`randapp:${tenantId}:go_live_status`, 'live');
+       await dataProvider.set(`randapp:${tenantId}:provisioning_status`, 'live');
        return new Promise(resolve => setTimeout(() => resolve(true), 500));
     }
     const { error } = await supabase.from('tenants').update({ 
@@ -147,6 +156,9 @@ export const superAdminService = {
   async sendBackToSetup(tenantId: string, internalNote: string): Promise<boolean> {
      const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
      if (mode === 'mock') {
+       const { dataProvider } = await import('./dataProvider');
+       await dataProvider.set(`randapp:${tenantId}:go_live_status`, 'needs_changes');
+       await dataProvider.set(`randapp:${tenantId}:provisioning_status`, 'setup_in_progress');
        return new Promise(resolve => setTimeout(() => resolve(true), 500));
      }
      const { error } = await supabase.from('tenants').update({ 
@@ -160,6 +172,8 @@ export const superAdminService = {
   async pauseBookings(tenantId: string): Promise<boolean> {
     const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
      if (mode === 'mock') {
+       const { dataProvider } = await import('./dataProvider');
+       await dataProvider.set(`randapp:${tenantId}:go_live_status`, 'paused');
        return new Promise(resolve => setTimeout(() => resolve(true), 500));
      }
      const { error } = await supabase.from('tenants').update({ 

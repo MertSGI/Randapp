@@ -72,16 +72,30 @@ export const goLiveService = {
   async canTenantAcceptBookings(tenantId: string): Promise<{ allowed: boolean; reason?: string }> {
     const sub = await subscriptionService.getCurrentSubscription(tenantId);
     if (sub?.status === 'suspended' || sub?.status === 'canceled') {
-      return { allowed: false, reason: 'Bu salon geçici olarak randevu kabul etmiyor.' };
+      return { allowed: false, reason: 'Bu salonun online randevu sistemi geçici olarak kullanılamıyor.' };
     }
 
     const provStatus = await provisioningService.getProvisioningStatus(tenantId);
-    if (provStatus === 'onboarding_required' || provStatus === 'setup_in_progress') {
-       return { allowed: false, reason: 'Salon kurulumu devam ediyor.' };
+    if (provStatus === 'onboarding_required' || provStatus === 'setup_in_progress' || provStatus === 'ready_for_review') {
+       return { allowed: false, reason: 'Online randevu sistemi henüz aktif değil.' };
     }
 
     const readiness = await this.getGoLiveReadiness(tenantId);
     
+    // Explicitly check for paused status
+    const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
+    let goLiveStatus = 'paused';
+    if (mode === 'supabase') {
+      const { data } = await supabase.from('tenants').select('go_live_status').eq('id', tenantId).single();
+      if (data) goLiveStatus = data.go_live_status || 'paused';
+    } else {
+      goLiveStatus = await dataProvider.get<string>(`randapp:${tenantId}:go_live_status`) || 'paused';
+    }
+
+    if (goLiveStatus === 'paused') {
+        return { allowed: false, reason: 'Bu salon şu anda online randevu kabul etmiyor. Lütfen işletme ile iletişime geçin.' };
+    }
+
     if (!readiness.canAcceptBookings) {
       if (readiness.blockingReasons.length > 0) {
         return { allowed: false, reason: 'Salon hazırlık aşamasında.' };
