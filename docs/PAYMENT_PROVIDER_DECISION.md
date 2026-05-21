@@ -29,8 +29,8 @@ This document compares payment providers for handling recurring subscriptions in
 - **Recommendation:** Use only if special rates or specific integrations are necessary. Not recommended for modern fast-shipping SaaS subscriptions compared to iyzico.
 
 ## Conclusion
-For a Turkey-first launch, **iyzico** is the recommended initial provider because it fully supports subscription/payment plans locally and has the widest acceptance in the Turkish ecosystem.
+For a Turkey-first launch, **iyzico** is the recommended initial provider (and currently the active integration target in Edge Functions) because it fully supports subscription/payment plans locally and has the widest acceptance in the Turkish ecosystem.
 
-For a global SaaS routing through a US company, **Stripe Billing** is technically the strongest due to Stripe Checkout, Customer Portal, excellent invoice handling, and webhooks.
+For a global SaaS routing through a US company, **Stripe Billing** remains the strongest future technical option due to Stripe Checkout, Customer Portal, excellent invoice handling, and webhooks.
 
 For alternative local POS routes, **Param** can remain an evaluated option but should not be the first implementation unless merchant terms are significantly better than iyzico.

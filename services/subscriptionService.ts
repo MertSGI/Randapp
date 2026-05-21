@@ -115,12 +115,30 @@ export const subscriptionService = {
   },
 
   async startCheckout(tenantId: string, planId: string): Promise<void> {
-    const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
+    const paymentProvider = (import.meta as any).env.VITE_PAYMENT_PROVIDER || 'mock';
     
-    if (mode === 'supabase') {
-      // Should call a future Edge Function placeholder
-      console.log(`[Supabase Mode] Calling POST /functions/v1/create-checkout-session for tenant ${tenantId}, plan ${planId}`);
-      alert(`[Demo] Checkout session yaratma isteği sunucuya iletiliyor. (Edge Function) Plan: ${planId}`);
+    if (paymentProvider !== 'mock') {
+      try {
+        console.log(`[${paymentProvider} Mode] Calling POST /functions/v1/create-checkout-session`);
+        const { data, error } = await supabase.functions.invoke('create-checkout-session', {
+          body: {
+            tenantId,
+            planId,
+            successUrl: `${window.location.origin}/admin?tab=kurulum`,
+            cancelUrl: `${window.location.origin}/admin?tab=abonelik`
+          }
+        });
+
+        if (error) throw error;
+        if (data?.checkoutUrl) {
+          window.location.href = data.checkoutUrl;
+        } else {
+          alert('Ödeme sayfasi olusturulamadi.');
+        }
+      } catch (err: any) {
+        console.error("Checkout session error:", err);
+        alert('Ödeme başlatılırken bir hata oluştu: ' + err.message);
+      }
       return;
     }
 
@@ -130,12 +148,33 @@ export const subscriptionService = {
   },
 
   async openBillingPortal(tenantId: string): Promise<void> {
-    const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
+    const paymentProvider = (import.meta as any).env.VITE_PAYMENT_PROVIDER || 'mock';
     
-    if (mode === 'supabase') {
-      // Should call Edge Function
-      console.log(`[Supabase Mode] Calling POST /functions/v1/create-billing-portal-session for tenant ${tenantId}`);
-      alert(`[Demo] Fatura portalı isteği sunucuya iletiliyor.`);
+    if (paymentProvider !== 'mock') {
+      try {
+        console.log(`[${paymentProvider} Mode] Calling POST /functions/v1/create-billing-portal-session`);
+        const { data, error } = await supabase.functions.invoke('create-billing-portal-session', {
+          body: {
+            tenantId,
+            returnUrl: window.location.origin
+          }
+        });
+
+        if (error) throw error;
+        
+        if (data?.portalUrl) {
+          // Sometimes it might just be the same page with a notification
+          if (data.note) alert(data.note);
+          if (data.portalUrl.startsWith('http') || data.portalUrl.startsWith('/')) {
+              window.location.href = data.portalUrl;
+          }
+        } else {
+          alert('Portal olusturulamadi.');
+        }
+      } catch (err: any) {
+        console.error("Billing portal error:", err);
+        alert('Portal başlatılırken bir hata oluştu: ' + err.message);
+      }
       return;
     }
 
