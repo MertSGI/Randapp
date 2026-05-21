@@ -12,13 +12,14 @@ import { Service } from '../types';
 
 import BillingTab from '../components/BillingTab';
 import OnboardingWizard from '../components/OnboardingWizard';
+import SalonReportsTab from '../components/SalonReportsTab';
 
 const AdminPage: React.FC = () => {
   const navigate = useNavigate();
   const { t, language } = useLanguage();
   const { tenant, refreshTenant } = useTenant();
   const { currentUser, isLoading: authLoading, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState<'setup' | 'appointments' | 'staff' | 'services' | 'billing'>('setup');
+  const [activeTab, setActiveTab] = useState<'setup' | 'appointments' | 'staff' | 'services' | 'reports' | 'billing'>('setup');
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [staffList, setStaffList] = useState<Staff[]>([]);
   const [servicesList, setServicesList] = useState<Service[]>([]);
@@ -283,6 +284,12 @@ const AdminPage: React.FC = () => {
             className={`${activeTab === 'services' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
           >
             {language === 'tr' ? 'Hizmetler' : 'Services'}
+          </button>
+          <button
+            onClick={() => setActiveTab('reports')}
+            className={`${activeTab === 'reports' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
+          >
+            {language === 'tr' ? 'Raporlar' : 'Reports'}
           </button>
           <button
             onClick={() => setActiveTab('billing')}
@@ -594,6 +601,14 @@ const AdminPage: React.FC = () => {
             ))}
           </div>
         </div>
+      )}
+      
+      {activeTab === 'reports' && (
+        <SalonReportsTab 
+          appointments={appointments} 
+          services={servicesList} 
+          staff={staffList} 
+        />
       )}
       
       {activeTab === 'billing' && <BillingTab />}

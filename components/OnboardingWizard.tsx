@@ -35,8 +35,8 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   // Business logic step completed checks
   const isInfoCompleted = !!setupSalonName && !!setupAddress;
   const isBrandingCompleted = !!setupLogoUrl || setupPrimaryColor !== '#000000';
-  const isServicesCompleted = servicesList.some(s => s.isActive);
-  const isStaffCompleted = staffList.some(s => s.isActive);
+  const isServicesCompleted = servicesList.some(s => s.active);
+  const isStaffCompleted = staffList.some(s => s.active);
   const isTestApptCompleted = appointments.length > 0;
 
   useEffect(() => {
@@ -192,7 +192,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                    </span>
                  </div>
                  <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
-                   {servicesList.slice(0, 3).map(s => <li key={s.id}>• {s.name} {s.isActive ? '(Aktif)' : '(Pasif)'}</li>)}
+                   {servicesList.slice(0, 3).map(s => <li key={s.id}>• {s.name} {s.active ? '(Aktif)' : '(Pasif)'}</li>)}
                    {servicesList.length > 3 && <li>ve {servicesList.length - 3} daha...</li>}
                    {servicesList.length === 0 && <li>Henüz hizmet eklenmemiş.</li>}
                  </ul>
@@ -215,7 +215,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                    </span>
                  </div>
                  <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
-                   {staffList.slice(0, 3).map(s => <li key={s.id}>• {s.name} {s.isActive ? '(Aktif)' : '(Pasif)'}</li>)}
+                   {staffList.slice(0, 3).map(s => <li key={s.id}>• {s.name} {s.active ? '(Aktif)' : '(Pasif)'}</li>)}
                    {staffList.length > 3 && <li>ve {staffList.length - 3} daha...</li>}
                    {staffList.length === 0 && <li>Henüz çalışan eklenmemiş.</li>}
                  </ul>

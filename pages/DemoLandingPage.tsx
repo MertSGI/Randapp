@@ -55,7 +55,7 @@ const DemoLandingPage: React.FC = () => {
        return;
     }
 
-    const salesNumber = import.meta.env.VITE_SALES_WHATSAPP_NUMBER;
+    const salesNumber = (import.meta as any).env.VITE_SALES_WHATSAPP_NUMBER;
     if (!salesNumber) {
        console.warn("Satış WhatsApp numarası .env içinde tanımlı değil.");
        alert("Sistem yapılandırma eksikliği: WhatsApp yönlendirmesi şu an çalışmıyor.");

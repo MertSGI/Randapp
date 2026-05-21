@@ -27,7 +27,7 @@ const generateTimeSlots = (): string[] => {
 
 const BookingPage: React.FC = () => {
   const { t, language } = useLanguage();
-  const { tenant } = useTenant();
+  const { tenant, branding } = useTenant();
   const [step, setStep] = useState<number>(0);
   const [staffList, setStaffList] = useState<Staff[]>([]);
   const [servicesList, setServicesList] = useState<Service[]>([]);
@@ -474,8 +474,8 @@ const BookingPage: React.FC = () => {
               <a 
                 href={`https://wa.me/?text=${encodeURIComponent(
                   language === 'tr' 
-                    ? `Merhaba! ${tenant?.businessName || 'Randevu Sistemi'}'ndan randevumu oluşturdum.\nUzman: ${selectedStaff?.name || ''}\nİletişim: ${selectedStaff?.phone || '-'}\nHizmet: ${selectedService?.name_tr || ''}\nTarih: ${selectedDate} ${selectedTime}\nRandevuyu Takvime Ekle: ${calendarLink}` 
-                    : `Hello! I booked an appointment at ${tenant?.businessName || 'the salon'}.\nStaff: ${selectedStaff?.name || ''}\nContact: ${selectedStaff?.phone || '-'}\nService: ${selectedService?.name || ''}\nDate: ${selectedDate} ${selectedTime}\nAdd to Calendar: ${calendarLink}`
+                    ? `Merhaba! ${branding?.businessName || 'Randevu Sistemi'}'ndan randevumu oluşturdum.\nUzman: ${selectedStaff?.name || ''}\nİletişim: ${selectedStaff?.phone || '-'}\nHizmet: ${selectedService?.name_tr || ''}\nTarih: ${selectedDate} ${selectedTime}\nRandevuyu Takvime Ekle: ${calendarLink}` 
+                    : `Hello! I booked an appointment at ${branding?.businessName || 'the salon'}.\nStaff: ${selectedStaff?.name || ''}\nContact: ${selectedStaff?.phone || '-'}\nService: ${selectedService?.name || ''}\nDate: ${selectedDate} ${selectedTime}\nAdd to Calendar: ${calendarLink}`
                 )}`} 
                 target="_blank" 
                 rel="noopener noreferrer"
