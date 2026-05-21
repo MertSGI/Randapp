@@ -19,7 +19,7 @@ const AdminPage: React.FC = () => {
   const { t, language } = useLanguage();
   const { tenant, refreshTenant } = useTenant();
   const { currentUser, isLoading: authLoading, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState<'setup' | 'appointments' | 'staff' | 'services' | 'reports' | 'billing'>('setup');
+  const [activeTab, setActiveTab] = useState<'setup' | 'appointments' | 'staff' | 'services' | 'reports' | 'billing' | 'settings'>('setup');
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [staffList, setStaffList] = useState<Staff[]>([]);
   const [servicesList, setServicesList] = useState<Service[]>([]);
@@ -296,6 +296,12 @@ const AdminPage: React.FC = () => {
             className={`${activeTab === 'billing' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
           >
             Abonelik
+          </button>
+          <button
+            onClick={() => setActiveTab('settings')}
+            className={`${activeTab === 'settings' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
+          >
+            {language === 'tr' ? 'Ayarlar' : 'Settings'}
           </button>
         </nav>
       </div>
@@ -612,6 +618,12 @@ const AdminPage: React.FC = () => {
       )}
       
       {activeTab === 'billing' && <BillingTab />}
+      
+      {activeTab === 'settings' && (
+        <div className="p-8 text-center text-gray-500">
+           {language === 'tr' ? 'Ayarlar menüsü yakında eklenecektir.' : 'Settings module coming soon.'}
+        </div>
+      )}
     </div>
   );
 };

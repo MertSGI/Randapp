@@ -2,7 +2,8 @@ import { GoogleGenAI } from "@google/genai";
 import { Appointment } from '../types';
 
 const getAi = () => {
-  // Use globally injected API key
+  // TODO(Security): In a production environment with Supabase, calls to the Gemini API 
+  // must be routed through a Supabase Edge Function to avoid exposing the API key on the client.
   const key = process.env.GEMINI_API_KEY;
   if (!key) {
     console.warn("Gemini API Key is missing.");
