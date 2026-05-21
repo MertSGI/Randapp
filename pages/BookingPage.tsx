@@ -42,6 +42,7 @@ const BookingPage: React.FC = () => {
   const [calendarLink, setCalendarLink] = useState<string>('');
   const [whatsappSent, setWhatsappSent] = useState(false);
   const [subStatus, setSubStatus] = useState<SubscriptionStatus>('active');
+  const [setupError, setSetupError] = useState<string>('');
   const [isCheckingSub, setIsCheckingSub] = useState(true);
 
   const timeSlots = generateTimeSlots();
@@ -57,6 +58,16 @@ const BookingPage: React.FC = () => {
       });
       getStaffList(tenant.id, { activeOnly: true }).then(setStaffList);
       getServices(tenant.id, { activeOnly: true }).then(setServicesList);
+      
+      import('../services/goLiveService').then(({ goLiveService }) => {
+        goLiveService.canTenantAcceptBookings(tenant.id).then((status) => {
+           if (!status.allowed) {
+             setSubStatus('suspended'); // Reuse suspended state UI for now
+             // But we can customize the error
+             setSetupError(status.reason || 'Online randevu sistemi henüz aktif değil.');
+           }
+        });
+      });
     }
   }, [tenant]);
 
@@ -149,7 +160,7 @@ const BookingPage: React.FC = () => {
              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m0 0v2m0-2h2m-2 0H9m-3.5 4a2.5 2.5 0 01-2.5-2.5v-10A2.5 2.5 0 015.5 4h13A2.5 2.5 0 0121 6.5v10a2.5 2.5 0 01-2.5 2.5h-13z" />
            </svg>
            <h2 className="text-2xl font-bold mb-2">Hizmet Geçici Olarak Kapalı</h2>
-           <p>Bu salonun online randevu sistemi geçici olarak kullanılamıyor. Lütfen işletme ile iletişime geçin.</p>
+           <p>{setupError || 'Bu salonun online randevu sistemi geçici olarak kullanılamıyor. Lütfen işletme ile iletişime geçin.'}</p>
            {/* Final enforcement must happen server-side through Edge Functions, database constraints, RLS, or verified backend logic. */}
          </div>
       ) : (

@@ -18,6 +18,10 @@ If payment is delayed or requires manual bank transfer, the status remains `pend
 ### What is Automatic vs Manual?
 - **Automatic:** Creating db rows for Tenant, Staff (Owner), Branding, Onboarding Tracker, and basic Services/Staff templates.
 - **Manual (Salon Owner):** Filling in the specific details via the Onboarding Setup Wizard (Services, Pricing, Logo, Working Hours).
+- **After Onboarding:** Tenant enters `ready_for_review`.
+- **Manual Review:** Can optionally approve to `live`.
+- **Public Booking:** Only opens when `go_live_status` = `live`.
+- **Failed/Incomplete:** Keeps public booking locked.
 - **Manual Support (Super Admin):** 
   - Viewing tenants stuck in `setup_in_progress`.
   - Manual review of branding and setup (`reviewed_by_admin = true`).

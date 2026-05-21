@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTenant } from '../contexts/TenantContext';
 import { Staff, Service, Appointment } from '../types';
+import { goLiveService, GoLiveReadiness } from '../services/goLiveService';
 
 interface OnboardingWizardProps {
   staffList: Staff[];
@@ -26,8 +27,10 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   const [setupAddress, setSetupAddress] = useState(tenant?.branding?.address || '');
   const [setupFooter, setSetupFooter] = useState(tenant?.branding?.footerText || '');
   const [setupSaving, setSetupSaving] = useState(false);
+  const [internalNotes, setInternalNotes] = useState('');
   
   const [activeStep, setActiveStep] = useState(1);
+  const [readiness, setReadiness] = useState<GoLiveReadiness | null>(null);
 
   // Business logic step completed checks
   const isInfoCompleted = !!setupSalonName && !!setupAddress;
@@ -45,8 +48,10 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
       setSetupInstagram(tenant.branding?.instagramUrl || '');
       setSetupAddress(tenant.branding?.address || '');
       setSetupFooter(tenant.branding?.footerText || '');
+      
+      goLiveService.getGoLiveReadiness(tenant.id).then(setReadiness);
     }
-  }, [tenant]);
+  }, [tenant, servicesList, staffList, appointments]);
 
   const handleSaveSetup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,11 +88,6 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
     { id: 6, name: 'Test Randevusu', completed: isTestApptCompleted },
     { id: 7, name: 'Yayına Hazır', completed: isInfoCompleted && isServicesCompleted && isStaffCompleted }
   ];
-
-  const handleGoLive = () => {
-    if (!tenant) return;
-    alert("Super-admin veya sistem onayı isteği gönderildi. (Gerçekte onboarding DB status güncellenecek)");
-  };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -281,23 +281,72 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                  </div>
               </div>
 
-              {isInfoCompleted && isServicesCompleted && isStaffCompleted ? (
-                 <div className="text-center">
-                   <p className="text-green-600 dark:text-green-400 font-medium mb-4">Harika! Salonunuz müşteri kabul etmeye hazır görünüyor.</p>
-                   <button onClick={handleGoLive} className="px-8 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-bold shadow-lg transition-all">
-                     Yayına Hazır Olarak İşaretle
-                   </button>
-                 </div>
-              ) : (
-                 <div className="text-center p-6 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 font-medium rounded-lg">
-                   Eksik adımları tamamlamadan sistemi yayına alamazsınız. Lütfen ❌ olan adımları gözden geçirin.
-                 </div>
+              {readiness && !readiness.canGoLive && (
+                <div className="bg-red-50 text-red-700 p-4 rounded-lg mb-6 border border-red-200">
+                  <h4 className="font-bold mb-2">Yayına Alma Engelleri:</h4>
+                  <ul className="list-disc pl-5 space-y-1">
+                    {readiness.blockingReasons.map((reason, idx) => (
+                      <li key={idx}>{reason}</li>
+                    ))}
+                  </ul>
+                </div>
               )}
 
-              {/* TODO: super_admin view to approve the live status once setup is marked complete */}
-              <div className="hidden">
-                 {/* Super admin only tools */}
-                 {/* <SuperAdminOverride status={tenant.go_live_status} /> */}
+              <div className="flex flex-col sm:flex-row gap-4 mb-8 justify-center">
+                 <button 
+                   onClick={async () => {
+                     if (!tenant) return;
+                     await goLiveService.markReadyForReview(tenant.id);
+                     alert("Yayına Hazır olarak işaretlendi. Onay bekleniyor.");
+                     if (tenant) goLiveService.getGoLiveReadiness(tenant.id).then(setReadiness);
+                   }} 
+                   className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold shadow-sm transition-all"
+                 >
+                   Yayına Hazır Olarak İşaretle
+                 </button>
+                 
+                 <button 
+                   onClick={async () => {
+                     if (!tenant) return;
+                     await goLiveService.markTenantLive(tenant.id);
+                     alert("Salon yayına alındı! Müşteriler randevu alabilir.");
+                     if (tenant) goLiveService.getGoLiveReadiness(tenant.id).then(setReadiness);
+                   }}
+                   disabled={!readiness?.canGoLive}
+                   className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-bold shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                 >
+                   Yayına Al
+                 </button>
+
+                 <button 
+                   onClick={async () => {
+                     if (!tenant) return;
+                     await goLiveService.markTenantPaused(tenant.id);
+                     alert("Randevular geçici olarak durduruldu.");
+                     if (tenant) goLiveService.getGoLiveReadiness(tenant.id).then(setReadiness);
+                   }} 
+                   className="px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-bold shadow-sm transition-all"
+                 >
+                   Randevuyu Geçici Olarak Durdur
+                 </button>
+              </div>
+              
+              <p className="text-center text-sm text-gray-500 mb-8">
+                Not: Canlı sistemde yayına alma işlemi sunucu tarafında doğrulanmalıdır.
+              </p>
+
+              {/* Manual Setup Support Notes */}
+              <div className="mt-8 border-t border-gray-200 dark:border-slate-700 pt-6">
+                 <h4 className="font-bold text-gray-900 dark:text-white mb-2">Sistem Notları (Yalnızca Yetkililer)</h4>
+                 <p className="text-sm text-gray-500 mb-4">Yetkili personel veya destek ekibi tarafından eklenen kurulum notları.</p>
+                 <textarea 
+                   rows={3} 
+                   value={internalNotes}
+                   onChange={(e) => setInternalNotes(e.target.value)}
+                   placeholder="Destek ekibi notları..."
+                   className="w-full rounded-md border-gray-300 dark:border-slate-600 bg-gray-50 dark:bg-slate-900 text-gray-700 dark:text-gray-300 p-3 mb-2"
+                 />
+                 <button className="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-gray-800 dark:text-gray-200 rounded text-sm font-medium">Notu Kaydet</button>
               </div>
             </div>
           )}
