@@ -18,12 +18,14 @@
 - [ ] Step 7: Verify "Yayına Hazır Olarak İşaretle" is disabled if Step 1, 3, or 4 is incomplete.
 - [ ] Step 7: Un-mock mode (simulate real data): Verify clicking "Yayına Hazır Olarak İşaretle" sets status to `ready_for_review` and disables "Yayına Al" for standard admin unless overridden by roles.
 
-## 3. Super Admin Go-Live Flow
-- [ ] Log in as `superadmin@randapp.com`. Verify dashboard loads stats and tenants.
-- [ ] Look at "Ready for Review" section. Ensure tenants marked from Step 7 show up here.
+## 3. Super Admin Flow & Navigation
+- [ ] Log in as `superadmin@randapp.com`. Verify routing goes directly to `/super-admin`.
+- [ ] Verify Sidebar items navigate correctly to nested routes (`/super-admin/tenants`, `/super-admin/onboarding`, etc).
+- [ ] Verify active sidebar styling updates as routes change.
+- [ ] Navigate to `/super-admin/onboarding` and look at "Ready for Review".
 - [ ] Click "Approve Go-Live" on a pending salon. Verify it transitions to "live".
 - [ ] Click "Send Back" and provide a note. Verify tenant drops off "Ready for Review" list.
-- [ ] Click "Pause Bookings" on a live salon. Verify status goes to `paused`.
+- [ ] In Onboarding or Tenants page, test "Pause Bookings". Verify status goes to `paused`.
 
 ## 4. Booking Page Gate
 - [ ] Open incognito tab (unauthenticated). Navigate to booking page of a tenant that is `ready_for_review` or `paused`.

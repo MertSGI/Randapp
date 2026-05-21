@@ -17,12 +17,12 @@ A new salon on the platform must be approved before they can accept live booking
 
 3. **Super Admin Review**
    - The Super Admin logs in (`/super-admin`).
-   - The Dashboard shows a "Ready for Review" section.
+   - The Dashboard (`/super-admin`) and Onboarding Page (`/super-admin/onboarding`) show a "Ready for Review" section.
    - The Super Admin verifies the salon details.
    - **Actions:**
      - **Approve Go-Live**: Tenant status becomes `live`. The booking page is unlocked.
      - **Send Back**: Tenant status becomes `setup_in_progress` (Go Live status `needs_changes`). The Super Admin can leave an internal note.
-     - **Pause Bookings**: If a live salon needs to be halted, the Super Admin can set status to `paused`.
+     - **Pause Bookings**: If a live salon needs to be halted, the Super Admin can set status to `paused` from the Tenants or Onboarding page.
 
 4. **Booking Gate Enforcement**
    - The `BookingPage` calls `goLiveService.canTenantAcceptBookings(tenant.id)`.

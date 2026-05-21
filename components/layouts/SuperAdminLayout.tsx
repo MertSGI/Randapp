@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
 
@@ -39,17 +39,18 @@ const SuperAdminLayout: React.FC = () => {
         </div>
         <nav className="flex-1 px-4 py-6 space-y-2">
           {links.map((l) => (
-            <Link
+            <NavLink
               key={l.path}
               to={l.path}
-              className={`block px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                location.pathname === l.path || (location.pathname.startsWith(l.path) && l.path !== '/super-admin')
+              end={l.path === '/super-admin'}
+              className={({ isActive }) => `block px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                isActive
                   ? 'bg-blue-600 text-white'
                   : 'text-slate-300 hover:bg-slate-800 hover:text-white'
               }`}
             >
               {l.label}
-            </Link>
+            </NavLink>
           ))}
         </nav>
         <div className="p-4 border-t border-slate-800">

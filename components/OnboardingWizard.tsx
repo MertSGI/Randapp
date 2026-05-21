@@ -384,21 +384,29 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
           {activeStep === 5 && (
             <div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">5. Çalışma Saatleri</h3>
-              <div className="p-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-lg mb-6">
-                <p className="text-blue-800 dark:text-blue-300 mb-4">Çalışma saatleri şu anda temel varsayılan ayar olarak kaydedilir. Detaylı saat yönetimi sonraki fazda eklenecektir.</p>
-                <div className="font-bold text-blue-900 dark:text-blue-100">Varsayılan Saatler: Pazartesi - Pazar | 09:00 - 18:00</div>
+              <div className="p-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-lg mb-6 flex flex-col items-start gap-4">
+                <p className="text-blue-800 dark:text-blue-300">Çalışma saatleri şu anda temel varsayılan ayar olarak kaydedilir. Detaylı saat yönetimi sonraki fazda eklenecektir.</p>
+                <button 
+                  onClick={() => {
+                     alert('Varsayılan çalışma saatleri uygulandı.');
+                     setActiveStep(6);
+                  }}
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-medium transition"
+                >
+                  Varsayılan çalışma saatlerini kullan: 09:00–18:00
+                </button>
               </div>
               {onNavigateToTab && (
                  <button 
                    onClick={() => onNavigateToTab('settings')} 
                    className="mb-6 text-sm text-accent dark:text-blue-400 hover:underline flex items-center"
                  >
-                   Ayarlar menüsünü gör
+                   Çalışma saatlerini düzenle
                  </button>
                )}
               <div className="pt-4 flex justify-between">
                  <button type="button" onClick={() => setActiveStep(4)} className="px-6 py-2 bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-md font-medium">Geri</button>
-                 <button type="button" onClick={() => setActiveStep(6)} className="px-6 py-2 bg-accent text-white rounded-md font-medium">Varsayılanları Kabul Et & Sonraki</button>
+                 <button type="button" onClick={() => setActiveStep(6)} className="px-6 py-2 bg-accent text-white rounded-md font-medium">Sonraki</button>
               </div>
             </div>
           )}

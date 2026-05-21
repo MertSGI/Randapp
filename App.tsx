@@ -19,6 +19,12 @@ import LoginPage from './pages/LoginPage';
 import AIVisualizerPage from './pages/AIVisualizerPage';
 import DemoLandingPage from './pages/DemoLandingPage';
 import SuperAdminDashboard from './pages/SuperAdminDashboard';
+import SuperAdminTenantsPage from './pages/super-admin/SuperAdminTenantsPage';
+import SuperAdminSubscriptionsPage from './pages/super-admin/SuperAdminSubscriptionsPage';
+import SuperAdminPaymentsPage from './pages/super-admin/SuperAdminPaymentsPage';
+import SuperAdminOnboardingPage from './pages/super-admin/SuperAdminOnboardingPage';
+import SuperAdminReportsPage from './pages/super-admin/SuperAdminReportsPage';
+import SuperAdminSettingsPage from './pages/super-admin/SuperAdminSettingsPage';
 
 // Contexts
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -73,7 +79,12 @@ const AppFlowSwitcher: React.FC = () => {
       {/* 4. Super Admin Routes */}
       <Route element={<ProtectedRoute allowedRoles={['super_admin']}><SuperAdminLayout /></ProtectedRoute>}>
         <Route path="/super-admin" element={<SuperAdminDashboard />} />
-        <Route path="/super-admin/*" element={<SuperAdminDashboard />} />
+        <Route path="/super-admin/tenants" element={<SuperAdminTenantsPage />} />
+        <Route path="/super-admin/subscriptions" element={<SuperAdminSubscriptionsPage />} />
+        <Route path="/super-admin/payments" element={<SuperAdminPaymentsPage />} />
+        <Route path="/super-admin/onboarding" element={<SuperAdminOnboardingPage />} />
+        <Route path="/super-admin/reports" element={<SuperAdminReportsPage />} />
+        <Route path="/super-admin/settings" element={<SuperAdminSettingsPage />} />
       </Route>
       
       {/* Catch-all route to prevent white screens on unknown paths */}
