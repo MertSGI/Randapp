@@ -26,14 +26,46 @@ export const iyzicoClient = {
     conversationId: string;
     locale?: string;
   }) => {
-    console.log("[iyzicoClient] Mock calling iyzico to create checkout form with params:", params);
-    // Real implementation would make a signed request to iyzico API
-    return {
-      status: 'success',
-      checkoutFormContent: '<div id="iyzipay-checkout-form" class="popup">...</div>',
-      token: 'mock_token_' + Date.now(),
-      payWithIyzicoPageUrl: `https://checkout.mock/randapp?tenantId=${params.customer?.id || 'iyzico_mock'}&conversationId=${params.conversationId}&ref=${params.paymentPlanReferenceCode}`
+    console.log("[iyzicoClient] Preparing real sandbox request for iyzico with params:", params);
+    
+    // In a real implementation we would:
+    // 1. Generate an authorization header (IYZWS PKI/HMAC token based on api_key, secret_key, random string, and payload)
+    // 2. Base64 encode the payload if necessary or just format as JSON
+    // 3. fetch(`https://sandbox-api.iyzipay.com/v2/subscription/checkoutform/initialize`)
+    
+    const config = iyzicoClient.assertIyzicoSandboxConfig();
+
+    const requestBody = {
+      locale: params.locale || "tr",
+      conversationId: params.conversationId,
+      pricingPlanReferenceCode: params.paymentPlanReferenceCode,
+      subscriptionInitialStatus: "ACTIVE",
+      callbackUrl: params.callbackUrl,
+      customer: params.customer
     };
+
+    // We keep the final network call wrapped in this clearly marked try/catch block
+    try {
+      // Simulate real call. Since we don't have exact payload signing code for Deno here,
+      // we return a controlled error instead of silently faking success, as per instructions.
+      // E.g.
+      // const response = await fetch(`${config.baseUrl}/v2/subscription/checkoutform/initialize`, {
+      //   method: 'POST',
+      //   headers: {
+      //     'Accept': 'application/json',
+      //     'Content-Type': 'application/json',
+      //     'Authorization': 'IYZWS ... (Requires proper Crypto HMAC signature)'
+      //   },
+      //   body: JSON.stringify(requestBody)
+      // });
+      
+      throw new Error("IYZICO_CRYPTO_NOT_IMPLEMENTED");
+      
+    } catch (error: any) {
+      console.error("[iyzicoClient] Edge function fetch failed. Reason: ", error.message);
+      // Return a controlled error instead of exposing secrets or faking success
+      throw new Error("Could not create iyzico sandbox checkout session");
+    }
   },
 
   verifyIyzicoWebhookSignature: (rawBody: string, headers: Headers) => {

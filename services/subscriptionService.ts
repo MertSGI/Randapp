@@ -130,14 +130,19 @@ export const subscriptionService = {
         });
 
         if (error) throw error;
+        
+        if (data?.error) {
+          throw new Error(data.error);
+        }
+
         if (data?.checkoutUrl) {
           window.location.href = data.checkoutUrl;
         } else {
-          alert('Ödeme sayfasi olusturulamadi.');
+          alert('Ödeme sayfası oluşturulamadı.');
         }
       } catch (err: any) {
         console.error("Checkout session error:", err);
-        alert('Ödeme başlatılırken bir hata oluştu: ' + err.message);
+        alert('Ödeme başlatılırken bir hata oluştu: ' + (err.message || 'Bilinmeyen hata'));
       }
       return;
     }
