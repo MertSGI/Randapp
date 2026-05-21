@@ -1,16 +1,16 @@
 export const planMapping = {
   starter: {
-    iyzicoPricingPlanReferenceCode: 'plan_starter_reference',
+    iyzicoPricingPlanReferenceCode: Deno.env.get('IYZICO_PLAN_STARTER_REF') || 'plan_starter_reference',
     name: 'Starter',
     price: 499
   },
   professional: {
-    iyzicoPricingPlanReferenceCode: 'plan_professional_reference',
+    iyzicoPricingPlanReferenceCode: Deno.env.get('IYZICO_PLAN_PROFESSIONAL_REF') || 'plan_professional_reference',
     name: 'Professional',
     price: 999
   },
   premium: {
-    iyzicoPricingPlanReferenceCode: 'plan_premium_reference',
+    iyzicoPricingPlanReferenceCode: Deno.env.get('IYZICO_PLAN_PREMIUM_REF') || 'plan_premium_reference',
     name: 'Premium',
     price: 1999
   }

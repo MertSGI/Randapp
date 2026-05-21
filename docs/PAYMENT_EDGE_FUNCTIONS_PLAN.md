@@ -69,3 +69,13 @@ provider webhook payload
   5. Send user notification or allow frontend to redirect user to `/admin?tab=kurulum`.
 
 **CRITICAL NOTE:** Subscription table updates must ONLY be based on these verified webhooks, NOT on frontend callbacks or redirects, which can be easily spoofed.
+
+## Sandbox Activation Checklist
+Before migrating to production, ensure the iyzico sandbox flow is fully tested:
+- [ ] iyzico Edge Function credentials set in Supabase Secrets (`IYZICO_API_KEY`, `IYZICO_SECRET_KEY`)
+- [ ] Subscription Plan references set in Secrets (`IYZICO_PLAN_STARTER_REF`, etc.)
+- [ ] Webhook URL configured in iyzico Sandbox Panel
+- [ ] Webhook signature verification planned or temporarily bypassed for sandbox only
+- [ ] Provider events correctly mapped to internal subscription status
+- [ ] Failed payment behavior tested via sandbox test cards
+- [ ] Canceled subscription behavior tested via sandbox webhooks
