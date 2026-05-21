@@ -2,27 +2,33 @@
 
 This guide details how to configure the iyzico sandbox environment and test the subscription flow safely via Supabase Edge Functions without exposing secrets to the frontend.
 
-## 1. Required Supabase Edge Function Secrets
-The frontend must never contain payment provider secret keys. All of these credentials must be added to your Supabase project as Edge Function secrets (via Supabase Dashboard -> Settings -> Edge Functions -> Secrets, or via `supabase secrets set ...` CLI).
+## 1. Required iyzico Sandbox Setup
+
+- [ ] Sandbox merchant account
+- [ ] Subscription product created
+- [ ] Starter payment plan created
+- [ ] Professional payment plan created
+- [ ] Premium payment plan created
+- [ ] Plan reference codes copied
+- [ ] Webhook HTTPS URL configured in iyzico merchant portal
+
+## 2. Required Supabase Secrets
+
+The frontend must never contain payment provider secret keys. All of these credentials must be added to your Supabase project as Edge Function secrets.
 
 - `IYZICO_API_KEY`: Your iyzico Sandbox API Key
 - `IYZICO_SECRET_KEY`: Your iyzico Sandbox Secret Key
-- `IYZICO_BASE_URL`: `https://sandbox-api.iyzipay.com`
-- `SUPABASE_URL`: Your Supabase project URL (needed for Service Role access)
-- `SUPABASE_SERVICE_ROLE_KEY`: Admin key for database writes (updating subscriptions securely after webhooks)
-
-Additionally, plan references must be mapped to iyzico payment plan Reference Codes via secrets:
+- `IYZICO_BASE_URL=https://sandbox-api.iyzipay.com`
 - `IYZICO_PLAN_STARTER_REF`
 - `IYZICO_PLAN_PROFESSIONAL_REF`
 - `IYZICO_PLAN_PREMIUM_REF`
+- `IYZICO_WEBHOOK_VERIFY_MODE=sandbox_bypass` (only for sandbox testing)
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
 
-## 2. iyzico Sandbox Merchant Setup
-1. Log in to [iyzico Sandbox Panel](https://sandbox-merchant.iyzipay.com/).
-2. Apply for or activate the Sandbox Merchant Account.
-3. Activate the Subscription API (Abonelik API) from your panel and get API Keys.
-4. **Create Products & Pricing Plans:** Create your Subscription Products (Starter, Professional, Premium) in the Subscription tab.
-5. Set prices in TRY.
-6. Copy the `PricingPlanReferenceCode` generated for each plan. Add these to your Edge Function secrets (as mentioned above).
+> **Important:**
+> `SUPABASE_SERVICE_ROLE_KEY` must only be used inside Edge Functions.
+> iyzico keys must never appear in VITE frontend env variables.
 
 ## 3. Deploying Edge Functions
 Use the Supabase CLI to deploy:
