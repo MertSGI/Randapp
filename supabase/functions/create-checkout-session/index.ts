@@ -55,11 +55,13 @@ serve(async (req) => {
     // TODO: Insert or prepare a pending subscription/session record into DB
     // e.g. await supabaseAdmin.from('subscription_sessions').insert(...)
 
-    const responseData: CreateCheckoutSessionResponse & { conversationId: string } = {
+    const responseData: CreateCheckoutSessionResponse & { ok: boolean, conversationId: string, environment: string } = {
+      ok: true,
       checkoutUrl: sessionDetail.payWithIyzicoPageUrl,
       provider: "iyzico",
       sessionId: sessionDetail.token,
-      conversationId: conversationId
+      conversationId: conversationId,
+      environment: "sandbox"
     };
 
     return new Response(JSON.stringify(responseData), {
@@ -68,9 +70,16 @@ serve(async (req) => {
     });
 
   } catch (error: any) {
-    return new Response(JSON.stringify({ error: error.message }), {
+    const isConfigError = error.message.includes('missing') || error.message.includes('not set');
+    return new Response(JSON.stringify({ 
+      ok: false,
+      errorCode: isConfigError ? 'CONFIG_ERROR' : 'VALIDATION_ERROR',
+      message: error.message,
+      provider: 'iyzico',
+      environment: 'sandbox'
+    }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: error.message.includes('missing') ? 500 : 400,
+      status: isConfigError ? 500 : 400,
     });
   }
 });

@@ -28,6 +28,7 @@ const SuperAdminLayout: React.FC = () => {
     { label: 'Onboarding', path: '/super-admin/onboarding' },
     { label: 'Reports', path: '/super-admin/reports' },
     { label: 'Settings', path: '/super-admin/settings' },
+    { label: 'Payment Test', path: '/super-admin/payment-test' },
   ];
 
   return (

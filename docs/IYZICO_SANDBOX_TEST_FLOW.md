@@ -14,7 +14,12 @@ VITE_ROUTER_MODE=hash # or browser depending on the environment
 
 ## 2. Test Execution Steps
 
-1. **Login as salon owner:** Log in to the application using a test salon owner account.
+1. **Deploy Edge Functions**: Use `supabase functions deploy payment-health`, `create-checkout-session`, etc.
+2. **Access Payment Test Diagnostics**: Log in as `superadmin@randapp.com` and navigate to `/#/super-admin/payment-test`.
+3. **Verify Configuration**: Click "Run Health Check" and ensure all variables return true (without exposing values).
+4. **Test Checkout Session Generation**: Select a plan and click "Test Checkout Session Oluştur". Inspect the JSON response block for `ok: true`.
+5. **Mock Webhook Local Test**: Copy the webhook payload from the test page and manually `curl` it to your local or deployed Edge Function.
+6. **Login as salon owner:** Log in to the application using a test salon owner account.
 2. **Go to Admin > Abonelik:** Navigate to the billing tab.
 3. **Select plan:** Review the available plans.
 4. **Click "Bu plana geç":** Initiate the upgrade process.

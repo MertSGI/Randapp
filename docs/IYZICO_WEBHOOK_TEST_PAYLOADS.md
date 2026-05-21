@@ -11,9 +11,9 @@ supabase functions serve payment-webhook
 Simulates a successful subscription activation (e.g., initial checkout completed).
 
 ```bash
-curl -X POST http://127.0.0.1:54321/functions/v1/payment-webhook \\
-  -H "Content-Type: application/json" \\
-  -H "x-iyzico-signature: mock_signature" \\
+curl -X POST "http://127.0.0.1:54321/functions/v1/payment-webhook" \
+  -H "Content-Type: application/json" \
+  -H "x-iyzico-signature: sandbox-test" \
   -d '{
     "iyziEventType": "subscription.order.success",
     "subscriptionReferenceCode": "sub_ref_12345",
@@ -23,6 +23,16 @@ curl -X POST http://127.0.0.1:54321/functions/v1/payment-webhook \\
     "price": "499.00",
     "currencyCode": "TRY",
     "token": "evt_success_001"
+  }'
+```
+
+To test against your remote deployed Edge Function in Supabase, replace the URL with your project ID:
+```bash
+curl -X POST "https://YOUR_PROJECT_REF.functions.supabase.co/payment-webhook" \
+  -H "Content-Type: application/json" \
+  -H "x-iyzico-signature: sandbox-test" \
+  -d '{
+    "iyziEventType": "subscription.order.success", ...
   }'
 ```
 

@@ -10,6 +10,7 @@ const BillingTab: React.FC = () => {
   const [usage, setUsage] = useState<TenantUsage | null>(null);
   const [plans, setPlans] = useState<PricingPlan[]>([]);
   const [loading, setLoading] = useState(true);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
   useEffect(() => {
     if (tenant) {
@@ -37,7 +38,16 @@ const BillingTab: React.FC = () => {
 
   const handleCheckout = async (planId: string) => {
     if (!tenant) return;
-    await subscriptionService.startCheckout(tenant.id, planId);
+    setCheckoutError(null);
+    try {
+      const url = await subscriptionService.startCheckout(tenant.id, planId);
+      if (url) {
+        window.location.href = url;
+      }
+    } catch (err: any) {
+       console.error("Checkout failed", err);
+       setCheckoutError(err.message || 'Ödeme oturumu başlatılırken bir hata oluştu.');
+    }
   };
 
   const handleBillingPortal = async () => {
@@ -75,6 +85,13 @@ const BillingTab: React.FC = () => {
       <div className="bg-white dark:bg-slate-800 shadow-sm rounded-lg border border-gray-200 dark:border-slate-700 p-6">
         <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Mevcut Abonelik Durumu</h2>
         
+        {checkoutError && (
+          <div className="mb-6 bg-red-50 border border-red-500 p-4 rounded-md">
+            <h3 className="text-red-900 font-bold">İşlem Başarısız</h3>
+            <p className="text-red-800 text-sm mt-1">{checkoutError}</p>
+          </div>
+        )}
+
         {subscription?.status === 'past_due' && (
           <div className="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded-r-md">
             <h3 className="text-red-800 font-medium">Ödeme Gecikmesi</h3>

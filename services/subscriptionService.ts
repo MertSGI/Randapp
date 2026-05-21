@@ -114,8 +114,8 @@ export const subscriptionService = {
     return Boolean(plan[featureKey]);
   },
 
-  async startCheckout(tenantId: string, planId: string): Promise<void> {
-    const paymentProvider = (import.meta as any).env.VITE_PAYMENT_PROVIDER || 'mock';
+  async startCheckout(tenantId: string, planId: string): Promise<string> {
+    const paymentProvider = import.meta.env.VITE_PAYMENT_PROVIDER || 'mock';
     
     if (paymentProvider !== 'mock') {
       try {
@@ -129,27 +129,59 @@ export const subscriptionService = {
           }
         });
 
-        if (error) throw error;
+        if (error) {
+           // error.context usually contains the standard HTTP response body from supabase edge functions if handled
+           let parsedError = error;
+           try {
+             if (error.context && typeof error.context.json === 'function') {
+                const body = await error.context.json();
+                parsedError = body;
+             }
+           } catch(e) {}
+           
+           throw {
+             isSafeStructure: true,
+             message: parsedError?.message || error.message || 'Ödeme oturumu oluşturulamadı. Lütfen sistem yöneticisiyle iletişime geçin.',
+             errorCode: parsedError?.errorCode || 'UNKNOWN_CHECKOUT_ERROR',
+             raw: parsedError
+           };
+        }
         
         if (data?.error) {
-          throw new Error(data.error);
+          throw {
+             isSafeStructure: true,
+             message: data.message || data.error || 'Ödeme oturumu oluşturulamadı. Lütfen sistem yöneticisiyle iletişime geçin.',
+             errorCode: data.errorCode || 'UNKNOWN_CHECKOUT_ERROR',
+             raw: data
+          };
         }
 
         if (data?.checkoutUrl) {
-          window.location.href = data.checkoutUrl;
+          return data.checkoutUrl;
         } else {
-          alert('Ödeme sayfası oluşturulamadı.');
+          throw {
+            isSafeStructure: true,
+            message: 'Ödeme oturumu URL döndürmedi. Lütfen sistem yöneticisiyle iletişime geçin.',
+            errorCode: 'MISSING_CHECKOUT_URL'
+          };
         }
       } catch (err: any) {
         console.error("Checkout session error:", err);
-        alert('Ödeme başlatılırken bir hata oluştu: ' + (err.message || 'Bilinmeyen hata'));
+        if (err.isSafeStructure) {
+          throw err;
+        }
+        throw {
+          isSafeStructure: true,
+          message: 'Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin.',
+          errorCode: 'UNEXPECTED_ERROR',
+          raw: err
+        };
       }
-      return;
     }
 
     // Mock Mode
     console.log(`[Mock Mode] Starting checkout for ${tenantId} -> ${planId}`);
-    alert(`[Demo] Ödeme simülasyonu: ${planId} planı için ödeme sayfasına yönlendiriliyorsunuz. (Test Modu)`);
+    return `https://mock-checkout-url.com/pay/${planId}?tenant=${tenantId}`;
   },
 
   async openBillingPortal(tenantId: string): Promise<void> {
