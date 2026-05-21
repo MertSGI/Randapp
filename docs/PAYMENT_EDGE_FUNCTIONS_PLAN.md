@@ -60,6 +60,12 @@ provider webhook payload
 - map provider event to subscription status
 - update subscriptions table
 - insert payment record
-- never trust frontend callbacks to activate subscription
+- **never trust frontend callbacks to activate subscription**
+- **After verified payment webhook:**
+  1. Create tenant.
+  2. Create subscription record.
+  3. Create salon owner profile.
+  4. Create onboarding progress record.
+  5. Send user notification or allow frontend to redirect user to `/admin?tab=kurulum`.
 
 **CRITICAL NOTE:** Subscription table updates must ONLY be based on these verified webhooks, NOT on frontend callbacks or redirects, which can be easily spoofed.
