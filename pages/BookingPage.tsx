@@ -11,6 +11,7 @@ import { createAppointment, getBookedSlots, updateAppointmentStatus } from '../s
 import { subscriptionService, SubscriptionStatus } from '../services/subscriptionService';
 import { businessProfileService } from '../services/businessProfileService';
 import { SalonBusinessProfile } from '../types';
+import { useAuth } from '../contexts/AuthContext';
 
 const generateTimeSlots = (): string[] => {
   const slots: string[] = [];
@@ -30,6 +31,7 @@ const generateTimeSlots = (): string[] => {
 const BookingPage: React.FC = () => {
   const { t, language } = useLanguage();
   const { tenant, branding } = useTenant();
+  const { currentUser } = useAuth();
   const [step, setStep] = useState<number>(0);
   const [staffList, setStaffList] = useState<Staff[]>([]);
   const [servicesList, setServicesList] = useState<Service[]>([]);
@@ -65,7 +67,8 @@ const BookingPage: React.FC = () => {
       
       import('../services/goLiveService').then(({ goLiveService }) => {
         goLiveService.canTenantAcceptBookings(tenant.id).then((status) => {
-           const isPreview = new URLSearchParams(window.location.hash.split('?')[1]).get('preview') === 'true';
+           const requestedPreview = new URLSearchParams(window.location.hash.split('?')[1]).get('preview') === 'true';
+           const isPreview = requestedPreview && !!currentUser;
            if (!status.allowed && !isPreview) {
              setSubStatus('suspended'); // Reuse suspended state UI for now
              setSetupError(status.reason || 'Online randevu sistemi henüz aktif değil.');
@@ -73,7 +76,7 @@ const BookingPage: React.FC = () => {
         });
       });
     }
-  }, [tenant]);
+  }, [tenant, currentUser]);
 
   useEffect(() => {
     if (tenant && selectedDate && selectedStaff) {
@@ -154,7 +157,8 @@ const BookingPage: React.FC = () => {
     setStep(4);
   };
 
-  const isPreview = new URLSearchParams(window.location.hash.split('?')[1]).get('preview') === 'true';
+  const requestedPreview = new URLSearchParams(window.location.hash.split('?')[1]).get('preview') === 'true';
+  const isPreview = requestedPreview && !!currentUser;
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -247,15 +251,26 @@ const BookingPage: React.FC = () => {
                      {businessProfile.opening_hours_summary && <p className="text-gray-600 dark:text-gray-300"><strong>Çalışma Saatleri:</strong> {businessProfile.opening_hours_summary}</p>}
                      <div className="flex flex-wrap justify-center gap-4 pt-4">
                         {businessProfile.address && (
-                           <a 
-                             href={businessProfile.google_maps_url || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${businessProfile.address} ${businessProfile.district || ''} ${businessProfile.city || ''}`)}`}
-                             target="_blank" 
-                             rel="noopener noreferrer" 
-                             className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-700 transition"
-                           >
-                              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                              Yol Tarifi Al
-                           </a>
+                           <>
+                             <a 
+                               href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${businessProfile.address} ${businessProfile.district || ''} ${businessProfile.city || ''}`)}`}
+                               target="_blank" 
+                               rel="noopener noreferrer" 
+                               className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-700 transition"
+                             >
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                Yol Tarifi Al
+                             </a>
+                             <a 
+                               href={businessProfile.google_maps_url || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${businessProfile.address} ${businessProfile.district || ''} ${businessProfile.city || ''}`)}`}
+                               target="_blank" 
+                               rel="noopener noreferrer" 
+                               className="flex items-center gap-2 bg-gray-600 dark:bg-slate-600 text-white px-4 py-2 rounded-lg font-bold hover:opacity-90 transition"
+                             >
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7l6-3 5.447 2.724A1 1 0 0121 7.618v10.764a1 1 0 01-1.447.894L15 17l-6 3z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7v13M15 4v13" /></svg>
+                                Haritada Aç
+                             </a>
+                           </>
                         )}
                         {businessProfile.whatsapp_number && (
                            <a href={`https://wa.me/${businessProfile.whatsapp_number.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-[#25D366] text-white px-4 py-2 rounded-lg font-bold hover:bg-green-600 transition">

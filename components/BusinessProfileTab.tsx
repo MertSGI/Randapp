@@ -143,11 +143,22 @@ const BusinessProfileTab: React.FC = () => {
                  </div>
                  <div>
                     <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Google Haritalar URL (Opsiyonel)</label>
-                    <input 
-                       type="text" value={profile.google_maps_url || ''} onChange={e => setProfile({...profile, google_maps_url: e.target.value})}
-                       className="w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 p-2 text-sm dark:text-white"
-                       placeholder="https://maps.app.goo.gl/..."
-                    />
+                    <div className="flex gap-2">
+                       <input 
+                          type="text" value={profile.google_maps_url || ''} onChange={e => setProfile({...profile, google_maps_url: e.target.value})}
+                          className="w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 p-2 text-sm dark:text-white"
+                          placeholder="https://maps.app.goo.gl/..."
+                       />
+                       {(profile.google_maps_url || profile.address) && (
+                          <a 
+                             href={profile.google_maps_url || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${profile.address} ${profile.district || ''} ${profile.city || ''}`)}`}
+                             target="_blank" rel="noreferrer"
+                             className="px-3 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 rounded-md text-xs font-medium flex items-center whitespace-nowrap"
+                          >
+                             Test Et
+                          </a>
+                       )}
+                    </div>
                     <p className="text-[10px] text-gray-500 mt-1">Bu link müşterilerin kolayca yol tarifi alması için kullanılacaktır. Google Haritalar'dan "Paylaş" &gt; "Bağlantıyı kopyala" diyerek alabilirsiniz.</p>
                  </div>
                  <div>

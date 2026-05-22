@@ -494,33 +494,56 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
             <div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">8. Yayına Hazırlık Onayı</h3>
               
-              <div className="space-y-4 mb-8">
-                 <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-900 rounded-lg">
-                    <span>Temel Bilgiler</span>
-                    <span>{isInfoCompleted ? '✅' : '❌'}</span>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                 <div className="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 rounded-lg p-5">
+                    <h4 className="font-bold text-red-800 dark:text-red-300 mb-4 border-b border-red-200 dark:border-red-700/50 pb-2">Zorunlu Adımlar</h4>
+                    <ul className="space-y-3">
+                       <li className="flex items-center justify-between text-sm">
+                          <span className="text-gray-700 dark:text-gray-300">Temel Bilgiler (İsim, WhatsApp)</span>
+                          <span>{isInfoCompleted ? '✅' : '❌'}</span>
+                       </li>
+                       <li className="flex items-center justify-between text-sm">
+                          <span className="text-gray-700 dark:text-gray-300">İşletme Profili (Slogan, Adres)</span>
+                          <span>{isProfileCompleted ? '✅' : '❌'}</span>
+                       </li>
+                       <li className="flex items-center justify-between text-sm">
+                          <span className="text-gray-700 dark:text-gray-300">Marka ve Tasarım (Renk)</span>
+                          <span>{isBrandingCompleted ? '✅' : '❌'}</span>
+                       </li>
+                       <li className="flex items-center justify-between text-sm">
+                          <span className="text-gray-700 dark:text-gray-300">En az 1 Hizmet</span>
+                          <span>{isServicesCompleted ? '✅' : '❌'}</span>
+                       </li>
+                       <li className="flex items-center justify-between text-sm">
+                          <span className="text-gray-700 dark:text-gray-300">En az 1 Uzman</span>
+                          <span>{isStaffCompleted ? '✅' : '❌'}</span>
+                       </li>
+                    </ul>
                  </div>
-                 <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-900 rounded-lg">
-                    <span>Marka ve Profil</span>
-                    <span>{isBrandingCompleted && isProfileCompleted ? '✅' : '❌'}</span>
-                 </div>
-                 <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-900 rounded-lg">
-                    <span>Hizmetler</span>
-                    <span>{isServicesCompleted ? '✅' : '❌'}</span>
-                 </div>
-                 <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-900 rounded-lg">
-                    <span>Uzmanlar</span>
-                    <span>{isStaffCompleted ? '✅' : '❌'}</span>
-                 </div>
-                 <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-900 rounded-lg">
-                    <span>Test Randevusu</span>
-                    <span>{isTestApptCompleted ? '✅' : '⚠️ Gerekli Değil'}</span>
+                 
+                 <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-lg p-5">
+                    <h4 className="font-bold text-blue-800 dark:text-blue-300 mb-4 border-b border-blue-200 dark:border-blue-700/50 pb-2">Önerilen Adımlar</h4>
+                    <ul className="space-y-3">
+                       <li className="flex items-center justify-between text-sm">
+                          <span className="text-gray-700 dark:text-gray-300">Logo ve Kapak Fotoğrafı</span>
+                          <span>{setupSalonName && tenant?.branding?.logoUrl ? '✅' : '⚠️'}</span>
+                       </li>
+                       <li className="flex items-center justify-between text-sm">
+                          <span className="text-gray-700 dark:text-gray-300">Instagram Bağlantısı</span>
+                          <span>{tenant?.branding?.instagramUrl ? '✅' : '⚠️'}</span>
+                       </li>
+                       <li className="flex items-center justify-between text-sm">
+                          <span className="text-gray-700 dark:text-gray-300">Test Randevusu</span>
+                          <span>{isTestApptCompleted ? '✅' : '⚠️'}</span>
+                       </li>
+                    </ul>
                  </div>
               </div>
 
               {readiness && !readiness.canGoLive && (
                 <div className="bg-red-50 text-red-700 p-4 rounded-lg mb-6 border border-red-200">
-                  <h4 className="font-bold mb-2">Eksikler:</h4>
-                  <ul className="list-disc pl-5 space-y-1">
+                  <h4 className="font-bold mb-2">Engeller:</h4>
+                  <ul className="list-disc pl-5 space-y-1 text-sm">
                     {readiness.blockingReasons.map((reason, idx) => (
                       <li key={idx}>{reason}</li>
                     ))}
@@ -528,9 +551,30 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 </div>
               )}
 
-              <div className="flex flex-col sm:flex-row gap-4 mb-8 justify-center">
+              <div className="bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg p-6 mb-8 text-center">
+                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Yayına göndermeden önce site önizlemesini kontrol etmenizi tavsiye ederiz. Randevu sisteminiz henüz dışarıdan erişilebilir değildir.</p>
+                 <a 
+                   href={`/#/book?preview=true`} 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   className="inline-flex px-6 py-2 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg font-bold shadow-sm transition-all text-center items-center justify-center mb-4"
+                 >
+                   Site Önizlemesini Aç
+                 </a>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4 mb-4 justify-center">
                  <button 
-                   disabled={!isInfoCompleted || !isServicesCompleted || !isStaffCompleted || !isProfileCompleted || (tenant as any)?.provisioning_status === 'ready_for_review' || (tenant as any)?.provisioning_status === 'live'}
+                   onClick={() => {
+                     navigator.clipboard.writeText(`${window.location.origin}/${(import.meta as any).env.VITE_ROUTER_MODE === 'hash' ? '#/' : ''}book`);
+                     alert('Randevu sayfanızın adresi kopyalandı.');
+                   }}
+                   className="px-6 py-3 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg font-bold shadow-sm transition-all"
+                 >
+                   Bağlantıyı Kopyala
+                 </button>
+                 <button 
+                   disabled={!isInfoCompleted || !isServicesCompleted || !isStaffCompleted || !isProfileCompleted || !isBrandingCompleted || (tenant as any)?.provisioning_status === 'ready_for_review' || (tenant as any)?.provisioning_status === 'live'}
                    onClick={async () => {
                      if (!tenant) return;
                      try {
@@ -546,19 +590,16 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                  >
                    Yayına Hazır Olarak İşaretle
                  </button>
-                 <a 
-                   href={`/#/book?preview=true`} 
-                   target="_blank" 
-                   rel="noopener noreferrer"
-                   className="px-6 py-3 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg font-bold shadow-sm transition-all text-center flex items-center justify-center"
-                 >
-                   Site Önizlemesini Aç
-                 </a>
               </div>
 
               {(tenant as any)?.provisioning_status === 'ready_for_review' && (
                   <div className="bg-blue-50 text-blue-800 p-4 rounded-lg text-center font-medium border border-blue-200">
-                     Kurulumunuz inceleme için gönderildi. Lütfen yöneticinin onayını bekleyin.
+                     Kurulumunuz inceleme için gönderildi. Lütfen Randapp ekibinin onayını bekleyin.
+                  </div>
+              )}
+              {(tenant as any)?.provisioning_status === 'live' && (
+                  <div className="bg-green-50 text-green-800 p-4 rounded-lg text-center font-medium border border-green-200">
+                     İşletmeniz yayında! Randevu almaya başlayabilirsiniz.
                   </div>
               )}
               

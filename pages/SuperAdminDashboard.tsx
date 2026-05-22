@@ -100,7 +100,10 @@ const SuperAdminDashboard: React.FC = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Needs Approval</span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm flex justify-end gap-3">
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm flex justify-end gap-3 flex-wrap">
+                         <a href={`/#/book?preview=true`} target="_blank" rel="noopener noreferrer" className="bg-gray-100 text-gray-800 hover:bg-gray-200 px-3 py-1.5 rounded-md text-xs font-medium shadow-sm transition-colors flex items-center gap-1">
+                           Siteyi Önizle
+                         </a>
                          <button onClick={() => handleApprove(t.tenant.id)} className="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-md text-xs font-medium shadow-sm transition-colors">Approve Go-Live</button>
                          <button onClick={() => handleSendBack(t.tenant.id)} className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200 px-3 py-1.5 rounded-md text-xs font-medium shadow-sm transition-colors">Send Back</button>
                       </td>
