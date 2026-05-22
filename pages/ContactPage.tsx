@@ -1,17 +1,66 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const ContactPage: React.FC = () => {
+  const [salonName, setSalonName] = useState('');
+  const [city, setCity] = useState('');
+  const [phone, setPhone] = useState('');
+  
+  const handleWhatsAppRedirect = (e: React.FormEvent) => {
+    e.preventDefault();
+    const text = `Merhaba, Randapp hakkında bilgi almak istiyorum.\n\nSalon: ${salonName}\nİl: ${city}\nTelefon: ${phone}\n\nDetayları görüşebilir miyiz?`;
+    window.open(`https://wa.me/905555555555?text=${encodeURIComponent(text)}`, '_blank');
+  };
+
   return (
-    <div className="py-12 max-w-2xl mx-auto text-center">
-      <h1 className="text-4xl font-bold mb-8 dark:text-white">İletişime Geçin</h1>
-      <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
-        Sorularınız veya kurumsal anlaşmalar için bize her zaman ulaşabilirsiniz.
-      </p>
-      <div className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700">
-        <a href="mailto:iletisim@randapp.com" className="block text-2xl font-bold text-blue-600 dark:text-blue-400 mb-4 hover:underline">iletisim@randapp.com</a>
-        <a href="https://wa.me/905555555555" className="inline-block bg-green-500 text-white px-8 py-3 rounded-xl font-bold hover:bg-green-600 transition">
-          WhatsApp'tan Yazın
-        </a>
+    <div className="py-12 px-4 max-w-4xl mx-auto">
+      <div className="text-center mb-12">
+        <h1 className="text-4xl font-bold mb-4 dark:text-white">İletişime Geçin</h1>
+        <p className="text-xl text-gray-600 dark:text-gray-400">
+          Sorularınız, kurumsal anlaşmalar veya demo talepleri için bize her zaman ulaşabilirsiniz.
+        </p>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-12 items-start">
+         <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-lg border border-gray-100 dark:border-slate-700">
+           <h3 className="text-2xl font-bold mb-6 dark:text-white">Bilgilerinizi Bırakın</h3>
+           <p className="text-sm text-gray-500 mb-6">Form gönderimi şu an doğrudan WhatsApp üzerinden satış ekibimize iletilmektedir.</p>
+           <form onSubmit={handleWhatsAppRedirect} className="space-y-4">
+             <div>
+               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Salon Adı</label>
+               <input required type="text" value={salonName} onChange={e => setSalonName(e.target.value)} className="w-full rounded-xl border border-gray-300 dark:border-slate-600 p-3 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none" />
+             </div>
+             <div>
+               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">İl / İlçe</label>
+               <input required type="text" value={city} onChange={e => setCity(e.target.value)} className="w-full rounded-xl border border-gray-300 dark:border-slate-600 p-3 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none" />
+             </div>
+             <div>
+               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Telefon Numarası</label>
+               <input required type="tel" value={phone} onChange={e => setPhone(e.target.value)} className="w-full rounded-xl border border-gray-300 dark:border-slate-600 p-3 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none" />
+             </div>
+             <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl transition mt-4">
+               WhatsApp ile Gönder
+             </button>
+           </form>
+         </div>
+
+         <div className="space-y-8">
+            <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-700">
+               <h3 className="text-xl font-bold mb-4 dark:text-white">Daha Hızlı İletişim</h3>
+               <p className="text-gray-600 dark:text-gray-400 mb-6">Form doldurmak istemiyor musunuz? Doğrudan WhatsApp hattımızdan veya e-posta üzerinden bizimle iletişime geçebilirsiniz.</p>
+               <a href="https://wa.me/905555555555" target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 w-full bg-[#25D366] text-white px-8 py-3.5 rounded-xl font-bold hover:bg-green-600 transition mb-4">
+                  WhatsApp'tan Yazın
+               </a>
+               <a href="mailto:iletisim@randapp.com" className="flex items-center justify-center gap-2 w-full bg-gray-100 dark:bg-slate-700 text-gray-800 dark:text-white px-8 py-3.5 rounded-xl font-bold hover:bg-gray-200 dark:hover:bg-slate-600 transition">
+                  iletisim@randapp.com
+               </a>
+            </div>
+
+            <div className="bg-blue-50 dark:bg-blue-900/20 p-8 rounded-3xl border border-blue-100 dark:border-blue-800">
+               <h3 className="text-lg font-bold text-blue-800 dark:text-blue-300 mb-2">Destek Saatleri</h3>
+               <p className="text-blue-600 dark:text-blue-400">Pazartesi - Cuma: 09:00 - 18:00</p>
+               <p className="text-blue-600 dark:text-blue-400">Cumartesi: 10:00 - 15:00</p>
+            </div>
+         </div>
       </div>
     </div>
   );

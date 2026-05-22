@@ -17,7 +17,7 @@ const ThemeToggle = () => {
 };
 
 const MarketingLayout: React.FC = () => {
-  const { language, setLanguage, t } = useLanguage();
+  const { language, setLanguage } = useLanguage();
   const location = useLocation();
 
   return (
@@ -31,30 +31,61 @@ const MarketingLayout: React.FC = () => {
                 <span className="font-semibold text-xl text-primary dark:text-white">Randapp</span>
               </Link>
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-                <Link to="/features" className="border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 px-1 pt-1 border-b-2 text-sm font-medium">Özellikler</Link>
-                <Link to="/pricing" className="border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 px-1 pt-1 border-b-2 text-sm font-medium">Fiyatlar</Link>
-                <Link to="/demo" className="border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 px-1 pt-1 border-b-2 text-sm font-medium">Demo Oluştur</Link>
-                <Link to="/contact" className="border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 px-1 pt-1 border-b-2 text-sm font-medium">İletişim</Link>
+                <Link to="/features" className={`border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-1 pt-1 border-b-2 text-sm font-medium ${location.pathname === '/features' ? 'text-gray-900 border-blue-500' : ''}`}>Özellikler</Link>
+                <Link to="/pricing" className={`border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-1 pt-1 border-b-2 text-sm font-medium ${location.pathname === '/pricing' ? 'text-gray-900 border-blue-500' : ''}`}>Fiyatlar</Link>
+                <Link to="/contact" className={`border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-1 pt-1 border-b-2 text-sm font-medium ${location.pathname === '/contact' ? 'text-gray-900 border-blue-500' : ''}`}>İletişim</Link>
               </div>
             </div>
             <div className="flex items-center gap-4">
               <ThemeToggle />
               <div className="flex bg-gray-100 dark:bg-slate-700 rounded-lg p-1">
-                <button onClick={() => setLanguage('en')} className={`px-3 py-1 rounded-md text-xs font-semibold ${language === 'en' ? 'bg-white text-accent shadow-sm' : 'text-gray-500'}`}>EN</button>
-                <button onClick={() => setLanguage('tr')} className={`px-3 py-1 rounded-md text-xs font-semibold ${language === 'tr' ? 'bg-white text-accent shadow-sm' : 'text-gray-500'}`}>TR</button>
+                <button onClick={() => setLanguage('en')} className={`px-3 py-1 rounded-md text-xs font-semibold ${language === 'en' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 dark:text-gray-300'}`}>EN</button>
+                <button onClick={() => setLanguage('tr')} className={`px-3 py-1 rounded-md text-xs font-semibold ${language === 'tr' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 dark:text-gray-300'}`}>TR</button>
               </div>
-              <Link to="/login" className="text-gray-600 dark:text-gray-200 text-sm font-medium hover:opacity-80">Giriş Yap</Link>
-              <a href="https://wa.me/905555555555" className="bg-green-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-green-600 hidden sm:block">Abonelik Talep Et</a>
+              <Link to="/login" className="text-gray-600 dark:text-gray-200 text-sm font-medium hover:text-blue-600 dark:hover:text-blue-400">Giriş Yap</Link>
+              <Link to="/demo" className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-bold hover:bg-blue-700 transition hidden sm:block">Ücretsiz Önizle</Link>
             </div>
           </div>
         </div>
+        {/* Mobile Navigation */}
+        <div className="sm:hidden flex gap-4 overflow-x-auto px-4 py-3 bg-white dark:bg-slate-800 border-t border-gray-100 dark:border-slate-700 whitespace-nowrap">
+            <Link to="/" className="text-sm font-medium text-gray-600 dark:text-gray-300 border-b-2 border-transparent">Ana Sayfa</Link>
+            <Link to="/features" className="text-sm font-medium text-gray-600 dark:text-gray-300 border-b-2 border-transparent">Özellikler</Link>
+            <Link to="/pricing" className="text-sm font-medium text-gray-600 dark:text-gray-300 border-b-2 border-transparent">Fiyatlar</Link>
+            <Link to="/contact" className="text-sm font-medium text-gray-600 dark:text-gray-300 border-b-2 border-transparent">İletişim</Link>
+            <Link to="/demo" className="text-sm font-medium text-blue-600 dark:text-blue-400 border-b-2 border-transparent">Önizle</Link>
+        </div>
       </nav>
-      <main className="flex-grow w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 mb-16 sm:mb-0 max-w-7xl">
+      <main className="flex-grow w-full">
         <Outlet />
       </main>
-      <footer className="bg-white dark:bg-slate-800 border-t border-gray-200 dark:border-slate-700 mt-auto py-6">
-        <div className="max-w-7xl mx-auto px-4 text-center text-sm text-gray-500 dark:text-gray-400">
-          &copy; {new Date().getFullYear()} Randapp Software. All rights reserved.
+      <footer className="bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-slate-800 mt-auto py-12">
+        <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="col-span-1 md:col-span-2">
+                <div className="flex items-center gap-2 mb-4">
+                   <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">R</div>
+                   <span className="font-semibold text-xl dark:text-white">Randapp</span>
+                </div>
+                <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xs">Kuaför ve güzellik salonları için profesyonel web sitesi ve randevu yönetim platformu.</p>
+            </div>
+            <div>
+                <h4 className="font-bold text-gray-900 dark:text-white mb-4">Ürün</h4>
+                <ul className="space-y-2 text-sm text-gray-500 dark:text-gray-400">
+                    <li><Link to="/features" className="hover:text-blue-600">Özellikler</Link></li>
+                    <li><Link to="/pricing" className="hover:text-blue-600">Fiyatlar</Link></li>
+                    <li><Link to="/demo" className="hover:text-blue-600">Demo Alın</Link></li>
+                </ul>
+            </div>
+            <div>
+                <h4 className="font-bold text-gray-900 dark:text-white mb-4">Şirket</h4>
+                <ul className="space-y-2 text-sm text-gray-500 dark:text-gray-400">
+                    <li><Link to="/contact" className="hover:text-blue-600">İletişime Geçin</Link></li>
+                    <li><a href="https://wa.me/905555555555" target="_blank" rel="noreferrer" className="hover:text-blue-600">WhatsApp Destek</a></li>
+                </ul>
+            </div>
+        </div>
+        <div className="max-w-7xl mx-auto px-4 text-center text-sm text-gray-400 dark:text-gray-600 mt-12 pt-8 border-t border-gray-100 dark:border-slate-800">
+          &copy; {new Date().getFullYear()} Randapp Software. Tüm hakları saklıdır.
         </div>
       </footer>
     </div>

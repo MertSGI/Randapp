@@ -172,7 +172,7 @@ const SuperAdminDashboard: React.FC = () => {
                     {t.setupStatus === 'live' && (
                        <button onClick={() => handlePause(t.tenant.id)} className="text-yellow-600 hover:text-yellow-900">Pause</button>
                     )}
-                    <button className="text-blue-600 hover:text-blue-900">Manage</button>
+                    <button onClick={() => alert('Tenant detay yönetimi sonraki fazda eklenecek.')} className="text-blue-600 hover:text-blue-900">Manage</button>
                   </td>
                 </tr>
               ))}
