@@ -96,6 +96,29 @@ const MarketingHomePage: React.FC = () => {
         </div>
       </section>
 
+      {/* FAQ Section */}
+      <section className="px-4 py-20 max-w-4xl mx-auto">
+        <h2 className="text-3xl font-bold text-center mb-12 dark:text-white">Sıkça Sorulan Sorular</h2>
+        <div className="space-y-6">
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700">
+            <h4 className="font-bold text-lg mb-2 dark:text-white">Bu sadece bir randevu sistemi mi?</h4>
+            <p className="text-gray-600 dark:text-gray-400">Hayır, Randapp salonunuz için kapsamlı bir dijital vitrindir. İçerisinde profesyonel bir mini web sitesi, hizmet fiyat listesi, Google Maps yönlendirmesi, takım tanıtımı, AI stil tavsiyesi ve online randevu sistemi barındırır.</p>
+          </div>
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700">
+            <h4 className="font-bold text-lg mb-2 dark:text-white">Kurulum ücreti ödüyor muyum?</h4>
+            <p className="text-gray-600 dark:text-gray-400">Hayır. Sistem tamamen kendi kendinize veya Randapp destek ekibinin yönlendirmesiyle ücretsiz kurulur. Sadece seçtiğiniz paketin aylık veya yıllık abonelik ücretini ödersiniz.</p>
+          </div>
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700">
+            <h4 className="font-bold text-lg mb-2 dark:text-white">Yayına almadan önce web sitemi görebilir miyim?</h4>
+            <p className="text-gray-600 dark:text-gray-400">Evet. Randapp paneline üye olduktan sonra işletme bilgilerinizi girip "Önizleme Modu"nda web sitenizi müşterilerinize açmadan önce sadece kendiniz görebilirsiniz.</p>
+          </div>
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700">
+            <h4 className="font-bold text-lg mb-2 dark:text-white">Google Maps ve WhatsApp çalışıyor mu?</h4>
+            <p className="text-gray-600 dark:text-gray-400">Evet. Sisteme adresinizi ve telefon numaranızı girdiğinizde "Yol Tarifi Al" ve "WhatsApp" butonları müşterileriniz için otomatik olarak aktifleşir.</p>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Bottom */}
       <section className="bg-blue-600 py-20 px-4 text-center rounded-3xl mx-4 max-w-6xl md:mx-auto mb-12 shadow-2xl">
         <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Salonunuz İçin Yeni Bir Başlangıç</h2>

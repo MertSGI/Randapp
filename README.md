@@ -35,7 +35,7 @@ Randapp öncelikli olarak randevu bazlı hizmet veren yerel işletmelere odaklan
 - **Spa, Masaj ve Klinik Randevulu Hizmet Sağlayıcılar**
 
 ## 💳 Abonelik ve Ödeme Modeli Altyapısı (Subscription Scaffold)
-Sisteme ücretli planlar, limit kontrolleri ve fatura portalı entegrasyonu hazırlığı yapılmıştır. Bu aşama tamamen planların ve yetkilerin mock tabanlı simülasyonunu içerir. Hiçbir gerçek ödeme veya kart işlemi şuan gerçekleşmez. Gerçek ödeme (Stripe, iyzico) Node.js tabanlı sunucu fonksiyonlarına (Edge Functions) inşa edilmelidir.
+Sisteme ücretli planlar, limit kontrolleri ve fatura portalı entegrasyonu hazırlığı yapılmıştır. Bu aşama tamamen planların ve yetkilerin mock tabanlı simülasyonunu içerir. Hiçbir gerçek ödeme veya kart işlemi şuan gerçekleşmez (Canlı ödeme henüz aktif değildir). Gerçek ödeme işlemleri için iyzico sandbox test altyapısı hazırlanmıştır ve Node.js tabanlı sunucu fonksiyonlarına (Edge Functions) inşa edilmelidir.
 
 ---
 
