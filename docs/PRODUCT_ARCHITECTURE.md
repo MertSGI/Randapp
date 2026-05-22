@@ -4,9 +4,10 @@ The application follows a strict separation of concerns regarding user experienc
 
 ## 1. Marketing / Public Randapp Site (`MarketingLayout`)
 - **Target Audience:** Salon owners seeking a SaaS solution.
+- **Goal:** Act as a conversion-focused landing site emphasizing that Randapp provides a "Mini Website + Online Booking + AI Advisor" instead of just a raw booking widget.
 - **Routes:** `/`, `/features`, `/pricing`, `/demo`, `/contact`, `/login`.
-- **Navigation:** Shows product-centric links ("Özellikler", "Demo Oluştur", "Giriş Yap").
-- **Behavior:** This is the default layout when accessing the root domain without a specific tenant context.
+- **Navigation:** Shows product-centric links ("Özellikler", "Demo Oluştur", "Giriş Yap"). Hidden routes from end users.
+- **Behavior:** This is the default layout when accessing the root domain without a specific tenant context. The `/#/` route explicitly renders this in Preview Mode.
 
 ## 2. Salon Public Booking Site (`SalonBookingLayout`)
 - **Target Audience:** Salon clients / end-users.

@@ -48,12 +48,12 @@ const MarketingLayout: React.FC = () => {
           </div>
         </div>
         {/* Mobile Navigation */}
-        <div className="sm:hidden flex gap-4 overflow-x-auto px-4 py-3 bg-white dark:bg-slate-800 border-t border-gray-100 dark:border-slate-700 whitespace-nowrap">
-            <Link to="/" className="text-sm font-medium text-gray-600 dark:text-gray-300 border-b-2 border-transparent">Ana Sayfa</Link>
-            <Link to="/features" className="text-sm font-medium text-gray-600 dark:text-gray-300 border-b-2 border-transparent">Özellikler</Link>
-            <Link to="/pricing" className="text-sm font-medium text-gray-600 dark:text-gray-300 border-b-2 border-transparent">Fiyatlar</Link>
-            <Link to="/contact" className="text-sm font-medium text-gray-600 dark:text-gray-300 border-b-2 border-transparent">İletişim</Link>
-            <Link to="/demo" className="text-sm font-medium text-blue-600 dark:text-blue-400 border-b-2 border-transparent">Önizle</Link>
+        <div className="sm:hidden flex gap-4 overflow-x-auto px-4 py-3 bg-white dark:bg-slate-800 border-t border-gray-100 dark:border-slate-700 whitespace-nowrap hide-scrollbar">
+            <Link to="/" className={`text-sm font-medium border-b-2 ${location.pathname === '/' ? 'text-gray-900 dark:text-white border-blue-500' : 'text-gray-600 dark:text-gray-300 border-transparent'}`}>Ana Sayfa</Link>
+            <Link to="/features" className={`text-sm font-medium border-b-2 ${location.pathname === '/features' ? 'text-gray-900 dark:text-white border-blue-500' : 'text-gray-600 dark:text-gray-300 border-transparent'}`}>Özellikler</Link>
+            <Link to="/pricing" className={`text-sm font-medium border-b-2 ${location.pathname === '/pricing' ? 'text-gray-900 dark:text-white border-blue-500' : 'text-gray-600 dark:text-gray-300 border-transparent'}`}>Fiyatlar</Link>
+            <Link to="/contact" className={`text-sm font-medium border-b-2 ${location.pathname === '/contact' ? 'text-gray-900 dark:text-white border-blue-500' : 'text-gray-600 dark:text-gray-300 border-transparent'}`}>İletişim</Link>
+            <Link to="/demo" className={`text-sm font-medium border-b-2 ${location.pathname === '/demo' ? 'text-blue-600 dark:text-blue-400 border-blue-500' : 'text-blue-600 dark:text-blue-400 border-transparent'}`}>Önizle</Link>
         </div>
       </nav>
       <main className="flex-grow w-full">

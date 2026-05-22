@@ -3,6 +3,16 @@
 ## Overview
 This document outlines the testing requirements for the public-facing Randapp marketing site.
 
+## Accessing the Marketing Homepage for Testing
+To view the marketing homepage depending on your environment:
+- **Preview / Local Development (HashRouter):** Open `/#/`. If you are currently viewing something like `/#/super-admin/payment-test`, manually change the URL hash to `/#/` in your browser's address bar.
+- **Production (BrowserRouter):** Open `/`.
+
+**Expected Setup:**
+- Component: `MarketingHomePage`
+- Layout: `MarketingLayout`
+- Top Navigation: Ana Sayfa, Özellikler, Fiyatlar, Demo Oluştur, İletişim, Giriş Yap
+
 ## Test Cases
 
 1. **Homepage Explains Product Quicky**

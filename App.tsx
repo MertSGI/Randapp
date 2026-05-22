@@ -56,7 +56,11 @@ const AppFlowSwitcher: React.FC = () => {
     <Routes>
       {/* 1. Marketing Routes */}
       <Route element={<MarketingLayout />}>
-        <Route path="/" element={tenant ? <Navigate to="/book" replace /> : <MarketingHomePage />} />
+        <Route path="/" element={
+          tenant && !['localhost', '127.0.0.1'].includes(window.location.hostname) && !window.location.hostname.includes('run.app')
+            ? <Navigate to="/book" replace /> 
+            : <MarketingHomePage />
+        } />
         <Route path="/features" element={<FeaturesPage />} />
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/demo" element={<DemoLandingPage />} />
