@@ -530,17 +530,30 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
 
               <div className="flex flex-col sm:flex-row gap-4 mb-8 justify-center">
                  <button 
-                   disabled={!isInfoCompleted || !isServicesCompleted || !isStaffCompleted || !isProfileCompleted}
+                   disabled={!isInfoCompleted || !isServicesCompleted || !isStaffCompleted || !isProfileCompleted || (tenant as any)?.provisioning_status === 'ready_for_review' || (tenant as any)?.provisioning_status === 'live'}
                    onClick={async () => {
                      if (!tenant) return;
-                     await goLiveService.markReadyForReview(tenant.id);
-                     alert("Yayına Hazır olarak işaretlendi. Randapp ekibi kurulumunuzu inceledikten sonra sistemi yayına alacaktır.");
-                     if (tenant) goLiveService.getGoLiveReadiness(tenant.id).then(setReadiness);
+                     try {
+                        await goLiveService.markReadyForReview(tenant.id);
+                        alert("Yayına Hazır olarak işaretlendi. Randapp ekibi kurulumunuzu inceledikten sonra sistemi yayına alacaktır.");
+                        if (typeof refreshTenant === 'function') await refreshTenant();
+                        await goLiveService.getGoLiveReadiness(tenant.id).then(setReadiness);
+                     } catch(err) {
+                        alert("Hata oluştu.");
+                     }
                    }} 
                    className="px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-lg font-bold shadow-sm transition-all"
                  >
                    Yayına Hazır Olarak İşaretle
                  </button>
+                 <a 
+                   href={`/#/book?preview=true`} 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   className="px-6 py-3 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg font-bold shadow-sm transition-all text-center flex items-center justify-center"
+                 >
+                   Site Önizlemesini Aç
+                 </a>
               </div>
 
               {(tenant as any)?.provisioning_status === 'ready_for_review' && (

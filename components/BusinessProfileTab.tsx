@@ -142,6 +142,15 @@ const BusinessProfileTab: React.FC = () => {
                     </div>
                  </div>
                  <div>
+                    <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Google Haritalar URL (Opsiyonel)</label>
+                    <input 
+                       type="text" value={profile.google_maps_url || ''} onChange={e => setProfile({...profile, google_maps_url: e.target.value})}
+                       className="w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 p-2 text-sm dark:text-white"
+                       placeholder="https://maps.app.goo.gl/..."
+                    />
+                    <p className="text-[10px] text-gray-500 mt-1">Bu link müşterilerin kolayca yol tarifi alması için kullanılacaktır. Google Haritalar'dan "Paylaş" &gt; "Bağlantıyı kopyala" diyerek alabilirsiniz.</p>
+                 </div>
+                 <div>
                     <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Instagram URL</label>
                     <input 
                        type="text" value={profile.instagram_url || ''} onChange={e => setProfile({...profile, instagram_url: e.target.value})}

@@ -107,7 +107,14 @@ export const goLiveService = {
   },
 
   async markReadyForReview(tenantId: string): Promise<void> {
-    await provisioningService.markTenantProvisioningStatus(tenantId, 'ready_for_review');
+    const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
+    if (mode === 'supabase') {
+      await supabase.from('tenants').update({ go_live_status: 'pending_review' }).eq('id', tenantId);
+      await provisioningService.markTenantProvisioningStatus(tenantId, 'ready_for_review');
+    } else {
+      await dataProvider.set(`randapp:${tenantId}:go_live_status`, 'pending_review');
+      await provisioningService.markTenantProvisioningStatus(tenantId, 'ready_for_review');
+    }
   },
 
   async markTenantLive(tenantId: string): Promise<void> {
@@ -128,6 +135,17 @@ export const goLiveService = {
       await supabase.from('tenants').update({ go_live_status: 'paused' }).eq('id', tenantId);
     } else {
       await dataProvider.set(`randapp:${tenantId}:go_live_status`, 'paused');
+    }
+  },
+
+  async markTenantNeedsChanges(tenantId: string): Promise<void> {
+    const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
+    if (mode === 'supabase') {
+      await supabase.from('tenants').update({ go_live_status: 'needs_changes' }).eq('id', tenantId);
+      await provisioningService.markTenantProvisioningStatus(tenantId, 'setup_in_progress');
+    } else {
+      await dataProvider.set(`randapp:${tenantId}:go_live_status`, 'needs_changes');
+      await provisioningService.markTenantProvisioningStatus(tenantId, 'setup_in_progress');
     }
   },
 
