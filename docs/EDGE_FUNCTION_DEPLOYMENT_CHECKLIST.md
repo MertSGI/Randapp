@@ -32,12 +32,20 @@ supabase secrets set IYZICO_WEBHOOK_VERIFY_MODE=sandbox_bypass
 Deploy the three payment handling edge functions:
 
 ```bash
+supabase functions deploy payment-health
 supabase functions deploy create-checkout-session
 supabase functions deploy create-billing-portal-session
 supabase functions deploy payment-webhook
 ```
 
-## 3. Function Responsibilities
+## 3. Verify Configuration
+
+1. Open `/#/super-admin/payment-test` in the browser as a `super_admin`.
+2. Click **Run Health Check**.
+3. Verify that all secret-related properties (e.g. `apiKeyConfigured`, `secretKeyConfigured`) return `true`. *No actual secret values should be displayed.*
+4. Ensure `IYZICO_WEBHOOK_VERIFY_MODE=sandbox_bypass` is ONLY used for sandbox environments, and never in production.
+
+## 4. Function Responsibilities
 
 - **`create-checkout-session`**: Receives a `planId` and `tenantId` from an authenticated user. Generates an iyzico checkout/subscription session URL, and returns `checkoutUrl` to the frontend.
 - **`payment-webhook`**: Receives an event payload directly from iyzico servers whenever a payment layout completes. **This is the only source of truth.** It updates the `subscriptions` and `payments` tables only after verifying the iyzico signature.

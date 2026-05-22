@@ -33,6 +33,7 @@ The frontend must never contain payment provider secret keys. All of these crede
 ## 3. Deploying Edge Functions
 Use the Supabase CLI to deploy:
 ```bash
+supabase functions deploy payment-health
 supabase functions deploy create-checkout-session
 supabase functions deploy create-billing-portal-session
 supabase functions deploy payment-webhook

@@ -3,7 +3,7 @@ import { subscriptionService } from '../../services/subscriptionService';
 import { useAuth } from '../../contexts/AuthContext';
 
 const SuperAdminPaymentTestPage: React.FC = () => {
-  const { user } = useAuth();
+  const { currentUser } = useAuth();
   
   const [tenantId, setTenantId] = useState<string>('sandbox-tenant-123');
   const [planId, setPlanId] = useState<string>('starter');
@@ -33,8 +33,8 @@ const SuperAdminPaymentTestPage: React.FC = () => {
     setHealthResult(null);
     setHealthError(null);
     try {
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      const supabaseUrl = (import.meta as any).env.VITE_SUPABASE_URL;
+      const supabaseAnonKey = (import.meta as any).env.VITE_SUPABASE_ANON_KEY;
       if (!supabaseUrl) throw new Error("VITE_SUPABASE_URL undefined");
       
       const res = await fetch(`${supabaseUrl}/functions/v1/payment-health`, {
@@ -55,8 +55,8 @@ const SuperAdminPaymentTestPage: React.FC = () => {
     }
   };
 
-  const paymentProvider = import.meta.env.VITE_PAYMENT_PROVIDER || 'mock';
-  const dataMode = import.meta.env.VITE_DATA_MODE || 'mock';
+  const paymentProvider = (import.meta as any).env.VITE_PAYMENT_PROVIDER || 'mock';
+  const dataMode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
 
   return (
     <div className="p-6 space-y-6">

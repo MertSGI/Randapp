@@ -115,7 +115,7 @@ export const subscriptionService = {
   },
 
   async startCheckout(tenantId: string, planId: string): Promise<string> {
-    const paymentProvider = import.meta.env.VITE_PAYMENT_PROVIDER || 'mock';
+    const paymentProvider = (import.meta as any).env.VITE_PAYMENT_PROVIDER || 'mock';
     
     if (paymentProvider !== 'mock') {
       try {
