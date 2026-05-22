@@ -37,6 +37,10 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   const [activeStep, setActiveStep] = useState(1);
   const [readiness, setReadiness] = useState<GoLiveReadiness | null>(null);
 
+  // New states for business profile
+  const [profileShortDesc, setProfileShortDesc] = useState('');
+  const [profileAddress, setProfileAddress] = useState('');
+
   // Quick add states
   const [newServiceName, setNewServiceName] = useState('');
   const [newServicePrice, setNewServicePrice] = useState('500');
@@ -52,6 +56,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   // Business logic step completed checks
   const isInfoCompleted = !!setupSalonName && !!setupWhatsapp; // Enforced whatsapp here based on prompt
   const isBrandingCompleted = !!setupPrimaryColor;
+  const isProfileCompleted = !!profileShortDesc && !!profileAddress;
   const isServicesCompleted = servicesList.some(s => s.active);
   const isStaffCompleted = staffList.some(s => s.active);
   const isTestApptCompleted = appointments.length > 0;
@@ -67,6 +72,16 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
       setSetupFooter(tenant.branding?.footerText || '');
       
       goLiveService.getGoLiveReadiness(tenant.id).then(setReadiness);
+
+      // Load profile info for onboarding step
+      import('../services/businessProfileService').then(({ businessProfileService }) => {
+         businessProfileService.getBusinessProfile(tenant.id).then(prof => {
+            if (prof) {
+               setProfileShortDesc(prof.short_description || '');
+               setProfileAddress(prof.address || '');
+            }
+         });
+      });
     }
   }, [tenant, servicesList, staffList, appointments]);
 
@@ -111,6 +126,25 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
       setActiveStep(3);
     } catch (error) {
       console.error(error);
+      alert('Kayıt sırasında hata oluştu.');
+    } finally {
+      setSetupSaving(false);
+    }
+  };
+
+  const handleSaveProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!tenant) return;
+    setSetupSaving(true);
+    try {
+      const { businessProfileService } = await import('../services/businessProfileService');
+      await businessProfileService.updateBusinessProfile(tenant.id, {
+        short_description: profileShortDesc,
+        address: profileAddress
+      });
+      setActiveStep(4);
+    } catch (err) {
+      console.error(err);
       alert('Kayıt sırasında hata oluştu.');
     } finally {
       setSetupSaving(false);
@@ -166,11 +200,12 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   const steps = [
     { id: 1, name: 'Salon Bilgileri', completed: isInfoCompleted },
     { id: 2, name: 'Marka & Tasarım', completed: isBrandingCompleted },
-    { id: 3, name: 'Hizmetler', completed: isServicesCompleted },
-    { id: 4, name: 'Çalışanlar', completed: isStaffCompleted },
-    { id: 5, name: 'Çalışma Saatleri', completed: true }, // Placeholder completed by default
-    { id: 6, name: 'Test Randevusu', completed: isTestApptCompleted },
-    { id: 7, name: 'Yayına Hazır', completed: isInfoCompleted && isServicesCompleted && isStaffCompleted }
+    { id: 3, name: 'İşletme Profili', completed: isProfileCompleted },
+    { id: 4, name: 'Hizmetler', completed: isServicesCompleted },
+    { id: 5, name: 'Çalışanlar', completed: isStaffCompleted },
+    { id: 6, name: 'Çalışma Saatleri', completed: true },
+    { id: 7, name: 'Test Randevusu', completed: isTestApptCompleted },
+    { id: 8, name: 'Yayına Hazır', completed: isInfoCompleted && isBrandingCompleted && isProfileCompleted && isServicesCompleted && isStaffCompleted }
   ];
 
   return (
@@ -220,15 +255,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">WhatsApp Numarası <span className="text-red-500">*</span></label>
-                  <input type="text" required value={setupWhatsapp} onChange={e => setSetupWhatsapp(e.target.value)} placeholder="Örn: 905550000000" className="w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-2 border" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Instagram (@kullaniciadi) (Opsiyonel)</label>
-                  <input type="text" value={setupInstagram} onChange={e => setSetupInstagram(e.target.value)} className="w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-2 border" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Adres (Opsiyonel)</label>
-                  <textarea value={setupAddress} onChange={e => setSetupAddress(e.target.value)} rows={3} className="w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-2 border"></textarea>
+                  <input type="text" required value={setupWhatsapp} onChange={e => setSetupWhatsapp(e.target.value)} placeholder="Örn: +905550000000" className="w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-2 border" />
                 </div>
                 <div className="pt-4 flex justify-end">
                   <button type="submit" disabled={setupSaving || !setupSalonName || !setupWhatsapp} className="px-6 py-2 bg-accent text-white rounded-md font-medium disabled:opacity-50">Kaydet & Sonraki</button>
@@ -252,10 +279,6 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     <span className="font-mono text-gray-500">{setupPrimaryColor}</span>
                   </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Alt Bilgi (Footer) Metni (Opsiyonel)</label>
-                  <input type="text" value={setupFooter} onChange={e => setSetupFooter(e.target.value)} className="w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-2 border" />
-                </div>
                 <div className="pt-4 flex justify-between">
                   <button type="button" onClick={() => setActiveStep(1)} className="px-6 py-2 bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-md font-medium">Geri</button>
                   <button type="submit" disabled={setupSaving} className="px-6 py-2 bg-accent text-white rounded-md font-medium disabled:opacity-50">Kaydet & Sonraki</button>
@@ -266,7 +289,28 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
 
           {activeStep === 3 && (
             <div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">3. Hizmetler</h3>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">3. İşletme Profili (Web Sitesi)</h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">Müşterilerinizin salon sayfanızı bir web sitesi gibi görmesi için bu bilgileri doldurun. Detaylı düzenlemeleri daha sonra 'Web Sitesi' sekmesinden yapabilirsiniz.</p>
+              <form onSubmit={handleSaveProfile} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Kısa Açıklama (Slogan)</label>
+                  <input type="text" required value={profileShortDesc} onChange={e => setProfileShortDesc(e.target.value)} placeholder="Örn: Şehrin en iyi saç tasarım merkezi" className="w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-2 border" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Adres</label>
+                  <textarea rows={2} required value={profileAddress} onChange={e => setProfileAddress(e.target.value)} className="w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-2 border"></textarea>
+                </div>
+                <div className="pt-4 flex justify-between">
+                  <button type="button" onClick={() => setActiveStep(2)} className="px-6 py-2 bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-md font-medium">Geri</button>
+                  <button type="submit" disabled={setupSaving || !profileShortDesc || !profileAddress} className="px-6 py-2 bg-accent text-white rounded-md font-medium disabled:opacity-50">Kaydet & Sonraki</button>
+                </div>
+              </form>
+            </div>
+          )}
+
+          {activeStep === 4 && (
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">4. Hizmetler</h3>
               <p className="text-gray-600 dark:text-gray-400 mb-6">Randevu alınabilmesi için en az 1 aktif hizmet belirlemelisiniz.</p>
               
               <div className="p-4 bg-gray-50 dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-slate-700 mb-6">
@@ -318,15 +362,15 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                  )}
               </div>
               <div className="pt-4 flex justify-between">
-                 <button type="button" onClick={() => setActiveStep(2)} className="px-6 py-2 bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-md font-medium">Geri</button>
-                 <button type="button" onClick={() => setActiveStep(4)} disabled={!isServicesCompleted} className="px-6 py-2 bg-accent text-white rounded-md font-medium disabled:opacity-50">Sonraki</button>
+                 <button type="button" onClick={() => setActiveStep(3)} className="px-6 py-2 bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-md font-medium">Geri</button>
+                 <button type="button" onClick={() => setActiveStep(5)} disabled={!isServicesCompleted} className="px-6 py-2 bg-accent text-white rounded-md font-medium disabled:opacity-50">Sonraki</button>
               </div>
             </div>
           )}
 
-          {activeStep === 4 && (
+          {activeStep === 5 && (
             <div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">4. Çalışanlar / Uzmanlar</h3>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">5. Çalışanlar / Uzmanlar</h3>
               <p className="text-gray-600 dark:text-gray-400 mb-6">Müşterilerin randevu alabilmesi için en az 1 aktif çalışan tanımlamalısınız.</p>
               
               <div className="p-4 bg-gray-50 dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-slate-700 mb-6">
@@ -375,21 +419,21 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                  )}
               </div>
               <div className="pt-4 flex justify-between">
-                 <button type="button" onClick={() => setActiveStep(3)} className="px-6 py-2 bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-md font-medium">Geri</button>
-                 <button type="button" onClick={() => setActiveStep(5)} disabled={!isStaffCompleted} className="px-6 py-2 bg-accent text-white rounded-md font-medium disabled:opacity-50">Sonraki</button>
+                 <button type="button" onClick={() => setActiveStep(4)} className="px-6 py-2 bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-md font-medium">Geri</button>
+                 <button type="button" onClick={() => setActiveStep(6)} disabled={!isStaffCompleted} className="px-6 py-2 bg-accent text-white rounded-md font-medium disabled:opacity-50">Sonraki</button>
               </div>
             </div>
           )}
 
-          {activeStep === 5 && (
+          {activeStep === 6 && (
             <div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">5. Çalışma Saatleri</h3>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">6. Çalışma Saatleri</h3>
               <div className="p-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-lg mb-6 flex flex-col items-start gap-4">
                 <p className="text-blue-800 dark:text-blue-300">Çalışma saatleri şu anda temel varsayılan ayar olarak kaydedilir. Detaylı saat yönetimi sonraki fazda eklenecektir.</p>
                 <button 
                   onClick={() => {
                      alert('Varsayılan çalışma saatleri uygulandı.');
-                     setActiveStep(6);
+                     setActiveStep(7);
                   }}
                   className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-medium transition"
                 >
@@ -405,15 +449,15 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                  </button>
                )}
               <div className="pt-4 flex justify-between">
-                 <button type="button" onClick={() => setActiveStep(4)} className="px-6 py-2 bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-md font-medium">Geri</button>
-                 <button type="button" onClick={() => setActiveStep(6)} className="px-6 py-2 bg-accent text-white rounded-md font-medium">Sonraki</button>
+                 <button type="button" onClick={() => setActiveStep(5)} className="px-6 py-2 bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-md font-medium">Geri</button>
+                 <button type="button" onClick={() => setActiveStep(7)} className="px-6 py-2 bg-accent text-white rounded-md font-medium">Sonraki</button>
               </div>
             </div>
           )}
 
-          {activeStep === 6 && (
+          {activeStep === 7 && (
             <div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">6. Test Randevusu Oluşturun</h3>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">7. Test Randevusu Oluşturun</h3>
               <p className="text-gray-600 dark:text-gray-400 mb-6">Tüm ayarlarınızı görmek ve sistemin doğru çalıştığını onaylamak için kendi profilinize bir test randevusu oluşturabilirsiniz.</p>
 
               <div className="bg-blue-50 dark:bg-blue-900/20 border border-gray-200 dark:border-slate-700 rounded-lg p-6 mb-6">
@@ -440,20 +484,24 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                  </span>
               </div>
               <div className="pt-4 flex justify-between">
-                 <button type="button" onClick={() => setActiveStep(5)} className="px-6 py-2 bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-md font-medium">Geri</button>
-                 <button type="button" onClick={() => setActiveStep(7)} className="px-6 py-2 bg-accent text-white rounded-md font-medium">Daha Sonra Test Edeceğim / Sonraki</button>
+                 <button type="button" onClick={() => setActiveStep(6)} className="px-6 py-2 bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-md font-medium">Geri</button>
+                 <button type="button" onClick={() => setActiveStep(8)} className="px-6 py-2 bg-accent text-white rounded-md font-medium">Daha Sonra Test Edeceğim / Sonraki</button>
               </div>
             </div>
           )}
 
-          {activeStep === 7 && (
+          {activeStep === 8 && (
             <div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">7. Yayına Hazırlık Onayı</h3>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">8. Yayına Hazırlık Onayı</h3>
               
               <div className="space-y-4 mb-8">
                  <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-900 rounded-lg">
                     <span>Temel Bilgiler</span>
                     <span>{isInfoCompleted ? '✅' : '❌'}</span>
+                 </div>
+                 <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-900 rounded-lg">
+                    <span>Marka ve Profil</span>
+                    <span>{isBrandingCompleted && isProfileCompleted ? '✅' : '❌'}</span>
                  </div>
                  <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-900 rounded-lg">
                     <span>Hizmetler</span>
@@ -482,7 +530,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
 
               <div className="flex flex-col sm:flex-row gap-4 mb-8 justify-center">
                  <button 
-                   disabled={!isInfoCompleted || !isServicesCompleted || !isStaffCompleted}
+                   disabled={!isInfoCompleted || !isServicesCompleted || !isStaffCompleted || !isProfileCompleted}
                    onClick={async () => {
                      if (!tenant) return;
                      await goLiveService.markReadyForReview(tenant.id);
@@ -502,7 +550,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
               )}
               
               <div className="pt-8 flex justify-start">
-                 <button type="button" onClick={() => setActiveStep(6)} className="px-6 py-2 bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-md font-medium">Geri</button>
+                 <button type="button" onClick={() => setActiveStep(7)} className="px-6 py-2 bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-md font-medium">Geri</button>
               </div>
             </div>
           )}

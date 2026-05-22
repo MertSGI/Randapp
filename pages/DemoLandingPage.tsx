@@ -20,6 +20,7 @@ const DemoLandingPage: React.FC = () => {
   const [whatsappNumber, setWhatsappNumber] = useState('');
   const [instagram, setInstagram] = useState('');
   const [address, setAddress] = useState('');
+  const [shortDesc, setShortDesc] = useState('Şehrin en iyi güzellik merkezi');
   
   const [service3Name, setService3Name] = useState('Manicure');
   const [service3Price, setService3Price] = useState('300');
@@ -220,6 +221,17 @@ Not: Sistemin WhatsApp, Google Takvim, personel müsaitliği, hizmet/fiyat seçi
                 />
               </div>
 
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Kısa Açıklama (Slogan)</label>
+                <input 
+                  type="text" 
+                  value={shortDesc} 
+                  onChange={e => setShortDesc(e.target.value)}
+                  className="w-full rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-3 border shadow-sm"
+                  placeholder="Örn: Şehrin en iyi güzellik merkezi"
+                />
+              </div>
+
               <div className="border-t border-gray-200 dark:border-slate-700 pt-6">
                 <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Örnek Hizmetler</h3>
                 <div className="grid grid-cols-2 gap-4 mb-3">
@@ -285,6 +297,31 @@ Not: Sistemin WhatsApp, Google Takvim, personel müsaitliği, hizmet/fiyat seçi
 
               {/* Fake App Content */}
               <div className="p-4 bg-gray-50 dark:bg-slate-900 h-full overflow-y-auto pb-32">
+                
+                {/* Profile Hero Block */}
+                <div className="mb-6 bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-slate-700">
+                  <div className="h-24 w-full bg-gradient-to-r from-gray-200 to-gray-300 dark:from-slate-700 dark:to-slate-600 relative flex items-center justify-center">
+                    <span className="text-gray-400 dark:text-slate-500 font-medium text-xs">Kapak Fotoğrafı Alanı</span>
+                  </div>
+                  <div className="p-4 text-center">
+                    {(localLogo || logoUrl) ? (
+                      <img src={localLogo || logoUrl} alt="Logo" className="w-16 h-16 rounded-full border-4 border-white dark:border-slate-800 shadow-sm mx-auto -mt-12 object-cover relative z-10 bg-white" />
+                    ) : (
+                      <div className="w-16 h-16 rounded-full border-4 border-white dark:border-slate-800 shadow-sm mx-auto -mt-12 flex items-center justify-center text-white font-bold text-xl relative z-10" style={{ backgroundColor: primaryColor }}>
+                        {salonName.charAt(0)}
+                      </div>
+                    )}
+                    <h2 className="text-lg font-bold mt-2 text-gray-900 dark:text-white">{salonName}</h2>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{shortDesc || 'Salon sloganı...'}</p>
+                    {address && (
+                      <p className="text-xs text-gray-500 mt-2 flex items-center justify-center gap-1">
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                        <span className="truncate max-w-[200px]">{address}</span>
+                      </p>
+                    )}
+                  </div>
+                </div>
+
                 <div className="mb-6">
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Bir Uzman Seçin</h3>
                   <div className="space-y-3">

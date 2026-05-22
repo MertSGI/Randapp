@@ -13,13 +13,14 @@ import { Service } from '../types';
 import BillingTab from '../components/BillingTab';
 import OnboardingWizard from '../components/OnboardingWizard';
 import SalonReportsTab from '../components/SalonReportsTab';
+import BusinessProfileTab from '../components/BusinessProfileTab';
 
 const AdminPage: React.FC = () => {
   const navigate = useNavigate();
   const { t, language } = useLanguage();
   const { tenant, refreshTenant } = useTenant();
   const { currentUser, isLoading: authLoading, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState<'setup' | 'appointments' | 'staff' | 'services' | 'reports' | 'billing' | 'settings'>('setup');
+  const [activeTab, setActiveTab] = useState<'setup' | 'appointments' | 'staff' | 'services' | 'reports' | 'billing' | 'profile' | 'settings'>('setup');
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [staffList, setStaffList] = useState<Staff[]>([]);
   const [servicesList, setServicesList] = useState<Service[]>([]);
@@ -296,6 +297,12 @@ const AdminPage: React.FC = () => {
             className={`${activeTab === 'billing' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
           >
             Abonelik
+          </button>
+          <button
+            onClick={() => setActiveTab('profile')}
+            className={`${activeTab === 'profile' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
+          >
+            Web Sitesi
           </button>
           <button
             onClick={() => setActiveTab('settings')}
@@ -619,6 +626,8 @@ const AdminPage: React.FC = () => {
       )}
       
       {activeTab === 'billing' && <BillingTab />}
+
+      {activeTab === 'profile' && <BusinessProfileTab />}
       
       {activeTab === 'settings' && (
         <div className="bg-white dark:bg-slate-800 shadow-sm rounded-lg border border-gray-200 dark:border-slate-700 p-6">

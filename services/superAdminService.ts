@@ -15,6 +15,7 @@ export interface TenantFullData {
   setupStatus: string;
   monthlyAppointments: number;
   estimatedRevenue: number;
+  hasProfile?: boolean;
 }
 
 export const superAdminService = {
@@ -55,7 +56,8 @@ export const superAdminService = {
             planId: 'professional',
             setupStatus: provStatus1,
             monthlyAppointments: 145,
-            estimatedRevenue: 45000
+            estimatedRevenue: 45000,
+            hasProfile: true
           },
           {
             tenant: {
@@ -69,7 +71,8 @@ export const superAdminService = {
             planId: 'starter',
             setupStatus: provStatus2,
             monthlyAppointments: 12,
-            estimatedRevenue: 1200
+            estimatedRevenue: 1200,
+            hasProfile: false
           }
         ];
         
@@ -94,6 +97,7 @@ export const superAdminService = {
     const { data: tenants, error: tErr } = await supabase.from('tenants').select('*');
     // 2. Get subscriptions
     const { data: subs, error: sErr } = await supabase.from('subscriptions').select('*');
+    const { data: profiles, error: pErr } = await supabase.from('tenant_business_profiles').select('tenant_id');
     
     if (tErr || sErr) {
       console.error("Error fetching super admin data", tErr, sErr);
@@ -102,6 +106,7 @@ export const superAdminService = {
 
     const tenantList: TenantFullData[] = (tenants || []).map(t => {
       const sub = subs?.find(s => s.tenant_id === t.id);
+      const prof = profiles?.find((p: any) => p.tenant_id === t.id);
       return {
         tenant: {
           id: t.id,
@@ -114,7 +119,8 @@ export const superAdminService = {
         planId: sub?.plan_id || 'none',
         setupStatus: t.provisioning_status || 'unknown',
         monthlyAppointments: 0, // Requires appointment count aggregation
-        estimatedRevenue: 0     // Requires appointment price aggregation
+        estimatedRevenue: 0,     // Requires appointment price aggregation
+        hasProfile: !!prof
       }
     });
 

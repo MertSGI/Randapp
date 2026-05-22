@@ -9,6 +9,8 @@ import { getStaffList } from '../services/staffService';
 import { getServices } from '../services/serviceCatalogService';
 import { createAppointment, getBookedSlots, updateAppointmentStatus } from '../services/appointmentService';
 import { subscriptionService, SubscriptionStatus } from '../services/subscriptionService';
+import { businessProfileService } from '../services/businessProfileService';
+import { SalonBusinessProfile } from '../types';
 
 const generateTimeSlots = (): string[] => {
   const slots: string[] = [];
@@ -44,6 +46,7 @@ const BookingPage: React.FC = () => {
   const [subStatus, setSubStatus] = useState<SubscriptionStatus>('active');
   const [setupError, setSetupError] = useState<string>('');
   const [isCheckingSub, setIsCheckingSub] = useState(true);
+  const [businessProfile, setBusinessProfile] = useState<SalonBusinessProfile | null>(null);
 
   const timeSlots = generateTimeSlots();
 
@@ -58,6 +61,7 @@ const BookingPage: React.FC = () => {
       });
       getStaffList(tenant.id, { activeOnly: true }).then(setStaffList);
       getServices(tenant.id, { activeOnly: true }).then(setServicesList);
+      businessProfileService.getPublicBusinessProfile(tenant.id).then(setBusinessProfile);
       
       import('../services/goLiveService').then(({ goLiveService }) => {
         goLiveService.canTenantAcceptBookings(tenant.id).then((status) => {
@@ -184,10 +188,75 @@ const BookingPage: React.FC = () => {
 
       <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-6 md:p-8 transition-colors duration-300">
         
-        {/* Step 0: Staff Selection */}
+        {/* Step 0: Staff Selection & Business Profile */}
         {step === 0 && (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-10 transition-colors duration-300">{t.booking.step0_title}</h2>
+          <div className="space-y-12">
+            
+            {businessProfile && businessProfile.is_public_profile_enabled && (
+               <div className="space-y-12 mb-12 border-b border-gray-200 dark:border-slate-700 pb-12">
+                  {/* Hero Section */}
+                  {businessProfile.cover_image_url && (
+                     <div className="w-full h-64 md:h-80 rounded-2xl overflow-hidden shadow-sm relative">
+                        <img src={businessProfile.cover_image_url} alt="Cover" className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-8">
+                           <div>
+                              <h1 className="text-4xl font-bold text-white mb-2">{tenant?.name}</h1>
+                              {businessProfile.short_description && (
+                                 <p className="text-lg text-white/90">{businessProfile.short_description}</p>
+                              )}
+                           </div>
+                        </div>
+                     </div>
+                  )}
+
+                  {/* About Section */}
+                  {(businessProfile.about_text || businessProfile.featured_message) && (
+                     <div className="max-w-3xl mx-auto text-center space-y-6">
+                        {businessProfile.featured_message && (
+                           <h3 className="text-2xl font-bold text-gray-900 dark:text-white uppercase tracking-wider">{businessProfile.featured_message}</h3>
+                        )}
+                        {businessProfile.about_text && (
+                           <p className="text-gray-600 dark:text-gray-400 text-lg leading-relaxed">{businessProfile.about_text}</p>
+                        )}
+                     </div>
+                  )}
+
+                  {/* Gallery */}
+                  {businessProfile.gallery_images && businessProfile.gallery_images.length > 0 && (
+                     <div>
+                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6 text-center">Salonumuzdan Kareler</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                           {businessProfile.gallery_images.map((img, idx) => (
+                              <img key={idx} src={img} alt={`Gallery ${idx}`} className="w-full h-48 object-cover rounded-xl shadow-sm hover:opacity-90 transition-opacity" />
+                           ))}
+                        </div>
+                     </div>
+                  )}
+
+                  {/* Contact Info */}
+                  <div className="bg-slate-50 dark:bg-slate-700 rounded-2xl p-8 max-w-3xl mx-auto text-center space-y-4">
+                     <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">İletişim & Konum</h3>
+                     {businessProfile.address && <p className="text-gray-600 dark:text-gray-300"><strong>Adres:</strong> {businessProfile.address} {businessProfile.district && `, ${businessProfile.district}`} {businessProfile.city && `, ${businessProfile.city}`}</p>}
+                     {businessProfile.opening_hours_summary && <p className="text-gray-600 dark:text-gray-300"><strong>Çalışma Saatleri:</strong> {businessProfile.opening_hours_summary}</p>}
+                     <div className="flex justify-center gap-4 pt-4">
+                        {businessProfile.whatsapp_number && (
+                           <a href={`https://wa.me/${businessProfile.whatsapp_number.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-[#25D366] text-white px-4 py-2 rounded-lg font-bold hover:bg-green-600 transition">
+                              WhatsApp
+                           </a>
+                        )}
+                        {businessProfile.instagram_url && (
+                           <a href={businessProfile.instagram_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-lg font-bold hover:opacity-90 transition">
+                              Instagram
+                           </a>
+                        )}
+                     </div>
+                  </div>
+               </div>
+            )}
+
+            <div className="scroll-mt-24" id="booking-section">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-10 transition-colors duration-300">{t.booking.step0_title}</h2>
+
             
             {/* Empty State */}
             {staffList.length === 0 && (
@@ -258,6 +327,7 @@ const BookingPage: React.FC = () => {
                     </div>
                 </div>
             )}
+            </div>
           </div>
         )}
 

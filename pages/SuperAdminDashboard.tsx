@@ -124,6 +124,7 @@ const SuperAdminDashboard: React.FC = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Plan</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sub Status</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Setup Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Web Profile</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Metrics</th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
               </tr>
@@ -148,6 +149,17 @@ const SuperAdminDashboard: React.FC = () => {
                     <span className={`text-xs px-2 py-1 rounded-full ${t.setupStatus === 'live' ? 'bg-green-100 text-green-800' : t.setupStatus === 'setup_in_progress' ? 'bg-gray-100 text-gray-800' : 'bg-blue-100 text-blue-800'}`}>
                       {t.setupStatus}
                     </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {t.hasProfile ? (
+                      <span className="inline-flex items-center text-green-600 text-sm">
+                        <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg> Active
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center text-gray-400 text-sm border border-gray-200 px-2 py-0.5 rounded-full">
+                        Pending
+                      </span>
+                    )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900 dark:text-white">{t.monthlyAppointments} appts</div>

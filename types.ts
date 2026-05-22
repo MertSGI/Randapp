@@ -13,6 +13,39 @@ export interface TenantBranding {
   footerText?: string;
 }
 
+export interface SalonBusinessProfile {
+  id: string;
+  tenant_id: string;
+  short_description?: string;
+  about_text?: string;
+  business_category?: string;
+  address?: string;
+  city?: string;
+  district?: string;
+  map_embed_url?: string;
+  google_maps_url?: string;
+  phone?: string;
+  whatsapp_number?: string;
+  instagram_url?: string;
+  website_url?: string;
+  email?: string;
+  opening_hours_summary?: string;
+  cover_image_url?: string;
+  logo_url?: string;
+  gallery_images?: string[];
+  amenities?: string[];
+  parking_info?: string;
+  payment_methods?: string[];
+  cancellation_policy?: string;
+  booking_policy?: string;
+  featured_message?: string;
+  seo_title?: string;
+  seo_description?: string;
+  is_public_profile_enabled: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Tenant {
   id: string;
   name: string;
