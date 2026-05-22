@@ -101,7 +101,7 @@ const MarketingHomePage: React.FC = () => {
         <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Salonunuz İçin Yeni Bir Başlangıç</h2>
         <p className="text-blue-100 text-lg mb-10 max-w-2xl mx-auto">Kayıt olmadan, kredi kartı gerektirmeden salonunuza özel web sitesi ve randevu ekranını hemen şimdi önizleyin.</p>
         <Link to="/demo" className="inline-block bg-white text-blue-600 px-10 py-4 rounded-xl font-bold shadow-lg hover:bg-gray-50 transition transform hover:-translate-y-1">
-          Ücretsiz Önizle
+          Kendi Salonumu Önizle
         </Link>
       </section>
     </div>

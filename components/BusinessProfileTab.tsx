@@ -47,10 +47,10 @@ const BusinessProfileTab: React.FC = () => {
       <div className="flex justify-between items-center mb-6 border-b border-gray-200 dark:border-slate-700 pb-4">
          <h2 className="text-xl font-bold text-gray-900 dark:text-white">İşletme Profili & Web Sitesi</h2>
          <a 
-           href={`/#/book`} 
+           href={`/#/book?preview=true`} 
            target="_blank" 
            rel="noopener noreferrer"
-           className="text-sm bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-md transition font-medium"
+           className="text-sm bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-md transition font-medium border border-gray-200"
          >
            Site Önizlemesini Aç
          </a>

@@ -14,7 +14,7 @@ const AdminLayout: React.FC = () => {
   };
 
   const navItems = [
-    { label: 'Dashboard', path: '/admin' },
+    { label: 'Yönetim Paneli', path: '/admin' },
   ];
 
   return (

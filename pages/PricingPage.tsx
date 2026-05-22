@@ -49,7 +49,7 @@ const PricingPage: React.FC = () => {
             </ul>
             <div className="space-y-3 mt-auto">
                <Link to="/demo" className={`block w-full text-center font-bold py-3.5 rounded-xl transition ${plan.recommended ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg' : 'bg-gray-100 dark:bg-slate-700 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-slate-600'}`}>
-                 Hemen Önizle
+                 Kendi Salonumu Önizle
                </Link>
                <a href={`https://wa.me/905555555555?text=Merhaba, Randapp ${plan.name} planı hakkında bilgi almak istiyorum.`} target="_blank" rel="noreferrer" className="block w-full text-center text-sm font-semibold text-gray-500 hover:text-gray-800 dark:hover:text-white py-2">
                  Satış Ekibiyle Görüş

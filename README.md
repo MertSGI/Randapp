@@ -20,12 +20,19 @@ Bu proje, bir kuaför, güzellik salonu veya herhangi bir randevulu sistem için
 
 ## 💼 Satış ve Demo Modu (Sales Demo Mode)
 
-Randapp satış süreçlerini desteklemek amacıyla özel bir `/demo` landing page altyapısına sahiptir. Bu sayfa sayesinde saha satış ekipleri, müşterilere saniyeler içinde "Kendi markalarıyla uyumlu ve hazır" bir akıllı restoran veya salon web sitesi sunabiliyor.
+Randapp satış süreçlerini desteklemek amacıyla özel bir `/demo` landing page altyapısına sahiptir. Bu sayfa sayesinde saha satış ekipleri, müşterilere saniyeler içinde "Kendi markalarıyla uyumlu ve hazır" bir akıllı salon web sitesi sunabiliyor.
 
 **Demo Modu Özellikleri:**
 - **Local Logo Yükleme:** Kuaförler, sunucu yüklemesi olmadan logoları önizleyebilir.
 - **WhatsApp Satış Yakalama (Lead Capture):** "WhatsApp'tan Demo Talep Et" butonu ile lead toplar.
 - **Admin Onboarding Akışı:** İlk kurulum esnasında mock panele bağlanan (veya sisteme onboarding yapan) yöneticiler, "Kurulum" sekmesini kullanarak sistemlerini yayına hazırlayabilirler.
+
+## 🎯 Hedef Kitle (Target Market)
+Randapp öncelikli olarak randevu bazlı hizmet veren yerel işletmelere odaklanmaktadır:
+- **Kuaförler ve Berberler**
+- **Güzellik ve Bakım Salonları**
+- **Nail Art ve Tırnak Stüdyoları**
+- **Spa, Masaj ve Klinik Randevulu Hizmet Sağlayıcılar**
 
 ## 💳 Abonelik ve Ödeme Modeli Altyapısı (Subscription Scaffold)
 Sisteme ücretli planlar, limit kontrolleri ve fatura portalı entegrasyonu hazırlığı yapılmıştır. Bu aşama tamamen planların ve yetkilerin mock tabanlı simülasyonunu içerir. Hiçbir gerçek ödeme veya kart işlemi şuan gerçekleşmez. Gerçek ödeme (Stripe, iyzico) Node.js tabanlı sunucu fonksiyonlarına (Edge Functions) inşa edilmelidir.

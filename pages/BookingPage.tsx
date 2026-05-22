@@ -68,7 +68,7 @@ const BookingPage: React.FC = () => {
       import('../services/goLiveService').then(({ goLiveService }) => {
         goLiveService.canTenantAcceptBookings(tenant.id).then((status) => {
            const requestedPreview = new URLSearchParams(window.location.hash.split('?')[1]).get('preview') === 'true';
-           const isPreview = requestedPreview && !!currentUser;
+           const isPreview = requestedPreview && currentUser && (currentUser.role === 'super_admin' || (currentUser.role === 'salon_owner' && currentUser.tenantId === tenant.id));
            if (!status.allowed && !isPreview) {
              setSubStatus('suspended'); // Reuse suspended state UI for now
              setSetupError(status.reason || 'Online randevu sistemi henüz aktif değil.');
@@ -158,14 +158,14 @@ const BookingPage: React.FC = () => {
   };
 
   const requestedPreview = new URLSearchParams(window.location.hash.split('?')[1]).get('preview') === 'true';
-  const isPreview = requestedPreview && !!currentUser;
+  const isPreview = requestedPreview && currentUser && (currentUser.role === 'super_admin' || (currentUser.role === 'salon_owner' && currentUser.tenantId === tenant?.id));
 
   return (
     <div className="max-w-4xl mx-auto">
       {isPreview && (
-        <div className="bg-amber-100 text-amber-800 px-4 py-2 text-center text-sm font-medium rounded-lg mb-6 border border-amber-200">
-           Önizleme Modu: Bu sayfa şu an müşterilere AÇIK DEĞİLDİR. Sadece siz görebilirsiniz.
-        </div>
+         <div className={`mb-6 p-3 ${currentUser.role === 'super_admin' ? 'bg-purple-100 text-purple-800 border-purple-200' : 'bg-blue-100 text-blue-800 border-blue-200'} border rounded-lg text-sm text-center font-medium shadow-sm`}>
+            {currentUser.role === 'super_admin' ? 'Super Admin Önizleme Modu: Bu sayfa müşterilere açık değildir.' : 'Önizleme Modu: Bu sayfa henüz müşterilere açık değildir.'}
+         </div>
       )}
       {isCheckingSub ? (
          <div className="text-center py-12 text-gray-500">Yükleniyor...</div>

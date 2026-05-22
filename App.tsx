@@ -40,15 +40,6 @@ const Router = (import.meta as any).env.VITE_ROUTER_MODE === 'browser'
   ? BrowserRouter 
   : HashRouter;
 
-// A wrapper to decide if root goes to Marketing or Booking
-const RootRedirector: React.FC = () => {
-  const { tenantStatus } = useTenant();
-  // If no tenant is resolved, default to Marketing Layout pages via Outlet approach.
-  // Actually, wait, react-router handles this via index.
-  // We can just use the Marketing layout if no tenant is set, else Booking layout.
-  return <Navigate to="/marketing-home" replace />;
-}
-
 const AppFlowSwitcher: React.FC = () => {
   const { tenant } = useTenant();
   // If there's a tenant loaded, we're in "tenant mode" (except for admin routes which manage themselves)

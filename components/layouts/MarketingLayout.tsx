@@ -43,7 +43,7 @@ const MarketingLayout: React.FC = () => {
                 <button onClick={() => setLanguage('tr')} className={`px-3 py-1 rounded-md text-xs font-semibold ${language === 'tr' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 dark:text-gray-300'}`}>TR</button>
               </div>
               <Link to="/login" className="text-gray-600 dark:text-gray-200 text-sm font-medium hover:text-blue-600 dark:hover:text-blue-400">Giriş Yap</Link>
-              <Link to="/demo" className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-bold hover:bg-blue-700 transition hidden sm:block">Ücretsiz Önizle</Link>
+              <Link to="/demo" className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-bold hover:bg-blue-700 transition hidden sm:block">Kendi Salonumu Önizle</Link>
             </div>
           </div>
         </div>
