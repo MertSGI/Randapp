@@ -106,6 +106,20 @@ export interface Customer {
   createdAt: string;
 }
 
+export interface CustomerProfile {
+  id: string;
+  tenantId: string;
+  fullName: string;
+  phone: string;
+  email: string;
+  preferredLanguage?: 'tr' | 'en';
+  marketingConsent?: boolean;
+  appointmentReminderConsent?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  lastAppointmentAt?: string;
+}
+
 export interface Subscription {
   id: string;
   tenantId: string;

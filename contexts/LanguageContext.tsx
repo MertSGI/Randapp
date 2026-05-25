@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 import { translations } from '../utils/translations';
 
 type Language = 'en' | 'tr';
@@ -12,7 +12,18 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [language, setLanguage] = useState<Language>('tr');
+  const [language, setLanguage] = useState<Language>(() => {
+    try {
+      const stored = localStorage.getItem('randapp_language');
+      if (stored === 'en' || stored === 'tr') return stored;
+    } catch (e) {}
+    return 'tr';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('randapp_language', language);
+    document.documentElement.lang = language;
+  }, [language]);
 
   const value = {
     language,

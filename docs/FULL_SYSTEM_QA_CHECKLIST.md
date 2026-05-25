@@ -17,6 +17,8 @@
 - [x] **Security / Preview Lock**: `?preview=true` works ONLY if the user is `super_admin` OR `salon_owner` of the matching `tenantId`. Anonymous users remain blocked.
 - [x] **Maps Redirection**: "Yol Tarifi Al" and "Haritada Aç" generate correct Google Maps search URLs.
 - [x] **Contact Actions**: WhatsApp routing is functional for sending appointment confirmations and manual contact.
+- [x] **Multilingual Bookings (I18N)**: Booking widget and Customer Website accurately swap labels between Turkish and English globally, saving preferences per browser.
+- [x] **Customer Account Lite (Autofill)**: Customers can choose to bind their Name, Email, and Phone locally per tenant. Bypasses forced DB auth, providing pure frictionless autofill.
 
 ## Salon Owner / Tenant Admin (`/admin`)
 - [x] **Login Mechanics**: `admin@randapp.com` can log in and is securely routed to their tenant dashboard.

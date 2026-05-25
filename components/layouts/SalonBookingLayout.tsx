@@ -28,11 +28,11 @@ const SalonBookingLayout: React.FC = () => {
   }
 
   if (tenantStatus === 'not_found' || !branding) {
-    return <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-900"><div className="text-center"><h1 className="text-3xl font-bold dark:text-white">Salon Not Found</h1><p className="mt-2 text-gray-500">This booking site is not active or doesn't exist.</p></div></div>;
+    return <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-900"><div className="text-center"><h1 className="text-3xl font-bold dark:text-white">{language === 'tr' ? 'Salon Bulunamadı' : 'Salon Not Found'}</h1><p className="mt-2 text-gray-500">{language === 'tr' ? 'Bu randevu sayfası aktif değil veya henüz yok.' : 'This booking site is not active or doesn\'t exist.'}</p></div></div>;
   }
 
   if (tenantStatus === 'suspended') {
-    return <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-900"><div className="text-center"><h1 className="text-3xl font-bold dark:text-white">Account Suspended</h1><p className="mt-2 text-gray-500">This salon's account is currently suspended.</p></div></div>;
+    return <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-900"><div className="text-center"><h1 className="text-3xl font-bold dark:text-white">{language === 'tr' ? 'Hesap Askıda' : 'Account Suspended'}</h1><p className="mt-2 text-gray-500">{language === 'tr' ? 'Bu salonun hesabı şu anda askıya alınmış durumda.' : 'This salon\'s account is currently suspended.'}</p></div></div>;
   }
 
   const businessName = branding.businessName || 'Salon';

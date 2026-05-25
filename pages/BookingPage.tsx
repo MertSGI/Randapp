@@ -11,6 +11,7 @@ import { createAppointment, getBookedSlots, updateAppointmentStatus } from '../s
 import { subscriptionService, SubscriptionStatus } from '../services/subscriptionService';
 import { businessProfileService } from '../services/businessProfileService';
 import { availabilityService } from '../services/availabilityService';
+import { customerService } from '../services/customerService';
 import { SalonBusinessProfile } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import { canPreviewTenantSite } from '../utils/previewAuth';
@@ -53,6 +54,8 @@ const BookingPage: React.FC = () => {
   const [isCheckingSub, setIsCheckingSub] = useState(true);
   const [businessProfile, setBusinessProfile] = useState<SalonBusinessProfile | null>(null);
   const [staffAvailability, setStaffAvailability] = useState<Record<string, {date: string, time: string}>>({});
+  const [saveProfile, setSaveProfile] = useState(false);
+  const [hasSavedProfile, setHasSavedProfile] = useState(false);
 
   const timeSlots = generateTimeSlots();
   
@@ -80,6 +83,17 @@ const BookingPage: React.FC = () => {
            }
         });
       });
+
+      const saved = customerService.getSavedCustomerProfile(tenant.id);
+      if (saved) {
+        setHasSavedProfile(true);
+        setSaveProfile(true);
+        setFormData({
+           name: saved.fullName || '',
+           email: saved.email || '',
+           phone: saved.phone || ''
+        });
+      }
     }
   }, [tenant, currentUser, isAuthorizedPreview]);
 
@@ -146,6 +160,25 @@ const BookingPage: React.FC = () => {
     if (!selectedService || !selectedTime || !selectedStaff || !tenant) return;
 
     setIsSubmitting(true);
+
+    if (saveProfile) {
+      customerService.saveCustomerProfile(tenant.id, {
+        fullName: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        preferredLanguage: language
+      });
+      setHasSavedProfile(true);
+    } else if (hasSavedProfile) {
+      // User unchecked it, maybe we should not clear unless they explicitly clear it.
+      // But we can update last appointment if they kept it checked
+    } else {
+       // if saveProfile is false, and hasSavedProfile is false, we do nothing
+    }
+
+    if (saveProfile && hasSavedProfile) {
+       customerService.updateLastAppointmentAt(tenant.id);
+    }
 
     const newAppointmentPayload = {
       userId: `guest_${Date.now()}`,
@@ -314,11 +347,11 @@ const BookingPage: React.FC = () => {
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">Uzman Seçin</h2>
-              <button onClick={() => setStep(1)} className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white underline transition-colors duration-300">Hizmet Değiştir</button>
+              <button onClick={() => setStep(1)} className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white underline transition-colors duration-300">{t.booking.change_service}</button>
             </div>
             
             <div className="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 p-4 rounded-xl text-sm justify-between shadow-sm flex items-center gap-3 transition-colors duration-300 mb-6">
-               <span className="text-gray-500 dark:text-gray-300">Seçili Hizmet:</span>
+               <span className="text-gray-500 dark:text-gray-300">{t.booking.selected_service}</span>
                <span className="font-bold text-gray-900 dark:text-white">{language === 'tr' ? selectedService?.name_tr : selectedService?.name}</span>
             </div>
 
@@ -333,8 +366,8 @@ const BookingPage: React.FC = () => {
                  }}
                  className="flex flex-col items-center justify-center p-6 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-slate-700 dark:to-slate-600 border-2 border-dashed border-indigo-200 dark:border-slate-500 rounded-2xl hover:border-indigo-400 dark:hover:border-slate-400 transition-colors"
                >
-                 <span className="font-bold text-indigo-900 dark:text-white text-lg">Bana Fark Etmez</span>
-                 <span className="text-sm text-indigo-500 dark:text-slate-300 mt-2">En erken müsaitliğe göre</span>
+                 <span className="font-bold text-indigo-900 dark:text-white text-lg">{t.booking.no_preference}</span>
+                 <span className="text-sm text-indigo-500 dark:text-slate-300 mt-2">{t.booking.earliest_available}</span>
               </button>
 
               {staffList.map((staff) => (
@@ -356,12 +389,12 @@ const BookingPage: React.FC = () => {
                     {staffAvailability[staff.id] ? (
                        <p className="text-xs text-green-600 dark:text-green-400 font-medium mt-2 flex items-center gap-1">
                           <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                          En yakın müsaitlik: {staffAvailability[staff.id].date === new Date().toISOString().split('T')[0] ? 'Bugün' : staffAvailability[staff.id].date} {staffAvailability[staff.id].time}
+                          {language === 'tr' ? 'En yakın müsaitlik:' : 'Earliest availability:'} {staffAvailability[staff.id].date === new Date().toISOString().split('T')[0] ? (language === 'tr' ? 'Bugün' : 'Today') : staffAvailability[staff.id].date} {staffAvailability[staff.id].time}
                        </p>
                     ) : (
                        <p className="text-xs text-gray-400 font-medium mt-2 flex items-center gap-1">
                           <svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-                          Müsaitlik aranıyor...
+                          {t.booking.searching_availability}
                        </p>
                     )}
                   </div>
@@ -375,12 +408,12 @@ const BookingPage: React.FC = () => {
         {step === 3 && (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">Tarih ve Saat</h2>
-              <button onClick={() => setStep(2)} className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white underline transition-colors duration-300">Uzman Değiştir</button>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">{t.booking.step2_title}</h2>
+              <button onClick={() => setStep(2)} className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white underline transition-colors duration-300">{t.booking.change_staff}</button>
             </div>
             
             <div className="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 p-4 rounded-xl text-sm justify-between shadow-sm flex items-center gap-3 transition-colors duration-300 mb-6">
-               <span className="text-gray-500 dark:text-gray-300">Seçili Uzman:</span>
+               <span className="text-gray-500 dark:text-gray-300">{t.booking.selected_staff}</span>
                <span className="font-bold text-gray-900 dark:text-white">{selectedStaff?.name}</span>
             </div>
 
@@ -446,11 +479,35 @@ const BookingPage: React.FC = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
+              {hasSavedProfile && (
+                 <div className="bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 p-3 rounded-lg text-sm mb-4 flex justify-between items-center border border-blue-100 dark:border-blue-800">
+                    <div>
+                       <strong>{formData.name}</strong>
+                       <p className="opacity-80">{t.booking.form.using_saved_details}</p>
+                    </div>
+                    <button 
+                       type="button"
+                       onClick={() => {
+                          if (tenant) {
+                             customerService.clearSavedCustomerProfile(tenant.id);
+                             setHasSavedProfile(false);
+                             setSaveProfile(false);
+                             setFormData({name: '', email: '', phone: ''});
+                          }
+                       }}
+                       className="text-xs font-semibold bg-white dark:bg-slate-800 text-red-600 dark:text-red-400 px-3 py-1.5 rounded-md border border-red-200 dark:border-red-900 hover:bg-red-50 dark:hover:bg-red-900 transition-colors"
+                    >
+                       {t.booking.form.clear_details}
+                    </button>
+                 </div>
+              )}
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">{t.booking.form.name}</label>
                 <input
                   required
                   type="text"
+                  autoComplete="name"
                   className="mt-1 block w-full rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white shadow-sm focus:border-accent focus:ring-accent sm:text-sm p-3 border transition-colors duration-300"
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
@@ -461,6 +518,7 @@ const BookingPage: React.FC = () => {
                 <input
                   required
                   type="email"
+                  autoComplete="email"
                   className="mt-1 block w-full rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white shadow-sm focus:border-accent focus:ring-accent sm:text-sm p-3 border transition-colors duration-300"
                   value={formData.email}
                   onChange={(e) => setFormData({...formData, email: e.target.value})}
@@ -471,12 +529,39 @@ const BookingPage: React.FC = () => {
                 <input
                   required
                   type="tel"
+                  autoComplete="tel"
                   className="mt-1 block w-full rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white shadow-sm focus:border-accent focus:ring-accent sm:text-sm p-3 border transition-colors duration-300"
                   placeholder="0XXX XXX XX XX"
                   value={formData.phone}
                   onChange={(e) => setFormData({...formData, phone: e.target.value})}
                 />
               </div>
+
+              {!hasSavedProfile && (
+                 <div className="pt-2 px-1">
+                    <label className="flex items-center gap-3 cursor-pointer group">
+                       <div className="relative flex items-center">
+                          <input 
+                              type="checkbox" 
+                              className="peer sr-only"
+                              checked={saveProfile}
+                              onChange={(e) => setSaveProfile(e.target.checked)}
+                          />
+                          <div className="w-5 h-5 border-2 border-gray-300 dark:border-slate-500 rounded bg-white dark:bg-slate-700 peer-checked:bg-accent peer-checked:border-accent transition-all duration-200 flex items-center justify-center">
+                             <svg className={`w-3 h-3 text-white fill-current opacity-0 peer-checked:opacity-100 transition-opacity duration-200`} viewBox="0 0 20 20">
+                                <path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" fillRule="evenodd" />
+                             </svg>
+                          </div>
+                       </div>
+                       <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+                          {t.booking.form.save_details}
+                       </span>
+                    </label>
+                    <p className="text-xs text-gray-500 mt-2">
+                       {t.booking.form.privacy_notice} <a href="#" onClick={(e) => e.preventDefault()} className="text-accent hover:underline">{t.booking.form.privacy_link}</a>
+                    </p>
+                 </div>
+              )}
 
               <div className="pt-4">
                 <button

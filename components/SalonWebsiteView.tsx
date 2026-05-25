@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { SalonBusinessProfile, Staff, Service } from '../types';
 import { useLanguage } from '../contexts/LanguageContext';
+import { customerService } from '../services/customerService';
 
 interface SalonWebsiteViewProps {
   tenant: any;
@@ -18,6 +19,13 @@ const SalonWebsiteView: React.FC<SalonWebsiteViewProps> = ({
   const [currentCoverIndex, setCurrentCoverIndex] = useState(0);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   const [isPaused, setIsPaused] = useState(false);
+  const [savedCustomer, setSavedCustomer] = useState<any>(null);
+
+  useEffect(() => {
+    if (tenant?.id) {
+       setSavedCustomer(customerService.getSavedCustomerProfile(tenant.id));
+    }
+  }, [tenant?.id]);
 
   const rawCoverImages = businessProfile?.cover_images?.length 
     ? businessProfile.cover_images 
@@ -72,9 +80,23 @@ const SalonWebsiteView: React.FC<SalonWebsiteViewProps> = ({
             )}
             <span className="font-bold text-gray-900 dark:text-white truncate max-w-[150px] sm:max-w-md">{tenant?.name}</span>
          </div>
-         <button onClick={onStartBooking} className="px-5 py-2 bg-accent text-white rounded-xl font-bold text-sm shadow-sm hover:shadow-md hover:bg-blue-600 transition">
-            Randevu Al
-         </button>
+         <div className="flex items-center gap-3">
+            {savedCustomer && (
+              <div 
+                 className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-sm cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900/50 transition border border-blue-100 dark:border-blue-800"
+                 title={language === 'tr' ? 'Bilgileriniz bu cihazda kayıtlı' : 'Your details are saved on this device'}
+                 onClick={onStartBooking}
+               >
+                 <div className="w-6 h-6 rounded-full bg-blue-200 dark:bg-blue-800 flex items-center justify-center font-bold text-xs">
+                    {savedCustomer.fullName?.charAt(0) || 'A'}
+                 </div>
+                 <span className="font-medium max-w-[100px] truncate">{savedCustomer.fullName?.split(' ')[0]}</span>
+              </div>
+            )}
+            <button onClick={onStartBooking} className="px-5 py-2 bg-accent text-white rounded-xl font-bold text-sm shadow-sm hover:shadow-md hover:bg-blue-600 transition truncate max-w-[140px]">
+               {language === 'tr' ? 'Randevu Al' : 'Book Now'}
+            </button>
+         </div>
       </div>
 
       <div className="bg-white dark:bg-slate-800 overflow-hidden shadow-sm">

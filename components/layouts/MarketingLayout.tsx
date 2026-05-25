@@ -31,9 +31,9 @@ const MarketingLayout: React.FC = () => {
                 <span className="font-semibold text-xl text-primary dark:text-white">Randapp</span>
               </Link>
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-                <Link to="/features" className={`border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-1 pt-1 border-b-2 text-sm font-medium ${location.pathname === '/features' ? 'text-gray-900 border-blue-500' : ''}`}>Özellikler</Link>
-                <Link to="/pricing" className={`border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-1 pt-1 border-b-2 text-sm font-medium ${location.pathname === '/pricing' ? 'text-gray-900 border-blue-500' : ''}`}>Fiyatlar</Link>
-                <Link to="/contact" className={`border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-1 pt-1 border-b-2 text-sm font-medium ${location.pathname === '/contact' ? 'text-gray-900 border-blue-500' : ''}`}>İletişim</Link>
+                <Link to="/features" className={`border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-1 pt-1 border-b-2 text-sm font-medium ${location.pathname === '/features' ? 'text-gray-900 border-blue-500' : ''}`}>{language === 'tr' ? 'Özellikler' : 'Features'}</Link>
+                <Link to="/pricing" className={`border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-1 pt-1 border-b-2 text-sm font-medium ${location.pathname === '/pricing' ? 'text-gray-900 border-blue-500' : ''}`}>{language === 'tr' ? 'Fiyatlar' : 'Pricing'}</Link>
+                <Link to="/contact" className={`border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-1 pt-1 border-b-2 text-sm font-medium ${location.pathname === '/contact' ? 'text-gray-900 border-blue-500' : ''}`}>{language === 'tr' ? 'İletişim' : 'Contact'}</Link>
               </div>
             </div>
             <div className="flex items-center gap-4">
@@ -42,18 +42,18 @@ const MarketingLayout: React.FC = () => {
                 <button onClick={() => setLanguage('en')} className={`px-3 py-1 rounded-md text-xs font-semibold ${language === 'en' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 dark:text-gray-300'}`}>EN</button>
                 <button onClick={() => setLanguage('tr')} className={`px-3 py-1 rounded-md text-xs font-semibold ${language === 'tr' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 dark:text-gray-300'}`}>TR</button>
               </div>
-              <Link to="/login" className="text-gray-600 dark:text-gray-200 text-sm font-medium hover:text-blue-600 dark:hover:text-blue-400">Giriş Yap</Link>
-              <Link to="/demo" className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-bold hover:bg-blue-700 transition hidden sm:block">Kendi Salonumu Önizle</Link>
+              <Link to="/login" className="text-gray-600 dark:text-gray-200 text-sm font-medium hover:text-blue-600 dark:hover:text-blue-400">{language === 'tr' ? 'Giriş Yap' : 'Login'}</Link>
+              <Link to="/demo" className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-bold hover:bg-blue-700 transition hidden sm:block">{language === 'tr' ? 'Kendi Salonumu Önizle' : 'Preview My Salon'}</Link>
             </div>
           </div>
         </div>
         {/* Mobile Navigation */}
         <div className="sm:hidden flex gap-4 overflow-x-auto px-4 py-3 bg-white dark:bg-slate-800 border-t border-gray-100 dark:border-slate-700 whitespace-nowrap hide-scrollbar">
-            <Link to="/" className={`text-sm font-medium border-b-2 ${location.pathname === '/' ? 'text-gray-900 dark:text-white border-blue-500' : 'text-gray-600 dark:text-gray-300 border-transparent'}`}>Ana Sayfa</Link>
-            <Link to="/features" className={`text-sm font-medium border-b-2 ${location.pathname === '/features' ? 'text-gray-900 dark:text-white border-blue-500' : 'text-gray-600 dark:text-gray-300 border-transparent'}`}>Özellikler</Link>
-            <Link to="/pricing" className={`text-sm font-medium border-b-2 ${location.pathname === '/pricing' ? 'text-gray-900 dark:text-white border-blue-500' : 'text-gray-600 dark:text-gray-300 border-transparent'}`}>Fiyatlar</Link>
-            <Link to="/contact" className={`text-sm font-medium border-b-2 ${location.pathname === '/contact' ? 'text-gray-900 dark:text-white border-blue-500' : 'text-gray-600 dark:text-gray-300 border-transparent'}`}>İletişim</Link>
-            <Link to="/demo" className={`text-sm font-medium border-b-2 ${location.pathname === '/demo' ? 'text-blue-600 dark:text-blue-400 border-blue-500' : 'text-blue-600 dark:text-blue-400 border-transparent'}`}>Önizle</Link>
+            <Link to="/" className={`text-sm font-medium border-b-2 ${location.pathname === '/' ? 'text-gray-900 dark:text-white border-blue-500' : 'text-gray-600 dark:text-gray-300 border-transparent'}`}>{language === 'tr' ? 'Ana Sayfa' : 'Home'}</Link>
+            <Link to="/features" className={`text-sm font-medium border-b-2 ${location.pathname === '/features' ? 'text-gray-900 dark:text-white border-blue-500' : 'text-gray-600 dark:text-gray-300 border-transparent'}`}>{language === 'tr' ? 'Özellikler' : 'Features'}</Link>
+            <Link to="/pricing" className={`text-sm font-medium border-b-2 ${location.pathname === '/pricing' ? 'text-gray-900 dark:text-white border-blue-500' : 'text-gray-600 dark:text-gray-300 border-transparent'}`}>{language === 'tr' ? 'Fiyatlar' : 'Pricing'}</Link>
+            <Link to="/contact" className={`text-sm font-medium border-b-2 ${location.pathname === '/contact' ? 'text-gray-900 dark:text-white border-blue-500' : 'text-gray-600 dark:text-gray-300 border-transparent'}`}>{language === 'tr' ? 'İletişim' : 'Contact'}</Link>
+            <Link to="/demo" className={`text-sm font-medium border-b-2 ${location.pathname === '/demo' ? 'text-blue-600 dark:text-blue-400 border-blue-500' : 'text-blue-600 dark:text-blue-400 border-transparent'}`}>{language === 'tr' ? 'Önizle' : 'Preview'}</Link>
         </div>
       </nav>
       <main className="flex-grow w-full">
@@ -66,26 +66,26 @@ const MarketingLayout: React.FC = () => {
                    <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">R</div>
                    <span className="font-semibold text-xl dark:text-white">Randapp</span>
                 </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xs">Kuaför ve güzellik salonları için profesyonel web sitesi ve randevu yönetim platformu.</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xs">{language === 'tr' ? 'Kuaför ve güzellik salonları için profesyonel web sitesi ve randevu yönetim platformu.' : 'Professional website and appointment management platform for salons and beauty centers.'}</p>
             </div>
             <div>
-                <h4 className="font-bold text-gray-900 dark:text-white mb-4">Ürün</h4>
+                <h4 className="font-bold text-gray-900 dark:text-white mb-4">{language === 'tr' ? 'Ürün' : 'Product'}</h4>
                 <ul className="space-y-2 text-sm text-gray-500 dark:text-gray-400">
-                    <li><Link to="/features" className="hover:text-blue-600">Özellikler</Link></li>
-                    <li><Link to="/pricing" className="hover:text-blue-600">Fiyatlar</Link></li>
-                    <li><Link to="/demo" className="hover:text-blue-600">Demo Alın</Link></li>
+                    <li><Link to="/features" className="hover:text-blue-600">{language === 'tr' ? 'Özellikler' : 'Features'}</Link></li>
+                    <li><Link to="/pricing" className="hover:text-blue-600">{language === 'tr' ? 'Fiyatlar' : 'Pricing'}</Link></li>
+                    <li><Link to="/demo" className="hover:text-blue-600">{language === 'tr' ? 'Demo Alın' : 'Get Demo'}</Link></li>
                 </ul>
             </div>
             <div>
-                <h4 className="font-bold text-gray-900 dark:text-white mb-4">Şirket</h4>
+                <h4 className="font-bold text-gray-900 dark:text-white mb-4">{language === 'tr' ? 'Şirket' : 'Company'}</h4>
                 <ul className="space-y-2 text-sm text-gray-500 dark:text-gray-400">
-                    <li><Link to="/contact" className="hover:text-blue-600">İletişime Geçin</Link></li>
-                    <li><a href="https://wa.me/905555555555" target="_blank" rel="noreferrer" className="hover:text-blue-600">WhatsApp Destek</a></li>
+                    <li><Link to="/contact" className="hover:text-blue-600">{language === 'tr' ? 'İletişime Geçin' : 'Contact Us'}</Link></li>
+                    <li><a href="https://wa.me/905555555555" target="_blank" rel="noreferrer" className="hover:text-blue-600">{language === 'tr' ? 'WhatsApp Destek' : 'WhatsApp Support'}</a></li>
                 </ul>
             </div>
         </div>
         <div className="max-w-7xl mx-auto px-4 text-center text-sm text-gray-400 dark:text-gray-600 mt-12 pt-8 border-t border-gray-100 dark:border-slate-800">
-          &copy; {new Date().getFullYear()} Randapp Software. Tüm hakları saklıdır.
+          &copy; {new Date().getFullYear()} Randapp Software. {language === 'tr' ? 'Tüm hakları saklıdır.' : 'All rights reserved.'}
         </div>
       </footer>
     </div>

@@ -13,6 +13,8 @@ Bu proje, bir kuaför, güzellik salonu veya herhangi bir randevulu sistem için
   - `supabase`: Uzak veritabanlarına (PostgreSQL/Supabase) doğrudan okuma ve yazma yapabilen üretim modunda çalışabilir.
 - **Gelişmiş Çalışan ve Hizmet Yönetimi:** İşletmeler, kendi çalışanlarını ve sundukları hizmetleri esnek bir altyapıda yönetebilir. Hizmetler; fiyat, süre ve resim içerecek şekilde detaylandırılır. Çalışan ve hizmetlere aktiflik kazandırılarak görünürlük kontrol edilebilir. Yalnızca *aktif* personeller ve hizmetler müşteri karşısına çıkar.
 - **Dinamik Yönlendirme (Router Mode):** Önizleme, statik dosya barındırma ve production ortamlarına esnek uyum için `VITE_ROUTER_MODE` çevre değişkeniyle uygulamanın Yönlendiricisi dinamiğe alınmıştır. `hash` tabanlı yönderlendirme statik kolaylık sağlarken, `browser` modu temiz URL yapıları için Vercel veya Nginx rewrite kuralları üzerinden çalışır.
+- **Dil Desteği (I18N):** İngilizce (EN) ve Türkçe (TR) dilleri yerleşik olarak desteklenir. Tarayıcı dilini anlar, `localStorage` ile tercih kaydeder ve React Context üzerinden anlık olarak arayüz dilini çevirir.
+- **Hafif Müşteri Hesabı (Account Lite):** Müşteriler, şifre belirlemeden veya ağır kayıt süreçlerinden geçmeden sadece isim, telefon ve email bilgilerini aynı tarayıcıda kaydederek Hızlı Randevu Autofill avantajından faydalanabilirler.
 - **AI Stil Görselleştirici (AI Visualizer):** Gemini yapay zeka entegrasyonu sayesinde kullanıcılar fotoğraflarını yükleyerek analiz yaptırabilir ve sanal deneyimlerde bulunabilirler.
 - **Uygulama İçi Ön Bellekleme (Service Worker Yönetimi):** Geliştirme kolaylığı ve tutarsız önbelleği engellemek için Service Worker, cache stratejisi sonlandırılana kadar devre dışı bırakılmıştır. Lütfen manuel olarak aktif etmeyiniz.
 
