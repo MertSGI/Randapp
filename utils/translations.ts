@@ -343,6 +343,7 @@ export const translations = {
       unknown_service: 'Unknown Service',
       unknown_staff: 'Unknown Staff',
       salon: 'Salon',
+      confirm_cancel: 'Are you sure you want to cancel this appointment?',
     },
     super_admin: {
       panel_title: 'Super Admin',
@@ -809,6 +810,7 @@ export const translations = {
       unknown_service: 'Bilinmeyen Hizmet',
       unknown_staff: 'Bilinmeyen Uzman',
       salon: 'Salon',
+      confirm_cancel: 'Bu randevuyu iptal etmek istediğinize emin misiniz?',
     },
     super_admin_nav: {
       t_admin_dashboard_title: 'Platform Özeti',

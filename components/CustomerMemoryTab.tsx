@@ -362,7 +362,7 @@ const CustomerMemoryTab: React.FC<CustomerMemoryTabProps> = ({ appointments, sta
 
           {/* RIGHT COLUMN: Appointment History */}
           <div className="bg-gray-50 dark:bg-slate-700/30 rounded-lg p-4 border border-gray-100 dark:border-slate-700 h-fit">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">{t.admin.appointment_history || 'Appointment History'}</h3>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">{t.admin.appointment_history}</h3>
             <div className="space-y-4">
               {customerApps.length === 0 ? (
                 <p className="text-sm text-gray-500">{t.admin.no_appointments_found}</p>

@@ -188,5 +188,31 @@ export const superAdminService = {
      }).eq('id', tenantId);
      if (error) throw error;
      return true;
+  },
+
+  async forceSubscriptionStatus(tenantId: string, status: string): Promise<boolean> {
+     const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
+     if (mode === 'mock') {
+        const { dataProvider } = await import('./dataProvider');
+        let mockSubscription = await dataProvider.get<any>(`subscription_${tenantId}`);
+        if (!mockSubscription) {
+            mockSubscription = {
+                id: 'sub_mock',
+                tenantId: tenantId,
+                planId: 'professional',
+                status: status,
+                currentPeriodStart: new Date().toISOString(),
+                currentPeriodEnd: new Date(Date.now() + 30*24*60*60*1000).toISOString()
+            };
+        } else {
+            mockSubscription.status = status;
+        }
+        await dataProvider.set(`subscription_${tenantId}`, mockSubscription);
+        return new Promise(resolve => setTimeout(() => resolve(true), 300));
+     }
+     
+     const { error } = await supabase.from('subscriptions').update({ status }).eq('tenant_id', tenantId);
+     if (error) throw error;
+     return true;
   }
 };

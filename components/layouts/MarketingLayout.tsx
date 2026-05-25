@@ -85,6 +85,21 @@ const MarketingLayout: React.FC = () => {
             </div>
         </div>
         <div className="max-w-7xl mx-auto px-4 text-center text-sm text-gray-400 dark:text-gray-600 mt-12 pt-8 border-t border-gray-100 dark:border-slate-800">
+          <div className="flex justify-center gap-4 mb-4">
+             <button onClick={() => {
+                import('../../utils/demoSeeder').then(m => m.seedDemoData());
+             }} className="text-blue-500 hover:text-blue-700 text-xs font-semibold uppercase tracking-wider">
+               {language === 'tr' ? 'Pilot Demo Verisi Yükle' : 'Seed Pilot Demo Data'}
+             </button>
+             <button onClick={() => {
+                if(window.confirm(language === 'tr' ? 'Tüm yerel veriler silinecek. Emin misiniz?' : 'All local data will be wiped. Are you sure?')) {
+                   localStorage.clear();
+                   window.location.reload();
+                }
+             }} className="text-red-500 hover:text-red-700 text-xs font-semibold uppercase tracking-wider">
+               {language === 'tr' ? 'Yerel Veriyi Sıfırla' : 'Reset Local Data'}
+             </button>
+          </div>
           &copy; {new Date().getFullYear()} Randapp Software. {language === 'tr' ? 'Tüm hakları saklıdır.' : 'All rights reserved.'}
         </div>
       </footer>

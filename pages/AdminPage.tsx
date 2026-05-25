@@ -79,7 +79,7 @@ const AdminPage: React.FC = () => {
 
   const handleCancel = async (id: string) => {
     if (!tenant) return;
-    if (window.confirm('Emin misiniz?' /* simplified confirm for both langs*/)) {
+    if (window.confirm(t.admin.confirm_cancel)) {
       await updateAppointmentStatus(tenant.id, id, 'cancelled');
       loadData();
     }
@@ -393,6 +393,8 @@ const AdminPage: React.FC = () => {
               ) : (
                 appointments.map((apt) => {
                   const assignedStaff = staffList.find(s => s.id === apt.staffId);
+                  const assignedService = servicesList.find(s => s.id === apt.serviceId);
+                  const serviceName = language === 'tr' ? (assignedService?.name_tr || assignedService?.name) : assignedService?.name;
                   return (
                     <li key={apt.id} className="p-4 hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors duration-300">
                       <div className="flex items-center justify-between">
@@ -401,7 +403,7 @@ const AdminPage: React.FC = () => {
                             {apt.user_name}
                           </p>
                           <p className="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">
-                            {apt.date} at {apt.time} {assignedStaff && `(with ${assignedStaff.name})`}
+                            {apt.date} at {apt.time} • {serviceName || t.admin.unknown_service} {assignedStaff && `(${t.admin.with} ${assignedStaff.name})`}
                           </p>
                           <div className="mt-1 flex items-center text-xs text-gray-400 dark:text-gray-500 gap-2 transition-colors duration-300">
                               <span>{apt.user_email}</span>

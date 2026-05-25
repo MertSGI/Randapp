@@ -188,6 +188,13 @@ const SuperAdminDashboard: React.FC = () => {
                     {t.setupStatus === 'live' && (
                        <button onClick={() => handlePause(t.tenant.id)} className="text-yellow-600 hover:text-yellow-900">Pause</button>
                     )}
+                    <button onClick={async () => {
+                        const newStatus = t.subscriptionStatus === 'active' ? 'past_due' : 'active';
+                        if (window.confirm(`Force mock subscription status to ${newStatus}?`)) {
+                            await superAdminService.forceSubscriptionStatus(t.tenant.id, newStatus);
+                            loadData();
+                        }
+                    }} className="text-purple-600 hover:text-purple-900">Toggle Sub</button>
                     <button onClick={() => handleContact(t)} className="text-green-600 hover:text-green-900">{trl.super_admin?.contact || 'Contact'}</button>
                     <button onClick={() => setSelectedTenant(t)} className="text-blue-600 hover:text-blue-900">Manage</button>
                   </td>
