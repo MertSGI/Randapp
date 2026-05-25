@@ -3,7 +3,7 @@
 This document tracks the readiness of the Randapp platform before transitioning from the sandbox/mock environment to production operations (Iyzico / Supabase / real APIs).
 
 ## 1. Routing & Subdomain Readiness
-- [x] Implemented `/admin-preview` and `/super-admin/tenant-preview/:tenantId` protected routes for secure previewing before go-live.
+- [x] Implemented `/admin/site-preview` and `/super-admin/tenant-preview/:tenantId` protected routes for secure previewing before go-live.
 - [x] Defined routing architecture separating ` মার্কেটিং` (Marketing) vs `/:tenantSlug` (Tenant Booking) paths explicitly in `App.tsx`.
 - [x] Mock tenant resolution (`DEMO_TENANT`) acts as a fallback on `localhost` regardless of path.
 - [ ] **Action Required**: Before going live on a custom domain or Vercel, update `tenantService.resolveTenantFromHost` to parse `window.location.pathname` or `hash` to extract `tenantSlug` when not mapping via custom domain.

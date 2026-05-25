@@ -3,7 +3,7 @@
 This document outlines the current state and mock behavior of the Gemini API integration in Randapp for the pilot MVP phase.
 
 ## Current State (Pilot MVP)
-- The Gemini API key is currently mocked on the frontend for safety reasons, as it should not be exposed to clients directly.
+- The Gemini API key is currently mocked or absent on the frontend for safety reasons, as it should not be exposed to clients directly.
 - The `geminiService.ts` handles the interface with Gemini.
 - In `mock` mode, the module returns predefined responses for Demo and AI Visualizer flows.
 - Visualizer Page is simplified: NO quality selectors, NO technical jargon. Just a simple "Tavsiye Al / Get Recommendation" flow.

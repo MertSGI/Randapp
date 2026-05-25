@@ -26,17 +26,17 @@ const SitePreviewPage: React.FC = () => {
     }, [tenant, currentUser]);
 
     if (!tenant) {
-        return <div className="p-8 text-center">Yükleniyor...</div>;
+        return <div className="p-8 text-center">{language === 'tr' ? 'Yükleniyor...' : 'Loading...'}</div>;
     }
 
     if (currentUser?.role !== 'salon_owner') {
-        return <div className="p-8 text-center text-red-600">Yetkisiz erişim</div>;
+        return <div className="p-8 text-center text-red-600">{language === 'tr' ? 'Yetkisiz erişim' : 'Unauthorized Access'}</div>;
     }
 
     return (
         <div className="bg-gray-100 min-h-screen">
             <div className={`p-3 bg-blue-100 text-blue-800 border-b border-blue-200 text-sm text-center font-medium shadow-sm sticky top-0 z-50`}>
-                Önizleme Modu: Bu sayfa henüz müşterilere açık değildir.
+                {language === 'tr' ? 'Önizleme Modu: Bu sayfa henüz müşterilere açık değildir.' : 'Preview Mode: This page is not yet public.'}
             </div>
             <div className="py-8">
                 <SalonWebsiteView 

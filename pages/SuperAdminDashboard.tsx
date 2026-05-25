@@ -7,7 +7,7 @@ const SuperAdminDashboard: React.FC = () => {
   const [data, setData] = useState<{stats: any, tenants: TenantFullData[]} | null>(null);
   const [loading, setLoading] = useState(true);
   const { language } = useLanguage();
-  const t = translations[language];
+  const trl = translations[language];
 
   const [selectedTenant, setSelectedTenant] = useState<TenantFullData | null>(null);
 
@@ -27,26 +27,26 @@ const SuperAdminDashboard: React.FC = () => {
   }, []);
 
   const handleApprove = async (tenantId: string) => {
-    if (window.confirm("Bu salonu yayına almak istiyor musunuz? Müşteri randevu alabilecek.")) {
+    if (window.confirm(trl.super_admin?.approve_prompt || 'Approve this salon for live bookings?')) {
         await superAdminService.approveGoLive(tenantId);
-        alert("Salon başarıyla yayına alındı.");
+        alert(trl.super_admin?.approve_success || 'Salon is live.');
         loadData();
     }
   };
 
   const handleSendBack = async (tenantId: string) => {
-    const note = window.prompt("Eksiklikleri belirtmek için bir not girin (opsiyonel):");
+    const note = window.prompt(trl.super_admin?.send_back_prompt || 'Enter note (optional):');
     if (note !== null) {
         await superAdminService.sendBackToSetup(tenantId, note);
-        alert("Salon kuruluma geri gönderildi.");
+        alert(trl.super_admin?.send_back_success || 'Salon sent back.');
         loadData();
     }
   };
 
   const handlePause = async (tenantId: string) => {
-    if (window.confirm("Bu salonun randevu alımını durdurmak istiyor musunuz?")) {
+    if (window.confirm(trl.super_admin?.pause_prompt || 'Pause bookings for this salon?')) {
         await superAdminService.pauseBookings(tenantId);
-        alert("Aksiyon tamamlandı.");
+        alert(trl.super_admin?.pause_success || 'Action completed.');
         loadData();
     }
   };
@@ -120,8 +120,8 @@ const SuperAdminDashboard: React.FC = () => {
                          <a href={`/#/super-admin/tenant-preview/${t.tenant.id}`} target="_blank" rel="noopener noreferrer" className="bg-gray-100 text-gray-800 hover:bg-gray-200 px-3 py-1.5 rounded-md text-xs font-medium shadow-sm transition-colors flex items-center gap-1">
                            Siteyi Önizle
                          </a>
-                         <button onClick={() => handleApprove(t.tenant.id)} className="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-md text-xs font-medium shadow-sm transition-colors">Approve Go-Live</button>
-                         <button onClick={() => handleSendBack(t.tenant.id)} className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200 px-3 py-1.5 rounded-md text-xs font-medium shadow-sm transition-colors">Send Back</button>
+                         <button onClick={() => handleApprove(t.tenant.id)} className="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-md text-xs font-medium shadow-sm transition-colors">{trl.super_admin?.approve || 'Approve Go-Live'}</button>
+                         <button onClick={() => handleSendBack(t.tenant.id)} className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200 px-3 py-1.5 rounded-md text-xs font-medium shadow-sm transition-colors">{trl.super_admin?.send_back || 'Send Back'}</button>
                       </td>
                     </tr>
                  ))}
@@ -188,7 +188,7 @@ const SuperAdminDashboard: React.FC = () => {
                     {t.setupStatus === 'live' && (
                        <button onClick={() => handlePause(t.tenant.id)} className="text-yellow-600 hover:text-yellow-900">Pause</button>
                     )}
-                    <button onClick={() => handleContact(t)} className="text-green-600 hover:text-green-900">İletişime Geç</button>
+                    <button onClick={() => handleContact(t)} className="text-green-600 hover:text-green-900">{trl.super_admin?.contact || 'Contact'}</button>
                     <button onClick={() => setSelectedTenant(t)} className="text-blue-600 hover:text-blue-900">Manage</button>
                   </td>
                 </tr>

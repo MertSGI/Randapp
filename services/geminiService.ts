@@ -1,4 +1,3 @@
-import { GoogleGenAI } from "@google/genai";
 import { Appointment } from '../types';
 
 const isMockMode = (import.meta as any).env.VITE_DATA_MODE === 'mock' || (import.meta as any).env.VITE_AI_MODE === 'mock';
@@ -12,7 +11,7 @@ const getAi = () => {
     console.warn("Gemini API Key is missing. Falling back to mock behavior.");
     return null;
   }
-  return new GoogleGenAI({ apiKey: key });
+  return null;
 };
 
 export const generateBookingConfirmation = async (

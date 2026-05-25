@@ -26,11 +26,11 @@ const SuperAdminTenantPreviewPage: React.FC = () => {
     }, [tenantId, currentUser]);
 
     if (!tenantId) {
-        return <div className="p-8 text-center text-red-600">Tenant ID eksik</div>;
+        return <div className="p-8 text-center text-red-600">Missing Tenant ID</div>;
     }
 
     if (currentUser?.role !== 'super_admin') {
-        return <div className="p-8 text-center text-red-600">Yetkisiz erişim</div>;
+        return <div className="p-8 text-center text-red-600">Unauthorized Access</div>;
     }
 
     // Mock tenant skeleton for preview
@@ -43,7 +43,7 @@ const SuperAdminTenantPreviewPage: React.FC = () => {
     return (
         <div className="bg-gray-100 min-h-screen">
             <div className={`p-3 bg-purple-100 text-purple-800 border-b border-purple-200 text-sm text-center font-medium shadow-sm sticky top-0 z-50`}>
-                Super Admin Önizleme Modu: Bu sayfa müşterilere açık değildir.
+                Super Admin Preview Mode: This page is not public.
             </div>
             <div className="py-8">
                 <SalonWebsiteView 

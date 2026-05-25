@@ -78,6 +78,7 @@ const AppFlowSwitcher: React.FC = () => {
         <Route path="/admin/*" element={<AdminPage />} />
       </Route>
       {/* Admin preview route doesn't need standard admin layout so we place it outside it or with a minimal layout*/}
+      <Route path="/admin-preview" element={<Navigate to="/admin/site-preview" replace />} />
       <Route path="/admin/site-preview" element={
         <ProtectedRoute allowedRoles={['salon_owner']}>
           <SitePreviewPage />

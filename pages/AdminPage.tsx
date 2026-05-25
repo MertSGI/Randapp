@@ -248,7 +248,7 @@ const AdminPage: React.FC = () => {
                onClick={() => { window.open('/#/book?preview=true', '_blank'); }}
                className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-slate-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent"
              >
-               Site Önizlemesini Aç
+               {language === 'tr' ? 'Site Önizlemesini Aç' : 'Open Site Preview'}
              </button>
              <button 
                onClick={runAnalysis}

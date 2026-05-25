@@ -264,14 +264,14 @@ const BookingPage: React.FC = () => {
          </div>
       )}
       {isCheckingSub ? (
-         <div className="text-center py-12 text-gray-500">Yükleniyor...</div>
+         <div className="text-center py-12 text-gray-500">{language === 'tr' ? 'Yükleniyor...' : 'Loading...'}</div>
       ) : !isAuthorizedPreview && subStatus === 'suspended' ? (
          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-red-200 dark:border-red-900/50 p-8 text-center text-red-600 dark:text-red-400">
            <svg className="mx-auto h-16 w-16 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m0 0v2m0-2h2m-2 0H9m-3.5 4a2.5 2.5 0 01-2.5-2.5v-10A2.5 2.5 0 015.5 4h13A2.5 2.5 0 0121 6.5v10a2.5 2.5 0 01-2.5 2.5h-13z" />
            </svg>
-           <h2 className="text-2xl font-bold mb-2">Hizmet Geçici Olarak Kapalı</h2>
-           <p>{setupError || 'Bu salonun online randevu sistemi geçici olarak kullanılamıyor. Lütfen işletme ile iletişime geçin.'}</p>
+           <h2 className="text-2xl font-bold mb-2">{t.salon.account_suspended || 'Hizmet Geçici Olarak Kapalı'}</h2>
+           <p>{setupError || '{t.salon.account_suspended_desc}'}</p>
          </div>
       ) : (
       <>
@@ -296,8 +296,8 @@ const BookingPage: React.FC = () => {
         {step === 1 && (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">Hizmet Seçin</h2>
-              <button onClick={() => setStep(0)} className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white underline transition-colors duration-300">Geri Dön</button>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">{t.booking.steps[1] || 'Hizmet Seçin'}</h2>
+              <button onClick={() => setStep(0)} className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white underline transition-colors duration-300">{language === 'tr' ? 'Geri Dön' : 'Go Back'}</button>
             </div>
             
             {servicesList.length === 0 ? (
@@ -346,7 +346,7 @@ const BookingPage: React.FC = () => {
         {step === 2 && (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">Uzman Seçin</h2>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">{t.booking.steps[0] || 'Uzman Seçin'}</h2>
               <button onClick={() => setStep(1)} className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white underline transition-colors duration-300">{t.booking.change_service}</button>
             </div>
             
