@@ -1,6 +1,11 @@
 import { Appointment, CustomerProfile, Staff, Service, SalonBusinessProfile } from '../types';
 
 export const seedDemoData = () => {
+  if ((import.meta as any).env.VITE_DATA_MODE !== 'mock') {
+    console.warn('Demo seeder is only available in mock data mode.');
+    return;
+  }
+
   const tenantId = 'demo-tenant-1'; // Default tenant name used around the app
 
   // Demo user logic (clear all relevant keys but leave language/theme if possible, or just overwrite known keys)

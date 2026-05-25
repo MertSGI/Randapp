@@ -85,21 +85,28 @@ const MarketingLayout: React.FC = () => {
             </div>
         </div>
         <div className="max-w-7xl mx-auto px-4 text-center text-sm text-gray-400 dark:text-gray-600 mt-12 pt-8 border-t border-gray-100 dark:border-slate-800">
-          <div className="flex justify-center gap-4 mb-4">
-             <button onClick={() => {
-                import('../../utils/demoSeeder').then(m => m.seedDemoData());
-             }} className="text-blue-500 hover:text-blue-700 text-xs font-semibold uppercase tracking-wider">
-               {language === 'tr' ? 'Pilot Demo Verisi Yükle' : 'Seed Pilot Demo Data'}
-             </button>
-             <button onClick={() => {
-                if(window.confirm(language === 'tr' ? 'Tüm yerel veriler silinecek. Emin misiniz?' : 'All local data will be wiped. Are you sure?')) {
-                   localStorage.clear();
-                   window.location.reload();
-                }
-             }} className="text-red-500 hover:text-red-700 text-xs font-semibold uppercase tracking-wider">
-               {language === 'tr' ? 'Yerel Veriyi Sıfırla' : 'Reset Local Data'}
-             </button>
-          </div>
+          {(import.meta as any).env.VITE_DATA_MODE === 'mock' && (
+            <div className="flex flex-col items-center gap-2 mb-6 p-4 bg-gray-100 dark:bg-slate-800 rounded-lg max-w-sm mx-auto">
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">
+                {language === 'tr' ? 'Demo Araçları (Sadece Geliştirici Modu)' : 'Demo Utils (Dev Mode Only)'}
+              </span>
+              <div className="flex justify-center gap-4">
+                 <button onClick={() => {
+                    import('../../utils/demoSeeder').then(m => m.seedDemoData());
+                 }} className="text-blue-500 hover:text-blue-700 text-xs font-semibold uppercase tracking-wider">
+                   {language === 'tr' ? 'Pilot Demo Verisi Yükle' : 'Seed Pilot Demo Data'}
+                 </button>
+                 <button onClick={() => {
+                    if(window.confirm(language === 'tr' ? 'Tüm yerel veriler silinecek (Demo sıfırlama). Bu işlem geri alınamaz. Emin misiniz?' : 'All local demo data will be wiped. This Cannot be undone. Are you sure?')) {
+                       localStorage.clear();
+                       window.location.reload();
+                    }
+                 }} className="text-red-500 hover:text-red-700 text-xs font-semibold uppercase tracking-wider">
+                   {language === 'tr' ? 'Yerel Veriyi Sıfırla' : 'Reset Local Data'}
+                 </button>
+              </div>
+            </div>
+          )}
           &copy; {new Date().getFullYear()} Randapp Software. {language === 'tr' ? 'Tüm hakları saklıdır.' : 'All rights reserved.'}
         </div>
       </footer>

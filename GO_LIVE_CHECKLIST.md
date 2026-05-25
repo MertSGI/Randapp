@@ -2,28 +2,32 @@
 
 This document tracks the readiness of the Randapp platform before transitioning from the sandbox/mock environment to production operations (Iyzico / Supabase / real APIs).
 
+**Important Note for Pilot Phase:** The app is currently optimized for demonstration using `VITE_DATA_MODE=mock`. Customer memory, demo seeding utilities, and AI configurations are safely locked to local mock storage.
+
 ## 1. Routing & Subdomain Readiness
 - [x] Implemented `/admin/site-preview` and `/super-admin/tenant-preview/:tenantId` protected routes for secure previewing before go-live.
-- [x] Defined routing architecture separating ` মার্কেটিং` (Marketing) vs `/:tenantSlug` (Tenant Booking) paths explicitly in `App.tsx`.
-- [x] Mock tenant resolution (`DEMO_TENANT`) acts as a fallback on `localhost` regardless of path.
-- [ ] **Action Required**: Before going live on a custom domain or Vercel, update `tenantService.resolveTenantFromHost` to parse `window.location.pathname` or `hash` to extract `tenantSlug` when not mapping via custom domain.
+- [x] Defined routing architecture separating marketing vs tenant paths.
+- [x] Mock tenant resolution acts as a fallback on `localhost`.
+- [ ] **Action Required (Next Phase)**: Before going live, update `tenantService` to correctly resolve domains if custom root domains are mapped.
 
 ## 2. Payment Gateway (Iyzico) Readiness
-- [x] Ensured `PricingPage` and internal `BillingTab` do NOT display active card payment collection text when `VITE_PAYMENT_PROVIDER=mock`.
-- [x] Changed CTA to "Abonelik İçin Görüş" / "Satış Ekibiyle Görüş" in mock mode.
-- [ ] **Action Required**: Configure server-side API endpoints (`/api/checkout` etc.) using actual Iyzico tokens.
-- [ ] **Action Required**: Add explicit "Satın Al / Kredi Kartı ile Öde" UI components when `VITE_PAYMENT_PROVIDER=iyzico`. Do not expose Iyzico secret keys to frontend.
+- [x] Ensured `PricingPage` and internal `BillingTab` do NOT display active card payment collection text when in mock mode.
+- [x] Super Admin mock subscription toggle works as a developer utility.
+- [ ] **Action Required (Next Phase)**: Configure server-side API endpoints via Edge Functions with actual Iyzico tokens.
+- [ ] **Action Required (Next Phase)**: Add explicit Checkout components when `VITE_PAYMENT_PROVIDER=iyzico` connects to real backend. Do not expose Iyzico secret keys to frontend.
 
 ## 3. Product & Marketing Generalization
-- [x] Marketing copy adapted to clarify support for "Klinikler, stüdyolar ve randevulu çalışan tüm diğer işletmeler" alongside hair salons.
-- [x] Admin Setup simplified (`AdminLayout` top-nav converted, negative padding fixed, preview links clarified).
+- [x] Marketing copy adapted to clarify support for businesses beyond hair salons.
+- [x] Demo Seeder utilities are safely gated in the Marketing Layout footer only when `VITE_DATA_MODE=mock`.
 
 ## 4. AI Guardrails (Gemini)
-- [x] `SuperAdminAiSettingsPage` deployed to define platform limits (System prompt, image generation toggles).
-- [ ] **Action Required**: `GeminiService` currently uses an embedded proxy or direct endpoint which may not apply proper rate limiting by tenant. An edge function backend must be deployed to map Supabase User ID to Token Quota.
+- [x] `SuperAdminAiSettingsPage` deployed in mock mode.
+- [x] Frontend Gemini mock integration returns safe defaults, with no API keys exposed in code.
+- [x] Customer Memory Reference Photos isolated from AI processing to ensure privacy compliance.
+- [ ] **Action Required (Next Phase)**: Gemini proxy backend must be deployed mapping Supabase User ID to Token Quota.
 
 ## 5. Security & Access
-- [x] Service workers disabled to prevent stale cache issues during presentation mode.
-- [x] Booking Page successfully isolates `subStatus === 'suspended'` blocking unauthenticated users from viewing draft salon sites.
-- [ ] **Action Required**: Supabase RLS (Row Level Security) policies must be fully defined before switching off `VITE_DATA_MODE=mock`.
-- [ ] **Action Required**: Customer reference photos and memory notes must be isolated by `tenantId` explicitly via Postgres RLS before allowing real uploads. No public storage bucket permissions can be granted. 
+- [x] Service workers disabled to prevent stale cache issues during presentation.
+- [x] Booking Page successfully isolates `subStatus === 'suspended'`.
+- [ ] **Action Required (Next Phase)**: Supabase RLS policies must be fully defined before switching off `VITE_DATA_MODE=mock`.
+- [ ] **Action Required (Next Phase)**: Customer reference photos must be isolated by `tenantId` explicitly via Postgres RLS before allowing real uploads. No public storage bucket permissions can be granted. 

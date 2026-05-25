@@ -38,6 +38,7 @@
 ## Super Admin (`/super-admin`)
 - [x] **Login Mechanics**: `superadmin@randapp.com` can log in and see high-level overview.
 - [x] **Go-Live Approval**: Modifies status to `live`. Confirmed by window message.
+- [x] **Mock Subscription Toggle**: Super Admins can manually force a mock subscription toggle (Active / Past Due) for demo purposes, with clear warning that this is a mock developer utility.
 - [x] **Send-Back Flow**: "Send Back" correctly prompts for an optional note (using `window.prompt`) and sets state to `needs_changes` or `setup_in_progress` logically via backend mock service.
 - [x] **Tenant Management**: Actions are appropriately contained, unbuilt advanced actions trigger a "Sonraki fazda eklenecek" placeholder.
 - [x] **Payments & Diagnostics Test**: `SuperAdminPaymentTestPage` runs simulated sandbox responses successfully.
@@ -46,6 +47,7 @@
 - [x] Clean state machine: `setup_in_progress` → `ready_for_review` → (`live` XOR `needs_changes`).
 - [x] Reusability of states across `TenantContext`, `goLiveService`, and local components.
 - [x] `VITE_DATA_MODE=mock` robustly handles refresh/persistence across the SPA. 
+- [x] **Demo Operations**: `demoSeeder.ts` is explicitly gated and ONLY functional in mock data mode to prevent destructive execution in production environments.
 
 ---
 **Status**: All core routing boundaries, role constraints, and presentation polish passes are completed. The platform is ready for Edge Function integration for genuine iyzico/Supabase endpoints.

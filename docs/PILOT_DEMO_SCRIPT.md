@@ -1,62 +1,73 @@
-# Pilot Demo Script
+# Randapp Pilot Demo Script & Presentation Guide
 
-This document outlines a standardized flow for showcasing the Randapp platform to early adopters, investors, or pilot salon owners.
+This document outlines the ideal flow for demonstrating Randapp to salon owners during the pilot phase.
+**Ensure you are in development `VITE_DATA_MODE=mock` to use demo seed tools safely before the meeting.**
 
-## What is Live vs. Mock?
-- **Live Now:** Complete Frontend Flow, Profile Generation, Local State Persistence, Super Admin Mock-Approval, AI Styling Concept (if API key active), and Full Public Website Simulator.
-- **Mock / Sandbox:** Supabase DB connections, Real SMS Notifications, Real Credit Card charges.
-- **Manual Setup required:** Actual DNS Subdomains, Iyzico Production Keys.
+## Core Value Proposition (Sales Message)
+**EN:** "Randapp gives small businesses more than online booking: it gives them a mini website, smart booking, customer memory, and an owner dashboard."
+**TR:** "Randapp küçük işletmelere sadece online randevu değil; mini web sitesi, akıllı randevu akışı, müşteri hafızası ve işletme yönetim paneli sağlar."
 
-## Step-by-Step Flow
+---
 
-### 1. The Hook (Demo Generator)
-1. Navigate to the main Randapp Marketing Landing Page.
-2. Direct attention to the immediate value: "See what your salon looks like."
-3. Open `/demo` route.
-4. Input the Salon Owner's actual business name and choose a color scheme.
-5. Click **"Demo Oluştur"**.
-6. Present the instant, beautiful simulated website. Walk through the slick interface and highlight the professional gap between this and a standard Instagram page.
+## Pre-Meeting Setup (5 mins before)
+1. Open the application.
+2. Ensure you are on the Marketing Home Page (`/`).
+3. Scroll to the footer, confirm you see "Demo Utils (Dev Mode Only)" (if enabled).
+4. Click **"Reset Local Data"** to clear previous sessions.
+5. Click **"Seed Pilot Demo Data"** to load the polished demo tenant with mock appointments, staff, services, and customer memory.
+6. The app will reload. You are ready.
 
-### 2. The Setup (Business Owner Perspective)
-1. Complete the mock demo registration or log in as `admin@randapp.com`.
-2. Enter the **Yönetim Paneli**.
-3. Tab over to **İşletme Profili / Web Sitesi**.
-4. Show how straightforward the upload process is.
-   - Upload a Logo.
-   - Upload 2-3 Cover Photos.
-5. Click **"Site Önizlemesini Aç"** to instantly prove the changes reflect on the public site layout. Mention the auto-rotation (carousel).
-6. Jump back to the **Onboarding Wizard** or **Hizmetler / Uzmanlar** pages. Add a quick Service and Staff member.
+---
 
-### 3. Review & Verification (Super Admin Perspective)
-1. Point out the "Yayına Alınmaya Hazır" (Ready for Review) button the salon owner presses.
-2. Log out, then log in safely as `superadmin@randapp.com`.
-3. Open **Onboarding / Go-Live** from the Super Admin sidebar.
-4. Locate the specific Tenant in the pending list.
-5. Click **Siteyi Önizle** — ensure it opens cleanly.
-6. Click **Approve Go-Live** (explain this is where quality control happens).
+## 1. Opening Pitch
+- **Goal:** Set the stage. Identify the pain points (notebooks, Instagram DMs, lost customer preferences).
+- **Say:** "Managing a salon means juggling Instagram DMs for appointments, remembering hair color formulas in your head, and trying to look professional. Randapp solves this by giving you a digital storefront, a smart appointment system, and a customer memory hub in one place. Best of all, it's incredibly simple to set up."
 
-### 4. The Action (Customer Booking Flow)
-1. Navigate to the simulated Public URL (`/#/book?tenantId=...`).
-2. Demonstrate how the website is a standalone entity (No booking stepper clutters the view).
-3. Click **Randevu Al** or pick a specific service.
-4. Show the clean stepper.
-5. Select the Service.
-6. Select the Expert (Highlight the "En yakın müsaitlik" tag natively resolving).
-7. Select "Bana Fark Etmez" to showcase smart auto-assignment.
-8. Pick a specific Time block.
-9. Enter customer details.
-10. Confirm Booking. Show success phase.
+## 2. Marketing Site & Instant Demo
+- **Show:** Scroll through the features page.
+- **Action:** Click "Preview My Salon" (Kendi Salonumu Önizle) or navigate to `/demo`.
+- **Explain:** "We let business owners see what their app looks like instantly before they even sign up. They just enter their name, and we generate a personalized landing page."
 
-### 5. The Loyalty & Memory Feature (Salon Owner)
-1. Log back in as `admin@randapp.com`.
-2. Open the **Takvim / Randevular** section to see the new appointment populated.
-3. Show that from the appointment card directly, the owner clicks **"View Customer Profile"** (or Müşteri Profilini Görüntüle).
-4. The system instantly deep-links, switching to the **Müşteriler / Customers** tab and opening the precise customer's detail view automatically.
-5. In the profile, highlight the structured top metrics: Last Service, Preferred Staff, and Last Visit.
-6. Emphasize styling memory: Click "Edit" on Style Preferences and add: *“Wants the same layered cut as last visit. Prefers natural blow-dry.”*
-7. Upload a reference photo in mock mode, acknowledging the privacy texts indicating it is only a localized, private style reference (no AI processing).
-8. **Sales Message:** *“Randapp remembers the customer, not only the appointment. You will never have to ask ‘what did we do last time’ again.”*
+## 3. Public Salon Website
+- **Action:** Open the seeded tenant's public website.
+- **Explain:** "This isn't just a booking widget. This is your salon's digital home. Customers see your cover photos, your services, your staff, and your address. It looks professional on both mobile and desktop."
+- **Note:** Mention that "Manual custom domain support / Manuel özel domain desteği" is provided.
 
-### 6. Management & Reports
-1. Jump back to the **Raporlar** page to view the mock revenue/growth charts, emphasizing tracking and analytics value.
-2. Show the **Abonelik / Faturalandırma** screen, explaining that live card payments are the final phase before absolute public launch.
+## 4. Booking Flow & "No Preference" Logic
+- **Action:** Click "Book Appointment".
+- **Show:** Step 1: Services. Select "Saç Kesimi".
+- **Show:** Step 2: Staff. Point out the "Bana Fark Etmez" (No Preference) option.
+- **Explain:** "Customers who just want the earliest slot can pick 'No Preference'. The system intelligently picks the first available staff member."
+- **Show:** Customer Details.
+- **Explain:** "We don't force customers to remember passwords. Our Customer Account Lite securely saves their name and phone locally, making future bookings a 1-click experience."
+- **Note on Payments:** Explicitly state: "For this pilot, the booking is instantly confirmed offline. Online payments will be activated in our next phase."
+
+## 5. Admin Owner Dashboard & Appointments
+- **Action:** Log in as the admin (`admin@randapp.com` / `admin123`).
+- **Show:** The Appointments tab. 
+- **Explain:** "Here is your daily view. You see exactly who is coming and for what."
+
+## 6. The Customer Memory Story (Key Selling Point)
+- **Say:** **EN:** "Randapp remembers the customer, not only the appointment." / **TR:** "Randapp sadece randevuyu değil, müşteriyi de hatırlar."
+- **Action:** On an appointment card, click **"View Customer Profile"**.
+- **Show:** The Customer Memory tab opens directly to that customer.
+- **Highlight:**
+  - **Total visits & Last Visit.**
+  - **Style Preferences:** Show the "Wella 7.1 + 8.1" color formula logged.
+  - **Internal Notes:** "Likes green tea".
+  - **Appointment History.**
+- **Reference Photos (Privacy Note):** "You can upload reference photos of their hair. These are strictly for your salon's private history. We do not use AI facial recognition or share these publicly." (Explain this is in mock/local mode currently).
+
+## 7. Reports & Owner Settings
+- **Action:** Switch to "Reports".
+- **Explain:** "You immediately see your estimated revenue and appointment volume. No math required."
+- **Action:** Switch to "Subscription" (Abonelik).
+- **Explain:** "This is where you would upgrade your plan in the future. Currently, you are in a pilot mode, so live payments are not active."
+
+## 8. Super Admin Operations Center
+- **Action:** Log out. Log in as Super Admin (`superadmin@randapp.com` / `superadmin123`).
+- **Show:** The dashboard stats.
+- **Feature:** Show the Mock "Toggle Sub" button. Explain how the platform team can manually manage subscription states if they don't pay their real-life bill. "We have full operational control."
+
+## 9. Closing Value Proposition
+- **Say:** "With Randapp, a salon owner steps away from pen and paper, elevates their brand, and builds an unforgettable customer experience through Customer Memory. We are ready to onboard our first test businesses."

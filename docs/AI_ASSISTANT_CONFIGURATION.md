@@ -7,8 +7,9 @@ This document outlines the current state and mock behavior of the Gemini API int
 - The `geminiService.ts` handles the interface with Gemini.
 - In `mock` mode, the module returns predefined responses for Demo and AI Visualizer flows.
 - Visualizer Page is simplified: NO quality selectors, NO technical jargon. Just a simple "Tavsiye Al / Get Recommendation" flow.
+- Customer photos are not sent to AI in the current MVP. Customer Memory reference photos are only local/mock service-history references, no AI processing or biometric identification is used.
 
-## Future Production Implementation Requirements
+## Future Production Implementation Requirements (Next Phase)
 1. **Edge Function Proxy**: All AI requests MUST go through a backend endpoint (e.g., Supabase Edge Functions), which will hold the `GEMINI_API_KEY` securely.
 2. **Quota Tracking**: Monitor tenant-level token or request usage to enforce limits based on Subscription Plans.
 3. **Advanced Modes**: True image generation and multi-modal styling using user uploads, properly sanitized for safety guidelines.

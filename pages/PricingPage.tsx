@@ -82,9 +82,6 @@ const PricingPage: React.FC = () => {
                      <span className="text-accent font-bold">✓</span>
                      <span className="text-sm border-b border-dashed border-gray-200 dark:border-slate-700 pb-1 w-full flex flex-col">
                          <span>{t.marketing.pricing.custom_domain}</span>
-                         {billingPeriod === 'annual' && plan.customComDomainIncluded && (
-                             <span className="text-xs text-green-500 font-bold mt-1">{t.marketing.pricing.com_domain_free}</span>
-                         )}
                      </span>
                   </li>
                 )}
