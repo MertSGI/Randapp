@@ -252,7 +252,8 @@ const BusinessProfileTab: React.FC = () => {
                     )}
                  </div>
                  <div>
-                    <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Kapak Fotoğrafları Yükle (Birden fazla seçebilirsiniz)</label>
+                    <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Kapak Fotoğrafları / İşletme Görselleri (Birden fazla seçebilirsiniz)</label>
+                    <p className="text-[10px] text-gray-500 mb-2">Seçtiğiniz bu fotoğraflar, hem salon web sitenizin ana slider alanını hem de işletmenizin genel galeri görünümünü oluşturacaktır.</p>
                     <input 
                        type="file" 
                        multiple
@@ -278,33 +279,6 @@ const BusinessProfileTab: React.FC = () => {
                         </div>
                     ) : profile.cover_image_url && (
                         <div className="mt-2 text-xs text-amber-600">Tekil kapak url'si mevcut, çoklu fotoğraf yüklediğinizde bu alan geçersiz sayılacaktır.</div>
-                    )}
-                 </div>
-                 <div>
-                    <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Galeri Görselleri Ekle</label>
-                    <input 
-                       type="file" 
-                       multiple 
-                       accept="image/*"
-                       onChange={handleGalleryUpload}
-                       className="block w-full text-sm text-gray-500
-                                  file:mr-4 file:py-2 file:px-4
-                                  file:rounded-md file:border-0
-                                  file:text-sm file:font-semibold
-                                  file:bg-blue-50 file:text-blue-700
-                                  hover:file:bg-blue-100 dark:file:bg-slate-700 dark:file:text-slate-300 mb-2"
-                    />
-                    {profile.gallery_images && profile.gallery_images.length > 0 && (
-                       <div className="flex flex-wrap gap-2 mt-2">
-                           {profile.gallery_images.map((img, idx) => (
-                               <div key={idx} className="relative group">
-                                  <img src={img} className="h-16 w-16 object-cover rounded-md shadow-sm" />
-                                  <button type="button" onClick={() => removeGalleryImage(idx)} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-                                  </button>
-                               </div>
-                           ))}
-                       </div>
                     )}
                  </div>
               </div>

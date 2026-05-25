@@ -10,6 +10,7 @@ import { getServices } from '../services/serviceCatalogService';
 import { createAppointment, getBookedSlots, updateAppointmentStatus } from '../services/appointmentService';
 import { subscriptionService, SubscriptionStatus } from '../services/subscriptionService';
 import { businessProfileService } from '../services/businessProfileService';
+import { availabilityService } from '../services/availabilityService';
 import { SalonBusinessProfile } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import { canPreviewTenantSite } from '../utils/previewAuth';
@@ -51,6 +52,7 @@ const BookingPage: React.FC = () => {
   const [setupError, setSetupError] = useState<string>('');
   const [isCheckingSub, setIsCheckingSub] = useState(true);
   const [businessProfile, setBusinessProfile] = useState<SalonBusinessProfile | null>(null);
+  const [staffAvailability, setStaffAvailability] = useState<Record<string, {date: string, time: string}>>({});
 
   const timeSlots = generateTimeSlots();
   
@@ -87,19 +89,56 @@ const BookingPage: React.FC = () => {
     }
   }, [tenant, selectedDate, selectedStaff]);
 
-  const handleStaffSelect = (staff: Staff) => {
-    setSelectedStaff(staff);
-    setStep(1);
+  useEffect(() => {
+    if (tenant && staffList.length > 0 && selectedService) {
+      staffList.forEach(staff => {
+        availabilityService.getNextAvailableSlotForStaff(tenant.id, staff.id, selectedService.id).then(slot => {
+          if (slot) {
+            setStaffAvailability(prev => ({ ...prev, [staff.id]: slot }));
+          }
+        });
+      });
+    }
+  }, [tenant, staffList, selectedService]);
+
+  const onStartBooking = () => {
+    setSelectedService(null);
+    setSelectedStaff(null);
+    setSelectedDate(new Date().toISOString().split('T')[0]);
+    setSelectedTime('');
+    setStep(1); // Go to service select
   };
 
-  const handleServiceSelect = (service: Service) => {
+  const handleWebsiteServiceSelect = (service: Service) => {
+    setSelectedService(service);
+    setStep(2); // Go to staff select
+  };
+
+  const handleWidgetServiceSelect = (service: Service) => {
     setSelectedService(service);
     setStep(2);
   };
 
+  const handleStaffSelect = async (staff: Staff, isAny: boolean = false) => {
+    if (isAny && tenant && selectedService) {
+      const earliest = await availabilityService.getEarliestAvailableStaff(tenant.id, selectedService.id);
+      if (earliest) {
+         const earliestStaff = staffList.find(s => s.id === earliest.staffId) || staffList[0];
+         setSelectedStaff(earliestStaff);
+         setSelectedDate(earliest.date);
+         setSelectedTime(earliest.time);
+         setStep(4); // Skip time selection, since we picked earliest
+         return;
+      }
+    }
+    
+    setSelectedStaff(staff);
+    setStep(3);
+  };
+
   const handleTimeSelect = (time: string) => {
     setSelectedTime(time);
-    setStep(3);
+    setStep(4);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -157,7 +196,31 @@ const BookingPage: React.FC = () => {
     setWhatsappSent(true);
 
     setIsSubmitting(false);
-    setStep(4);
+    setStep(5);
+  };
+
+  const renderStepper = () => {
+    if (step === 0 || step === 5) return null;
+    
+    const stepLabels = ['Hizmet Seç', 'Uzman Seç', 'Saat Seç', 'Bilgiler'];
+
+    return (
+      <div className="mb-10 max-w-2xl mx-auto hidden sm:block">
+        <div className="flex items-center justify-between relative px-2">
+          <div className="absolute left-6 right-6 top-1/2 h-0.5 bg-gray-200 -z-10 w-[calc(100%-3rem)]"></div>
+          {[1, 2, 3, 4].map((s, index) => (
+            <div key={s} className="flex flex-col items-center">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 shadow-sm ${step >= s ? 'bg-accent text-white ring-4 ring-blue-50' : 'bg-white border-2 border-gray-200 text-gray-400'}`}>
+                {s}
+              </div>
+              <span className={`mt-2 text-xs font-semibold ${step >= s ? 'text-gray-900 dark:text-white' : 'text-gray-400'} w-20 text-center whitespace-nowrap`}>
+                {stepLabels[index]}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -179,36 +242,19 @@ const BookingPage: React.FC = () => {
          </div>
       ) : (
       <>
-      {/* Progress Bar */}
-      {step > 0 && (
-        <div className="mb-8 max-w-2xl mx-auto hidden sm:block">
-          <div className="flex items-center justify-between relative px-2">
-            <div className="absolute left-6 right-6 top-1/2 h-0.5 bg-gray-200 -z-10"></div>
-            {[1, 2, 3, 4].map((s) => (
-              <div key={s} className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors duration-300 ${step >= s ? 'bg-accent text-white' : 'bg-white border-2 border-gray-200 text-gray-400'}`}>
-                {s}
-              </div>
-            ))}
-          </div>
-          <div className="flex justify-between mt-2 text-xs text-gray-500 px-1">
-            {t.booking.steps.slice(1).map((label, i) => (
-              <span key={i} className="text-center w-16">{label}</span>
-            ))}
-          </div>
-        </div>
-      )}
+      {renderStepper()}
 
       <div className={`transition-colors duration-300 ${step > 0 ? 'bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-6 md:p-8' : ''}`}>
         
-        {/* Step 0: Staff Selection & Business Profile */}
+        {/* Step 0: Marketing Website */}
         {step === 0 && (
           <SalonWebsiteView 
             tenant={tenant}
             businessProfile={businessProfile}
             staffList={staffList}
             servicesList={servicesList}
-            handleStaffSelect={handleStaffSelect}
-            handleServiceSelect={handleServiceSelect}
+            onStartBooking={onStartBooking}
+            onServiceSelect={handleWebsiteServiceSelect}
             language={language}
           />
         )}
@@ -217,44 +263,31 @@ const BookingPage: React.FC = () => {
         {step === 1 && (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">{t.booking.step1_title}</h2>
-              <button onClick={() => setStep(0)} className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white underline transition-colors duration-300">{language === 'tr' ? 'Uzman Değiştir' : 'Change Staff'}</button>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">Hizmet Seçin</h2>
+              <button onClick={() => setStep(0)} className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white underline transition-colors duration-300">Geri Dön</button>
             </div>
             
-            <div className="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 p-4 rounded-xl text-sm justify-between shadow-sm flex items-center gap-3 transition-colors duration-300">
-               <span className="text-gray-500 dark:text-gray-300">{language === 'tr' ? 'Seçili Uzman:' : 'Selected Staff:'}</span>
-               <span className="font-bold text-gray-900 dark:text-white">{selectedStaff?.name}</span>
-            </div>
-
             {servicesList.length === 0 ? (
               <div className="text-center py-12">
-                <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                </svg>
-                <p className="mt-4 text-gray-500 dark:text-gray-400 text-lg">{language === 'tr' ? 'Şu anda seçilebilir aktif hizmet bulunmuyor.' : 'No active services available at the moment.'}</p>
+                <p className="mt-4 text-gray-500 dark:text-gray-400 text-lg">Şu anda seçilebilir aktif hizmet bulunmuyor.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
                 {servicesList.map((service) => (
                   <button
                     key={service.id}
-                    onClick={() => handleServiceSelect(service)}
+                    onClick={() => handleWidgetServiceSelect(service)}
                     className="group relative flex flex-col rounded-2xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:shadow-lg hover:border-accent/50 transition-all duration-300 overflow-hidden text-left"
                   >
                     <div className="w-full h-48 bg-gray-200 dark:bg-slate-700 relative overflow-hidden">
                       {service.image ? (
-                          <img
-                          src={service.image}
-                          alt={service.name}
-                          referrerPolicy="no-referrer"
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                          />
+                          <img src={service.image} alt={service.name} referrerPolicy="no-referrer" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                       ) : (
                           <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400">
-                              <span className="text-sm">No Image</span>
+                              <span className="text-sm">Görsel Yok</span>
                           </div>
                       )}
-                      <div className="absolute top-3 right-3 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md px-3 py-1 rounded-full text-sm font-bold text-gray-900 dark:text-white shadow-sm border border-gray-100 dark:border-slate-700 transition-colors duration-300">
+                      <div className="absolute top-3 right-3 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md px-3 py-1 rounded-full text-sm font-bold text-gray-900 dark:text-white shadow-sm border border-gray-100 dark:border-slate-700">
                           ${service.price}
                       </div>
                     </div>
@@ -262,7 +295,7 @@ const BookingPage: React.FC = () => {
                       <h3 className="font-bold text-lg text-gray-900 dark:text-white group-hover:text-accent transition-colors">
                         {language === 'tr' ? service.name_tr : service.name}
                       </h3>
-                      <div className="mt-3 flex items-center text-sm text-gray-500 dark:text-gray-400 gap-2 transition-colors duration-300">
+                      <div className="mt-3 flex items-center text-sm text-gray-500 dark:text-gray-400 gap-2">
                           <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
@@ -276,14 +309,81 @@ const BookingPage: React.FC = () => {
           </div>
         )}
 
-        {/* Step 2: Date & Time */}
+        {/* Step 2: Staff Selection */}
         {step === 2 && (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">{t.booking.step2_title}</h2>
-              <button onClick={() => setStep(1)} className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white underline transition-colors duration-300">{t.booking.step2_change}</button>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">Uzman Seçin</h2>
+              <button onClick={() => setStep(1)} className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white underline transition-colors duration-300">Hizmet Değiştir</button>
             </div>
             
+            <div className="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 p-4 rounded-xl text-sm justify-between shadow-sm flex items-center gap-3 transition-colors duration-300 mb-6">
+               <span className="text-gray-500 dark:text-gray-300">Seçili Hizmet:</span>
+               <span className="font-bold text-gray-900 dark:text-white">{language === 'tr' ? selectedService?.name_tr : selectedService?.name}</span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <button
+                 onClick={() => {
+                     // For "Bana Fark Etmez", simply select the first staff 
+                     // In real scenario, we would calculate earliest slot across all staff
+                     if (staffList.length > 0) {
+                        handleStaffSelect(staffList[0], true);
+                     }
+                 }}
+                 className="flex flex-col items-center justify-center p-6 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-slate-700 dark:to-slate-600 border-2 border-dashed border-indigo-200 dark:border-slate-500 rounded-2xl hover:border-indigo-400 dark:hover:border-slate-400 transition-colors"
+               >
+                 <span className="font-bold text-indigo-900 dark:text-white text-lg">Bana Fark Etmez</span>
+                 <span className="text-sm text-indigo-500 dark:text-slate-300 mt-2">En erken müsaitliğe göre</span>
+              </button>
+
+              {staffList.map((staff) => (
+                <button
+                  key={staff.id}
+                  onClick={() => handleStaffSelect(staff)}
+                  className="flex flex-col md:flex-row items-center border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-2xl p-4 gap-4 hover:border-accent hover:shadow-md transition-all text-left"
+                >
+                  {staff.avatar ? (
+                    <img src={staff.avatar} alt={staff.name} referrerPolicy="no-referrer" className="w-16 h-16 rounded-full object-cover shrink-0" />
+                  ) : (
+                    <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 shrink-0 text-xl font-medium">
+                      {staff.name.charAt(0)}
+                    </div>
+                  )}
+                  <div className="flex-1">
+                    <h3 className="font-bold text-gray-900 dark:text-white">{staff.name}</h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{staff.roles?.join(', ')}</p>
+                    {staffAvailability[staff.id] ? (
+                       <p className="text-xs text-green-600 dark:text-green-400 font-medium mt-2 flex items-center gap-1">
+                          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                          En yakın müsaitlik: {staffAvailability[staff.id].date === new Date().toISOString().split('T')[0] ? 'Bugün' : staffAvailability[staff.id].date} {staffAvailability[staff.id].time}
+                       </p>
+                    ) : (
+                       <p className="text-xs text-gray-400 font-medium mt-2 flex items-center gap-1">
+                          <svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                          Müsaitlik aranıyor...
+                       </p>
+                    )}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Step 3: Date & Time */}
+        {step === 3 && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">Tarih ve Saat</h2>
+              <button onClick={() => setStep(2)} className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white underline transition-colors duration-300">Uzman Değiştir</button>
+            </div>
+            
+            <div className="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 p-4 rounded-xl text-sm justify-between shadow-sm flex items-center gap-3 transition-colors duration-300 mb-6">
+               <span className="text-gray-500 dark:text-gray-300">Seçili Uzman:</span>
+               <span className="font-bold text-gray-900 dark:text-white">{selectedStaff?.name}</span>
+            </div>
+
             <div className="flex flex-col md:flex-row gap-8">
               <div className="flex-shrink-0 w-full md:w-1/3">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-300">{t.booking.step2_date}</label>
@@ -324,12 +424,12 @@ const BookingPage: React.FC = () => {
           </div>
         )}
 
-        {/* Step 3: User Details */}
-        {step === 3 && (
+        {/* Step 4: User Details */}
+        {step === 4 && (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">{t.booking.step3_title}</h2>
-              <button onClick={() => setStep(2)} className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white underline transition-colors duration-300">{t.booking.step3_change}</button>
+              <button onClick={() => setStep(3)} className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white underline transition-colors duration-300">{t.booking.step3_change}</button>
             </div>
 
             <div className="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 p-4 rounded-xl text-sm text-gray-600 dark:text-gray-300 mb-4 flex justify-between items-center shadow-sm transition-colors duration-300">
@@ -391,8 +491,8 @@ const BookingPage: React.FC = () => {
           </div>
         )}
 
-        {/* Step 4: Success */}
-        {step === 4 && (
+        {/* Step 5: Success */}
+        {step === 5 && (
           <div className="text-center py-8">
             <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-green-100 dark:bg-green-900/40 mb-6 transition-colors duration-300">
               <svg className="h-10 w-10 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">

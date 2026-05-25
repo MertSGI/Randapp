@@ -41,8 +41,16 @@ This document outlines the testing requirements for the new Salon Website Profil
 - [ ] Populate Slogan and Verify live preview updates instantly
 - [ ] Verify Address population and live preview updates instantly
 
-### 6. Super Admin Visibility (`SuperAdminDashboard.tsx`)
-- [ ] Login as Super Admin
-- [ ] Navigate to unified dashboard
-- [ ] In the "All Tenants" table, observe the new "Web Profile" column
-- [ ] Verify status indicates "Active" or "Pending" based on `tenant_business_profiles` record matching `tenant_id`
+### 7. Core UX & Booking Flow Re-Architecture
+- [ ] Verify Public page starts as a marketing website (cover photos, slogan, staff), not a booking stepper.
+- [ ] Verify Cover photos act as the primary gallery (no separate gallery section appears by default).
+- [ ] Verify Clicking a cover photo opens a lightbox view for detailed image inspection.
+- [ ] Verify Service selection occurs *before* expert selection.
+- [ ] Verify Experts show "Nearest Availability" dynamically fetched on the expert selection card.
+- [ ] Verify "Bana Fark Etmez" (Any Expert) selects the earliest available staff and time slot automatically.
+- [ ] Verify Time slots correctly show only *after* an expert/availability has been chosen.
+- [ ] Verify Desktop layout is wide and feels like a full business website (max-width aligned to professional sites).
+- [ ] Verify Mobile layout remains stacked, polished, and mobile-first, mimicking a modern web-app experience.
+- [ ] Verify Owner upload flow uses computer file upload first by default (URL fields are advanced/optional).
+- [ ] Verify `/admin/preview` bypasses the go-live lock so owners can see their complete site before publishing.
+- [ ] Verify Public lock still strictly prevents unauthorized access before go-live.
