@@ -47,7 +47,16 @@ This document outlines a standardized flow for showcasing the Randapp platform t
 9. Enter customer details.
 10. Confirm Booking. Show success phase.
 
-### 5. Management & Reports
+### 5. The Loyalty & Memory Feature (Salon Owner)
+1. On the Admin Panel, click the **Müşteriler / Customers** tab.
+2. Observe how the system automatically created a profile for the customer who just booked.
+3. Open the customer's profile.
+4. Point out the appointment history and "First Visit / Last Visit" stats.
+5. Emphasize styling memory: Click "Edit" on Style Preferences and add: *“Always wants the same layered cut. Formula 7.1 + 8.0 mix.”*
+6. Mention: *“Randapp remembers the customer, not only the appointment. You will never have to ask ‘what did we do last time’ again.”*
+7. Simulate adding a quick Reference Photo (mentioning it’s private, tenant-scoped, and KVKK compliant).
+
+### 6. Management & Reports
 1. Log back in as `admin@randapp.com`.
 2. Open the **Takvim / Randevular** section to see the new appointment populated.
 3. Open the **Raporlar** page to view the mock revenue/growth charts, emphasizing tracking and analytics value.

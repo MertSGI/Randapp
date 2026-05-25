@@ -14,13 +14,14 @@ import BillingTab from '../components/BillingTab';
 import OnboardingWizard from '../components/OnboardingWizard';
 import SalonReportsTab from '../components/SalonReportsTab';
 import BusinessProfileTab from '../components/BusinessProfileTab';
+import CustomerMemoryTab from '../components/CustomerMemoryTab';
 
 const AdminPage: React.FC = () => {
   const navigate = useNavigate();
   const { t, language } = useLanguage();
   const { tenant, refreshTenant } = useTenant();
   const { currentUser, isLoading: authLoading, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState<'setup' | 'appointments' | 'staff' | 'services' | 'reports' | 'billing' | 'profile' | 'settings'>('setup');
+  const [activeTab, setActiveTab] = useState<'setup' | 'appointments' | 'staff' | 'services' | 'reports' | 'billing' | 'profile' | 'settings' | 'customers'>('setup');
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [staffList, setStaffList] = useState<Staff[]>([]);
   const [servicesList, setServicesList] = useState<Service[]>([]);
@@ -282,6 +283,12 @@ const AdminPage: React.FC = () => {
               {t.admin.tab_appointments}
             </button>
             <button
+              onClick={() => setActiveTab('customers')}
+              className={`${activeTab === 'customers' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
+            >
+              {t.admin.tab_customers || 'Customers'}
+            </button>
+            <button
               onClick={() => setActiveTab('staff')}
               className={`${activeTab === 'staff' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
             >
@@ -333,6 +340,14 @@ const AdminPage: React.FC = () => {
                refreshTenant(); // Re-fetches tenant branding
              }
           }}
+        />
+      )}
+
+      {activeTab === 'customers' && (
+        <CustomerMemoryTab 
+          appointments={appointments}
+          staffList={staffList}
+          servicesList={servicesList}
         />
       )}
 
@@ -392,6 +407,12 @@ const AdminPage: React.FC = () => {
                           </div>
                         </div>
                         <div className="ml-4 flex-shrink-0 flex items-center gap-4">
+                          <button 
+                            onClick={() => setActiveTab('customers')}
+                            className="text-accent hover:text-blue-700 text-sm font-medium mr-2"
+                          >
+                            {t.admin.view_profile || 'View Profile'}
+                          </button>
                           <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                             apt.status === 'confirmed' ? 'bg-green-100 text-green-800' : 
                             apt.status === 'cancelled' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'

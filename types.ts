@@ -106,6 +106,20 @@ export interface Customer {
   createdAt: string;
 }
 
+export interface CustomerMemoryNote {
+  id: string;
+  text: string;
+  createdAt: string;
+  createdBy: string;
+}
+
+export interface CustomerMemoryPhoto {
+  id: string;
+  url: string;
+  caption?: string;
+  createdAt: string;
+}
+
 export interface CustomerProfile {
   id: string;
   tenantId: string;
@@ -118,6 +132,18 @@ export interface CustomerProfile {
   createdAt?: string;
   updatedAt?: string;
   lastAppointmentAt?: string;
+  // New Customer Profile Lite fields
+  firstVisitAt?: string;
+  totalAppointments?: number;
+  preferredStaffId?: string;
+  lastServiceId?: string;
+  stylePreference?: string;
+  colorFormula?: string;
+  avoidNotes?: string;
+  careNotes?: string;
+  internalNotes?: CustomerMemoryNote[];
+  referencePhotos?: CustomerMemoryPhoto[];
+  appointmentIds?: string[];
 }
 
 export interface Subscription {

@@ -1,18 +1,18 @@
 # Privacy and Customer Data Notes
 
-## Pilot Compliance Scope
-During the pilot and mock phase, actual customer telemetry or data routing to global databases is not happening. However, we have designed the UX indicating our approach to privacy and data boundaries.
+## Core Philosophy
+We apply the Principle of Data Minimization. Collect only what is needed, use it only for stated operational purposes, and protect it at the tenant level.
 
-## Customer Data Boundaries (Tenant Isolation)
-A super-admin oversees the SaaS platform, but their visibility into raw tenant customer data (e.g. John Doe's phone number booking with Tenant A) should be strictly separated.
-- A Super Admin dashboard should theoretically aggregate counts ("Tenant A has 40 customers") rather than exposing John Doe's PII.
-- Super Admins can only log in and mask as a Tenant if they are explicitly granted support overrides, but ethically should not browse raw appointment ledgers.
+## Handling of Customer Profiles
+- **No Password Silos:** We don't force end-users to create accounts with passwords. 
+- **Owner Visibility:** Salon owners see aggregated customer memory (appointments, internal notes, preferences) exclusively to improve service.
 
-## The Privacy Notice UI
-- During booking checkout, a privacy label is shown underneath the "Save my details" checkbox.
-- Turkish: "Bilgilerinizi yalnızca randevu oluşturma ve randevu hatırlatma amacıyla kullanırız."
-- English: "We only use your information for booking and appointment reminders."
-- The `Aydınlatma Metni` / `Privacy Notice` acts as the KVKK / GDPR visual placeholder.
+## Handling of Reference Photos
+- **No Biometrics:** Uploaded images are strictly static references for haircuts, nails, and color history.
+- **No Public Sharing:** Images should not be shared via links.
+- **Next Phase RLS:** Supabase storage must be configured with Row Level Security (RLS) policies allowing access ONLY if `auth.uid()` belongs to the `tenant_id` that owns the customer record.
 
-## Customer Profiles
-The "Account Lite" data model captures the lowest necessary footprint (Name, Phone, Email) strictly for fulfilling contact requirements around the appointment lifecycle (booking confirmation logic, WhatsApp/Email notifications, Staff alerts).
+## Consent & KVKK/GDPR
+- Checkboxes in UI for data processing cover standard operations.
+- Marketing consent is separated from operational appointment messages.
+- Customers have the right to request deletion. Future iterations must include a clear "Delete Customer Record" action that wipes notes, photos, and anonymizes appointment history.

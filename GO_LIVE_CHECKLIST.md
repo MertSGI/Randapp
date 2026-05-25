@@ -26,3 +26,4 @@ This document tracks the readiness of the Randapp platform before transitioning 
 - [x] Service workers disabled to prevent stale cache issues during presentation mode.
 - [x] Booking Page successfully isolates `subStatus === 'suspended'` blocking unauthenticated users from viewing draft salon sites.
 - [ ] **Action Required**: Supabase RLS (Row Level Security) policies must be fully defined before switching off `VITE_DATA_MODE=mock`.
+- [ ] **Action Required**: Customer reference photos and memory notes must be isolated by `tenantId` explicitly via Postgres RLS before allowing real uploads. No public storage bucket permissions can be granted. 

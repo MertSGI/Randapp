@@ -33,6 +33,7 @@
     - Info updating and map link testing acts predictably.
     - "Site Önizlemesini Aç" generates a `/#/book?preview=true` link.
 - [x] **Other Tabs**: Viewing appointments, reports, services, staff, and mock subscriptions are fully contained.
+- [x] **Customer Memory**: The "Müşteriler" / "Customers" tab exists. Entering a matching email/phone during booking automatically ties the appointment to the simulated customer record. Owners can store notes and style-preference reference photos. KVKK disclaimers are present.
 
 ## Super Admin (`/super-admin`)
 - [x] **Login Mechanics**: `superadmin@randapp.com` can log in and see high-level overview.
