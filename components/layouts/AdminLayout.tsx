@@ -2,11 +2,15 @@ import React from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTenant } from '../../contexts/TenantContext';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { translations } from '../../utils/translations';
 
 const AdminLayout: React.FC = () => {
   const { logout, currentUser } = useAuth();
   const { tenant } = useTenant();
   const navigate = useNavigate();
+  const { language } = useLanguage();
+  const t = translations[language];
 
   const handleLogout = async () => {
     await logout();
@@ -23,7 +27,7 @@ const AdminLayout: React.FC = () => {
           </span>
           <div className="h-6 w-px bg-gray-300 dark:bg-slate-600"></div>
           <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-            {tenant ? tenant.name : "Salon Admin Paneli"}
+            {tenant ? tenant.name : (t.admin.panel_title || "Salon Admin Paneli")}
           </span>
         </div>
         <div className="flex items-center gap-4">
@@ -34,7 +38,7 @@ const AdminLayout: React.FC = () => {
             onClick={handleLogout}
             className="text-sm font-medium text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors"
           >
-            Çıkış Yap
+            {t.admin.logout || "Çıkış Yap"}
           </button>
         </div>
       </header>

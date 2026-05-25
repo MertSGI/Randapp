@@ -2,6 +2,8 @@ import React from 'react';
 import { Outlet, NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { translations } from '../../utils/translations';
 
 const ThemeToggle = () => {
   const { theme, toggleTheme } = useTheme();
@@ -19,11 +21,13 @@ const ThemeToggle = () => {
 const SuperAdminLayout: React.FC = () => {
   const { currentUser, logout } = useAuth();
   const location = useLocation();
+  const { language } = useLanguage();
+  const t = translations[language];
 
   const links = [
-    { label: 'Overview', path: '/super-admin' },
-    { label: 'Tenants', path: '/super-admin/tenants' },
-    { label: 'Subscriptions', path: '/super-admin/subscriptions' },
+    { label: t.super_admin.dashboard || 'Overview', path: '/super-admin' },
+    { label: t.super_admin.tenants || 'Tenants', path: '/super-admin/tenants' },
+    { label: t.super_admin.subscriptions || 'Subscriptions', path: '/super-admin/subscriptions' },
     { label: 'Payments', path: '/super-admin/payments' },
     { label: 'Onboarding', path: '/super-admin/onboarding' },
     { label: 'Reports', path: '/super-admin/reports' },
@@ -38,7 +42,7 @@ const SuperAdminLayout: React.FC = () => {
       {/* Sidebar */}
       <aside className="w-64 bg-slate-900 dark:bg-slate-950 text-white flex flex-col shrink-0">
         <div className="h-16 flex items-center px-6 font-bold text-lg tracking-wide border-b border-slate-800">
-          Randapp Master
+          {t.super_admin.panel_title || 'Randapp Master'}
         </div>
         <nav className="flex-1 px-4 py-6 space-y-2">
           {links.map((l) => (
@@ -59,7 +63,7 @@ const SuperAdminLayout: React.FC = () => {
         <div className="p-4 border-t border-slate-800">
           <div className="text-xs text-slate-400 mb-2 truncate">{currentUser?.email}</div>
           <button onClick={logout} className="w-full text-left px-4 py-2 rounded-lg text-sm font-medium text-red-400 hover:bg-slate-800 hover:text-red-300 transition-colors">
-            Log out
+            {t.super_admin.logout || 'Log out'}
           </button>
         </div>
       </aside>

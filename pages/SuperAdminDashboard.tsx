@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { TenantFullData, superAdminService } from '../services/superAdminService';
+import { useLanguage } from '../contexts/LanguageContext';
+import { translations } from '../utils/translations';
 
 const SuperAdminDashboard: React.FC = () => {
   const [data, setData] = useState<{stats: any, tenants: TenantFullData[]} | null>(null);
   const [loading, setLoading] = useState(true);
+  const { language } = useLanguage();
+  const t = translations[language];
 
   const [selectedTenant, setSelectedTenant] = useState<TenantFullData | null>(null);
 
