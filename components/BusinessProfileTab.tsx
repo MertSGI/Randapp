@@ -253,7 +253,7 @@ const BusinessProfileTab: React.FC = () => {
                  </div>
                  <div>
                     <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Kapak Fotoğrafları / İşletme Görselleri (Birden fazla seçebilirsiniz)</label>
-                    <p className="text-[10px] text-gray-500 mb-2">Seçtiğiniz bu fotoğraflar, hem salon web sitenizin ana slider alanını hem de işletmenizin genel galeri görünümünü oluşturacaktır.</p>
+                    <p className="text-[10px] text-gray-500 mb-2">Bu görseller web sitenizin kapak alanında otomatik geçiş yapar ve tıklanınca büyütülür.</p>
                     <input 
                        type="file" 
                        multiple

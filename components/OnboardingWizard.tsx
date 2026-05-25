@@ -40,6 +40,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   // New states for business profile
   const [profileShortDesc, setProfileShortDesc] = useState('');
   const [profileAddress, setProfileAddress] = useState('');
+  const [profileCoverImages, setProfileCoverImages] = useState<string[]>([]);
 
   // Quick add states
   const [newServiceName, setNewServiceName] = useState('');
@@ -79,6 +80,8 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
             if (prof) {
                setProfileShortDesc(prof.short_description || '');
                setProfileAddress(prof.address || '');
+               if (prof.cover_images) setProfileCoverImages(prof.cover_images);
+               else if (prof.cover_image_url) setProfileCoverImages([prof.cover_image_url]);
             }
          });
       });
@@ -140,7 +143,8 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
       const { businessProfileService } = await import('../services/businessProfileService');
       await businessProfileService.updateBusinessProfile(tenant.id, {
         short_description: profileShortDesc,
-        address: profileAddress
+        address: profileAddress,
+        cover_images: profileCoverImages
       });
       setActiveStep(4);
     } catch (err) {
@@ -210,6 +214,31 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
     } finally {
       setSetupSaving(false);
     }
+  };
+
+  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0 || !tenant) return;
+    setSetupSaving(true);
+    const newUrls: string[] = [];
+    try {
+      for (let i = 0; i < e.target.files.length; i++) {
+         const { mediaUploadService } = await import('../services/mediaUploadService');
+         const url = await mediaUploadService.uploadCoverImage(tenant.id, e.target.files[i]);
+         newUrls.push(url);
+      }
+      setProfileCoverImages([...profileCoverImages, ...newUrls]);
+    } catch (err) {
+      console.error(err);
+      alert('Kapak fotoğrafları yüklenemedi.');
+    } finally {
+      setSetupSaving(false);
+    }
+  };
+
+  const removeCoverImage = (indexToRemove: number) => {
+     const newImages = [...profileCoverImages];
+     newImages.splice(indexToRemove, 1);
+     setProfileCoverImages(newImages);
   };
 
   const steps = [
@@ -344,6 +373,34 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 <div>
                   <label className="block text-sm font-medium mb-1">Adres</label>
                   <textarea rows={2} required value={profileAddress} onChange={e => setProfileAddress(e.target.value)} className="w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-2 border"></textarea>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Kapak Fotoğrafları / İşletme Görselleri (Birden fazla seçebilirsiniz)</label>
+                  <p className="text-xs text-gray-500 mb-2">Bu görseller web sitenizin kapak alanında otomatik geçiş yapar ve tıklanınca büyütülür.</p>
+                  <input 
+                     type="file" 
+                     multiple
+                     accept="image/*"
+                     onChange={handleCoverUpload}
+                     className="block w-full text-sm text-gray-500
+                                file:mr-4 file:py-2 file:px-4
+                                file:rounded-md file:border-0
+                                file:text-sm file:font-semibold
+                                file:bg-blue-50 file:text-blue-700
+                                hover:file:bg-blue-100 dark:file:bg-slate-700 dark:file:text-slate-300 mb-2"
+                  />
+                  {profileCoverImages.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mt-2">
+                          {profileCoverImages.map((img, idx) => (
+                              <div key={idx} className="relative group">
+                                 <img src={img} className="h-16 w-24 object-cover rounded-md shadow-sm" />
+                                 <button type="button" onClick={() => removeCoverImage(idx)} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                     <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                                 </button>
+                              </div>
+                          ))}
+                      </div>
+                  )}
                 </div>
                 <div className="pt-4 flex justify-between">
                   <button type="button" onClick={() => setActiveStep(2)} className="px-6 py-2 bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-md font-medium">Geri</button>

@@ -224,7 +224,7 @@ const BookingPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto">
+    <div className={step === 0 ? "w-full min-h-screen" : "max-w-lg mx-auto"}>
       {isAuthorizedPreview && (
          <div className={`mb-6 p-3 ${currentUser?.role === 'super_admin' ? 'bg-purple-100 text-purple-800 border-purple-200' : 'bg-blue-100 text-blue-800 border-blue-200'} border rounded-lg text-sm text-center font-medium shadow-sm`}>
             {currentUser?.role === 'super_admin' ? 'Super Admin Önizleme Modu: Bu sayfa müşterilere açık değildir.' : 'Önizleme Modu: Bu sayfa henüz müşterilere açık değildir.'}

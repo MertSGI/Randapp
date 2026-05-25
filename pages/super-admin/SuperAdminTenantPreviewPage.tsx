@@ -51,10 +51,10 @@ const SuperAdminTenantPreviewPage: React.FC = () => {
                     businessProfile={businessProfile}
                     staffList={staffList}
                     servicesList={servicesList}
-                    handleStaffSelect={(staff) => {
-                        console.log("Preview mode staff select:", staff);
+                    onStartBooking={() => {
+                        console.log("Preview mode start booking");
                     }}
-                    handleServiceSelect={(service) => {
+                    onServiceSelect={(service) => {
                         console.log("Preview mode service select:", service);
                     }}
                     language={language}
