@@ -85,6 +85,12 @@ const BillingTab: React.FC = () => {
       <div className="bg-white dark:bg-slate-800 shadow-sm rounded-lg border border-gray-200 dark:border-slate-700 p-6">
         <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Mevcut Abonelik Durumu</h2>
         
+        {(import.meta as any).env.VITE_PAYMENT_PROVIDER === 'mock' && (
+          <div className="mb-6 bg-yellow-50 border border-yellow-500 text-yellow-800 p-4 rounded-md text-sm">
+            <strong>Bilgi:</strong> Ödeme altyapısı test modundadır. Canlı ödeme henüz aktif değildir. Abonelik başlatmak için Randapp ekibiyle iletişime geçin.
+          </div>
+        )}
+
         {checkoutError && (
           <div className="mb-6 bg-red-50 border border-red-500 p-4 rounded-md">
             <h3 className="text-red-900 font-bold">İşlem Başarısız</h3>
@@ -234,15 +240,20 @@ const BillingTab: React.FC = () => {
               </ul>
               
               <button 
-                onClick={() => handleCheckout(plan.id)}
+                onClick={(import.meta as any).env.VITE_PAYMENT_PROVIDER === 'mock' 
+                   ? () => window.open(`https://wa.me/${(import.meta as any).env.VITE_SALES_WHATSAPP_NUMBER || ''}?text=Merhaba, ${plan.name} planına geçmek / abonelik başlatmak istiyorum.`, '_blank')
+                   : () => handleCheckout(plan.id)
+                }
                 disabled={currentPlan?.id === plan.id}
                 className={`w-full py-3 px-4 rounded-md font-bold text-center transition-colors ${
                   currentPlan?.id === plan.id 
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                    ? 'bg-gray-100 dark:bg-slate-700 text-gray-400 cursor-not-allowed' 
                     : 'bg-accent text-white hover:bg-blue-600'
                 }`}
               >
-                {currentPlan?.id === plan.id ? 'Mevcut Plan' : 'Bu Plana Geç'}
+                {currentPlan?.id === plan.id 
+                    ? 'Mevcut Plan' 
+                    : ((import.meta as any).env.VITE_PAYMENT_PROVIDER === 'mock' ? 'Abonelik İçin Görüş' : 'Bu Plana Geç')}
               </button>
             </div>
           ))}

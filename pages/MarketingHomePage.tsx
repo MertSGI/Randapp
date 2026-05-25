@@ -15,6 +15,9 @@ const MarketingHomePage: React.FC = () => {
         <p className="mt-4 text-xl text-gray-600 dark:text-gray-400 mx-auto leading-relaxed">
           Randapp, salonunuza özel mini web sitesi, online randevu, çalışan yönetimi, WhatsApp iletişimi, Google Maps ve AI stil tavsiyesini tek platformda toplar.
         </p>
+        <p className="mt-2 text-sm text-gray-500 dark:text-gray-500 font-medium font-sans italic">
+          * Klinikler, stüdyolar ve randevulu çalışan tüm diğer işletmelere de uyarlanabilir.
+        </p>
         <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
           <Link to="/demo" className="bg-blue-600 text-white px-8 py-4 rounded-xl font-bold shadow-lg shadow-blue-500/30 hover:bg-blue-700 transition transform hover:-translate-y-1">
             Kendi Salonumu Önizle

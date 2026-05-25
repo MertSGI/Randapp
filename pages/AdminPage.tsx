@@ -236,8 +236,8 @@ const AdminPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="bg-white dark:bg-slate-800 shadow-sm border-b border-gray-200 dark:border-slate-700 px-6 py-4 -mx-6 -mt-6 mb-6">
+    <div className="space-y-6 container mx-auto px-4 max-w-7xl pt-6">
+      <div className="bg-white dark:bg-slate-800 shadow-sm rounded-xl border border-gray-200 dark:border-slate-700 px-6 py-6 mb-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">{t.admin.title}</h1>

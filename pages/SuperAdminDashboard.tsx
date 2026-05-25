@@ -113,7 +113,7 @@ const SuperAdminDashboard: React.FC = () => {
                         <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Needs Approval</span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm flex justify-end gap-3 flex-wrap">
-                         <a href={`/#/book?preview=true`} target="_blank" rel="noopener noreferrer" className="bg-gray-100 text-gray-800 hover:bg-gray-200 px-3 py-1.5 rounded-md text-xs font-medium shadow-sm transition-colors flex items-center gap-1">
+                         <a href={`/#/super-admin/tenant-preview/${t.tenant.id}`} target="_blank" rel="noopener noreferrer" className="bg-gray-100 text-gray-800 hover:bg-gray-200 px-3 py-1.5 rounded-md text-xs font-medium shadow-sm transition-colors flex items-center gap-1">
                            Siteyi Önizle
                          </a>
                          <button onClick={() => handleApprove(t.tenant.id)} className="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-md text-xs font-medium shadow-sm transition-colors">Approve Go-Live</button>
@@ -225,7 +225,7 @@ const SuperAdminDashboard: React.FC = () => {
                 </div>
              </div>
              <div className="p-6 border-t border-gray-200 dark:border-slate-700 flex justify-end space-x-3">
-                <a href={`/#/book?preview=true`} target="_blank" rel="noopener noreferrer" className="bg-gray-100 dark:bg-slate-700 text-gray-800 dark:text-white px-4 py-2 rounded-md font-medium">
+                <a href={`/#/super-admin/tenant-preview/${selectedTenant.tenant.id}`} target="_blank" rel="noopener noreferrer" className="bg-gray-100 dark:bg-slate-700 text-gray-800 dark:text-white px-4 py-2 rounded-md font-medium">
                   Site Önizle
                 </a>
                 <button onClick={() => setSelectedTenant(null)} className="bg-accent text-white px-4 py-2 rounded-md font-medium">

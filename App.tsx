@@ -28,6 +28,8 @@ import SuperAdminSettingsPage from './pages/super-admin/SuperAdminSettingsPage';
 import SuperAdminPaymentTestPage from './pages/super-admin/SuperAdminPaymentTestPage';
 import SuperAdminAISettingsPage from './pages/super-admin/SuperAdminAISettingsPage';
 import SuperAdminPlansPage from './pages/super-admin/SuperAdminPlansPage';
+import SuperAdminTenantPreviewPage from './pages/super-admin/SuperAdminTenantPreviewPage';
+import SitePreviewPage from './pages/admin/SitePreviewPage';
 
 // Contexts
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -64,6 +66,8 @@ const AppFlowSwitcher: React.FC = () => {
       {/* 2. Salon Booking Routes */}
       <Route element={<SalonBookingLayout />}>
         <Route path="/book" element={<BookingPage />} />
+        {/* Dynamic Tenant Routing */}
+        <Route path="/:tenantSlug" element={<BookingPage />} />
         {/* AI Tool - Now part of the salon booking flow */}
         <Route path="/ai-visualizer" element={<AIVisualizerPage />} />
       </Route>
@@ -73,6 +77,12 @@ const AppFlowSwitcher: React.FC = () => {
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/admin/*" element={<AdminPage />} />
       </Route>
+      {/* Admin preview route doesn't need standard admin layout so we place it outside it or with a minimal layout*/}
+      <Route path="/admin-preview" element={
+        <ProtectedRoute allowedRoles={['salon_owner']}>
+          <SitePreviewPage />
+        </ProtectedRoute>
+      } />
 
       {/* 4. Super Admin Routes */}
       <Route element={<ProtectedRoute allowedRoles={['super_admin']}><SuperAdminLayout /></ProtectedRoute>}>
@@ -87,6 +97,11 @@ const AppFlowSwitcher: React.FC = () => {
         <Route path="/super-admin/ai-settings" element={<SuperAdminAISettingsPage />} />
         <Route path="/super-admin/plans" element={<SuperAdminPlansPage />} />
       </Route>
+      <Route path="/super-admin/tenant-preview/:tenantId" element={
+        <ProtectedRoute allowedRoles={['super_admin']}>
+          <SuperAdminTenantPreviewPage />
+        </ProtectedRoute>
+      } />
       
       {/* Catch-all route to prevent white screens on unknown paths */}
       <Route path="*" element={

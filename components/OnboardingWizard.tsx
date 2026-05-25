@@ -462,19 +462,21 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
 
               <div className="bg-blue-50 dark:bg-blue-900/20 border border-gray-200 dark:border-slate-700 rounded-lg p-6 mb-6">
                 <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">Randevu Sayfanız:</h4>
-                <div className="flex gap-4 items-center">
-                  <input type="text" readOnly value={`${window.location.origin}/${(import.meta as any).env.VITE_ROUTER_MODE === 'hash' ? '#/' : ''}`} className="w-full bg-white dark:bg-slate-800 border-gray-300 dark:border-slate-600 p-3 rounded border text-gray-700 dark:text-gray-300" />
-                  <button onClick={() => {
-                    navigator.clipboard.writeText(`${window.location.origin}/${(import.meta as any).env.VITE_ROUTER_MODE === 'hash' ? '#/' : ''}`);
-                    alert('Link kopyalandı.');
-                  }} className="px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded font-medium whitespace-nowrap shadow-sm">
-                    Kopyala
-                  </button>
-                  <a href={`${window.location.origin}/${(import.meta as any).env.VITE_ROUTER_MODE === 'hash' ? '#/' : ''}`} target="_blank" rel="noreferrer" className="px-4 py-3 bg-white dark:bg-slate-700 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 rounded font-medium whitespace-nowrap shadow-sm hover:bg-gray-50 dark:hover:bg-slate-600">
-                    Aç
-                  </a>
+                <div className="flex flex-col sm:flex-row gap-4 items-center">
+                  <input type="text" readOnly value={`randapp.com/${(import.meta as any).env.VITE_ROUTER_MODE === 'hash' ? '#/' : ''}${tenant?.slug || 'benimsalonum'}`} className="w-full bg-white dark:bg-slate-800 border-gray-300 dark:border-slate-600 p-3 rounded border text-gray-700 dark:text-gray-300 font-mono text-sm" />
+                  <div className="flex gap-2 w-full sm:w-auto">
+                    <button onClick={() => {
+                      navigator.clipboard.writeText(`${window.location.origin}/${(import.meta as any).env.VITE_ROUTER_MODE === 'hash' ? '#/' : ''}${tenant?.slug || 'benimsalonum'}`);
+                      alert('Link kopyalandı.');
+                    }} className="px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded font-medium whitespace-nowrap shadow-sm flex-1 sm:flex-none">
+                      Kopyala
+                    </button>
+                    <a href={`/#/admin-preview`} target="_blank" rel="noreferrer" className="px-4 py-3 bg-white dark:bg-slate-700 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 rounded font-medium whitespace-nowrap shadow-sm hover:bg-gray-50 dark:hover:bg-slate-600 flex-1 sm:flex-none text-center">
+                      Önizle
+                    </a>
+                  </div>
                 </div>
-                <p className="text-sm text-blue-700 dark:text-blue-300 mt-4">Tavsiye: Linki cihazınızda gizli modda (Incognito) açarak bir müşteri gibi randevu deneyimini test edebilirsiniz.</p>
+                <p className="text-sm text-blue-700 dark:text-blue-300 mt-4">Tavsiye: Linki gizli sekmede (Incognito) açarak bir müşteri gibi deneyimleyebilirsiniz.</p>
               </div>
 
               <div className="mt-6 flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-slate-700 mb-6">
@@ -554,10 +556,10 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
               <div className="bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg p-6 mb-8 text-center">
                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Yayına göndermeden önce site önizlemesini kontrol etmenizi tavsiye ederiz. Randevu sisteminiz henüz dışarıdan erişilebilir değildir.</p>
                  <a 
-                   href={`/#/book?preview=true`} 
+                   href={`/#/admin-preview`} 
                    target="_blank" 
                    rel="noopener noreferrer"
-                   className="inline-flex px-6 py-2 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg font-bold shadow-sm transition-all text-center items-center justify-center mb-4"
+                   className="inline-flex px-6 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-lg font-bold shadow-sm transition-all text-center items-center justify-center mb-4"
                  >
                    Site Önizlemesini Aç
                  </a>
