@@ -106,7 +106,7 @@ const AdminPage: React.FC = () => {
 
   const handleDeleteService = async (id: string) => {
     if (!tenant) return;
-    if (window.confirm(t.admin.confirm_delete_service || 'Are you sure you want to delete this service?')) {
+    if (window.confirm(t.admin.confirm_delete_service)) {
       await deleteService(tenant.id, id);
       loadData();
     }
@@ -169,10 +169,10 @@ const AdminPage: React.FC = () => {
   const handleDeleteStaff = async (id: string, name: string) => {
     if (!tenant) return;
     if (id === 'stf_1' || name.toLowerCase().includes('mustafa ali yılmaz')) {
-      alert(t.admin.cannot_delete_owner || 'You cannot delete the master owner.');
+      alert(t.admin.cannot_delete_owner);
       return;
     }
-    if (window.confirm(t.admin.confirm_delete_staff || 'Are you sure you want to delete this staff member?')) {
+    if (window.confirm(t.admin.confirm_delete_staff)) {
       await deleteStaff(tenant.id, id);
       loadData();
     }
@@ -406,7 +406,7 @@ const AdminPage: React.FC = () => {
                           <div className="mt-1 flex items-center text-xs text-gray-400 dark:text-gray-500 gap-2 transition-colors duration-300">
                               <span>{apt.user_email}</span>
                               <span>•</span>
-                              <span>{apt.phone || 'No phone'}</span>
+                              <span>{apt.phone || t.admin.no_phone}</span>
                           </div>
                         </div>
                         <div className="ml-4 flex-shrink-0 flex items-center gap-4">
@@ -625,7 +625,7 @@ const AdminPage: React.FC = () => {
                     <button 
                         onClick={() => handleDeleteService(service.id)}
                         className="p-1 text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 rounded-full hover:bg-red-50 dark:hover:bg-slate-700 transition-colors duration-300"
-                        title={t.admin.delete_service || 'Delete Service'}
+                        title={t.admin.delete_service}
                     >
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

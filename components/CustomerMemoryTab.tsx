@@ -133,12 +133,12 @@ const CustomerMemoryTab: React.FC<CustomerMemoryTabProps> = ({ appointments, sta
       <div className="space-y-6">
         <div className="bg-white dark:bg-slate-800 shadow-sm rounded-lg border border-gray-200 dark:border-slate-700 overflow-hidden">
           <div className="px-4 py-5 sm:px-6 bg-gray-50 dark:bg-slate-800/80 border-b border-gray-200 dark:border-slate-700">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white">{t.admin.customers_title || 'Customers'}</h3>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{t.admin.customers_subtitle || 'View and manage customer profiles.'}</p>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white">{t.admin.customers_title}</h3>
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{t.admin.customers_subtitle}</p>
           </div>
           <ul className="divide-y divide-gray-200 dark:divide-slate-700 max-h-[600px] overflow-y-auto">
             {customers.length === 0 ? (
-              <li className="p-8 text-center text-gray-500">{t.admin.no_customer_history || 'No customer history yet.'}</li>
+              <li className="p-8 text-center text-gray-500">{t.admin.no_customer_history}</li>
             ) : (
               customers.map(customer => {
                 const staff = staffList.find(s => s.id === customer.preferredStaffId);
@@ -157,20 +157,20 @@ const CustomerMemoryTab: React.FC<CustomerMemoryTabProps> = ({ appointments, sta
                           {customer.phone || customer.email}
                         </p>
                         <div className="mt-1 flex items-center text-xs text-gray-400 gap-2">
-                          <span>{t.admin.last_visit || 'Last Visit'}: {customer.lastAppointmentAt || '-'}</span>
+                          <span>{t.admin.last_visit}: {customer.lastAppointmentAt || '-'}</span>
                           <span>•</span>
-                          <span>{t.admin.total_appointments || 'Total'}: {customer.totalAppointments || 1}</span>
+                          <span>{t.admin.total_appointments}: {customer.totalAppointments || 1}</span>
                           {staff && (
                             <>
                               <span>•</span>
-                              <span>{t.admin.preferred_staff || 'Staff'}: {staff.name}</span>
+                              <span>{t.admin.preferred_staff}: {staff.name}</span>
                             </>
                           )}
                         </div>
                       </div>
                       <div className="ml-4 flex-shrink-0">
                         <button className="text-accent hover:text-blue-700 text-sm font-medium">
-                          {t.admin.view_profile || 'View Profile'}
+                          {t.admin.view_profile}
                         </button>
                       </div>
                     </div>
@@ -242,28 +242,28 @@ const CustomerMemoryTab: React.FC<CustomerMemoryTabProps> = ({ appointments, sta
             {/* Style Preferences */}
             <div>
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white">{t.admin.style_preferences || 'Style Preferences'}</h3>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white">{t.admin.style_preferences}</h3>
                 {!editingPrefs && (
-                  <button onClick={() => setEditingPrefs(true)} className="text-sm text-accent hover:underline">Edit</button>
+                  <button onClick={() => setEditingPrefs(true)} className="text-sm text-accent hover:underline">{t.admin.edit}</button>
                 )}
               </div>
               
               {editingPrefs ? (
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm text-gray-500 mb-1">{t.admin.hair_style_pref || 'Hair/style preference'}</label>
+                    <label className="block text-sm text-gray-500 mb-1">{t.admin.hair_style_pref}</label>
                     <input type="text" value={prefForm.stylePreference} onChange={e => setPrefForm({...prefForm, stylePreference: e.target.value})} className="w-full border-gray-300 dark:border-slate-600 rounded-md p-2 bg-transparent dark:text-white" />
                   </div>
                   <div>
-                    <label className="block text-sm text-gray-500 mb-1">{t.admin.color_formula_pref || 'Color/formula preference'}</label>
+                    <label className="block text-sm text-gray-500 mb-1">{t.admin.color_formula_pref}</label>
                     <input type="text" value={prefForm.colorFormula} onChange={e => setPrefForm({...prefForm, colorFormula: e.target.value})} className="w-full border-gray-300 dark:border-slate-600 rounded-md p-2 bg-transparent dark:text-white" />
                   </div>
                   <div>
-                    <label className="block text-sm text-gray-500 mb-1">{t.admin.avoid_dislike_notes || 'Avoid/dislike notes'}</label>
+                    <label className="block text-sm text-gray-500 mb-1">{t.admin.avoid_dislike_notes}</label>
                     <input type="text" value={prefForm.avoidNotes} onChange={e => setPrefForm({...prefForm, avoidNotes: e.target.value})} className="w-full border-gray-300 dark:border-slate-600 rounded-md p-2 bg-transparent dark:text-white" />
                   </div>
                   <div>
-                    <label className="block text-sm text-gray-500 mb-1">{t.admin.special_care_notes || 'Special care notes'}</label>
+                    <label className="block text-sm text-gray-500 mb-1">{t.admin.special_care_notes}</label>
                     <input type="text" value={prefForm.careNotes} onChange={e => setPrefForm({...prefForm, careNotes: e.target.value})} className="w-full border-gray-300 dark:border-slate-600 rounded-md p-2 bg-transparent dark:text-white" />
                   </div>
                   <div className="flex gap-2">
@@ -274,19 +274,19 @@ const CustomerMemoryTab: React.FC<CustomerMemoryTabProps> = ({ appointments, sta
               ) : (
                 <div className="space-y-3 bg-gray-50 dark:bg-slate-700/50 p-4 rounded-lg">
                   <div>
-                    <p className="text-xs text-gray-500 uppercase">{t.admin.hair_style_pref || 'Hair/style preference'}</p>
+                    <p className="text-xs text-gray-500 uppercase">{t.admin.hair_style_pref}</p>
                     <p className="text-sm font-medium dark:text-white">{selectedCustomer.stylePreference || '-'}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-gray-500 uppercase">{t.admin.color_formula_pref || 'Color/formula preference'}</p>
+                    <p className="text-xs text-gray-500 uppercase">{t.admin.color_formula_pref}</p>
                     <p className="text-sm font-medium dark:text-white">{selectedCustomer.colorFormula || '-'}</p>
                   </div>
                   <div>
-                     <p className="text-xs text-gray-500 uppercase">{t.admin.avoid_dislike_notes || 'Avoid/dislike notes'}</p>
+                     <p className="text-xs text-gray-500 uppercase">{t.admin.avoid_dislike_notes}</p>
                      <p className="text-sm font-medium dark:text-white text-red-500">{selectedCustomer.avoidNotes || '-'}</p>
                   </div>
                   <div>
-                     <p className="text-xs text-gray-500 uppercase">{t.admin.special_care_notes || 'Special care notes'}</p>
+                     <p className="text-xs text-gray-500 uppercase">{t.admin.special_care_notes}</p>
                      <p className="text-sm font-medium dark:text-white">{selectedCustomer.careNotes || '-'}</p>
                   </div>
                 </div>
@@ -295,10 +295,10 @@ const CustomerMemoryTab: React.FC<CustomerMemoryTabProps> = ({ appointments, sta
 
             {/* Internal Notes */}
             <div>
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">{t.admin.internal_notes || 'Internal Notes'}</h3>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">{t.admin.internal_notes}</h3>
               <div className="space-y-3 mb-4">
                 {(!selectedCustomer.internalNotes || selectedCustomer.internalNotes.length === 0) ? (
-                  <p className="text-sm text-gray-500">{t.admin.no_notes_yet || 'No notes yet.'}</p>
+                  <p className="text-sm text-gray-500">{t.admin.no_notes_yet}</p>
                 ) : (
                   selectedCustomer.internalNotes.map(note => (
                     <div key={note.id} className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700/50 p-3 rounded-lg relative group">
@@ -320,7 +320,7 @@ const CustomerMemoryTab: React.FC<CustomerMemoryTabProps> = ({ appointments, sta
                   className="flex-1 border-gray-300 dark:border-slate-600 rounded-md p-2 text-sm bg-transparent dark:text-white"
                 />
                 <button type="submit" className="px-3 py-1 bg-accent text-white rounded-md text-sm whitespace-nowrap hover:bg-blue-600">
-                  {t.admin.add_note || 'Add'}
+                  {t.admin.add_note}
                 </button>
               </form>
             </div>
@@ -328,7 +328,7 @@ const CustomerMemoryTab: React.FC<CustomerMemoryTabProps> = ({ appointments, sta
             {/* Reference Photos */}
              <div>
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white">{t.admin.reference_photos || 'Reference Photos'}</h3>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white">{t.admin.reference_photos}</h3>
                 <div>
                    <input 
                      type="file" 
