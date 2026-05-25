@@ -55,7 +55,10 @@ const BusinessProfileTab: React.FC = () => {
            const url = await mediaUploadService.uploadCoverImage(tenant.id, e.target.files[i]);
            newUrls.push(url);
         }
-        setProfile({ ...profile, cover_images: [...(profile.cover_images || profile.cover_image_url ? [profile.cover_image_url].filter(Boolean) as string[] : []), ...newUrls] });
+        const existingImages = profile.cover_images && profile.cover_images.length > 0 
+           ? profile.cover_images 
+           : (profile.cover_image_url ? [profile.cover_image_url] : []);
+        setProfile({ ...profile, cover_images: [...existingImages, ...newUrls] });
      } catch (err) {
         setMessage({ type: 'error', text: 'Kapak fotoğrafları yüklenemedi.' });
      }
