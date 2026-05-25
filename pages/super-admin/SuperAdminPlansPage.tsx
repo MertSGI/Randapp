@@ -91,7 +91,7 @@ const SuperAdminPlansPage: React.FC = () => {
                         <div className="pt-1">
                            <label className="flex items-center space-x-2">
                                <input type="checkbox" checked={plan.customComDomainIncluded} onChange={e => handleUpdate(plan.id, { customComDomainIncluded: e.target.checked })} className="rounded text-accent focus:ring-accent" />
-                               <span className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Ücretsiz .com/net Dahil (Yıllık mod)</span>
+                               <span className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Manuel özel domain desteği (Yıllık mod)</span>
                            </label>
                         </div>
                         <div className="pt-1">
