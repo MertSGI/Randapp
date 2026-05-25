@@ -31,15 +31,15 @@ const ContactPage: React.FC = () => {
            <form onSubmit={handleWhatsAppRedirect} className="space-y-4">
              <div>
                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t.marketing.contact.form_salon}</label>
-               <input required type="text" autocomplete="organization" value={salonName} onChange={e => setSalonName(e.target.value)} className="w-full rounded-xl border border-gray-300 dark:border-slate-600 p-3 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none" />
+               <input required type="text" autoComplete="organization" value={salonName} onChange={e => setSalonName(e.target.value)} className="w-full rounded-xl border border-gray-300 dark:border-slate-600 p-3 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none" />
              </div>
              <div>
                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t.marketing.contact.form_city}</label>
-               <input required type="text" autocomplete="address-level2" value={city} onChange={e => setCity(e.target.value)} className="w-full rounded-xl border border-gray-300 dark:border-slate-600 p-3 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none" />
+               <input required type="text" autoComplete="address-level2" value={city} onChange={e => setCity(e.target.value)} className="w-full rounded-xl border border-gray-300 dark:border-slate-600 p-3 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none" />
              </div>
              <div>
                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t.marketing.contact.form_phone}</label>
-               <input required type="tel" autocomplete="tel" value={phone} onChange={e => setPhone(e.target.value)} className="w-full rounded-xl border border-gray-300 dark:border-slate-600 p-3 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none" />
+               <input required type="tel" autoComplete="tel" value={phone} onChange={e => setPhone(e.target.value)} className="w-full rounded-xl border border-gray-300 dark:border-slate-600 p-3 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none" />
              </div>
              <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl transition mt-4">
                {t.marketing.contact.btn_send}

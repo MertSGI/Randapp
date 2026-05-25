@@ -104,7 +104,7 @@ const AdminPage: React.FC = () => {
 
   const handleDeleteService = async (id: string) => {
     if (!tenant) return;
-    if (window.confirm(language === 'tr' ? 'Bu hizmeti silmek istediğinize emin misiniz?' : 'Are you sure you want to delete this service?')) {
+    if (window.confirm(t.admin.confirm_delete_service || 'Are you sure you want to delete this service?')) {
       await deleteService(tenant.id, id);
       loadData();
     }
@@ -167,10 +167,10 @@ const AdminPage: React.FC = () => {
   const handleDeleteStaff = async (id: string, name: string) => {
     if (!tenant) return;
     if (id === 'stf_1' || name.toLowerCase().includes('mustafa ali yılmaz')) {
-      alert(language === 'tr' ? 'Bu çalışanı silemezsiniz.' : 'You cannot delete the master owner.');
+      alert(t.admin.cannot_delete_owner || 'You cannot delete the master owner.');
       return;
     }
-    if (window.confirm(language === 'tr' ? 'Bu çalışanı silmek istediğinize emin misiniz?' : 'Are you sure you want to delete this staff member?')) {
+    if (window.confirm(t.admin.confirm_delete_staff || 'Are you sure you want to delete this staff member?')) {
       await deleteStaff(tenant.id, id);
       loadData();
     }
@@ -285,19 +285,19 @@ const AdminPage: React.FC = () => {
               onClick={() => setActiveTab('staff')}
               className={`${activeTab === 'staff' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
             >
-              {language === 'tr' ? 'Uzman Yönetimi' : t.admin.tab_staff}
+              {t.admin.tab_staff}
             </button>
             <button
               onClick={() => setActiveTab('services')}
               className={`${activeTab === 'services' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
             >
-              {language === 'tr' ? 'Hizmetler' : 'Services'}
+              {t.admin.tab_services}
             </button>
             <button
               onClick={() => setActiveTab('reports')}
               className={`${activeTab === 'reports' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
             >
-              {language === 'tr' ? 'Raporlar' : 'Reports'}
+              {t.admin.tab_reports}
             </button>
             <button
               onClick={() => setActiveTab('billing')}
@@ -315,7 +315,7 @@ const AdminPage: React.FC = () => {
               onClick={() => setActiveTab('settings')}
               className={`${activeTab === 'settings' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
             >
-              {language === 'tr' ? 'Ayarlar' : 'Settings'}
+              {t.admin.tab_setup}
             </button>
           </nav>
         </div>
@@ -421,7 +421,7 @@ const AdminPage: React.FC = () => {
         <div className="space-y-8">
           <div className="bg-white dark:bg-slate-800 shadow-sm rounded-lg border border-gray-200 dark:border-slate-700 overflow-hidden p-6 transition-colors duration-300">
             <h3 className="text-lg font-medium text-gray-900 dark:text-white border-b border-gray-200 dark:border-slate-700 pb-4 mb-4 transition-colors duration-300">
-              {editingStaffId ? (language === 'tr' ? 'Çalışanı Düzenle' : 'Edit Staff') : (language === 'tr' ? 'Yeni Uzman Ekle' : 'Add New Staff / Specialist')}
+              {editingStaffId ? t.admin.edit_staff : t.admin.add_staff}
             </h3>
             <form onSubmit={handleAddStaff} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -448,17 +448,17 @@ const AdminPage: React.FC = () => {
                 <div className="flex items-center">
                   <input id="staff-active" type="checkbox" checked={newStaffActive} onChange={e => setNewStaffActive(e.target.checked)} className="h-4 w-4 text-accent focus:ring-accent border-gray-300 rounded"/>
                   <label htmlFor="staff-active" className="ml-2 block text-sm text-gray-900 dark:text-gray-300">
-                    {language === 'tr' ? 'Aktif (Randevuya Açık)' : 'Active (Available for booking)'}
+                    {t.admin.active_booking}
                   </label>
                 </div>
               </div>
               <div className="flex gap-3">
                   <button type="submit" className="bg-accent text-white px-4 py-2 rounded-md shadow-sm font-medium hover:bg-blue-600">
-                    {editingStaffId ? (language === 'tr' ? 'Güncelle' : 'Update') : (language === 'tr' ? 'Ekle' : 'Add Staff')}
+                    {editingStaffId ? t.admin.update : t.admin.add_staff_btn}
                   </button>
                   {editingStaffId && (
                       <button type="button" onClick={resetForm} className="bg-white dark:bg-slate-700 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-md shadow-sm font-medium hover:bg-gray-50 dark:hover:bg-slate-600 transition-colors duration-300">
-                        {language === 'tr' ? 'İptal' : 'Cancel'}
+                        {t.admin.cancel}
                       </button>
                   )}
               </div>
@@ -471,13 +471,13 @@ const AdminPage: React.FC = () => {
               return (
               <div key={staff.id} className={`bg-white dark:bg-slate-800 border text-center p-6 border-gray-200 dark:border-slate-700 rounded-xl shadow-sm flex flex-col items-center relative group transition-colors duration-300 ${!staff.active ? 'opacity-60' : ''}`}>
                 {!staff.active && (
-                   <span className="absolute top-2 left-2 bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded-md">{language === 'tr' ? 'İnaktif' : 'Inactive'}</span>
+                   <span className="absolute top-2 left-2 bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded-md">{t.admin.inactive}</span>
                 )}
                 <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button 
                         onClick={() => handleToggleStaffActive(staff)}
                         className={`p-1 text-gray-400 dark:text-gray-500 hover:text-${staff.active ? 'yellow' : 'green'}-500 rounded-full hover:bg-${staff.active ? 'yellow' : 'green'}-50 dark:hover:bg-slate-700 transition-colors duration-300`}
-                        title={language === 'tr' ? (staff.active ? 'Devre Dışı Bırak' : 'Aktif Et') : (staff.active ? 'Deactivate' : 'Activate')}
+                        title={staff.active ? t.admin.make_inactive : t.admin.make_active}
                     >
                       {staff.active ? (
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" /></svg>
@@ -488,7 +488,7 @@ const AdminPage: React.FC = () => {
                     <button 
                         onClick={() => initiateEdit(staff)}
                         className="p-1 text-gray-400 dark:text-gray-500 hover:text-accent dark:hover:text-blue-400 rounded-full hover:bg-blue-50 dark:hover:bg-slate-700 transition-colors duration-300"
-                        title={language === 'tr' ? 'Düzenle' : 'Edit'}
+                        title={t.admin.edit}
                     >
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
@@ -498,7 +498,7 @@ const AdminPage: React.FC = () => {
                     <button 
                         onClick={() => handleDeleteStaff(staff.id, staff.name)}
                         className="p-1 text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 rounded-full hover:bg-red-50 dark:hover:bg-slate-700 transition-colors duration-300"
-                        title={language === 'tr' ? 'Çalışanı Sil' : 'Delete Staff'}
+                        title={t.admin.delete_staff}
                     >
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -524,44 +524,44 @@ const AdminPage: React.FC = () => {
         <div className="space-y-8">
           <div className="bg-white dark:bg-slate-800 shadow-sm rounded-lg border border-gray-200 dark:border-slate-700 overflow-hidden p-6 transition-colors duration-300">
             <h3 className="text-lg font-medium text-gray-900 dark:text-white border-b border-gray-200 dark:border-slate-700 pb-4 mb-4 transition-colors duration-300">
-              {editingServiceId ? (language === 'tr' ? 'Hizmeti Düzenle' : 'Edit Service') : (language === 'tr' ? 'Yeni Hizmet Ekle' : 'Add New Service')}
+              {editingServiceId ? t.admin.edit_service : t.admin.add_service}
             </h3>
             <form onSubmit={handleAddService} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">Name (English)</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">{t.admin.service_name_en}</label>
                   <input required placeholder="Haircut" type="text" value={newServiceName} onChange={e => setNewServiceName(e.target.value)} className="mt-1 w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white shadow-sm border p-2 transition-colors duration-300"/>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">Name (Turkish)</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">{t.admin.service_name_tr}</label>
                   <input placeholder="Saç Kesimi" type="text" value={newServiceNameTr} onChange={e => setNewServiceNameTr(e.target.value)} className="mt-1 w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white shadow-sm border p-2 transition-colors duration-300"/>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">Price (₺)</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">{t.admin.price}</label>
                   <input required type="number" min="0" step="10" value={newServicePrice} onChange={e => setNewServicePrice(Number(e.target.value))} className="mt-1 w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white shadow-sm border p-2 transition-colors duration-300"/>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">Duration (mins)</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">{t.admin.duration}</label>
                   <input required type="number" min="5" step="5" value={newServiceDuration} onChange={e => setNewServiceDuration(Number(e.target.value))} className="mt-1 w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white shadow-sm border p-2 transition-colors duration-300"/>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">Image URL</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">{t.admin.image_url}</label>
                   <input type="text" placeholder="https://..." value={newServiceImage} onChange={e => setNewServiceImage(e.target.value)} className="mt-1 w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white shadow-sm border p-2 transition-colors duration-300"/>
                 </div>
                 <div className="flex items-center">
                   <input id="service-active" type="checkbox" checked={newServiceActive} onChange={e => setNewServiceActive(e.target.checked)} className="h-4 w-4 text-accent focus:ring-accent border-gray-300 rounded"/>
                   <label htmlFor="service-active" className="ml-2 block text-sm text-gray-900 dark:text-gray-300">
-                    {language === 'tr' ? 'Aktif (Randevuya Açık)' : 'Active (Available for booking)'}
+                    {t.admin.active_booking}
                   </label>
                 </div>
               </div>
               <div className="flex gap-3">
                   <button type="submit" className="bg-accent text-white px-4 py-2 rounded-md shadow-sm font-medium hover:bg-blue-600">
-                    {editingServiceId ? (language === 'tr' ? 'Güncelle' : 'Update') : (language === 'tr' ? 'Ekle' : 'Add Service')}
+                    {editingServiceId ? t.admin.update : t.admin.add}
                   </button>
                   {editingServiceId && (
                       <button type="button" onClick={resetServiceForm} className="bg-white dark:bg-slate-700 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-md shadow-sm font-medium hover:bg-gray-50 dark:hover:bg-slate-600 transition-colors duration-300">
-                        {language === 'tr' ? 'İptal' : 'Cancel'}
+                        {t.admin.cancel}
                       </button>
                   )}
               </div>
@@ -572,13 +572,13 @@ const AdminPage: React.FC = () => {
             {servicesList.map(service => (
               <div key={service.id} className={`bg-white dark:bg-slate-800 border text-center p-6 border-gray-200 dark:border-slate-700 rounded-xl shadow-sm flex flex-col items-center relative group transition-colors duration-300 ${!service.active ? 'opacity-60' : ''}`}>
                 {!service.active && (
-                   <span className="absolute top-2 left-2 bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded-md">{language === 'tr' ? 'İnaktif' : 'Inactive'}</span>
+                   <span className="absolute top-2 left-2 bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded-md">{t.admin.inactive}</span>
                 )}
                 <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button 
                         onClick={() => handleToggleServiceActive(service)}
                         className={`p-1 text-gray-400 dark:text-gray-500 hover:text-${service.active ? 'yellow' : 'green'}-500 rounded-full hover:bg-${service.active ? 'yellow' : 'green'}-50 dark:hover:bg-slate-700 transition-colors duration-300`}
-                        title={language === 'tr' ? (service.active ? 'Devre Dışı Bırak' : 'Aktif Et') : (service.active ? 'Deactivate' : 'Activate')}
+                        title={service.active ? t.admin.make_inactive : t.admin.make_active}
                     >
                       {service.active ? (
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" /></svg>
@@ -589,7 +589,7 @@ const AdminPage: React.FC = () => {
                     <button 
                         onClick={() => initiateEditService(service)}
                         className="p-1 text-gray-400 dark:text-gray-500 hover:text-accent dark:hover:text-blue-400 rounded-full hover:bg-blue-50 dark:hover:bg-slate-700 transition-colors duration-300"
-                        title={language === 'tr' ? 'Düzenle' : 'Edit'}
+                        title={t.admin.edit}
                     >
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
@@ -598,7 +598,7 @@ const AdminPage: React.FC = () => {
                     <button 
                         onClick={() => handleDeleteService(service.id)}
                         className="p-1 text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 rounded-full hover:bg-red-50 dark:hover:bg-slate-700 transition-colors duration-300"
-                        title={language === 'tr' ? 'Hizmeti Sil' : 'Delete Service'}
+                        title={t.admin.delete_service || 'Delete Service'}
                     >
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

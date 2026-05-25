@@ -89,9 +89,9 @@ export const generateFullConsultation = async (
     if (isMockMode) {
         return new Promise(resolve => setTimeout(() => resolve({
             text: language === 'tr' 
-            ? `**Saç Analizi:**\nHarika bir seçim! Yüklediğiniz fotoğafa ve isteğinize göre size saçlarınızı canlandıracak bir stil öneriyoruz.\n\n**Önerilen Hizmetler:**\n- Saç Kesimi\n- Renklendirme\n- Saç Bakım Kürleri` 
-            : `**Hair Analysis:**\nGreat choice! Based on your photo and request, we recommend a style that brings life to your hair.\n\n**Recommended Services:**\n- Haircut\n- Coloring\n- Hair Treatment`,
-            image: base64Image || 'https://via.placeholder.com/512?text=AI+Haircut+Preview'
+            ? `**Saç Analizi & Tavsiye:**\nHarika bir seçim! Yüklediğiniz fotoğrafa ve isteğinize göre size saçlarınızı canlandıracak bir stil öneriyoruz.\n\n**Önerilen Hizmetler:**\n- Saç Kesimi\n- Renklendirme\n- Saç Bakım Kürleri\n\n*Not: Bu bir yapay zeka önerisidir, uzmanımızla salonumuzda yapacağınız yüz yüze görüşme esastır.*` 
+            : `**Hair Analysis & Recommendation:**\nGreat choice! Based on your photo and request, we recommend a style that brings life to your hair.\n\n**Recommended Services:**\n- Haircut\n- Coloring\n- Hair Treatment\n\n*Note: This is an AI recommendation. An in-person consultation with our stylist is recommended.*`,
+            image: base64Image || 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=512&q=80'
         }), 1500));
     }
 

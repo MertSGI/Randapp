@@ -275,7 +275,7 @@ const BookingPage: React.FC = () => {
          </div>
       ) : (
       <>
-      {renderStepper()}
+      {step > 0 && renderStepper()}
 
       <div className={`transition-colors duration-300 ${step > 0 ? 'bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-6 md:p-8' : ''}`}>
         
@@ -376,8 +376,8 @@ const BookingPage: React.FC = () => {
                   onClick={() => handleStaffSelect(staff)}
                   className="flex flex-col md:flex-row items-center border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-2xl p-4 gap-4 hover:border-accent hover:shadow-md transition-all text-left"
                 >
-                  {staff.avatar ? (
-                    <img src={staff.avatar} alt={staff.name} referrerPolicy="no-referrer" className="w-16 h-16 rounded-full object-cover shrink-0" />
+                  {staff.image ? (
+                    <img src={staff.image} alt={staff.name} referrerPolicy="no-referrer" className="w-16 h-16 rounded-full object-cover shrink-0" />
                   ) : (
                     <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 shrink-0 text-xl font-medium">
                       {staff.name.charAt(0)}
@@ -385,7 +385,7 @@ const BookingPage: React.FC = () => {
                   )}
                   <div className="flex-1">
                     <h3 className="font-bold text-gray-900 dark:text-white">{staff.name}</h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{staff.roles?.join(', ')}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{staff.title}</p>
                     {staffAvailability[staff.id] ? (
                        <p className="text-xs text-green-600 dark:text-green-400 font-medium mt-2 flex items-center gap-1">
                           <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -472,7 +472,7 @@ const BookingPage: React.FC = () => {
                   )}
                   <div className="flex flex-col">
                     <span className="font-bold text-gray-900 dark:text-white">{language === 'tr' ? selectedService?.name_tr : selectedService?.name}</span>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">with {selectedStaff?.name}</span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400">{language === 'tr' ? 'Uzman:' : 'with'} {selectedStaff?.name}</span>
                   </div>
               </div>
               <span className="font-semibold bg-white dark:bg-slate-800 px-3 py-1 rounded-md border border-gray-200 dark:border-slate-600 transition-colors duration-300">{selectedDate} @ {selectedTime}</span>
@@ -507,6 +507,7 @@ const BookingPage: React.FC = () => {
                 <input
                   required
                   type="text"
+                  name="name"
                   autoComplete="name"
                   className="mt-1 block w-full rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white shadow-sm focus:border-accent focus:ring-accent sm:text-sm p-3 border transition-colors duration-300"
                   value={formData.name}
@@ -518,6 +519,7 @@ const BookingPage: React.FC = () => {
                 <input
                   required
                   type="email"
+                  name="email"
                   autoComplete="email"
                   className="mt-1 block w-full rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white shadow-sm focus:border-accent focus:ring-accent sm:text-sm p-3 border transition-colors duration-300"
                   value={formData.email}
@@ -529,6 +531,7 @@ const BookingPage: React.FC = () => {
                 <input
                   required
                   type="tel"
+                  name="tel"
                   autoComplete="tel"
                   className="mt-1 block w-full rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white shadow-sm focus:border-accent focus:ring-accent sm:text-sm p-3 border transition-colors duration-300"
                   placeholder="0XXX XXX XX XX"
