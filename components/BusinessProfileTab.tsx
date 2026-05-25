@@ -36,15 +36,35 @@ const BusinessProfileTab: React.FC = () => {
     setSaving(false);
   };
 
-  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
      if (!e.target.files || e.target.files.length === 0 || !tenant) return;
      const file = e.target.files[0];
      try {
-        const url = await mediaUploadService.uploadCoverImage(tenant.id, file);
-        setProfile({ ...profile, cover_image_url: url });
+        const url = await mediaUploadService.uploadCoverImage(tenant.id, file); // We use same bucket or you can add uploadLogo in service
+        setProfile({ ...profile, logo_url: url });
      } catch (err) {
-        setMessage({ type: 'error', text: 'Kapak fotoğrafı yüklenemedi.' });
+        setMessage({ type: 'error', text: 'Logo yüklenemedi.' });
      }
+  };
+
+  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+     if (!e.target.files || e.target.files.length === 0 || !tenant) return;
+     const newUrls: string[] = [];
+     try {
+        for (let i = 0; i < e.target.files.length; i++) {
+           const url = await mediaUploadService.uploadCoverImage(tenant.id, e.target.files[i]);
+           newUrls.push(url);
+        }
+        setProfile({ ...profile, cover_images: [...(profile.cover_images || profile.cover_image_url ? [profile.cover_image_url].filter(Boolean) as string[] : []), ...newUrls] });
+     } catch (err) {
+        setMessage({ type: 'error', text: 'Kapak fotoğrafları yüklenemedi.' });
+     }
+  };
+
+  const removeCoverImage = (indexToRemove: number) => {
+     const newImages = [...(profile.cover_images || [])];
+     newImages.splice(indexToRemove, 1);
+     setProfile({ ...profile, cover_images: newImages });
   };
 
   const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -208,13 +228,13 @@ const BusinessProfileTab: React.FC = () => {
 
            <div>
               <h3 className="text-md font-semibold text-gray-900 dark:text-white mb-3">Görseller</h3>
-              <div className="space-y-3">
+              <div className="space-y-4">
                  <div>
-                    <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Kapak Fotoğrafı Yükle</label>
+                    <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Logo Yükle</label>
                     <input 
                        type="file" 
                        accept="image/*"
-                       onChange={handleCoverUpload}
+                       onChange={handleLogoUpload}
                        className="block w-full text-sm text-gray-500
                                   file:mr-4 file:py-2 file:px-4
                                   file:rounded-md file:border-0
@@ -222,7 +242,43 @@ const BusinessProfileTab: React.FC = () => {
                                   file:bg-blue-50 file:text-blue-700
                                   hover:file:bg-blue-100 dark:file:bg-slate-700 dark:file:text-slate-300"
                     />
-                    {profile.cover_image_url && <img src={profile.cover_image_url} alt="Cover Preview" className="mt-2 h-20 w-auto rounded object-cover shadow-sm" />}
+                    {profile.logo_url && (
+                        <div className="relative inline-block mt-2">
+                           <img src={profile.logo_url} alt="Logo Preview" className="h-20 w-20 rounded-full object-cover shadow-sm bg-white" />
+                           <button type="button" onClick={() => setProfile({...profile, logo_url: ''})} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 hover:opacity-100 group-hover:opacity-100 transition-opacity">
+                               <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                           </button>
+                        </div>
+                    )}
+                 </div>
+                 <div>
+                    <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Kapak Fotoğrafları Yükle (Birden fazla seçebilirsiniz)</label>
+                    <input 
+                       type="file" 
+                       multiple
+                       accept="image/*"
+                       onChange={handleCoverUpload}
+                       className="block w-full text-sm text-gray-500
+                                  file:mr-4 file:py-2 file:px-4
+                                  file:rounded-md file:border-0
+                                  file:text-sm file:font-semibold
+                                  file:bg-blue-50 file:text-blue-700
+                                  hover:file:bg-blue-100 dark:file:bg-slate-700 dark:file:text-slate-300 mb-2"
+                    />
+                    {profile.cover_images && profile.cover_images.length > 0 ? (
+                        <div className="flex flex-wrap gap-2 mt-2">
+                            {profile.cover_images.map((img, idx) => (
+                                <div key={idx} className="relative group">
+                                   <img src={img} className="h-16 w-24 object-cover rounded-md shadow-sm" />
+                                   <button type="button" onClick={() => removeCoverImage(idx)} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                       <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                                   </button>
+                                </div>
+                            ))}
+                        </div>
+                    ) : profile.cover_image_url && (
+                        <div className="mt-2 text-xs text-amber-600">Tekil kapak url'si mevcut, çoklu fotoğraf yüklediğinizde bu alan geçersiz sayılacaktır.</div>
+                    )}
                  </div>
                  <div>
                     <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Galeri Görselleri Ekle</label>

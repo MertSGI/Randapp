@@ -54,6 +54,9 @@ const SuperAdminTenantPreviewPage: React.FC = () => {
                     handleStaffSelect={(staff) => {
                         console.log("Preview mode staff select:", staff);
                     }}
+                    handleServiceSelect={(service) => {
+                        console.log("Preview mode service select:", service);
+                    }}
                     language={language}
                 />
             </div>

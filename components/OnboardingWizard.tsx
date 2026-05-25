@@ -197,6 +197,21 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
     }
   };
 
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0 || !tenant) return;
+    setSetupSaving(true);
+    try {
+      const { mediaUploadService } = await import('../services/mediaUploadService');
+      const url = await mediaUploadService.uploadCoverImage(tenant.id, e.target.files[0]);
+      setSetupLogoUrl(url);
+    } catch (err) {
+      console.error(err);
+      alert('Logo yüklenemedi.');
+    } finally {
+      setSetupSaving(false);
+    }
+  };
+
   const steps = [
     { id: 1, name: 'Salon Bilgileri', completed: isInfoCompleted },
     { id: 2, name: 'Marka & Tasarım', completed: isBrandingCompleted },
@@ -267,10 +282,40 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
           {activeStep === 2 && (
             <div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">2. Marka ve Tasarım</h3>
-              <form onSubmit={handleSaveBranding} className="space-y-4">
+              <form onSubmit={handleSaveBranding} className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Logo URL (Opsiyonel)</label>
-                  <input type="text" value={setupLogoUrl} onChange={e => setSetupLogoUrl(e.target.value)} placeholder="https://..." className="w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-2 border" />
+                  <label className="block text-sm font-medium mb-1">Logo Yükle</label>
+                  <div className="flex items-center gap-4">
+                     {setupLogoUrl ? (
+                         <div className="relative group">
+                            <img src={setupLogoUrl} alt="Logo" className="w-16 h-16 rounded-lg object-cover border border-gray-200 dark:border-slate-700 bg-white" />
+                            <button type="button" onClick={() => setSetupLogoUrl('')} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                            </button>
+                         </div>
+                     ) : (
+                         <div className="w-16 h-16 rounded-lg bg-gray-100 dark:bg-slate-700 border border-dashed border-gray-300 dark:border-slate-600 flex items-center justify-center">
+                            <span className="text-xs text-gray-400">Yok</span>
+                         </div>
+                     )}
+                     <div className="flex-1">
+                        <input 
+                           type="file" 
+                           accept="image/*"
+                           onChange={handleLogoUpload}
+                           className="block w-full text-sm text-gray-500
+                                      file:mr-4 file:py-2 file:px-4
+                                      file:rounded-md file:border-0
+                                      file:text-sm file:font-semibold
+                                      file:bg-blue-50 file:text-blue-700
+                                      hover:file:bg-blue-100 dark:file:bg-slate-700 dark:file:text-slate-300"
+                        />
+                     </div>
+                  </div>
+                  <details className="mt-3">
+                     <summary className="text-xs text-gray-500 cursor-pointer user-select-none hover:text-accent">Dış bağlantı (URL) kullan</summary>
+                     <input type="text" value={setupLogoUrl} onChange={e => setSetupLogoUrl(e.target.value)} placeholder="https://..." className="mt-2 w-full text-xs rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-2 border" />
+                  </details>
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">Ana Renk (Primary Color)</label>

@@ -10,6 +10,8 @@
 - [x] **SEO & Metadata**: `index.html` contains Title, Meta Description, OG Title/Desc, Twitter Card, and clearly frames target market (Kuaför, Güzellik Salonuvb.).
 
 ## Salon Customer (Tenant Domain / `/book`)
+- [x] **Website First, Booking Second**: Visitors land on a highly polished, mobile-first website view mirroring the interactive Demo preview exactingly. The stepper is completely hidden until a booking CTA is tapped.
+- [x] **Upload & Media Rendering**: Multi-cover image carousels and gallery popups are fully functional and respect files natively uploaded from device UI.
 - [x] **Booking Lock Before Live**: If the tenant's `setupStatus` is not `live`, visiting `/#/book` without preview permissions shows a locked "Hizmet Geçici Olarak Kapalı" screen.
 - [x] **Booking Flow Unlocked After Approval**: Once Super Admin approves, customers can access the full Booking Flow.
 - [x] **Security / Preview Lock**: `?preview=true` works ONLY if the user is `super_admin` OR `salon_owner` of the matching `tenantId`. Anonymous users remain blocked.

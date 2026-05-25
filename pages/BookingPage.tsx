@@ -161,7 +161,7 @@ const BookingPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-lg mx-auto">
       {isAuthorizedPreview && (
          <div className={`mb-6 p-3 ${currentUser?.role === 'super_admin' ? 'bg-purple-100 text-purple-800 border-purple-200' : 'bg-blue-100 text-blue-800 border-blue-200'} border rounded-lg text-sm text-center font-medium shadow-sm`}>
             {currentUser?.role === 'super_admin' ? 'Super Admin Önizleme Modu: Bu sayfa müşterilere açık değildir.' : 'Önizleme Modu: Bu sayfa henüz müşterilere açık değildir.'}
@@ -180,23 +180,25 @@ const BookingPage: React.FC = () => {
       ) : (
       <>
       {/* Progress Bar */}
-      <div className="mb-8 max-w-2xl mx-auto hidden sm:block">
-        <div className="flex items-center justify-between relative px-2">
-          <div className="absolute left-6 right-6 top-1/2 h-0.5 bg-gray-200 -z-10"></div>
-          {[0, 1, 2, 3, 4].map((s) => (
-            <div key={s} className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors duration-300 ${step >= s ? 'bg-accent text-white' : 'bg-white border-2 border-gray-200 text-gray-400'}`}>
-              {s + 1}
-            </div>
-          ))}
+      {step > 0 && (
+        <div className="mb-8 max-w-2xl mx-auto hidden sm:block">
+          <div className="flex items-center justify-between relative px-2">
+            <div className="absolute left-6 right-6 top-1/2 h-0.5 bg-gray-200 -z-10"></div>
+            {[1, 2, 3, 4].map((s) => (
+              <div key={s} className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors duration-300 ${step >= s ? 'bg-accent text-white' : 'bg-white border-2 border-gray-200 text-gray-400'}`}>
+                {s}
+              </div>
+            ))}
+          </div>
+          <div className="flex justify-between mt-2 text-xs text-gray-500 px-1">
+            {t.booking.steps.slice(1).map((label, i) => (
+              <span key={i} className="text-center w-16">{label}</span>
+            ))}
+          </div>
         </div>
-        <div className="flex justify-between mt-2 text-xs text-gray-500 px-1">
-          {t.booking.steps.map((label, i) => (
-            <span key={i} className="text-center w-16">{label}</span>
-          ))}
-        </div>
-      </div>
+      )}
 
-      <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-6 md:p-8 transition-colors duration-300">
+      <div className={`transition-colors duration-300 ${step > 0 ? 'bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-6 md:p-8' : ''}`}>
         
         {/* Step 0: Staff Selection & Business Profile */}
         {step === 0 && (
@@ -206,6 +208,7 @@ const BookingPage: React.FC = () => {
             staffList={staffList}
             servicesList={servicesList}
             handleStaffSelect={handleStaffSelect}
+            handleServiceSelect={handleServiceSelect}
             language={language}
           />
         )}

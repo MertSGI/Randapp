@@ -31,6 +31,7 @@ export interface SalonBusinessProfile {
   email?: string;
   opening_hours_summary?: string;
   cover_image_url?: string;
+  cover_images?: string[];
   logo_url?: string;
   gallery_images?: string[];
   amenities?: string[];
