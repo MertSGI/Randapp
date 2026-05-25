@@ -1,6 +1,6 @@
 import { supabase } from './supabaseClient';
 import { dataProvider } from './dataProvider';
-import { PRICING_PLANS, PricingPlan } from './planService';
+import { planService, PricingPlan } from './planService';
 
 export type SubscriptionStatus = 'trial' | 'active' | 'past_due' | 'canceled' | 'suspended';
 
@@ -56,8 +56,9 @@ export const subscriptionService = {
 
   async getPlanForTenant(tenantId: string): Promise<PricingPlan | null> {
     const sub = await this.getCurrentSubscription(tenantId);
-    if (!sub) return PRICING_PLANS['starter']; // Default fallback
-    return PRICING_PLANS[sub.planId] || PRICING_PLANS['starter'];
+    let planId = sub ? sub.planId : 'starter';
+    const plan = planService.getPlan(planId) || planService.getPlan('starter');
+    return plan as PricingPlan;
   },
 
   async getTenantUsage(tenantId: string): Promise<TenantUsage> {

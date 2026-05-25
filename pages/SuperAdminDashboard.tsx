@@ -5,6 +5,8 @@ const SuperAdminDashboard: React.FC = () => {
   const [data, setData] = useState<{stats: any, tenants: TenantFullData[]} | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const [selectedTenant, setSelectedTenant] = useState<TenantFullData | null>(null);
+
   const loadData = () => {
     setLoading(true);
     superAdminService.getDashboardData().then(d => {
@@ -42,6 +44,16 @@ const SuperAdminDashboard: React.FC = () => {
         await superAdminService.pauseBookings(tenantId);
         alert("Aksiyon tamamlandı.");
         loadData();
+    }
+  };
+
+  const handleContact = (tenant: TenantFullData) => {
+    // Attempt to contact via phone/whatsapp
+    const phone = tenant.businessProfile?.whatsapp_number;
+    if (phone) {
+       window.open(`https://wa.me/${phone.replace(/[^0-9]/g, '')}`, '_blank');
+    } else {
+       alert(`Müşteri telefonu kayıtlı değil. Email: ${tenant.tenant.ownerEmail}`);
     }
   };
 
@@ -172,7 +184,8 @@ const SuperAdminDashboard: React.FC = () => {
                     {t.setupStatus === 'live' && (
                        <button onClick={() => handlePause(t.tenant.id)} className="text-yellow-600 hover:text-yellow-900">Pause</button>
                     )}
-                    <button onClick={() => alert('Tenant detay yönetimi sonraki fazda eklenecek.')} className="text-blue-600 hover:text-blue-900">Manage</button>
+                    <button onClick={() => handleContact(t)} className="text-green-600 hover:text-green-900">İletişime Geç</button>
+                    <button onClick={() => setSelectedTenant(t)} className="text-blue-600 hover:text-blue-900">Manage</button>
                   </td>
                 </tr>
               ))}
@@ -180,6 +193,48 @@ const SuperAdminDashboard: React.FC = () => {
           </table>
         </div>
       </div>
+      
+      {/* Manage Tenant Modal */}
+      {selectedTenant && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+             <div className="p-6 border-b border-gray-200 dark:border-slate-700 flex justify-between items-center">
+                <h3 className="text-xl font-bold dark:text-white">Manage Tenant: {selectedTenant.tenant.businessName}</h3>
+                <button onClick={() => setSelectedTenant(null)} className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white text-2xl leading-none">&times;</button>
+             </div>
+             <div className="p-6 space-y-4">
+                <div>
+                  <strong className="block text-gray-700 dark:text-gray-300">Tenant ID:</strong>
+                  <span className="dark:text-white">{selectedTenant.tenant.id}</span>
+                </div>
+                <div>
+                  <strong className="block text-gray-700 dark:text-gray-300">Owner Email:</strong>
+                  <span className="dark:text-white">{selectedTenant.tenant.ownerEmail}</span>
+                </div>
+                <div>
+                  <strong className="block text-gray-700 dark:text-gray-300">Plan:</strong>
+                  <span className="dark:text-white">{selectedTenant.planId} ({selectedTenant.subscriptionStatus})</span>
+                </div>
+                <div>
+                  <strong className="block text-gray-700 dark:text-gray-300">Setup Status:</strong>
+                  <span className="dark:text-white">{selectedTenant.setupStatus}</span>
+                </div>
+                <div>
+                  <strong className="block text-gray-700 dark:text-gray-300">Monthly Appointments:</strong>
+                  <span className="dark:text-white">{selectedTenant.monthlyAppointments} / {selectedTenant.estimatedRevenue} ₺ estimated</span>
+                </div>
+             </div>
+             <div className="p-6 border-t border-gray-200 dark:border-slate-700 flex justify-end space-x-3">
+                <a href={`/#/book?preview=true`} target="_blank" rel="noopener noreferrer" className="bg-gray-100 dark:bg-slate-700 text-gray-800 dark:text-white px-4 py-2 rounded-md font-medium">
+                  Site Önizle
+                </a>
+                <button onClick={() => setSelectedTenant(null)} className="bg-accent text-white px-4 py-2 rounded-md font-medium">
+                  Kapat
+                </button>
+             </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTenant } from '../contexts/TenantContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { businessProfileService } from '../services/businessProfileService';
+import { mediaUploadService } from '../services/mediaUploadService';
 import { SalonBusinessProfile } from '../types';
 
 const BusinessProfileTab: React.FC = () => {
@@ -35,9 +36,35 @@ const BusinessProfileTab: React.FC = () => {
     setSaving(false);
   };
 
-  const handleGalleryChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const urls = e.target.value.split('\n').filter(url => url.trim() !== '');
-    setProfile({ ...profile, gallery_images: urls });
+  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+     if (!e.target.files || e.target.files.length === 0 || !tenant) return;
+     const file = e.target.files[0];
+     try {
+        const url = await mediaUploadService.uploadCoverImage(tenant.id, file);
+        setProfile({ ...profile, cover_image_url: url });
+     } catch (err) {
+        setMessage({ type: 'error', text: 'Kapak fotoğrafı yüklenemedi.' });
+     }
+  };
+
+  const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+     if (!e.target.files || e.target.files.length === 0 || !tenant) return;
+     const newUrls: string[] = [];
+     try {
+        for (let i = 0; i < e.target.files.length; i++) {
+           const url = await mediaUploadService.uploadGalleryImage(tenant.id, e.target.files[i]);
+           newUrls.push(url);
+        }
+        setProfile({ ...profile, gallery_images: [...(profile.gallery_images || []), ...newUrls] });
+     } catch (err) {
+        setMessage({ type: 'error', text: 'Galeri yüklenemedi.' });
+     }
+  };
+
+  const removeGalleryImage = (indexToRemove: number) => {
+     const newImages = [...(profile.gallery_images || [])];
+     newImages.splice(indexToRemove, 1);
+     setProfile({ ...profile, gallery_images: newImages });
   };
 
   if (loading) return <div className="p-8 text-center text-gray-500">Yükleniyor...</div>;
@@ -183,22 +210,46 @@ const BusinessProfileTab: React.FC = () => {
               <h3 className="text-md font-semibold text-gray-900 dark:text-white mb-3">Görseller</h3>
               <div className="space-y-3">
                  <div>
-                    <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Kapak Fotoğrafı URL</label>
+                    <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Kapak Fotoğrafı Yükle</label>
                     <input 
-                       type="text" value={profile.cover_image_url || ''} onChange={e => setProfile({...profile, cover_image_url: e.target.value})}
-                       className="w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 p-2 text-sm dark:text-white"
+                       type="file" 
+                       accept="image/*"
+                       onChange={handleCoverUpload}
+                       className="block w-full text-sm text-gray-500
+                                  file:mr-4 file:py-2 file:px-4
+                                  file:rounded-md file:border-0
+                                  file:text-sm file:font-semibold
+                                  file:bg-blue-50 file:text-blue-700
+                                  hover:file:bg-blue-100 dark:file:bg-slate-700 dark:file:text-slate-300"
                     />
                     {profile.cover_image_url && <img src={profile.cover_image_url} alt="Cover Preview" className="mt-2 h-20 w-auto rounded object-cover shadow-sm" />}
                  </div>
                  <div>
-                    <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Galeri Görselleri (Her satıra bir URL)</label>
-                    <textarea 
-                       rows={5} 
-                       value={(profile.gallery_images || []).join('\n')} 
-                       onChange={handleGalleryChange}
-                       className="w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 p-2 text-xs dark:text-white"
-                       placeholder="https://image1.jpg&#10;https://image2.jpg"
+                    <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Galeri Görselleri Ekle</label>
+                    <input 
+                       type="file" 
+                       multiple 
+                       accept="image/*"
+                       onChange={handleGalleryUpload}
+                       className="block w-full text-sm text-gray-500
+                                  file:mr-4 file:py-2 file:px-4
+                                  file:rounded-md file:border-0
+                                  file:text-sm file:font-semibold
+                                  file:bg-blue-50 file:text-blue-700
+                                  hover:file:bg-blue-100 dark:file:bg-slate-700 dark:file:text-slate-300 mb-2"
                     />
+                    {profile.gallery_images && profile.gallery_images.length > 0 && (
+                       <div className="flex flex-wrap gap-2 mt-2">
+                           {profile.gallery_images.map((img, idx) => (
+                               <div key={idx} className="relative group">
+                                  <img src={img} className="h-16 w-16 object-cover rounded-md shadow-sm" />
+                                  <button type="button" onClick={() => removeGalleryImage(idx)} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                                  </button>
+                               </div>
+                           ))}
+                       </div>
+                    )}
                  </div>
               </div>
            </div>
