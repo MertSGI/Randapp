@@ -16,6 +16,7 @@ export interface TenantFullData {
   monthlyAppointments: number;
   estimatedRevenue: number;
   hasProfile?: boolean;
+  businessProfile?: any;
 }
 
 export const superAdminService = {

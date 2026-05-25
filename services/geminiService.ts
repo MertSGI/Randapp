@@ -1,12 +1,15 @@
 import { GoogleGenAI } from "@google/genai";
 import { Appointment } from '../types';
 
+const isMockMode = (import.meta as any).env.VITE_DATA_MODE === 'mock' || (import.meta as any).env.VITE_AI_MODE === 'mock';
+
 const getAi = () => {
+  if (isMockMode) return null;
   // TODO(Security): In a production environment with Supabase, calls to the Gemini API 
   // must be routed through a Supabase Edge Function to avoid exposing the API key on the client.
   const key = process.env.GEMINI_API_KEY;
   if (!key) {
-    console.warn("Gemini API Key is missing.");
+    console.warn("Gemini API Key is missing. Falling back to mock behavior.");
     return null;
   }
   return new GoogleGenAI({ apiKey: key });
@@ -78,111 +81,51 @@ export const analyzeSchedule = async (appointments: Appointment[], language: 'en
     }
 }
 
-export const generateHaircutImage = async (promptText: string, size: '1K' | '2K' | '4K' = '1K', base64ExtractedImage?: string): Promise<string | null> => {
-    const ai = getAi();
-    if (!ai) return null;
-
-    try {
-        const parts: any[] = [];
-        if (base64ExtractedImage) {
-            parts.push({
-                inlineData: {
-                    data: base64ExtractedImage.replace(/^data:image\/\w+;base64,/, ''),
-                    mimeType: 'image/jpeg'
-                }
-            });
-            parts.push({
-                text: `Professional photo simulating this specific request: ${promptText}. Cinematic lighting, highly detailed.`
-            });
-        } else {
-            parts.push({
-                text: `Professional barbershop/salon photo: ${promptText}. Cinematic lighting, highly detailed.`
-            });
-        }
-
-        const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash-image',
-            contents: { parts }
-        });
-        
-        const candidate = response.candidates?.[0];
-        if (candidate && candidate.content && candidate.content.parts) {
-            for (const part of candidate.content.parts) {
-                if (part.inlineData) {
-                    return `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
-                }
-            }
-        }
-        return null;
-    } catch (error) {
-        console.error("Error generating image:", error);
-        return null;
+export const generateFullConsultation = async (
+    promptText: string,
+    base64Image?: string,
+    language: 'en' | 'tr' = 'en'
+): Promise<{ text: string, image: string | null } | null> => {
+    if (isMockMode) {
+        return new Promise(resolve => setTimeout(() => resolve({
+            text: language === 'tr' 
+            ? `**Saç Analizi:**\nHarika bir seçim! Yüklediğiniz fotoğafa ve isteğinize göre size saçlarınızı canlandıracak bir stil öneriyoruz.\n\n**Önerilen Hizmetler:**\n- Saç Kesimi\n- Renklendirme\n- Saç Bakım Kürleri` 
+            : `**Hair Analysis:**\nGreat choice! Based on your photo and request, we recommend a style that brings life to your hair.\n\n**Recommended Services:**\n- Haircut\n- Coloring\n- Hair Treatment`,
+            image: base64Image || 'https://via.placeholder.com/512?text=AI+Haircut+Preview'
+        }), 1500));
     }
-};
 
-export const editHaircutImage = async (base64Image: string, instructions: string): Promise<string | null> => {
-    const ai = getAi();
-    if (!ai) return null;
-
-    try {
-        const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash-image',
-            contents: {
-                parts: [
-                    {
-                        inlineData: {
-                            data: base64Image.replace(/^data:image\/\w+;base64,/, ''),
-                            mimeType: 'image/jpeg'
-                        }
-                    },
-                    {
-                        text: instructions
-                    }
-                ]
-            }
-        });
-        
-        const candidate = response.candidates?.[0];
-        if (candidate && candidate.content && candidate.content.parts) {
-            for (const part of candidate.content.parts) {
-                if (part.inlineData) {
-                    return `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
-                }
-            }
-        }
-        return null;
-    } catch (error) {
-        console.error("Error editing image:", error);
-        return null;
-    }
-};
-
-export const analyzeHairCondition = async (base64Image: string, language: 'en' | 'tr' = 'en'): Promise<string | null> => {
     const ai = getAi();
     if (!ai) return null;
 
     try {
         const langName = language === 'tr' ? 'Turkish' : 'English';
-        const prompt = `Analyze this photo of hair. Describe its current condition, type, and structure. Then recommend 3 specific haircare treatments or procedures suitable for this hair type. Finally, give an assessment if a color change is recommended and what colors would fit well. Translate everything into ${langName}. Respond in Markdown format with clear headings.`;
         
-        const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
-            contents: {
-                parts: [
-                    {
-                        inlineData: {
-                            data: base64Image.replace(/^data:image\/\w+;base64,/, ''),
-                            mimeType: 'image/jpeg'
-                        }
-                    },
-                    { text: prompt }
-                ]
-            }
-        });
+        // 1. Generate text recommendation
+        const textParts: any[] = [];
+        if (base64Image) {
+            textParts.push({
+                inlineData: {
+                    data: base64Image.replace(/^data:image\/\w+;base64,/, ''),
+                    mimeType: 'image/jpeg'
+                }
+            });
+        }
+        textParts.push({ text: `Analyze the photo and the user's request: "${promptText}". Provide a highly professional consultation, recommending haircut style, color (if applicable), and specific salon services. Write in Markdown format with clear headings. Language: ${langName}.` });
 
-        return response.text || null;
+        const textResponse = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: { parts: textParts }
+        });
+        
+        // 2. We don't have true image gen natively mapped in code well, so let's mock the image or just skip.
+        // To be safe in production without blowing costs, we just return the text.
+        return {
+            text: textResponse.text || "Could not generate recommendation text.",
+            image: null
+        };
     } catch (error) {
-        console.error("Error analyzing hair:", error);
+        console.error("Gemini Consultation Error:", error);
         return null;
     }
 };

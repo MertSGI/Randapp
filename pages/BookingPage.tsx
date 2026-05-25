@@ -169,14 +169,13 @@ const BookingPage: React.FC = () => {
       )}
       {isCheckingSub ? (
          <div className="text-center py-12 text-gray-500">Yükleniyor...</div>
-      ) : subStatus === 'suspended' ? (
+      ) : !isAuthorizedPreview && subStatus === 'suspended' ? (
          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-red-200 dark:border-red-900/50 p-8 text-center text-red-600 dark:text-red-400">
            <svg className="mx-auto h-16 w-16 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m0 0v2m0-2h2m-2 0H9m-3.5 4a2.5 2.5 0 01-2.5-2.5v-10A2.5 2.5 0 015.5 4h13A2.5 2.5 0 0121 6.5v10a2.5 2.5 0 01-2.5 2.5h-13z" />
            </svg>
            <h2 className="text-2xl font-bold mb-2">Hizmet Geçici Olarak Kapalı</h2>
            <p>{setupError || 'Bu salonun online randevu sistemi geçici olarak kullanılamıyor. Lütfen işletme ile iletişime geçin.'}</p>
-           {/* Final enforcement must happen server-side through Edge Functions, database constraints, RLS, or verified backend logic. */}
          </div>
       ) : (
       <>

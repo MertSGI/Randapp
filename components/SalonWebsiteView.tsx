@@ -145,13 +145,31 @@ const SalonWebsiteView: React.FC<SalonWebsiteViewProps> = ({
       ))}
 
       {/* Other Staff Members Grid */}
-      {staffList.filter(s => s.id !== 'stf_1' && !s.name.toLowerCase().includes('mustafa ali yılmaz')).length > 0 && (
-          <div className="max-w-4xl mx-auto mt-12">
-              <h3 className="text-center text-sm font-semibold text-gray-400 uppercase tracking-widest mb-6">
-                  {language === 'tr' ? 'Diğer Uzmanlarımız' : 'Our Other Specialists'}
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {staffList.filter(s => s.id !== 'stf_1' && !s.name.toLowerCase().includes('mustafa ali yılmaz')).map((staff) => (
+      <div className="max-w-4xl mx-auto mt-12">
+          <h3 className="text-center text-sm font-semibold text-gray-400 uppercase tracking-widest mb-6">
+              {language === 'tr' ? 'Uzman Seçimi' : 'Select Specialist'}
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          
+          {/* ANY STAFF OPTION */}
+          <button
+              onClick={() => {
+                  const availableStaff = staffList.filter(s => s.id !== 'stf_1');
+                  const randomStaff = availableStaff.length > 0 ? availableStaff[Math.floor(Math.random() * availableStaff.length)] : staffList[0];
+                  handleStaffSelect({ ...randomStaff, name: `En Yakın Müsait: ${randomStaff.name}` });
+              }}
+              className="relative flex flex-col items-center p-6 rounded-2xl border-2 border-dashed border-gray-300 dark:border-slate-600 bg-gray-50/50 dark:bg-slate-800/50 shadow-sm hover:shadow-lg hover:border-accent/50 hover:bg-white dark:hover:bg-slate-800 transition-all duration-300 text-center group"
+              >
+              <div className="w-24 h-24 rounded-full bg-blue-100 dark:bg-slate-700 text-blue-500 flex items-center justify-center border-4 border-white dark:border-slate-800 shadow-sm mb-4 transition-colors duration-300">
+                  <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+              </div>
+              <h3 className="font-bold text-lg text-gray-900 dark:text-white group-hover:text-accent transition-colors">{language === 'tr' ? 'Bana Fark Etmez' : 'Any Staff'}</h3>
+              <p className="text-sm text-gray-500 mt-1">{language === 'tr' ? 'En yakın müsaitliğe yönlendir' : 'Get nearest availability'}</p>
+          </button>
+
+          {staffList.filter(s => s.id !== 'stf_1' && !s.name.toLowerCase().includes('mustafa ali yılmaz')).map((staff) => (
                   <button
                   key={staff.id}
                   onClick={() => handleStaffSelect(staff)}
@@ -172,7 +190,6 @@ const SalonWebsiteView: React.FC<SalonWebsiteViewProps> = ({
               ))}
               </div>
           </div>
-      )}
       </div>
     </div>
   );

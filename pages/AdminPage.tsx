@@ -236,81 +236,89 @@ const AdminPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white transition-colors duration-300">{t.admin.title}</h1>
-          <p className="text-gray-500 dark:text-gray-400 transition-colors duration-300">{t.admin.subtitle}</p>
+    <div className="space-y-6">
+      <div className="bg-white dark:bg-slate-800 shadow-sm border-b border-gray-200 dark:border-slate-700 px-6 py-4 -mx-6 -mt-6 mb-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">{t.admin.title}</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">{t.admin.subtitle}</p>
+          </div>
+          <div className="flex gap-2">
+             <button 
+               onClick={() => { window.open('/#/book?preview=true', '_blank'); }}
+               className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-slate-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent"
+             >
+               Site Önizlemesini Aç
+             </button>
+             <button 
+               onClick={runAnalysis}
+               disabled={loadingAnalysis}
+               className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-accent hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent disabled:opacity-50"
+             >
+               {loadingAnalysis ? t.admin.btn_analyzing : t.admin.btn_analysis}
+             </button>
+             <button 
+               onClick={() => { logout(); navigate('/login'); }}
+               className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+             >
+               {t.admin.btn_logout}
+             </button>
+          </div>
         </div>
-        <div className="flex gap-2">
-           <button 
-             onClick={runAnalysis}
-             disabled={loadingAnalysis}
-             className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent disabled:opacity-50"
-           >
-             {loadingAnalysis ? t.admin.btn_analyzing : t.admin.btn_analysis}
-           </button>
-           <button 
-             onClick={() => { logout(); navigate('/login'); }}
-             className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-           >
-             {t.admin.btn_logout}
-           </button>
-        </div>
-      </div>
 
-      {/* Tabs */}
-      <div className="border-b border-gray-200 dark:border-slate-700 transition-colors duration-300">
-        <nav className="-mb-px flex space-x-8">
-          <button
-            onClick={() => setActiveTab('setup')}
-            className={`${activeTab === 'setup' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
-          >
-            Kurulum
-          </button>
-          <button
-            onClick={() => setActiveTab('appointments')}
-            className={`${activeTab === 'appointments' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
-          >
-            {t.admin.tab_appointments}
-          </button>
-          <button
-            onClick={() => setActiveTab('staff')}
-            className={`${activeTab === 'staff' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
-          >
-            {t.admin.tab_staff}
-          </button>
-          <button
-            onClick={() => setActiveTab('services')}
-            className={`${activeTab === 'services' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
-          >
-            {language === 'tr' ? 'Hizmetler' : 'Services'}
-          </button>
-          <button
-            onClick={() => setActiveTab('reports')}
-            className={`${activeTab === 'reports' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
-          >
-            {language === 'tr' ? 'Raporlar' : 'Reports'}
-          </button>
-          <button
-            onClick={() => setActiveTab('billing')}
-            className={`${activeTab === 'billing' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
-          >
-            Abonelik
-          </button>
-          <button
-            onClick={() => setActiveTab('profile')}
-            className={`${activeTab === 'profile' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
-          >
-            Web Sitesi / İşletme Profili
-          </button>
-          <button
-            onClick={() => setActiveTab('settings')}
-            className={`${activeTab === 'settings' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
-          >
-            {language === 'tr' ? 'Ayarlar' : 'Settings'}
-          </button>
-        </nav>
+        {/* Tabs inside the header block */}
+        <div className="mt-6">
+          <nav className="-mb-px flex space-x-6 overflow-x-auto">
+            <button
+              onClick={() => setActiveTab('setup')}
+              className={`${activeTab === 'setup' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
+            >
+              Kurulum
+            </button>
+            <button
+              onClick={() => setActiveTab('appointments')}
+              className={`${activeTab === 'appointments' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
+            >
+              {t.admin.tab_appointments}
+            </button>
+            <button
+              onClick={() => setActiveTab('staff')}
+              className={`${activeTab === 'staff' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
+            >
+              {language === 'tr' ? 'Uzman Yönetimi' : t.admin.tab_staff}
+            </button>
+            <button
+              onClick={() => setActiveTab('services')}
+              className={`${activeTab === 'services' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
+            >
+              {language === 'tr' ? 'Hizmetler' : 'Services'}
+            </button>
+            <button
+              onClick={() => setActiveTab('reports')}
+              className={`${activeTab === 'reports' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
+            >
+              {language === 'tr' ? 'Raporlar' : 'Reports'}
+            </button>
+            <button
+              onClick={() => setActiveTab('billing')}
+              className={`${activeTab === 'billing' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
+            >
+              Abonelik
+            </button>
+            <button
+              onClick={() => setActiveTab('profile')}
+              className={`${activeTab === 'profile' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
+            >
+              Web Sitesi / İşletme Profili
+            </button>
+            <button
+              onClick={() => setActiveTab('settings')}
+              className={`${activeTab === 'settings' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
+            >
+              {language === 'tr' ? 'Ayarlar' : 'Settings'}
+            </button>
+          </nav>
+        </div>
       </div>
 
       {activeTab === 'setup' && (

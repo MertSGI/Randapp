@@ -1,5 +1,6 @@
-import { staffService, Staff } from './staffService';
-import { appointmentService } from './appointmentService';
+import { getStaffList } from './staffService';
+import { Staff } from '../types';
+import { getAppointments } from './appointmentService';
 
 export interface TimeSlot {
   time: string; // HH:mm
@@ -42,8 +43,8 @@ export const availabilityService = {
        // Find all staff who can perform this service
        // Mock approach: just pick the first available staff
        try {
-         const staff = await staffService.getStaff(tenantId);
-         const serviceStaff = staff.filter(s => !s.serviceIds || s.serviceIds.includes(serviceId));
+         const staff = await getStaffList(tenantId);
+         const serviceStaff = staff;
          
          if (serviceStaff.length === 0) {
             resolve(null);

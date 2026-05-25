@@ -26,6 +26,8 @@ import SuperAdminOnboardingPage from './pages/super-admin/SuperAdminOnboardingPa
 import SuperAdminReportsPage from './pages/super-admin/SuperAdminReportsPage';
 import SuperAdminSettingsPage from './pages/super-admin/SuperAdminSettingsPage';
 import SuperAdminPaymentTestPage from './pages/super-admin/SuperAdminPaymentTestPage';
+import SuperAdminAISettingsPage from './pages/super-admin/SuperAdminAISettingsPage';
+import SuperAdminPlansPage from './pages/super-admin/SuperAdminPlansPage';
 
 // Contexts
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -82,6 +84,8 @@ const AppFlowSwitcher: React.FC = () => {
         <Route path="/super-admin/reports" element={<SuperAdminReportsPage />} />
         <Route path="/super-admin/settings" element={<SuperAdminSettingsPage />} />
         <Route path="/super-admin/payment-test" element={<SuperAdminPaymentTestPage />} />
+        <Route path="/super-admin/ai-settings" element={<SuperAdminAISettingsPage />} />
+        <Route path="/super-admin/plans" element={<SuperAdminPlansPage />} />
       </Route>
       
       {/* Catch-all route to prevent white screens on unknown paths */}
