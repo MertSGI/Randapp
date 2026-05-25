@@ -1,35 +1,40 @@
 # Customer Account Lite & Customer Profile Lite Model
 
 ## Philosophy
-Randapp supports a "Customer Account Lite" and "Customer Profile Lite" model designed to be zero-friction for both customers and salon owners.
+Randapp supports a distinct separation between customer-side booking preferences and salon-owner-side service memory.
 
 1. **Customer Account Lite (Customer Side)**
-   - No password required.
-   - Saves basic details (Name, Phone, Email) to local storage.
+   - Formally a purely local persistence model ("Save my info on this device").
+   - No complex passwords or account silos for the end-user.
+   - Saves basic details (Name, Phone, Email) to browser local storage.
    - Speeds up future bookings on the same device.
-   - Guest booking remains fully functional and intact.
+   - Guest booking ("Continue as Guest") remains fully functional and bypasses this entirely.
 
 2. **Customer Memory / Customer Profile Lite (Salon Owner Side)**
-   - Displayed in Admin Dashboard -> "Customers" tab.
-   - Aggregates appointments automatically by matching `email` or `phone`.
-   - Allows salon owners to record:
-     - Internal notes (e.g. "Does not like short layers")
-     - Style preferences (e.g. Color formula: 7.1 + 8.12)
-     - Reference photos.
-   - Built to answer the real-world operational question: *"What did this customer want last time?"*
+   - Displayed exclusively in the Admin Dashboard -> "Customers" tab.
+   - Aggregates appointments automatically by strictly matching normalized `email` or `phone` within a specific `tenant_id`.
+   - Allows salon owners to privately record:
+     - Internal notes (e.g., "Prefers natural blow-dry")
+     - Style preferences (e.g., Color formula: 7.1 + 8.12)
+     - Reference photos (limited to secure style references).
+   - Core purpose: Answer the real-world operational question: *"What did this customer usually want?"*
 
 ## Privacy and Data Minimization (KVKK / GDPR / CCPA)
-- Only collect data strictly necessary for appointment operations and service continuity.
-- Reference photos are **strictly for service history**. They are not processed for facial recognition, biometric identification, or automatic AI profiling.
-- Explicit visual notices remind owners that photos are internal use only.
-- Customers booking online see KVKK / Privacy policy notices indicating data is used purely for communication and service context.
+- Collection is strictly limited to data necessary for appointment operations and service continuity.
+- **Reference photos are strictly for service history**. 
+- **NO BIOMETRICS:** They are NOT processed for facial recognition, biometric identification, or automatic AI profiling constraints under any circumstance.
+- Explicit visual notices remind owners that photos are strictly internal and not for public sharing.
+- Customers booking online must accept terms/KVKK policies that indicate data is used purely for communication and service context.
 
 ## Mock / MVP Implementation
-Currently, customer data on the admin side is aggregated in runtime from the mock `Appointment` array and maintained natively in `localStorage` under keys `mock_tenant_customers_{tenantId}`.
+Currently, customer data on the admin side is aggregated in runtime from the mock `Appointment` array and maintained natively in `localStorage` under keys `mock_tenant_customers_{tenantId}`. Photos are restricted to local base64 strings under 3MB. No central data sync occurs.
 
 ## Production / Next Phase Architecture (Supabase)
-When moving to a real database (Supabase), the schema will look like: 
-- `customers` (id, tenant_id, full_name, phone, email, style_preference, etc.)
-- `customer_notes` (id, customer_id, text, created_by, created_at)
-- `customer_photos` (id, customer_id, storage_url, created_at)
-- Storage bucket: `tenant-private-files`, restricted by RLS to only `salon_owner` of that `tenant_id`.
+Before switching to the production database, the following must be enacted:
+1. **Explicit Consent Texts:** Bilgilendirme/Aydınlatma metni must visibly cover storing style preferences and reference photos for internal operational use.
+2. **Data Deletion APIs:** A robust capability to completely wipe a customer record (notes, photos, and anonymize appointments) must be exposed to handle deletion requests securely.
+3. **Storage Restrictions:** 
+   - Bucket: `tenant-private-files`.
+   - The bucket must **NOT** be public.
+   - Postgres Row-Level Security (RLS) policies must mandate that the JWT `auth.uid()` corresponds exactly to the `tenant_id` linked to the customer entity.
+4. **Data Retention Policy:** Implement cron jobs or edge functions to eventually rotate or archive aged reference photos exceeding required retention constraints.

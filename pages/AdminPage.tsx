@@ -27,6 +27,7 @@ const AdminPage: React.FC = () => {
   const [servicesList, setServicesList] = useState<Service[]>([]);
   const [aiAnalysis, setAiAnalysis] = useState<string>('');
   const [loadingAnalysis, setLoadingAnalysis] = useState(false);
+  const [targetAppointmentId, setTargetAppointmentId] = useState<string | null>(null);
 
   // New/Edit staff form state
   const [editingStaffId, setEditingStaffId] = useState<string | null>(null);
@@ -120,7 +121,7 @@ const AdminPage: React.FC = () => {
       const canAdd = await subscriptionService.canAddService(tenant.id);
       if (!canAdd) {
         // Final enforcement must happen server-side via Supabase Edge Functions or RLS policies.
-        alert('Mevcut planınız daha fazla hizmet eklemeyi desteklemiyor. Planınızı yükseltin.');
+        alert(t.admin.plan_limit_services);
         return;
       }
     }
@@ -186,7 +187,7 @@ const AdminPage: React.FC = () => {
       const canAdd = await subscriptionService.canAddStaff(tenant.id);
       if (!canAdd) {
         // Final enforcement must happen server-side via Supabase Edge Functions or RLS policies.
-        alert('Mevcut planınız daha fazla çalışan eklemeyi desteklemiyor. Planınızı yükseltin.');
+        alert(t.admin.plan_limit_staff);
         return;
       }
     }
@@ -249,7 +250,7 @@ const AdminPage: React.FC = () => {
                onClick={() => { window.open('/#/book?preview=true', '_blank'); }}
                className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-slate-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent"
              >
-               {language === 'tr' ? 'Site Önizlemesini Aç' : 'Open Site Preview'}
+               {t.admin.open_site_preview}
              </button>
              <button 
                onClick={runAnalysis}
@@ -274,7 +275,7 @@ const AdminPage: React.FC = () => {
               onClick={() => setActiveTab('setup')}
               className={`${activeTab === 'setup' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
             >
-              Kurulum
+              {t.admin.tab_setup}
             </button>
             <button
               onClick={() => setActiveTab('appointments')}
@@ -286,7 +287,7 @@ const AdminPage: React.FC = () => {
               onClick={() => setActiveTab('customers')}
               className={`${activeTab === 'customers' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
             >
-              {t.admin.tab_customers || 'Customers'}
+              {t.admin.tab_customers}
             </button>
             <button
               onClick={() => setActiveTab('staff')}
@@ -310,13 +311,13 @@ const AdminPage: React.FC = () => {
               onClick={() => setActiveTab('billing')}
               className={`${activeTab === 'billing' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
             >
-              Abonelik
+              {t.admin.tab_billing}
             </button>
             <button
               onClick={() => setActiveTab('profile')}
               className={`${activeTab === 'profile' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
             >
-              Web Sitesi / İşletme Profili
+              {t.admin.tab_profile}
             </button>
             <button
               onClick={() => setActiveTab('settings')}
@@ -348,6 +349,8 @@ const AdminPage: React.FC = () => {
           appointments={appointments}
           staffList={staffList}
           servicesList={servicesList}
+          targetAppointmentId={targetAppointmentId}
+          onClearTarget={() => setTargetAppointmentId(null)}
         />
       )}
 
@@ -408,7 +411,10 @@ const AdminPage: React.FC = () => {
                         </div>
                         <div className="ml-4 flex-shrink-0 flex items-center gap-4">
                           <button 
-                            onClick={() => setActiveTab('customers')}
+                            onClick={() => {
+                              setTargetAppointmentId(apt.id);
+                              setActiveTab('customers');
+                            }}
                             className="text-accent hover:text-blue-700 text-sm font-medium mr-2"
                           >
                             {t.admin.view_profile || 'View Profile'}
@@ -447,23 +453,23 @@ const AdminPage: React.FC = () => {
             <form onSubmit={handleAddStaff} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">Full Name</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">{t.admin.full_name}</label>
                   <input required placeholder="Mustafa Ali Yılmaz" type="text" value={newStaffName} onChange={e => setNewStaffName(e.target.value)} className="mt-1 w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white shadow-sm border p-2 transition-colors duration-300"/>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">Title / Role</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">{t.admin.title_role}</label>
                   <input required placeholder="Master Designer" type="text" value={newStaffTitle} onChange={e => setNewStaffTitle(e.target.value)} className="mt-1 w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white shadow-sm border p-2 transition-colors duration-300"/>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">Image URL</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">{t.admin.image_url_label}</label>
                   <input type="text" placeholder="https://..." value={newStaffImage} onChange={e => setNewStaffImage(e.target.value)} className="mt-1 w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white shadow-sm border p-2 transition-colors duration-300"/>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">Google Calendar Email</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">{t.admin.google_calendar_email}</label>
                   <input type="email" placeholder="example@gmail.com" value={newStaffEmail} onChange={e => setNewStaffEmail(e.target.value)} className="mt-1 w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white shadow-sm border p-2 transition-colors duration-300"/>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">Phone Number</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">{t.admin.phone_number}</label>
                   <input type="tel" placeholder="+905554443322" value={newStaffPhone} onChange={e => setNewStaffPhone(e.target.value)} className="mt-1 w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white shadow-sm border p-2 transition-colors duration-300"/>
                 </div>
                 <div className="flex items-center">
@@ -630,12 +636,12 @@ const AdminPage: React.FC = () => {
                   {service.image ? (
                     <img src={service.image} alt={service.name} className="w-full h-full object-cover"/>
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400"><span className="text-sm">No Image</span></div>
+                    <div className="w-full h-full flex items-center justify-center text-gray-400"><span className="text-sm">{t.admin.no_image}</span></div>
                   )}
                 </div>
                 <h4 className="font-bold text-gray-900 dark:text-white text-lg transition-colors duration-300">{language === 'tr' ? service.name_tr || service.name : service.name}</h4>
                 <div className="flex gap-4 mt-2 mb-2 text-sm text-gray-500 dark:text-gray-400">
-                   <span>{service.duration} {language === 'tr' ? 'dk' : 'min'}</span>
+                   <span>{service.duration} {t.admin.min}</span>
                    <span>•</span>
                    <span className="font-bold text-accent dark:text-blue-400">₺{service.price}</span>
                 </div>
@@ -660,14 +666,14 @@ const AdminPage: React.FC = () => {
       
       {activeTab === 'settings' && (
         <div className="bg-white dark:bg-slate-800 shadow-sm rounded-lg border border-gray-200 dark:border-slate-700 p-6">
-           <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Çalışma Saatleri</h3>
+           <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">{t.admin.working_hours}</h3>
            <p className="text-gray-600 dark:text-gray-400 mb-6 border-b border-gray-200 dark:border-slate-700 pb-4">
-               Şu anda varsayılan çalışma saatleri uygulanmaktadır. Personel özelinde mesai saatleri "Çalışanlar" sekmesinden ayarlanabilmektedir. Detaylı işletme çalışma saatleri ve tatil günleri yakında eklenecektir.
+               {t.admin.working_hours_desc}
            </p>
            
-           <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">İptal Politikası</h3>
+           <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">{t.admin.cancellation_policy}</h3>
            <p className="text-gray-600 dark:text-gray-400 mb-4">
-               Randevuların iptal edilebilmesi için geçmesi gereken minimum süreyi buradan ayarlayabileceksiniz (Yakında).
+               {t.admin.cancellation_policy_desc}
            </p>
         </div>
       )}

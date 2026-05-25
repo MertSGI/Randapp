@@ -2,6 +2,16 @@ import { CustomerProfile, Appointment, CustomerMemoryNote, CustomerMemoryPhoto }
 
 const getMockCustomersKey = (tenantId: string) => `mock_tenant_customers_${tenantId}`;
 
+export const normalizeEmail = (email?: string): string => {
+  if (!email) return '';
+  return email.trim().toLowerCase();
+};
+
+export const normalizePhone = (phone?: string): string => {
+  if (!phone) return '';
+  return phone.replace(/[\s\-\(\)\+]/g, '');
+};
+
 export const adminCustomerService = {
   getCustomers(tenantId: string, appointments: Appointment[]): CustomerProfile[] {
     let mockCustomers: CustomerProfile[] = [];
@@ -16,11 +26,23 @@ export const adminCustomerService = {
 
     // Auto-create/derive customers from appointments if they don't exist
     appointments.forEach(apt => {
-      if (apt.user_email || apt.phone) {
-        const existing = mockCustomers.find(c => 
-          (c.email && c.email === apt.user_email) || 
-          (c.phone && c.phone === apt.phone)
-        );
+      const normEmail = normalizeEmail(apt.user_email);
+      const normPhone = normalizePhone(apt.phone);
+      
+      if (normEmail || normPhone) {
+        const existing = mockCustomers.find(c => {
+          const cEmail = normalizeEmail(c.email);
+          const cPhone = normalizePhone(c.phone);
+          // Match logic: Prefer phone match if both have it. Else match email.
+          if (normPhone && cPhone) {
+            return normPhone === cPhone;
+          }
+          if (normEmail && cEmail) {
+            return normEmail === cEmail;
+          }
+          return false;
+        });
+        
         if (!existing) {
           mockCustomers.push({
             id: crypto.randomUUID(),
