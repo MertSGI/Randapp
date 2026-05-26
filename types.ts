@@ -211,6 +211,8 @@ export interface Plan {
     referralCampaigns: boolean;
     reports: boolean;
     aiRecommendation: boolean;
+    aiVisualization: boolean;
+    aiMonthlyQuota: number;
     customDomain: boolean;
     prioritySupport: boolean;
   };

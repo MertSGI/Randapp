@@ -16,6 +16,7 @@ export interface TenantUsage {
   staffCount: number;
   serviceCount: number;
   monthlyAppointmentsCount: number;
+  aiUsageCount: number;
 }
 
 export const subscriptionService = {
@@ -70,18 +71,21 @@ export const subscriptionService = {
       return {
         staffCount: 2,
         serviceCount: 5,
-        monthlyAppointmentsCount: 120
+        monthlyAppointmentsCount: 120,
+        aiUsageCount: 42
       };
     }
 
     // Mock Mode
     const staffList = (await dataProvider.get<any[]>(`randapp:${tenantId}:staff`)) || [];
     const servicesList = (await dataProvider.get<any[]>(`randapp:${tenantId}:services`)) || [];
+    const aiUsage = parseInt(localStorage.getItem('mock_ai_usage') || '0', 10);
     
     return {
       staffCount: staffList.length,
       serviceCount: servicesList.length,
-      monthlyAppointmentsCount: 45 // Dummy value for mock
+      monthlyAppointmentsCount: 45, // Dummy value for mock
+      aiUsageCount: aiUsage
     };
   },
 

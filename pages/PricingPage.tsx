@@ -101,6 +101,21 @@ const PricingPage: React.FC = () => {
                      </span>
                   </li>
                 )}
+                {plan.aiRecommendationsEnabled && (
+                  <li className="flex gap-3">
+                     <span className="text-accent font-bold">✓</span>
+                     <span className="text-sm border-b border-dashed border-gray-200 dark:border-slate-700 pb-1 w-full">
+                       {t.marketing.pricing.ai_recommendation} 
+                       {plan.aiMonthlyQuota > 0 && <span className="ml-1 text-xs text-gray-400">({t.marketing.pricing.ai_quota.replace('{quota}', plan.aiMonthlyQuota.toString())})</span>}
+                     </span>
+                  </li>
+                )}
+                {plan.aiVisualizationEnabled && (
+                  <li className="flex gap-3">
+                     <span className="text-accent font-bold">✓</span>
+                     <span className="text-sm border-b border-dashed border-gray-200 dark:border-slate-700 pb-1 w-full">{t.marketing.pricing.ai_visualization}</span>
+                  </li>
+                )}
             </ul>
             <div className="space-y-3 mt-auto">
                <Link to="/demo" className={`block w-full text-center font-bold py-3.5 rounded-xl transition ${isRecommended ? 'bg-accent text-white hover:bg-blue-600 shadow-lg' : 'bg-gray-100 dark:bg-slate-700 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-slate-600'}`}>

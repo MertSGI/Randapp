@@ -32,6 +32,8 @@ const SuperAdminPlansPage: React.FC = () => {
             includedSubdomain: true,
             customComDomainIncluded: false,
             aiRecommendationsEnabled: false,
+            aiVisualizationEnabled: false,
+            aiMonthlyQuota: 0,
             campaignsEnabled: false,
             advancedReportsEnabled: false,
             whatsappAutomationEnabled: true,
@@ -172,8 +174,16 @@ const SuperAdminPlansPage: React.FC = () => {
                            </label>
                            <label className="flex items-center space-x-2">
                                <input type="checkbox" checked={plan.aiRecommendationsEnabled} onChange={e => handleUpdate(plan.id, { aiRecommendationsEnabled: e.target.checked })} className="rounded text-accent focus:ring-accent" />
-                               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Yapay Zeka Destekli Randevu Asistanı (Sanal)</span>
+                               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">AI Tavsiyeler</span>
                            </label>
+                           <label className="flex items-center space-x-2">
+                               <input type="checkbox" checked={plan.aiVisualizationEnabled} onChange={e => handleUpdate(plan.id, { aiVisualizationEnabled: e.target.checked })} className="rounded text-accent focus:ring-accent" />
+                               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">AI Görselleştirme</span>
+                           </label>
+                           <div className="flex items-center space-x-2">
+                               <span className="text-sm font-medium text-gray-700 dark:text-gray-300 w-24">AI Kota:</span>
+                               <input type="number" value={plan.aiMonthlyQuota} onChange={e => handleUpdate(plan.id, { aiMonthlyQuota: Number(e.target.value) })} className="w-20 rounded border-gray-300 dark:border-slate-600 p-1 text-sm bg-gray-50 dark:bg-slate-700 dark:text-white" />
+                           </div>
                            <label className="flex items-center space-x-2">
                                <input type="checkbox" checked={plan.customDomainEnabled} onChange={e => handleUpdate(plan.id, { customDomainEnabled: e.target.checked })} className="rounded text-accent focus:ring-accent" />
                                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Kendi Alan Adını Bağlama (Custom Domain)</span>

@@ -21,7 +21,8 @@
 - [ ] Enable Service Worker for PWA (Offline edge cases).
 - [ ] Clean any console warnings and verify React strict mode behaviors.
 
-## 5. Privacy & KVKK Data Rollout
-- [ ] Add explicit KVKK tickboxes to production booking forms.
-- [ ] Ensure Terms of Service and Privacy Policy links map to correct legal pages.
-- [ ] Verify Data Deletion mechanisms work according to local customer scope requests.
+## 6. AI & Edge Functions
+- [ ] Deploy Edge Functions (`supabase functions deploy ai-recommendation`, `ai-visualization`).
+- [ ] Set `GEMINI_API_KEY` securely in Supabase secrets.
+- [ ] Verify `aiMonthlyQuota` plan constraints are strictly checked in the Edge Function (not just frontend).
+- [ ] Ensure any Customer Memory future AI features have an explicit GDPR/KVKK Boolean opt-in column in `customers` table before enabling.

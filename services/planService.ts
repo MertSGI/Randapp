@@ -13,6 +13,8 @@ export interface PricingPlan {
   includedSubdomain: boolean;
   customComDomainIncluded: boolean;
   aiRecommendationsEnabled: boolean;
+  aiVisualizationEnabled: boolean;
+  aiMonthlyQuota: number;
   campaignsEnabled: boolean;
   advancedReportsEnabled: boolean;
   whatsappAutomationEnabled: boolean;
@@ -42,6 +44,8 @@ export const DEFAULT_PLANS: Record<string, PricingPlan> = {
     includedSubdomain: true,
     customComDomainIncluded: false,
     aiRecommendationsEnabled: false,
+    aiVisualizationEnabled: false,
+    aiMonthlyQuota: 0,
     campaignsEnabled: false,
     advancedReportsEnabled: false,
     whatsappAutomationEnabled: true,
@@ -67,6 +71,8 @@ export const DEFAULT_PLANS: Record<string, PricingPlan> = {
     includedSubdomain: true,
     customComDomainIncluded: true,
     aiRecommendationsEnabled: true,
+    aiVisualizationEnabled: false,
+    aiMonthlyQuota: 50,
     campaignsEnabled: true,
     advancedReportsEnabled: true,
     whatsappAutomationEnabled: true,
@@ -92,6 +98,8 @@ export const DEFAULT_PLANS: Record<string, PricingPlan> = {
     includedSubdomain: true,
     customComDomainIncluded: true,
     aiRecommendationsEnabled: true,
+    aiVisualizationEnabled: true,
+    aiMonthlyQuota: 500,
     campaignsEnabled: true,
     advancedReportsEnabled: true,
     whatsappAutomationEnabled: true,

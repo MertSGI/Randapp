@@ -22,6 +22,8 @@
 - [x] **Customer Portal Cancellation**: Customers can cancel an appointment if within the policy window.
 - [x] **Privacy Check**: Salon Notes are NOT visible anywhere in the Customer Portal.
 - [x] **Customer Account Lite (Autofill)**: Customers can choose to bind their Name, Email, and Phone locally per tenant. Bypasses forced DB auth, providing pure frictionless autofill.
+- [x] **AI Recommendation Gating**: AIVisualizerPage strictly checks if `aiRecommendationsEnabled` is true for the tenant's current plan. Shows upgrade notice if disabled.
+- [x] **Privacy AI Governance**: Explicit copy explains that photos are not stored. No Gemini API key exists on the frontend bundle.
 
 ## Salon Owner / Tenant Admin (`/admin`)
 - [x] **Login Mechanics**: `admin@randapp.com` can log in and is securely routed to their tenant dashboard.

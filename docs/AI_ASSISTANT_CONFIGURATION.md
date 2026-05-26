@@ -1,15 +1,26 @@
 # AI Assistant Configuration
 
-This document outlines the current state and mock behavior of the Gemini API integration in Randapp for the pilot MVP phase.
+This document outlines the architecture, data flows, and security guidelines for AI capabilities (Gemini) within the Randapp platform (Phase 3).
 
-## Current State (Pilot MVP)
-- The Gemini API key is currently mocked or absent on the frontend for safety reasons, as it should not be exposed to clients directly.
-- The `geminiService.ts` handles the interface with Gemini.
-- In `mock` mode, the module returns predefined responses for Demo and AI Visualizer flows.
-- Visualizer Page is simplified: NO quality selectors, NO technical jargon. Just a simple "Tavsiye Al / Get Recommendation" flow.
-- Customer photos are not sent to AI in the current MVP. Customer Memory reference photos are only local/mock service-history references, no AI processing or biometric identification is used.
+## Current Architecture (Phase 3 Mock-Safe)
+- Gemini SDK (`@google/genai`) is completely removed from the frontend client bundle for security.
+- The `geminiService.ts` on the frontend acts solely as a safe API client or returns robust mock data when running locally (`VITE_DATA_MODE=mock`).
+- **Edge Function Scaffolds**: We have introduced `/supabase/functions/` placeholders (`ai-recommendation`, `ai-visualization`, `ai-quota-check`) to house the actual Gemini integration. In production, this ensures the `GEMINI_API_KEY` is completely hidden and requests are verified on the backend.
 
-## Future Production Implementation Requirements (Next Phase)
-1. **Edge Function Proxy**: All AI requests MUST go through a backend endpoint (e.g., Supabase Edge Functions), which will hold the `GEMINI_API_KEY` securely.
-2. **Quota Tracking**: Monitor tenant-level token or request usage to enforce limits based on Subscription Plans.
-3. **Advanced Modes**: True image generation and multi-modal styling using user uploads, properly sanitized for safety guidelines.
+## Plan-Based Capabilities
+AI capability gating is strictly managed by `SubscriptionPlan` features:
+1. **Starter**: No AI Recommendation, no AI Visualization.
+2. **Professional**: AI Recommendations (`aiRecommendationsEnabled: true`) with a monthly limit. No Visualization.
+3. **Premium**: Both AI Recommendations and AI Visualization (`aiVisualizationEnabled: true`), larger quota.
+
+## Data Privacy & KVKK Limits
+- **Customer Memory Isolation**: Customer Memory reference photos (`customer.referencePhotos`) are strictly used as salon-internal operational records. They are **NOT** sent to the AI natively.
+- **Explicit Uploads Only**: Only photos the customer explicitly uploads on the `/ai-visualizer` (or appointment wizard) specifically for AI recommendations are passed to the Edge Functions.
+- **Volatile Processing**: Images passed to AI must be deleted immediately after analysis is complete. They are not stored in Supabase Storage or used for model training.
+- **No Biometrics**: We do not implement facial recognition. Features only process hair/style contexts.
+- **Super Admin Governance**: The `SuperAdminAISettingsPage` includes a platform-wide "Block Customer Memory Photos" mechanism, enforcing the strict opt-in rule algorithmically.
+
+## Future Production Implementation Requirements
+1. **Complete Edge Function Deployment**: Ensure `supabase functions deploy` is performed and `GEMINI_API_KEY` is set via `supabase secrets set`.
+2. **Real Quota Tracking**: Introduce `ai_usage_logs` table in Supabase to track tenant-level usage correctly.
+3. **True Image Generation Setup**: Link `ai-visualization` to a true foundational image generation API (e.g. Imagen 3) returning short-lived Signed URLs.

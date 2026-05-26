@@ -190,6 +190,18 @@ const BillingTab: React.FC = () => {
                  <div className="bg-green-500 h-2 rounded-full" style={{ width: `${Math.min(100, ((usage?.monthlyAppointmentsCount || 0) / (currentPlan?.maxMonthlyAppointments || 1)) * 100)}%` }}></div>
                </div>
              </div>
+
+             {currentPlan?.aiRecommendationsEnabled && (
+               <div className="mb-4">
+                 <div className="flex justify-between text-sm mb-1">
+                   <span className="text-gray-600 dark:text-gray-400">AI İstek Kotası</span>
+                   <span className="text-gray-900 dark:text-white">{usage?.aiUsageCount} / {currentPlan?.aiMonthlyQuota || 'Sınırsız'}</span>
+                 </div>
+                 <div className="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2">
+                   <div className="bg-purple-500 h-2 rounded-full" style={{ width: `${currentPlan?.aiMonthlyQuota ? Math.min(100, ((usage?.aiUsageCount || 0) / currentPlan.aiMonthlyQuota) * 100) : 0}%` }}></div>
+                 </div>
+               </div>
+             )}
           </div>
         </div>
       </div>
