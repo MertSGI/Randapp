@@ -1,11 +1,47 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { translations } from '../utils/translations';
 
+const trPhrases = [
+  "Kuaför ve güzellik salonunuz",
+  "Berber salonunuz",
+  "Nail studio'nuz",
+  "Spa merkeziniz",
+  "Diş kliniğiniz",
+  "Özel kliniğiniz",
+  "PT stüdyonuz",
+  "Danışmanlık ofisiniz",
+  "Randevulu işletmeniz"
+];
+
+const enPhrases = [
+  "hair and beauty salon",
+  "barber shop",
+  "nail studio",
+  "spa center",
+  "dental clinic",
+  "private clinic",
+  "PT studio",
+  "consulting office",
+  "appointment-based business"
+];
+
 const MarketingHomePage: React.FC = () => {
   const { language } = useLanguage();
   const t = translations[language];
+
+  const [phraseIndex, setPhraseIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPhraseIndex((prev) => (prev + 1) % trPhrases.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const phrases = language === 'tr' ? trPhrases : enPhrases;
+  const currentPhrase = phrases[phraseIndex];
 
   return (
     <div className="flex flex-col space-y-24 py-12">
@@ -16,9 +52,24 @@ const MarketingHomePage: React.FC = () => {
         </div>
         <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-6 leading-tight">
           {language === 'tr' ? (
-            <>Kuaför ve güzellik salonunuz için <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">web sitesi + akıllı randevu</span> sistemi</>
+            <>
+              <div className="h-[1.2em] md:h-[1.2em] relative overflow-hidden inline-block w-full align-bottom px-2">
+                 <span key={currentPhrase} className="absolute inset-x-0 bottom-0 animate-slideUpFade whitespace-nowrap text-gray-800 dark:text-gray-200">
+                   {currentPhrase}
+                 </span>
+              </div>
+              <br/>
+              için <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">web sitesi + akıllı randevu</span> sistemi
+            </>
           ) : (
-            <><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Website + smart booking</span> system for your hair and beauty salon</>
+            <>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Website + smart booking</span> system<br/>
+              for your <div className="h-[1.2em] relative overflow-hidden inline-block min-w-[280px] align-bottom ml-2">
+                 <span key={currentPhrase} className="absolute left-0 bottom-0 animate-slideUpFade whitespace-nowrap text-gray-800 dark:text-gray-200">
+                   {currentPhrase}
+                 </span>
+              </div>
+            </>
           )}
         </h1>
         <p className="mt-4 text-xl text-gray-600 dark:text-gray-400 mx-auto leading-relaxed">

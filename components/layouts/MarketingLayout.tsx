@@ -32,6 +32,7 @@ const MarketingLayout: React.FC = () => {
               </Link>
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
                 <Link to="/features" className={`border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-1 pt-1 border-b-2 text-sm font-medium ${location.pathname === '/features' ? 'text-gray-900 border-blue-500' : ''}`}>{language === 'tr' ? 'Özellikler' : 'Features'}</Link>
+                <Link to="/mobile-app" className={`border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-1 pt-1 border-b-2 text-sm font-medium ${location.pathname === '/mobile-app' ? 'text-gray-900 border-accent' : ''}`}>{language === 'tr' ? 'Mobil Uygulama' : 'Mobile App'}</Link>
                 <Link to="/pricing" className={`border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-1 pt-1 border-b-2 text-sm font-medium ${location.pathname === '/pricing' ? 'text-gray-900 border-blue-500' : ''}`}>{language === 'tr' ? 'Fiyatlar' : 'Pricing'}</Link>
                 <Link to="/contact" className={`border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-1 pt-1 border-b-2 text-sm font-medium ${location.pathname === '/contact' ? 'text-gray-900 border-blue-500' : ''}`}>{language === 'tr' ? 'İletişim' : 'Contact'}</Link>
               </div>
@@ -51,6 +52,7 @@ const MarketingLayout: React.FC = () => {
         <div className="sm:hidden flex gap-4 overflow-x-auto px-4 py-3 bg-white dark:bg-slate-800 border-t border-gray-100 dark:border-slate-700 whitespace-nowrap hide-scrollbar">
             <Link to="/" className={`text-sm font-medium border-b-2 ${location.pathname === '/' ? 'text-gray-900 dark:text-white border-blue-500' : 'text-gray-600 dark:text-gray-300 border-transparent'}`}>{language === 'tr' ? 'Ana Sayfa' : 'Home'}</Link>
             <Link to="/features" className={`text-sm font-medium border-b-2 ${location.pathname === '/features' ? 'text-gray-900 dark:text-white border-blue-500' : 'text-gray-600 dark:text-gray-300 border-transparent'}`}>{language === 'tr' ? 'Özellikler' : 'Features'}</Link>
+            <Link to="/mobile-app" className={`text-sm font-medium border-b-2 ${location.pathname === '/mobile-app' ? 'text-gray-900 dark:text-white border-accent' : 'text-gray-600 dark:text-gray-300 border-transparent'}`}>{language === 'tr' ? 'Mobil App' : 'App'}</Link>
             <Link to="/pricing" className={`text-sm font-medium border-b-2 ${location.pathname === '/pricing' ? 'text-gray-900 dark:text-white border-blue-500' : 'text-gray-600 dark:text-gray-300 border-transparent'}`}>{language === 'tr' ? 'Fiyatlar' : 'Pricing'}</Link>
             <Link to="/contact" className={`text-sm font-medium border-b-2 ${location.pathname === '/contact' ? 'text-gray-900 dark:text-white border-blue-500' : 'text-gray-600 dark:text-gray-300 border-transparent'}`}>{language === 'tr' ? 'İletişim' : 'Contact'}</Link>
             <Link to="/demo" className={`text-sm font-medium border-b-2 ${location.pathname === '/demo' ? 'text-blue-600 dark:text-blue-400 border-blue-500' : 'text-blue-600 dark:text-blue-400 border-transparent'}`}>{language === 'tr' ? 'Önizle' : 'Preview'}</Link>
@@ -66,7 +68,7 @@ const MarketingLayout: React.FC = () => {
                    <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">R</div>
                    <span className="font-semibold text-xl dark:text-white">Randapp</span>
                 </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xs">{language === 'tr' ? 'Kuaför ve güzellik salonları için profesyonel web sitesi ve randevu yönetim platformu.' : 'Professional website and appointment management platform for salons and beauty centers.'}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xs">{language === 'tr' ? 'Randevulu çalışan tüm işletmeler (Kuaförler, klinikler, stüdyolar) için profesyonel web sitesi, akıllı online randevu ve müşteri yönetim platformu.' : 'Professional website, smart booking, and customer management platform for any appointment-based business.'}</p>
             </div>
             <div>
                 <h4 className="font-bold text-gray-900 dark:text-white mb-4">{language === 'tr' ? 'Ürün' : 'Product'}</h4>

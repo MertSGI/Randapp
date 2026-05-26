@@ -19,6 +19,9 @@ export interface PricingPlan {
   googleCalendarEnabled: boolean;
   supportLevel: 'standard' | 'priority' | 'dedicated';
   referralEligible: boolean;
+  isActive: boolean;
+  isRecommended: boolean;
+  trialDays: number;
 }
 
 export type BillingPeriod = 'monthly' | 'annual';
@@ -44,7 +47,10 @@ export const DEFAULT_PLANS: Record<string, PricingPlan> = {
     whatsappAutomationEnabled: true,
     googleCalendarEnabled: true,
     supportLevel: 'standard',
-    referralEligible: false
+    referralEligible: false,
+    isActive: true,
+    isRecommended: false,
+    trialDays: 7
   },
   professional: {
     id: 'professional',
@@ -66,7 +72,10 @@ export const DEFAULT_PLANS: Record<string, PricingPlan> = {
     whatsappAutomationEnabled: true,
     googleCalendarEnabled: true,
     supportLevel: 'priority',
-    referralEligible: true
+    referralEligible: true,
+    isActive: true,
+    isRecommended: true,
+    trialDays: 7
   },
   premium: {
     id: 'premium',
@@ -88,7 +97,10 @@ export const DEFAULT_PLANS: Record<string, PricingPlan> = {
     whatsappAutomationEnabled: true,
     googleCalendarEnabled: true,
     supportLevel: 'dedicated',
-    referralEligible: true
+    referralEligible: true,
+    isActive: true,
+    isRecommended: false,
+    trialDays: 7
   }
 };
 
@@ -108,6 +120,9 @@ export const planService = {
   getAllPlans(): PricingPlan[] {
     return Object.values(this.getStoredPlans());
   },
+  getActivePlans(): PricingPlan[] {
+    return this.getAllPlans().filter(p => p.isActive !== false);
+  },
   getPlan(planId: string): PricingPlan | undefined {
     return this.getStoredPlans()[planId];
   },
@@ -118,6 +133,22 @@ export const planService = {
          plans[planId] = { ...plans[planId], ...updates };
          this.savePlanInfos(plans);
       }
+      resolve();
+    });
+  },
+  addPlan(plan: PricingPlan): Promise<void> {
+    return new Promise((resolve) => {
+      const plans = this.getStoredPlans();
+      plans[plan.id] = plan;
+      this.savePlanInfos(plans);
+      resolve();
+    });
+  },
+  deletePlan(planId: string): Promise<void> {
+    return new Promise((resolve) => {
+      const plans = this.getStoredPlans();
+      delete plans[planId];
+      this.savePlanInfos(plans);
       resolve();
     });
   },

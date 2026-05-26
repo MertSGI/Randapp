@@ -36,14 +36,14 @@ const CustomerPortalPage: React.FC = () => {
         navigate('/customer/login');
         return;
       }
-      loadData(auth.id);
+      loadData(auth);
     } catch {
       localStorage.removeItem('randapp_customer_auth');
       navigate('/customer/login');
     }
   }, [tenant, navigate]);
 
-  const loadData = async (customerId: string) => {
+  const loadData = async (authObj: any) => {
     if (!tenant) return;
     const staff = await getStaffList(tenant.id);
     const services = await getServices(tenant.id);
@@ -52,9 +52,15 @@ const CustomerPortalPage: React.FC = () => {
 
     // Filter appointments for this user
     const apts = await getAppointments(tenant.id);
-    // Customer identifier could be the phone or email stored on the appointment
-    // Usually appointment.customerId would match
-    const userApts = apts.filter(a => a.customerId === customerId);
+    
+    const userApts = apts.filter(a => {
+      // Find matches using any of the available authenticated identifiers
+      const emailMatch = authObj.email && a.user_email?.toLowerCase() === authObj.email;
+      const phoneMatch = authObj.phone && a.phone?.replace(/\D/g, '') === authObj.phone;
+      const idMatch = authObj.id && (a.customerId === authObj.id || a.user_email === authObj.id);
+      
+      return idMatch || emailMatch || phoneMatch;
+    });
     
     // Sort descending by date/time
     userApts.sort((a, b) => new Date(`${b.date}T${b.time}`).getTime() - new Date(`${a.date}T${a.time}`).getTime());
@@ -97,7 +103,7 @@ const CustomerPortalPage: React.FC = () => {
       const authData = localStorage.getItem('randapp_customer_auth');
       if (authData) {
         const auth = JSON.parse(authData);
-        loadData(auth.id);
+        loadData(auth);
       }
       setCancelModalOpen(false);
     }

@@ -33,8 +33,13 @@ const CustomerLoginPage: React.FC = () => {
 
     if (appointment) {
       // Mock login: save to local storage
-      const customerId = appointment.customerId || appointment.user_email;
-      localStorage.setItem('randapp_customer_auth', JSON.stringify({ id: customerId, tenantId: tenant.id }));
+      const customerId = appointment.customerId || appointment.user_email || normalizedAttempt;
+      localStorage.setItem('randapp_customer_auth', JSON.stringify({ 
+        id: customerId, 
+        tenantId: tenant.id,
+        email: appointment.user_email?.toLowerCase() || '',
+        phone: appointment.phone?.replace(/\D/g, '') || ''
+      }));
       navigate('/customer/appointments');
     } else {
       setError(t.customer_portal.error_not_found);

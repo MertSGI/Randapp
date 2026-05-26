@@ -11,8 +11,14 @@ const PricingPage: React.FC = () => {
   const [plans, setPlans] = useState<PricingPlan[]>([]);
 
   useEffect(() => {
-    setPlans(planService.getAllPlans());
+    // Only display active plans
+    const activePlans = planService.getActivePlans();
+    setPlans(activePlans);
   }, []);
+
+  // Use the discount of the first plan generically if needed, or don't show generic discount if they differ.
+  // For simplicity, we can show a placeholder or calculate based on the current plans.
+  const hasAnnualDiscount = plans.some(p => p.annualDiscountPercent > 0);
 
   return (
     <div className="py-12 px-4 max-w-6xl mx-auto">
@@ -35,20 +41,24 @@ const PricingPage: React.FC = () => {
              onClick={() => setBillingPeriod('annual')}
              className={`relative z-10 px-6 py-2 rounded-full font-bold text-sm transition-colors ${billingPeriod === 'annual' ? 'text-gray-900 shadow-sm bg-white' : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'}`}
            >
-             {t.marketing.pricing.annual} <span className="ml-1 text-green-500 font-extrabold">{t.marketing.pricing.annual_discount}</span>
+             {t.marketing.pricing.annual} 
+             {hasAnnualDiscount && <span className="ml-1 text-green-500 font-extrabold">{t.marketing.pricing.annual_discount}</span>}
            </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">
         {plans.map((plan) => {
-          const isRecommended = plan.id === 'professional';
+          const isRecommended = plan.isRecommended;
           const price = planService.calculatePlanPrice(plan.id, billingPeriod);
           // For annual, display monthly equivalent
           const displayPrice = billingPeriod === 'annual' ? (price / 12) : price;
+          const trialWording = language === 'tr' 
+            ? `${plan.trialDays || 7} gün ücretsiz deneme. Canlı ödeme aşamasında güvenli kart alma ve iptal edilmezse seçilen paketten otomatik devam etme akışı gerekecektir.`
+            : `${plan.trialDays || 7}-day free trial. Production payment flow will require secure card collection and automatic continuation unless cancelled.`;
 
           return (
-          <div key={plan.name} className={`bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border ${isRecommended ? 'border-accent shadow-accent/20 shadow-xl relative transform md:-translate-y-2' : 'border-gray-200 dark:border-slate-700'} flex flex-col`}>
+          <div key={plan.id} className={`bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border ${isRecommended ? 'border-accent shadow-accent/20 shadow-xl relative transform md:-translate-y-2' : 'border-gray-200 dark:border-slate-700'} flex flex-col`}>
             {isRecommended && (
                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-accent text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wide">
                  {t.marketing.pricing.most_popular}
@@ -57,11 +67,19 @@ const PricingPage: React.FC = () => {
             <h3 className="text-2xl font-bold mb-2 dark:text-white">{plan.name}</h3>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 h-10">{t.marketing.pricing.plan_desc}</p>
             <div className="text-5xl font-extrabold text-gray-900 dark:text-white mb-2">₺{displayPrice.toLocaleString()}<span className="text-lg text-gray-400 font-normal">/{language==='tr'?'ay':'mo'}</span></div>
+            
             {billingPeriod === 'annual' && (
-                <div className="text-green-500 text-sm font-semibold mb-4">{t.marketing.pricing.billed_annually.replace('{price}', price.toLocaleString())}</div>
+                <div className="text-green-500 text-sm font-semibold mb-4">
+                  {t.marketing.pricing.billed_annually.replace('{price}', price.toLocaleString())}
+                  {plan.annualDiscountPercent > 0 && ` (%${plan.annualDiscountPercent} ${language === 'tr' ? 'indirimli' : 'off'})`}
+                </div>
             )}
             {billingPeriod === 'monthly' && <div className="mb-4"></div>}
             
+            <p className="text-[10px] leading-tight text-gray-400 dark:text-gray-500 italic mb-6">
+              {trialWording}
+            </p>
+
             <ul className="space-y-4 mb-8 text-gray-600 dark:text-gray-300 flex-grow">
                 <li className="flex gap-3">
                    <span className="text-accent font-bold">✓</span>
@@ -81,7 +99,7 @@ const PricingPage: React.FC = () => {
                   <li className="flex gap-3">
                      <span className="text-accent font-bold">✓</span>
                      <span className="text-sm border-b border-dashed border-gray-200 dark:border-slate-700 pb-1 w-full flex flex-col">
-                         <span>{t.marketing.pricing.custom_domain}</span>
+                         <span>{language === 'tr' ? 'Manuel özel domain desteği' : 'Manual custom domain support'}</span>
                      </span>
                   </li>
                 )}

@@ -28,11 +28,14 @@ import SuperAdminSettingsPage from './pages/super-admin/SuperAdminSettingsPage';
 import SuperAdminPaymentTestPage from './pages/super-admin/SuperAdminPaymentTestPage';
 import SuperAdminAISettingsPage from './pages/super-admin/SuperAdminAISettingsPage';
 import SuperAdminPlansPage from './pages/super-admin/SuperAdminPlansPage';
+import SuperAdminReferralsPage from './pages/super-admin/SuperAdminReferralsPage';
 import SuperAdminTenantPreviewPage from './pages/super-admin/SuperAdminTenantPreviewPage';
 import SitePreviewPage from './pages/admin/SitePreviewPage';
 
 import CustomerLoginPage from './pages/customer/CustomerLoginPage';
 import CustomerPortalPage from './pages/customer/CustomerPortalPage';
+
+import MobileAppPage from './pages/MobileAppPage';
 
 // Contexts
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -60,6 +63,7 @@ const AppFlowSwitcher: React.FC = () => {
             : <MarketingHomePage />
         } />
         <Route path="/features" element={<FeaturesPage />} />
+        <Route path="/mobile-app" element={<MobileAppPage />} />
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/demo" element={<DemoLandingPage />} />
         <Route path="/contact" element={<ContactPage />} />
@@ -105,6 +109,7 @@ const AppFlowSwitcher: React.FC = () => {
         <Route path="/super-admin/payment-test" element={<SuperAdminPaymentTestPage />} />
         <Route path="/super-admin/ai-settings" element={<SuperAdminAISettingsPage />} />
         <Route path="/super-admin/plans" element={<SuperAdminPlansPage />} />
+        <Route path="/super-admin/referrals" element={<SuperAdminReferralsPage />} />
       </Route>
       <Route path="/super-admin/tenant-preview/:tenantId" element={
         <ProtectedRoute allowedRoles={['super_admin']}>

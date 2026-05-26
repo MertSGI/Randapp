@@ -234,8 +234,8 @@ export const translations = {
         edit_details: 'Edit My Details',
         clear_details: 'Clear saved details',
         using_saved_details: 'Using your saved details.',
-        privacy_notice: 'We use your information only to create appointments and send appointment reminders.',
-        privacy_link: 'Privacy Notice'
+        privacy_notice: 'We process your information to manage appointments according to data minimization principles.',
+        privacy_link: 'Privacy & Data Processing Notice'
       },
       step5_title: 'Booking Confirmed!',
       step5_subtitle: "We've synced this to our calendar.",
@@ -439,7 +439,7 @@ export const translations = {
       cancel_confirm_msg: 'Are you sure you want to cancel this appointment?',
       cancel_error_window: 'This appointment is outside the online cancellation window. Please contact the salon.',
       logout: 'Logout',
-      privacy_note: 'Your information is stored securely to manage your appointments.',
+      privacy_note: 'Your credentials and appointment history are processed strictly and minimally to provide access to your portal according to personal data protection rules.',
       salon_notes: 'Salon Notes',
       error_not_found: 'Customer not found with this contact info.',
       portal_prompt: 'You can access your customer portal with your phone or email to view or cancel your appointments.'
@@ -688,7 +688,7 @@ export const translations = {
         edit_details: 'Bilgileri düzenle',
         clear_details: 'Kayıtlı bilgileri sil',
         using_saved_details: 'Kayıtlı bilgilerinizle devam ediyorsunuz.',
-        privacy_notice: 'Bilgilerinizi yalnızca randevu oluşturma ve randevu hatırlatma amacıyla kullanırız.',
+        privacy_notice: 'Kişisel verileriniz KVKK kapsamında randevu oluşturma ve yönetimi amacıyla minimum düzeyde işlenmektedir.',
         privacy_link: 'Aydınlatma Metni'
       },
       step5_title: 'Randevu Onaylandı!',
@@ -892,7 +892,7 @@ export const translations = {
       cancel_confirm_msg: 'Bu randevuyu iptal etmek istediğinize emin misiniz?',
       cancel_error_window: 'Bu randevu online iptal süresi dışında. Lütfen salonla iletişime geçin.',
       logout: 'Çıkış Yap',
-      privacy_note: 'Bilgileriniz randevularınızı yönetmek için güvenle saklanmaktadır.',
+      privacy_note: 'Giriş bilgileriniz ve geçmiş randevu kayıtlarınız, yalnızca panelinize erişim sağlamanız amacıyla KVKK (Veri Minimizasyonu İlkesi) kapsamında işlenmektedir.',
       salon_notes: 'Salon Notları',
       error_not_found: 'Bu iletişim bilgisiyle müşteri bulunamadı.',
       portal_prompt: 'Randevularınızı görüntülemek ve iptal etmek için telefon veya e-posta bilginizle müşteri panelinize giriş yapabilirsiniz.'

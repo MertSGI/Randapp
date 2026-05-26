@@ -195,6 +195,65 @@ export interface TimeSlot {
   available: boolean;
 }
 
+export interface Plan {
+  id: string;
+  name: string;
+  name_tr: string;
+  description_en: string;
+  description_tr: string;
+  monthlyPrice: number;
+  setupFee?: number;
+  staffLimit: number; // 0 means unlimited
+  serviceLimit: number;
+  features: {
+    customerMemory: boolean;
+    customerPortal: boolean;
+    referralCampaigns: boolean;
+    reports: boolean;
+    aiRecommendation: boolean;
+    customDomain: boolean;
+    prioritySupport: boolean;
+  };
+  isActive: boolean;
+  isRecommended: boolean;
+}
+
+export interface ReferralCampaign {
+  id: string;
+  tenantId: string | 'global';
+  campaignType: 'customer_referral' | 'business_referral';
+  title: string;
+  description: string;
+  rewardType: 'discount' | 'credit' | 'free_month' | 'custom';
+  rewardValue: string;
+  active: boolean;
+  startDate?: string;
+  endDate?: string;
+  maxUses?: number;
+  createdBy: 'super_admin' | 'salon_owner';
+}
+
+export interface ReferralCode {
+  id: string;
+  code: string;
+  campaignId: string;
+  referrerType: 'customer' | 'tenant';
+  referrerId: string;
+  usageCount: number;
+  status: 'active' | 'inactive';
+}
+
+export interface ReferralLead {
+  id: string;
+  campaignId: string;
+  referralCode: string;
+  leadName: string;
+  leadPhone?: string;
+  leadEmail?: string;
+  status: 'pending' | 'converted' | 'rejected';
+  createdAt: string;
+}
+
 export const SERVICES: Service[] = [
   { 
     id: 'srv_1', 
