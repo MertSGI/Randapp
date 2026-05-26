@@ -18,6 +18,9 @@
 - [x] **Maps Redirection**: "Yol Tarifi Al" and "Haritada Aç" generate correct Google Maps search URLs.
 - [x] **Contact Actions**: WhatsApp routing is functional for sending appointment confirmations and manual contact.
 - [x] **Multilingual Bookings (I18N)**: Booking widget and Customer Website accurately swap labels between Turkish and English globally, saving preferences per browser.
+- [x] **Customers View Own Appointments**: Customers can log in using their matching phone/email locally.
+- [x] **Customer Portal Cancellation**: Customers can cancel an appointment if within the policy window.
+- [x] **Privacy Check**: Salon Notes are NOT visible anywhere in the Customer Portal.
 - [x] **Customer Account Lite (Autofill)**: Customers can choose to bind their Name, Email, and Phone locally per tenant. Bypasses forced DB auth, providing pure frictionless autofill.
 
 ## Salon Owner / Tenant Admin (`/admin`)

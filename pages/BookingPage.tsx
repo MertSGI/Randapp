@@ -640,7 +640,19 @@ const BookingPage: React.FC = () => {
               </div>
             )}
 
-            <button onClick={() => window.location.reload()} className="text-accent font-medium hover:text-blue-700">
+            <div className="bg-blue-50 dark:bg-slate-800 border border-blue-100 dark:border-slate-700 rounded-xl p-5 mb-8 text-sm text-gray-700 dark:text-gray-300">
+              <p className="mb-3">{t.customer_portal?.portal_prompt}</p>
+              <button 
+                onClick={() => {
+                  window.location.href = '/customer/login';
+                }}
+                className="text-accent font-semibold hover:underline"
+              >
+                {t.customer_portal?.login_title}
+              </button>
+            </div>
+
+            <button onClick={() => window.location.reload()} className="text-accent font-medium hover:text-blue-700 transition">
               {t.booking.book_another}
             </button>
           </div>

@@ -31,6 +31,9 @@ import SuperAdminPlansPage from './pages/super-admin/SuperAdminPlansPage';
 import SuperAdminTenantPreviewPage from './pages/super-admin/SuperAdminTenantPreviewPage';
 import SitePreviewPage from './pages/admin/SitePreviewPage';
 
+import CustomerLoginPage from './pages/customer/CustomerLoginPage';
+import CustomerPortalPage from './pages/customer/CustomerPortalPage';
+
 // Contexts
 import { ThemeProvider } from './contexts/ThemeContext';
 import { LanguageProvider } from './contexts/LanguageContext';
@@ -71,6 +74,11 @@ const AppFlowSwitcher: React.FC = () => {
         {/* AI Tool - Now part of the salon booking flow */}
         <Route path="/ai-visualizer" element={<AIVisualizerPage />} />
       </Route>
+
+      {/* 2.5 Customer Routes */}
+      <Route path="/customer/login" element={<CustomerLoginPage />} />
+      <Route path="/customer/appointments" element={<CustomerPortalPage />} />
+      <Route path="/customer" element={<Navigate to="/customer/appointments" replace />} />
 
       {/* 3. Admin Routes */}
       <Route element={<ProtectedRoute allowedRoles={['salon_owner', 'super_admin']}><AdminLayout /></ProtectedRoute>}>

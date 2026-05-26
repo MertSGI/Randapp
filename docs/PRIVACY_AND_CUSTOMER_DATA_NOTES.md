@@ -1,18 +1,21 @@
-# Privacy and Customer Data Notes
+# Privacy and Customer Data Safeguards
 
-## Core Philosophy
-We apply the Principle of Data Minimization. Collect only what is needed, use it only for stated operational purposes, and protect it at the tenant level.
+## Customer Memory & Profile Lite
+- **Private by Default:** All salon notes, preferences, and reference photos are strictly private to the salon owner/admin roles.
+- **Customer Portal Barrier:** The new Customer Portal Lite explicitly prevents a user from fetching private internal salon notes.
+- **Reference Photos:** Uploaded reference photos are strictly for service continuity and manual style reference. 
 
-## Handling of Customer Profiles
-- **No Password Silos:** We don't force end-users to create accounts with passwords. Customer-side persistence is currently local storage only (Customer Account Lite). We strictly maintain Guest Booking fallback capabilities.
-- **Owner Visibility (Customer Profile Lite):** Salon owners see aggregated customer memory (appointments, internal notes, preferences) exclusively to improve service logic.
+## No Deep AI Photo Analysis
+- Photos are currently NOT sent to the Gemini API.
+- Customer faces are NOT subjected to biometric identification or facial recognition routines. 
+- Privacy copy explicitly states: "These images are stored only for salon service history... They are not used for facial recognition..."
 
-## Handling of Reference Photos
-- **No Biometrics, No AI Processing:** Uploaded images are strictly static references for haircuts, nails, and color history. We actively forbid processing customer photos for algorithmic facial recognition or biometrics.
-- **No Public Sharing:** Images should never be shared via public or unauthenticated links.
-- **Next Phase RLS:** Supabase storage must be configured with Row Level Security (RLS) policies allowing access ONLY if `auth.uid()` belongs to the `tenant_id` that owns the customer record. Public read access must be explicitly rejected.
+## Marketing Consent vs. Operational Data
+- Randapp collects email/phone essentially for operational contact (appointment scheduling, cancellation, reminders).
+- Strict separation is maintained between this and future marketing/campaign consent scopes.
 
-## Consent & KVKK/GDPR
-- Checkboxes in UI for data processing cover standard operations.
-- Marketing consent is separated from operational appointment messages.
-- Production phases mandate explicit data retention rules and clear "Delete Customer Record" utilities to easily wipe notes, photos, and anonymize history when requested by a consumer.
+## Future Production Action Items
+- **RLS:** Supabase Row Level Security must isolate `customers`, `notes`, and `photos` strictly by `tenant_id`. 
+- **Private Buckets:** Photo storage buckets MUST NOT be public. Signed URLs or authorized fetches must be used via backend/Edge Functions.
+- **Data Export & Deletion:** The system must implement compliant endpoints handling GDPR/KVKK requests to delete or export a customer's entire dataset.
+- **Audit Logs:** Customer or Salon cancellations must be logged with actor scopes and timestamps.

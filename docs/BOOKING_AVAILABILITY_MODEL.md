@@ -1,27 +1,19 @@
 # Booking Availability Model
 
-## Objective
-Refine the end-user booking UX by programmatically guiding the customer to the nearest available appointment.
+## Scope
+Defines how Randapp calculates when a customer can book an appointment. 
 
-## Logic Flow
+## Current Implementation (MVP / Phase 1)
+- **Static Days/Hours**: The system assumes standard operational hours (e.g., typically configured in the mock database or admin settings).
+- **Slot Unavailability**: When an appointment is booked and marked `confirmed`, that exact time slot for that selected staff member is removed from the availability list for the specific date.
+- **"No Preference" (Bana Fark Etmez)**: 
+  - If a user selects this, the system evaluates all staff for that service.
+  - If any staff member is free at a given time slot, that time slot is shown as available.
+  - Upon booking with "No Preference", the first available staff member for that slot is automatically assigned the appointment.
 
-1. **Service Selection First**: The customer clicks on a service they want.
-2. **Staff Filtering**: The system filters staff members down to those who provide the selected service.
-3. **Availability Badges**:
-   - For each viable staff member, the system queries their scheduled appointments and business hours to render a "Next Available Slot" badge (e.g., "En Yakın: Bugün 14:30").
-   - Highlights the absolute earliest staff member.
-4. **Auto-Selection**:
-   - A button is provided: "En erken müsait randevuyu göster".
-   - Clicking this automatically selects the staff member with the earliest badge and skips the customer forward to that time slot in the calendar view.
-5. **Slot Generation**:
-   - Availability is dynamically computed based on `tenant.businessHours`.
-   - Existing appointments block out time.
-
-## Data Layer Requirements
-
-`availabilityService.ts` will manage:
-- `getAvailableSlotsForStaff(tenantId, staffId, serviceId, dateRange)`
-- `getNextAvailableSlotForStaff(tenantId, staffId, serviceId)`
-- `getEarliestAvailableStaff(tenantId, serviceId)`
-
-This model allows a clean calculation of time slots internally without full external two-way calendar sync for the MVP launch.
+## Next Phase Requirements (Production Backend)
+When migrating to the production backend (Supabase):
+1. **Dynamic Schedule**: Integrate real staff shift patterns, holidays, and breaks from the Admin panel settings.
+2. **Buffer Times**: Service durations must intelligently block out consecutive time slots (e.g. a 90-minute coloring service blocks three 30-min slots).
+3. **Concurrency Rules**: Ensure physical resources (like washing sinks) are not double-booked if the salon sets resource constraints.
+4. **Google Calendar Sync**: Two-way sync to block slots based on external private calendars.

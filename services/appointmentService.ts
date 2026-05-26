@@ -88,11 +88,24 @@ export const createAppointment = async (tenantId: string, appointment: Omit<Appo
   return newAppointment;
 };
 
-export const updateAppointmentStatus = async (tenantId: string, appointmentId: string, status: Appointment['status']): Promise<Appointment | null> => {
+export const updateAppointmentStatus = async (
+  tenantId: string, 
+  appointmentId: string, 
+  status: Appointment['status'],
+  cancelReason?: string,
+  cancelledBy?: 'customer' | 'salon' | 'system'
+): Promise<Appointment | null> => {
   if (isSupabaseMode()) {
+    const updatePayload: any = { status };
+    if (status.includes('cancel')) {
+      updatePayload.cancelled_at = new Date().toISOString();
+      if (cancelReason) updatePayload.cancel_reason = cancelReason;
+      if (cancelledBy) updatePayload.cancelled_by = cancelledBy;
+    }
+
     const { data, error } = await supabase
       .from('appointments')
-      .update({ status })
+      .update(updatePayload)
       .eq('id', appointmentId)
       .eq('tenant_id', tenantId)
       .select()
@@ -112,6 +125,12 @@ export const updateAppointmentStatus = async (tenantId: string, appointmentId: s
   if (idx === -1) return null;
   
   existing[idx].status = status;
+  if (status.includes('cancel')) {
+    existing[idx].cancelledAt = new Date().toISOString();
+    if (cancelReason) existing[idx].cancelReason = cancelReason;
+    if (cancelledBy) existing[idx].cancelledBy = cancelledBy;
+  }
+  
   await dataProvider.set(key, existing);
   return existing[idx];
 };

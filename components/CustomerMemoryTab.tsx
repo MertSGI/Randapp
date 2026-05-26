@@ -380,10 +380,10 @@ const CustomerMemoryTab: React.FC<CustomerMemoryTabProps> = ({ appointments, sta
                         </div>
                         <span className={`px-2 py-0.5 text-[10px] font-semibold rounded-full ${
                           apt.status === 'confirmed' ? 'bg-green-100 text-green-800' :
-                          apt.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                          apt.status.includes('cancel') ? 'bg-red-100 text-red-800' :
                           'bg-gray-100 text-gray-800'
                         }`}>
-                          {t.admin[apt.status] || apt.status}
+                          {t.customer_portal?.[`status_${apt.status}`] || t.admin[apt.status] || apt.status}
                         </span>
                       </div>
                     </div>

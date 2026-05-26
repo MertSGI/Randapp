@@ -180,8 +180,11 @@ export interface Appointment {
   staffId: string;
   date: string; // ISO Date string YYYY-MM-DD
   time: string; // HH:mm
-  status: 'confirmed' | 'cancelled' | 'completed';
+  status: 'confirmed' | 'cancelled' | 'cancelled_by_customer' | 'cancelled_by_salon' | 'completed' | 'no_show';
   notes?: string;
+  cancelReason?: string;
+  cancelledAt?: string;
+  cancelledBy?: 'customer' | 'salon' | 'system';
   createdAt: string;
   syncedToGoogle: boolean;
   phone?: string;

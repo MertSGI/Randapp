@@ -80,7 +80,7 @@ const AdminPage: React.FC = () => {
   const handleCancel = async (id: string) => {
     if (!tenant) return;
     if (window.confirm(t.admin.confirm_cancel)) {
-      await updateAppointmentStatus(tenant.id, id, 'cancelled');
+      await updateAppointmentStatus(tenant.id, id, 'cancelled_by_salon', '', 'salon');
       loadData();
     }
   };
@@ -423,9 +423,9 @@ const AdminPage: React.FC = () => {
                           </button>
                           <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                             apt.status === 'confirmed' ? 'bg-green-100 text-green-800' : 
-                            apt.status === 'cancelled' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'
+                            apt.status.includes('cancel') ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'
                           }`}>
-                            {apt.status}
+                            {t.customer_portal?.[`status_${apt.status}`] || apt.status}
                           </span>
                           {apt.status === 'confirmed' && (
                             <button

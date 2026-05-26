@@ -33,13 +33,16 @@ This document outlines the ideal flow for demonstrating Randapp to salon owners 
 - **Explain:** "This isn't just a booking widget. This is your salon's digital home. Customers see your cover photos, your services, your staff, and your address. It looks professional on both mobile and desktop."
 - **Note:** Mention that "Manual custom domain support / Manuel özel domain desteği" is provided.
 
-## 4. Booking Flow & "No Preference" Logic
+## 4. Booking Flow & Customer Portal Lite
 - **Action:** Click "Book Appointment".
 - **Show:** Step 1: Services. Select "Saç Kesimi".
 - **Show:** Step 2: Staff. Point out the "Bana Fark Etmez" (No Preference) option.
 - **Explain:** "Customers who just want the earliest slot can pick 'No Preference'. The system intelligently picks the first available staff member."
 - **Show:** Customer Details.
-- **Explain:** "We don't force customers to remember passwords. Our Customer Account Lite securely saves their name and phone locally, making future bookings a 1-click experience."
+- **Explain:** "We don't force customers to remember passwords. They book easily. Upon success, they get a summary."
+- **Action:** Visit `/customer/login`. Login with the mock phone/email.
+- **Show:** Customer Portal Lite. Show their past and upcoming appointments. Cancel an appointment if possible.
+- **Explain:** "Customers have total control over their bookings within the cancellation window, reducing no-shows and your administrative workload."
 - **Note on Payments:** Explicitly state: "For this pilot, the booking is instantly confirmed offline. Online payments will be activated in our next phase."
 
 ## 5. Admin Owner Dashboard & Appointments
