@@ -428,12 +428,19 @@ const AdminPage: React.FC = () => {
                           >
                             {t.admin.view_profile || 'View Profile'}
                           </button>
-                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                            apt.status === 'confirmed' ? 'bg-green-100 text-green-800' : 
-                            apt.status.includes('cancel') ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'
-                          }`}>
-                            {t.customer_portal?.[`status_${apt.status}`] || apt.status}
-                          </span>
+                          <div className="flex flex-col items-end gap-1">
+                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                              apt.status === 'confirmed' ? 'bg-green-100 text-green-800' : 
+                              apt.status.includes('cancel') ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'
+                            }`}>
+                              {t.customer_portal?.[`status_${apt.status}`] || apt.status}
+                            </span>
+                            {apt.status.includes('cancel') && apt.cancelReason && (
+                              <span className="text-[10px] text-red-500 max-w-[150px] truncate" title={apt.cancelReason}>
+                                {apt.cancelReason}
+                              </span>
+                            )}
+                          </div>
                           {apt.status === 'confirmed' && (
                             <button
                               onClick={() => handleCancel(apt.id)}

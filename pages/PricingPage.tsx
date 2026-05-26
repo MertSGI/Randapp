@@ -53,9 +53,7 @@ const PricingPage: React.FC = () => {
           const price = planService.calculatePlanPrice(plan.id, billingPeriod);
           // For annual, display monthly equivalent
           const displayPrice = billingPeriod === 'annual' ? (price / 12) : price;
-          const trialWording = language === 'tr' 
-            ? `${plan.trialDays || 7} gün ücretsiz deneme. Canlı ödeme aşamasında güvenli kart alma ve iptal edilmezse seçilen paketten otomatik devam etme akışı gerekecektir.`
-            : `${plan.trialDays || 7}-day free trial. Production payment flow will require secure card collection and automatic continuation unless cancelled.`;
+          const trialWording = t.marketing.pricing.trial_wording_plan?.replace('{days}', plan.trialDays?.toString() || '7');
 
           return (
           <div key={plan.id} className={`bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border ${isRecommended ? 'border-accent shadow-accent/20 shadow-xl relative transform md:-translate-y-2' : 'border-gray-200 dark:border-slate-700'} flex flex-col`}>

@@ -8,12 +8,14 @@ const LEADS_KEY = 'randapp_referral_leads';
 const defaultPlatformCampaigns: ReferralCampaign[] = [
   {
     id: 'campaign_b2p_1',
-    tenantId: 'SUPER_ADMIN',
-    name: 'Platform Growth: Refer a Business',
-    type: 'business_to_platform',
-    status: 'active',
-    rewardType: 'free_days',
-    rewardValue: 30, // Referrer gets 30 free days
+    tenantId: 'global',
+    campaignType: 'business_referral',
+    title: 'Platform Growth: Refer a Business',
+    description: 'Refer another salon to Randapp and earn a free month!',
+    rewardType: 'free_month',
+    rewardValue: '1', // 1 month
+    active: true,
+    createdBy: 'super_admin',
     startDate: new Date().toISOString(),
   }
 ];
@@ -58,17 +60,18 @@ export const referralService = {
     return codes.filter(c => c.referrerId === referrerId);
   },
 
-  generateCode: (campaignId: string, referrerId: string, limit: number = 0): ReferralCode => {
+  generateCode: (campaignId: string, referrerType: 'customer' | 'tenant', referrerId: string): ReferralCode => {
     const raw = localStorage.getItem(CODES_KEY);
     const codes: ReferralCode[] = raw ? JSON.parse(raw) : [];
     
     const newCode: ReferralCode = {
       id: `code_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
       campaignId,
+      referrerType,
       referrerId,
       code: `REF-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
-      usageLimit: limit,
-      usageCount: 0
+      usageCount: 0,
+      status: 'active'
     };
     
     codes.push(newCode);
@@ -77,42 +80,37 @@ export const referralService = {
   },
 
   // Leads
-  getLeadsForCode: (codeId: string): ReferralLead[] => {
+  getLeadsForCode: (referralCode: string): ReferralLead[] => {
     const raw = localStorage.getItem(LEADS_KEY);
     const leads: ReferralLead[] = raw ? JSON.parse(raw) : [];
-    return leads.filter(l => l.codeId === codeId);
+    return leads.filter(l => l.referralCode === referralCode);
   },
 
   getLeadsForCampaign: (campaignId: string): ReferralLead[] => {
-     // A bit inefficient for mock, but works
-     const codes = referralService.getCodesForCampaign(campaignId);
-     const codeIds = codes.map(c => c.id);
-     
      const raw = localStorage.getItem(LEADS_KEY);
      const allLeads: ReferralLead[] = raw ? JSON.parse(raw) : [];
      
-     return allLeads.filter(l => codeIds.includes(l.codeId));
+     return allLeads.filter(l => l.campaignId === campaignId);
   },
 
-  trackLead: (code: string, refereeEmail: string): ReferralLead | null => {
+  trackLead: (code: string, leadName: string, leadEmail?: string): ReferralLead | null => {
      const rawCodes = localStorage.getItem(CODES_KEY);
      const codes: ReferralCode[] = rawCodes ? JSON.parse(rawCodes) : [];
      
-     const foundCode = codes.find(c => c.code === code);
+     const foundCode = codes.find(c => c.code === code && c.status === 'active');
      if (!foundCode) return null;
      
-     if (foundCode.usageLimit > 0 && foundCode.usageCount >= foundCode.usageLimit) {
-        return null; // Limit reached
-     }
-
      const rawLeads = localStorage.getItem(LEADS_KEY);
      const leads: ReferralLead[] = rawLeads ? JSON.parse(rawLeads) : [];
      
      const newLead: ReferralLead = {
          id: `lead_${Date.now()}`,
-         codeId: foundCode.id,
-         refereeEmail,
-         status: 'pending'
+         campaignId: foundCode.campaignId,
+         referralCode: foundCode.code,
+         leadName,
+         leadEmail,
+         status: 'pending',
+         createdAt: new Date().toISOString()
      };
      
      leads.push(newLead);
@@ -127,13 +125,12 @@ export const referralService = {
      const existingIndex = leads.findIndex(l => l.id === leadId);
      if (existingIndex > -1 && leads[existingIndex].status === 'pending') {
          leads[existingIndex].status = 'converted';
-         leads[existingIndex].convertedAt = new Date().toISOString();
          localStorage.setItem(LEADS_KEY, JSON.stringify(leads));
          
          // Update usage count
          const rawCodes = localStorage.getItem(CODES_KEY);
          const codes: ReferralCode[] = rawCodes ? JSON.parse(rawCodes) : [];
-         const codeIndex = codes.findIndex(c => c.id === leads[existingIndex].codeId);
+         const codeIndex = codes.findIndex(c => c.code === leads[existingIndex].referralCode);
          if (codeIndex > -1) {
              codes[codeIndex].usageCount++;
              localStorage.setItem(CODES_KEY, JSON.stringify(codes));

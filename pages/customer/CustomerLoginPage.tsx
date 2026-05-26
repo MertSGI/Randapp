@@ -26,10 +26,11 @@ const CustomerLoginPage: React.FC = () => {
     const normalizedAttempt = contactInfo.trim().toLowerCase();
     
     // Find customer by email or phone
-    const appointment = appointments.find(c => 
-      c.user_email?.toLowerCase() === normalizedAttempt || 
-      (c.phone && c.phone.replace(/\\D/g, '').includes(normalizedAttempt.replace(/\\D/g, '')))
-    );
+    const appointment = appointments.find(c => {
+      const normalizedPhoneAttempt = normalizedAttempt.replace(/\D/g, '');
+      return c.user_email?.toLowerCase() === normalizedAttempt || 
+        (c.phone && normalizedPhoneAttempt && c.phone.replace(/\D/g, '').includes(normalizedPhoneAttempt));
+    });
 
     if (appointment) {
       // Mock login: save to local storage

@@ -3,45 +3,22 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { translations } from '../utils/translations';
 
-const trPhrases = [
-  "Kuaför ve güzellik salonunuz",
-  "Berber salonunuz",
-  "Nail studio'nuz",
-  "Spa merkeziniz",
-  "Diş kliniğiniz",
-  "Özel kliniğiniz",
-  "PT stüdyonuz",
-  "Danışmanlık ofisiniz",
-  "Randevulu işletmeniz"
-];
-
-const enPhrases = [
-  "hair and beauty salon",
-  "barber shop",
-  "nail studio",
-  "spa center",
-  "dental clinic",
-  "private clinic",
-  "PT studio",
-  "consulting office",
-  "appointment-based business"
-];
-
 const MarketingHomePage: React.FC = () => {
   const { language } = useLanguage();
   const t = translations[language];
 
   const [phraseIndex, setPhraseIndex] = useState(0);
+  const phrases = t.marketing.rotating_phrases || [];
 
   useEffect(() => {
+    if (!phrases || phrases.length === 0) return;
     const interval = setInterval(() => {
-      setPhraseIndex((prev) => (prev + 1) % trPhrases.length);
+      setPhraseIndex((prev) => (prev + 1) % phrases.length);
     }, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [phrases.length]);
 
-  const phrases = language === 'tr' ? trPhrases : enPhrases;
-  const currentPhrase = phrases[phraseIndex];
+  const currentPhrase = phrases[phraseIndex] || '';
 
   return (
     <div className="flex flex-col space-y-24 py-12">

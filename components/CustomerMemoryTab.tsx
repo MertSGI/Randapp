@@ -386,6 +386,11 @@ const CustomerMemoryTab: React.FC<CustomerMemoryTabProps> = ({ appointments, sta
                           {t.customer_portal?.[`status_${apt.status}`] || t.admin[apt.status] || apt.status}
                         </span>
                       </div>
+                      {apt.status.includes('cancel') && apt.cancelReason && (
+                        <div className="mt-2 text-[11px] text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/10 p-1.5 rounded">
+                           <span className="font-semibold">{language === 'tr' ? 'İptal Nedeni:' : 'Cancel Reason:'}</span> {apt.cancelReason}
+                        </div>
+                      )}
                     </div>
                   )
                 })

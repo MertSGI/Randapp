@@ -7,6 +7,7 @@ export const translations = {
       demo: 'Create Demo',
       mode_admin: 'Admin Mode',
       mode_guest: 'Guest Mode',
+      mobile_app: 'Mobile App'
     },
     footer: 'All rights reserved.',
     marketing: {
@@ -179,10 +180,38 @@ export const translations = {
         mini_website: 'Mini Website & Booking System',
         custom_domain: 'Manual custom domain support',
         com_domain_free: 'Manual custom domain support with annual plan',
+        trial_wording_plan: '{days}-day free trial. Production payment flow will require secure card collection and automatic continuation unless cancelled.',
         btn_preview: 'Preview My Salon',
         btn_sales: 'Contact Sales',
         sales_wa_text: 'Hello, I would like to get information about the Randapp {planName} ({period}) plan.'
-      }
+      },
+      mobile_app: {
+        badge: 'Mobile App (Future Roadmap)',
+        title: 'Get Discovered with the Randapp Mobile App',
+        subtitle: 'Randapp isn\'t just infrastructure for your salon. In the future, your customers will download the Randapp Mobile app to book appointments directly and discover your business on the map.',
+        notice: 'Important: The mobile app is planned as a future customer discovery and appointment companion. It is not live yet.',
+        feat_1_title: 'Location-Based Discovery',
+        feat_1_desc: 'Customers can see the best salons, clinics, and studios around them on the map.',
+        feat_2_title: 'Appointment Wallet',
+        feat_2_desc: 'Users can manage, cancel, or rebook all past and upcoming appointments from a single app.',
+        feat_3_title: 'Verified Ratings',
+        feat_3_desc: 'Verified customers can rate your business, increasing your trust and visibility.',
+        feat_4_title: 'Campaigns & Referrals',
+        feat_4_desc: 'Users can invite friends or benefit from mobile-app-only deals.',
+        cta: 'Join the Randapp platform today and reserve your spot.',
+        btn: 'Get a Demo'
+      },
+      rotating_phrases: [
+        "hair and beauty salon",
+        "barber shop",
+        "nail studio",
+        "spa center",
+        "dental clinic",
+        "private clinic",
+        "PT studio",
+        "consulting office",
+        "appointment-based business"
+      ]
     },
     salon: {
       book_now: 'Book Now',
@@ -344,6 +373,14 @@ export const translations = {
       unknown_staff: 'Unknown Staff',
       salon: 'Salon',
       confirm_cancel: 'Are you sure you want to cancel this appointment?',
+      referrals_title: 'Referrals & Customer Loyalty',
+      referrals_subtitle: 'Gain new visitors by having your customers recommend your business. Create new campaigns and track code usage.',
+      referrals_coming_soon: 'Coming Soon: Create Your Own Campaign',
+      referrals_coming_soon_desc: 'Soon you will be able to create custom customer referral codes with % discount or free gift sessions directly from this screen.',
+      referrals_add_btn: '+ Add New Campaign',
+      referrals_campaign_name: 'Campaign Name',
+      referrals_reward: 'Reward',
+      referrals_status: 'Status'
     },
     super_admin: {
       panel_title: 'Super Admin',
@@ -461,6 +498,7 @@ export const translations = {
       demo: 'Demo Oluştur',
       mode_admin: 'Yönetici Modu',
       mode_guest: 'Misafir Modu',
+      mobile_app: 'Mobil Uygulama'
     },
     footer: 'Tüm hakları saklıdır.',
     marketing: {
@@ -633,10 +671,38 @@ export const translations = {
         mini_website: 'Mini Web Sitesi & Randevu Sistemi',
         custom_domain: 'Manuel özel domain desteği',
         com_domain_free: 'Yıllık planda manuel özel alan adı desteği',
+        trial_wording_plan: '{days} gün ücretsiz deneme. Canlı ödeme aşamasında güvenli kart alma ve iptal edilmezse seçilen paketten otomatik devam etme akışı gerekecektir.',
         btn_preview: 'Kendi Salonumu Önizle',
         btn_sales: 'Satış Ekibiyle Görüş',
         sales_wa_text: 'Merhaba, Randapp {planName} ({period}) planı hakkında bilgi almak istiyorum.'
-      }
+      },
+      mobile_app: {
+        badge: 'Mobil Uygulama (Gelecek Yol Haritası)',
+        title: 'Randapp Mobil Uygulaması ile Keşfedilin',
+        subtitle: 'Randapp sadece salonunuz için bir altyapı değildir. Müşterileriniz gelecekte Randapp Mobil uygulamasını indirerek doğrudan yeni randevular alabilecek ve işletmenizi haritada keşfedebilecek.',
+        notice: 'Önemli Bilgi: Mobil uygulama, gelecekte müşteri keşfi ve randevu takibi için planlanan ek bir kanaldır. Henüz canlı değildir.',
+        feat_1_title: 'Lokasyon Bazlı Keşif',
+        feat_1_desc: 'Müşteriler, çevrelerindeki en iyi salonları, klinikleri ve stüdyoları haritada görebilir.',
+        feat_2_title: 'Randevu Cüzdanı',
+        feat_2_desc: 'Kullanıcılar tek uygulamadan tüm eski ve yeni randevularını yönetebilir, iptal edebilir veya yeniden alabilir.',
+        feat_3_title: 'Gerçek Puanlamalar',
+        feat_3_desc: 'Hizmet alan müşteriler işletmenize puan vererek güvenilirliğinizi ve görünürlüğünüzü artırır.',
+        feat_4_title: 'Kampanya ve Referans',
+        feat_4_desc: 'Kullanıcılar arkadaşlarını davet edebilir veya sadece mobil uygulamaya özel fırsatlardan yararlanabilir.',
+        cta: 'Randapp platformuna bugün katılın ve yerinizi ayırtın.',
+        btn: 'Demo Alın'
+      },
+      rotating_phrases: [
+        "Kuaför ve güzellik salonunuz",
+        "Berber salonunuz",
+        "Nail studio'nuz",
+        "Spa merkeziniz",
+        "Diş kliniğiniz",
+        "Özel kliniğiniz",
+        "PT stüdyonuz",
+        "Danışmanlık ofisiniz",
+        "Randevulu işletmeniz"
+      ]
     },
     salon: {
       book_now: 'Randevu Al',
@@ -840,6 +906,14 @@ export const translations = {
       unknown_staff: 'Bilinmeyen Uzman',
       salon: 'Salon',
       confirm_cancel: 'Bu randevuyu iptal etmek istediğinize emin misiniz?',
+      referrals_title: 'Referans & Müşteri Bağlılığı',
+      referrals_subtitle: 'Müşterilerinizin işletmenizi önermesini sağlayarak yeni ziyaretçiler kazanın. Yeni kampanyalar oluşturun ve kod kullanım durumlarını takip edin.',
+      referrals_coming_soon: 'Yakında: Kendi Kampanyanı Yarat',
+      referrals_coming_soon_desc: 'Çok yakında bu ekrandan % indirim veya ücretsiz hediye seans gibi özel müşteri referans kodları oluşturabileceksiniz.',
+      referrals_add_btn: '+ Yeni Kampanya Ekle',
+      referrals_campaign_name: 'Kampanya Adı',
+      referrals_reward: 'Ödül',
+      referrals_status: 'Durum'
     },
     super_admin_nav: {
       t_admin_dashboard_title: 'Platform Özeti',

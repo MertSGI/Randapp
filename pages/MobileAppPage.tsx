@@ -8,40 +8,35 @@ const MobileAppPage: React.FC = () => {
   const { language } = useLanguage();
   const t = translations[language];
 
-  // We hardcode translations here since this is a new bespoke marketing page
   const content = {
-    badge: language === 'tr' ? 'Mobil Uygulama (Gelecek Yol Haritası)' : 'Mobile App (Future Roadmap)',
-    title: language === 'tr' ? 'Randapp Mobil Uygulaması ile Keşfedilin' : 'Get Discovered with the Randapp Mobile App',
-    subtitle: language === 'tr' 
-      ? 'Randapp sadece salonunuz için bir altyapı değildir. Müşterileriniz gelecekte Randapp Mobil uygulamasını indirerek doğrudan yeni randevular alabilecek ve işletmenizi haritada keşfedebilecek.' 
-      : 'Randapp isn\'t just infrastructure for your salon. In the future, your customers will download the Randapp Mobile app to book appointments directly and discover your business on the map.',
-    notice: language === 'tr'
-      ? 'Önemli Bilgi: Mobil uygulama, gelecekte müşteri keşfi ve randevu takibi için planlanan ek bir kanaldır. Henüz canlı değildir.'
-      : 'Important: The mobile app is planned as a future customer discovery and appointment companion. It is not live yet.',
+    badge: t.marketing.mobile_app.badge,
+    title: t.marketing.mobile_app.title,
+    subtitle: t.marketing.mobile_app.subtitle,
+    notice: t.marketing.mobile_app.notice,
     features: [
       {
         icon: <MapPin className="w-6 h-6 text-accent" />,
-        title: language === 'tr' ? 'Lokasyon Bazlı Keşif' : 'Location-Based Discovery',
-        desc: language === 'tr' ? 'Müşteriler, çevrelerindeki en iyi salonları, klinikleri ve stüdyoları haritada görebilir.' : 'Customers can see the best salons, clinics, and studios around them on the map.'
+        title: t.marketing.mobile_app.feat_1_title,
+        desc: t.marketing.mobile_app.feat_1_desc
       },
       {
         icon: <CalendarHeart className="w-6 h-6 text-accent" />,
-        title: language === 'tr' ? 'Randevu Cüzdanı' : 'Appointment Wallet',
-        desc: language === 'tr' ? 'Kullanıcılar tek uygulamadan tüm eski ve yeni randevularını yönetebilir, iptal edebilir veya yeniden alabilir.' : 'Users can manage, cancel, or rebook all past and upcoming appointments from a single app.'
+        title: t.marketing.mobile_app.feat_2_title,
+        desc: t.marketing.mobile_app.feat_2_desc
       },
       {
         icon: <Star className="w-6 h-6 text-accent" />,
-        title: language === 'tr' ? 'Gerçek Puanlamalar' : 'Verified Ratings',
-        desc: language === 'tr' ? 'Hizmet alan müşteriler işletmenize puan vererek güvenilirliğinizi ve görünürlüğünüzü artırır.' : 'Verified customers can rate your business, increasing your trust and visibility.'
+        title: t.marketing.mobile_app.feat_3_title,
+        desc: t.marketing.mobile_app.feat_3_desc
       },
       {
         icon: <Gift className="w-6 h-6 text-accent" />,
-        title: language === 'tr' ? 'Kampanya ve Referans' : 'Campaigns & Referrals',
-        desc: language === 'tr' ? 'Kullanıcılar arkadaşlarını davet edebilir veya sadece mobil uygulamaya özel fırsatlardan yararlanabilir.' : 'Users can invite friends or benefit from mobile-app-only deals.'
+        title: t.marketing.mobile_app.feat_4_title,
+        desc: t.marketing.mobile_app.feat_4_desc
       }
     ],
-    cta: language === 'tr' ? 'Randapp platformuna bugün katılın ve yerinizi ayırtın.' : 'Join the Randapp platform today and reserve your spot.',
-    btn: language === 'tr' ? 'Demo Alın' : 'Get a Demo'
+    cta: t.marketing.mobile_app.cta,
+    btn: t.marketing.mobile_app.btn
   };
 
   return (

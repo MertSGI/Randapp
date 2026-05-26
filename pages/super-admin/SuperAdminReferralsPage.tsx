@@ -9,10 +9,10 @@ const SuperAdminReferralsPage: React.FC = () => {
     setCampaigns(referralService.getAllCampaignsForSuperAdmin());
   }, []);
 
-  const toggleStatus = (id: string, currentStatus: string) => {
+  const toggleStatus = (id: string, currentStatus: boolean) => {
     const updated = campaigns.map(c => {
       if (c.id === id) {
-        c.status = currentStatus === 'active' ? 'paused' : 'active';
+        c.active = !currentStatus;
         referralService.saveCampaign(c);
       }
       return c;
@@ -47,17 +47,17 @@ const SuperAdminReferralsPage: React.FC = () => {
             {campaigns.map(c => (
               <tr key={c.id}>
                 <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                  {c.name}
-                  {c.tenantId !== 'SUPER_ADMIN' && <span className="ml-2 text-xs text-blue-500">Müşteri Kampanyası (Tenant: {c.tenantId})</span>}
+                  {c.title}
+                  {c.tenantId !== 'global' && <span className="ml-2 text-xs text-blue-500">Müşteri Kampanyası (Tenant: {c.tenantId})</span>}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-400">
-                  {c.type}
+                  {c.campaignType}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                    c.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                    c.active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
                   }`}>
-                    {c.status}
+                    {c.active ? 'Active' : 'Paused'}
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-400">
@@ -65,10 +65,10 @@ const SuperAdminReferralsPage: React.FC = () => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <button 
-                    onClick={() => toggleStatus(c.id, c.status)}
-                    className={`${c.status === 'active' ? 'text-orange-600 hover:text-orange-900' : 'text-green-600 hover:text-green-900'}`}
+                    onClick={() => toggleStatus(c.id, c.active)}
+                    className={`${c.active ? 'text-orange-600 hover:text-orange-900' : 'text-green-600 hover:text-green-900'}`}
                   >
-                    {c.status === 'active' ? 'Durdur' : 'Başlat'}
+                    {c.active ? 'Durdur' : 'Başlat'}
                   </button>
                 </td>
               </tr>
