@@ -12,8 +12,11 @@ const ContactPage: React.FC = () => {
   const handleWhatsAppRedirect = (e: React.FormEvent) => {
     e.preventDefault();
     const text = t.marketing.contact.wa_template.replace('{salon}', salonName).replace('{city}', city).replace('{phone}', phone);
-    window.open(`https://wa.me/905555555555?text=${encodeURIComponent(text)}`, '_blank');
+    const num = (import.meta as any).env.VITE_SALES_WHATSAPP_NUMBER || '905555555555';
+    window.open(`https://wa.me/${num}?text=${encodeURIComponent(text)}`, '_blank');
   };
+
+  const directWaNum = (import.meta as any).env.VITE_SALES_WHATSAPP_NUMBER || '905555555555';
 
   return (
     <div className="py-12 px-4 max-w-4xl mx-auto">
@@ -51,7 +54,7 @@ const ContactPage: React.FC = () => {
             <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-700">
                <h3 className="text-xl font-bold mb-4 dark:text-white">{t.marketing.contact.fast_contact_title}</h3>
                <p className="text-gray-600 dark:text-gray-400 mb-6">{t.marketing.contact.fast_contact_desc}</p>
-               <a href="https://wa.me/905555555555" target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 w-full bg-[#25D366] text-white px-8 py-3.5 rounded-xl font-bold hover:bg-green-600 transition mb-4">
+               <a href={`https://wa.me/${directWaNum}`} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 w-full bg-[#25D366] text-white px-8 py-3.5 rounded-xl font-bold hover:bg-green-600 transition mb-4">
                   {t.marketing.contact.btn_wa}
                </a>
                <a href="mailto:iletisim@randapp.com" className="flex items-center justify-center gap-2 w-full bg-gray-100 dark:bg-slate-700 text-gray-800 dark:text-white px-8 py-3.5 rounded-xl font-bold hover:bg-gray-200 dark:hover:bg-slate-600 transition">

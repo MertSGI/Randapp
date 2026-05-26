@@ -27,7 +27,7 @@ const AdminLayout: React.FC = () => {
           </span>
           <div className="h-6 w-px bg-gray-300 dark:bg-slate-600"></div>
           <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-            {tenant ? tenant.name : (t.admin.panel_title || "Salon Admin Paneli")}
+            {tenant ? tenant.name : (t.admin.panel_title || "İşletme Admin Paneli")}
           </span>
         </div>
         <div className="flex items-center gap-4">

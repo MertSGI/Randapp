@@ -27,9 +27,9 @@ const SuperAdminDashboard: React.FC = () => {
   }, []);
 
   const handleApprove = async (tenantId: string) => {
-    if (window.confirm(trl.super_admin?.approve_prompt || 'Approve this salon for live bookings?')) {
+    if (window.confirm(trl.super_admin?.approve_prompt || 'Approve this business for live bookings?')) {
         await superAdminService.approveGoLive(tenantId);
-        alert(trl.super_admin?.approve_success || 'Salon is live.');
+        alert(trl.super_admin?.approve_success || 'Business is live.');
         loadData();
     }
   };
@@ -38,13 +38,13 @@ const SuperAdminDashboard: React.FC = () => {
     const note = window.prompt(trl.super_admin?.send_back_prompt || 'Enter note (optional):');
     if (note !== null) {
         await superAdminService.sendBackToSetup(tenantId, note);
-        alert(trl.super_admin?.send_back_success || 'Salon sent back.');
+        alert(trl.super_admin?.send_back_success || 'Business sent back.');
         loadData();
     }
   };
 
   const handlePause = async (tenantId: string) => {
-    if (window.confirm(trl.super_admin?.pause_prompt || 'Pause bookings for this salon?')) {
+    if (window.confirm(trl.super_admin?.pause_prompt || 'Pause bookings for this business?')) {
         await superAdminService.pauseBookings(tenantId);
         alert(trl.super_admin?.pause_success || 'Action completed.');
         loadData();

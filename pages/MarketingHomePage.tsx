@@ -57,7 +57,9 @@ const MarketingHomePage: React.FC = () => {
         </p>
         <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
           <Link to="/demo" className="bg-blue-600 text-white px-8 py-4 rounded-xl font-bold shadow-lg shadow-blue-500/30 hover:bg-blue-700 transition transform hover:-translate-y-1">
-            {t.marketing.home.btn_preview}
+            {(import.meta as any).env.VITE_PAYMENT_PROVIDER === 'iyzico' 
+              ? t.marketing.home.btn_trial 
+              : t.marketing.home.btn_preview}
           </Link>
           <Link to="/pricing" className="bg-white dark:bg-slate-800 text-gray-900 dark:text-white px-8 py-4 rounded-xl font-bold shadow-sm border border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 transition">
             {t.marketing.home.btn_pricing}
@@ -164,7 +166,9 @@ const MarketingHomePage: React.FC = () => {
         <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">{t.marketing.home.cta_bottom_title}</h2>
         <p className="text-blue-100 text-lg mb-10 max-w-2xl mx-auto">{t.marketing.home.cta_bottom_desc}</p>
         <Link to="/demo" className="inline-block bg-white text-blue-600 px-10 py-4 rounded-xl font-bold shadow-lg hover:bg-gray-50 transition transform hover:-translate-y-1">
-          {t.marketing.home.btn_preview}
+          {(import.meta as any).env.VITE_PAYMENT_PROVIDER === 'iyzico' 
+            ? t.marketing.home.btn_trial 
+            : t.marketing.home.btn_preview}
         </Link>
       </section>
     </div>
