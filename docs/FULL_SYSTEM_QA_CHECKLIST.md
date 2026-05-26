@@ -1,5 +1,27 @@
 # Randapp Full System QA Checklist
 
+## Feature Status: Current MVP vs Sandbox vs Roadmap
+**Current MVP/Mock Demo:**
+- Mini Website & Profile Page
+- Online Booking Logic (Staff & Service matching)
+- Plan Selection GUI
+- Super Admin Dashboard (UI)
+- Customer Profile & Memory (UI)
+
+**Sandbox/Backend-Ready (Awaiting Supabase Edge Functions):**
+- Iyzico Payment & Live Trial Checkout
+- Real Auth (Phone/OTP)
+- Reference Photo Storage
+- AI Interactions
+
+**Future Roadmap:**
+- Custom Domain Support
+- Mobile App / Customer Discovery Directory
+- Ratings and Reviews
+- AI Visualizations
+
+---
+
 ## Marketing Visitor (Platform Domain / Preview Root)
 - [x] **`/#/` (Homepage)**: Loads `MarketingHomePage`, shows "Kendi Salonumu Önizle" CTAs, clear product promise (Website + Booking + AI).
 - [x] **`/#/features`**: Loads `FeaturesPage`, explains features logically.

@@ -3,6 +3,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { translations } from '../utils/translations';
 import { Link } from 'react-router-dom';
 import { Smartphone, MapPin, Star, CalendarHeart, Gift } from 'lucide-react';
+import { FeatureBadge } from '../components/FeatureBadge';
 
 const MobileAppPage: React.FC = () => {
   const { language } = useLanguage();
@@ -44,11 +45,12 @@ const MobileAppPage: React.FC = () => {
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 pt-20 pb-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-            <div className="flex justify-center mb-6">
+            <div className="flex justify-center mb-6 items-center gap-3">
                <span className="inline-flex items-center gap-2 bg-blue-50 dark:bg-slate-700/50 text-accent font-semibold px-4 py-2 rounded-full text-sm">
                  <Smartphone className="w-5 h-5" />
                  {content.badge}
                </span>
+               <FeatureBadge status="roadmap" language={language} className="px-3 py-1" />
             </div>
             <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-6 max-w-4xl mx-auto">
               {content.title}

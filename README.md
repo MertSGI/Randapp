@@ -59,6 +59,29 @@ Projenin frontend kodu hiçbir canlı (live) Google Gemini API anahtarı veya se
 ### 2️⃣ Demoya Başlangıç
 Satış sunumları için uygulamaya hızlıca geçiş yapıp veri ekleten demo yardımcı araçları Footer'a sınırlandırılmış şekilde mock modunda bırakılmıştır.
 
+## Feature Status: Current MVP vs Sandbox vs Roadmap
+
+**Current MVP/Mock Demo:**
+- Mini Website & Profile Page
+- Online Booking Logic (Staff & Service matching)
+- Plan Selection GUI
+- Super Admin Dashboard (UI)
+- Customer Profile & Memory (UI)
+- Referral Campaign Settings (UI)
+
+**Sandbox/Backend-Ready (Awaiting Supabase Edge Functions):**
+- Iyzico Payment & Live Trial Checkout
+- Real Auth (Phone/OTP)
+- Reference Photo Storage
+- AI Inference Context Saving
+
+**Future Roadmap:**
+- Custom Domain Support
+- Mobile App / Customer Discovery Directory
+- Ratings and Reviews
+- AI Visualizations
+- Multi-venue mapping
+
 ---
 
 ## 🔐 Geliştirici Rolleri ve Yönetici (Admin) Erişimi

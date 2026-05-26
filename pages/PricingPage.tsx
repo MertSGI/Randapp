@@ -4,6 +4,7 @@ import { planService, PricingPlan, BillingPeriod } from '../services/planService
 import { useLanguage } from '../contexts/LanguageContext';
 import { translations } from '../utils/translations';
 import { resolvePaymentCta } from '../utils/paymentCtaResolver';
+import { FeatureBadge } from '../components/FeatureBadge';
 
 const PricingPage: React.FC = () => {
   const { language } = useLanguage();
@@ -103,10 +104,11 @@ const PricingPage: React.FC = () => {
                    <span className="text-sm border-b border-dashed border-gray-200 dark:border-slate-700 pb-1 w-full">{t.marketing.pricing.mini_website}</span>
                 </li>
                 {plan.customDomainEnabled && (
-                  <li className="flex gap-3">
-                     <span className="text-accent font-bold">✓</span>
-                     <span className="text-sm border-b border-dashed border-gray-200 dark:border-slate-700 pb-1 w-full flex flex-col">
+                  <li className="flex gap-3 items-start">
+                     <span className="text-accent font-bold mt-1">✓</span>
+                     <span className="text-sm border-b border-dashed border-gray-200 dark:border-slate-700 pb-1 w-full flex flex-col gap-1">
                          <span>{language === 'tr' ? 'Manuel özel domain desteği' : 'Manual custom domain support'}</span>
+                         <div><FeatureBadge status="backend_required" language={language} /></div>
                      </span>
                   </li>
                 )}
@@ -120,9 +122,12 @@ const PricingPage: React.FC = () => {
                   </li>
                 )}
                 {plan.aiVisualizationEnabled && (
-                  <li className="flex gap-3">
-                     <span className="text-accent font-bold">✓</span>
-                     <span className="text-sm border-b border-dashed border-gray-200 dark:border-slate-700 pb-1 w-full">{t.marketing.pricing.ai_visualization}</span>
+                  <li className="flex gap-3 items-start">
+                     <span className="text-accent font-bold mt-1">✓</span>
+                     <span className="text-sm border-b border-dashed border-gray-200 dark:border-slate-700 pb-1 w-full flex flex-col gap-1">
+                         <span>{t.marketing.pricing.ai_visualization}</span>
+                         <div><FeatureBadge status="roadmap" language={language} /></div>
+                     </span>
                   </li>
                 )}
             </ul>

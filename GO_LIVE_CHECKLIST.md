@@ -29,3 +29,23 @@
 - [ ] Set `GEMINI_API_KEY` securely in Supabase secrets.
 - [ ] Verify `aiMonthlyQuota` plan constraints are strictly checked in the Edge Function (not just frontend).
 - [ ] Ensure any Customer Memory future AI features have an explicit GDPR/KVKK Boolean opt-in column in `customers` table before enabling.
+
+## 7. Feature Status: Current MVP vs Sandbox vs Roadmap
+**Current MVP/Mock Demo:**
+- Mini Website & Profile Page
+- Online Booking Logic (Staff & Service matching)
+- Plan Selection GUI
+- Super Admin Dashboard (UI)
+- Customer Profile & Memory (UI)
+
+**Sandbox/Backend-Ready (Awaiting Supabase Edge Functions):**
+- Iyzico Payment & Live Trial Checkout
+- Real Auth (Phone/OTP)
+- Reference Photo Storage
+- AI Interactions
+
+**Future Roadmap:**
+- Custom Domain Support
+- Mobile App / Customer Discovery Directory
+- Ratings and Reviews
+- AI Visualizations
