@@ -3,7 +3,7 @@
 ## Marketing Visitor (Platform Domain / Preview Root)
 - [x] **`/#/` (Homepage)**: Loads `MarketingHomePage`, shows "Kendi Salonumu Önizle" CTAs, clear product promise (Website + Booking + AI).
 - [x] **`/#/features`**: Loads `FeaturesPage`, explains features logically.
-- [x] **`/#/pricing`**: Loads `PricingPage`, correct prices and plans, CTAs go to Demo or WhatsApp. No real payment gateways mock-fire accidentally.
+- [x] **`/#/pricing`**: Loads `PricingPage`, correct prices and plans. CTAs dynamically evaluate `VITE_PAYMENT_PROVIDER` and plan `trialEnabled` statuses avoiding fake live payment claims.
 - [x] **`/#/contact`**: Loads `ContactPage`, forms redirect to WhatsApp with proper lead data (Salon Adı, İl/İlçe, Telefon).
 - [x] **`/#/demo`**: Loads `DemoLandingPage` (Onboarding/Sales entry point).
 - [x] **Mobile Nav**: Hamburger menu works and closes on selection.
@@ -37,13 +37,13 @@
     - Toggle `is_public_profile_enabled` works.
     - Info updating and map link testing acts predictably.
     - "Site Önizlemesini Aç" generates a `/#/book?preview=true` link.
-- [x] **Other Tabs**: Viewing appointments, reports, services, staff, and mock subscriptions are fully contained.
+- [x] **Billing Tab**: Views current plan dynamically. Uses `resolvePaymentCta` to route to "Start Mock Trial" vs "WhatsApp Demo" based on modes.
 - [x] **Customer Memory**: The "Müşteriler" / "Customers" tab exists. Entering a matching email/phone during booking automatically ties the appointment to the simulated customer record. Owners can store notes and style-preference reference photos. KVKK disclaimers are present.
 
 ## Super Admin (`/super-admin`)
 - [x] **Login Mechanics**: `superadmin@randapp.com` can log in and see high-level overview.
 - [x] **Go-Live Approval**: Modifies status to `live`. Confirmed by window message.
-- [x] **Mock Subscription Toggle**: Super Admins can manually force a mock subscription toggle (Active / Past Due) for demo purposes, with clear warning that this is a mock developer utility.
+- [x] **Mock Subscription Toggle**: Super Admins can manually force a mock subscription toggle (Trialing / Active / Past Due) for demo purposes, with clear warnings.
 - [x] **Send-Back Flow**: "Send Back" correctly prompts for an optional note (using `window.prompt`) and sets state to `needs_changes` or `setup_in_progress` logically via backend mock service.
 - [x] **Tenant Management**: Actions are appropriately contained, unbuilt advanced actions trigger a "Sonraki fazda eklenecek" placeholder.
 - [x] **Payments & Diagnostics Test**: `SuperAdminPaymentTestPage` runs simulated sandbox responses successfully.
@@ -55,4 +55,4 @@
 - [x] **Demo Operations**: `demoSeeder.ts` is explicitly gated and ONLY functional in mock data mode to prevent destructive execution in production environments.
 
 ---
-**Status**: All core routing boundaries, role constraints, and presentation polish passes are completed. The platform is ready for Edge Function integration for genuine iyzico/Supabase endpoints.
+**Status**: Dynamic Try/Buy UI routing established. The platform is ready for Edge Function integration for genuine iyzico/Supabase endpoints.

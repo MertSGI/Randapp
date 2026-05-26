@@ -13,9 +13,10 @@
 - **No Deep AI Photo Analysis:** Customer faces are NOT subjected to biometric identification, facial recognition routines, or emotional profiling. Features are strictly limited to hair/eyebrow/style and beauty domain advice.
 - **Privacy Copy:** The UI explicitly states: "Your photo is only used for temporary processing to generate recommendations. Please do not upload images containing sensitive personal information."
 
-## Marketing Consent vs. Operational Data
-- Randapp collects email/phone essentially for operational contact (appointment scheduling, cancellation, reminders).
-- Strict separation is maintained between this and future marketing/campaign consent scopes.
+## Payments, Trial Billing & Card Data
+- **No Direct Card Handling:** All credit card data is securely collected directly by the payment provider (Iyzico). Randapp web application NEVER touches, stores, or processes PANs, CVVs, or full card numbers.
+- **Frontend Secrecy:** Iyzico secrets and API keys are strictly forbidden on the frontend bundle and only live in Supabase secrets mapping to `.env`.
+- **Checkout Integrity:** In production environments, payment amounts and Trial modes are cross-verified by Edge Functions referencing server-side plan definitions to prevent tampering.
 
 ## Future Production Action Items
 - **RLS:** Supabase Row Level Security must isolate `customers`, `notes`, and `photos` strictly by `tenant_id`. 

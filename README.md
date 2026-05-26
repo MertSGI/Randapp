@@ -16,7 +16,15 @@ Bu proje, bir kuaför, güzellik salonu veya herhangi bir randevulu sistem için
 - **AI Stil Görselleştirici (AI Visualizer) & Uzman Tavsiyesi [Faz 3]:** Uygulamaya güvenli yapay zeka özellikleri eklenmiştir. Yapay zeka tavsiyeleri (AI Recommendations) ve görselleştirme (AI Visualization) abonelik paketlerine bağlı olarak aktifleştirilir. Frontend tarafında hiçbir gerçek model anahtarı bulunmaz; üretim ortamı için yapılandırılan tüm AI istekleri Deno tabanlı `supabase/functions/` klasöründeki Edge Function iskeletlerine yönlendirilecektir.
 - **Güvenlilik ve KVKK Asistani:** Müşteri fotoğrafları, izinsiz bir şekilde ve varsayılan olarak yapay zekaya gönderilmez. Sadece `ai-visualizer` üzerinden müşterinin kendi rızası ile yüklediği anlık fotoğraflar kısa ömürlü analiz için kullanılır ve saklanmaz. Yüz tanıma yoktur.
 - **Üretim Hazırlığı (Sandbox Mimarisi) [Faz 4]:** Iyzico ödeme sistemleri ve tam gerçek Supabase veri modeli şema iskeletleri halinde hazırlanmıştır. Uygulamanın içerisinde canlı Iyzico testleri veya gizli üretim anahtarları yoktur. Tüm hassas işlemler "Edge Functions" ve "RLS" üzerinden planlanmıştır.
+- **Dinamik Ödeme CTA Mimari [Faz 5]:** Pricing ve demo sayfaları CTA butonları mevcut ödeme ortamına göre dinamik çalışır. (Demo/Satış Talebi -> Ücretsiz Deneme / Güvenli Ödemeye Geçiş).
 - **Uygulama İçi Ön Bellekleme (Service Worker Yönetimi):** Geliştirme kolaylığı ve tutarsız önbelleği engellemek için Service Worker, cache stratejisi sonlandırılana kadar devre dışı bırakılmıştır. Lütfen manuel olarak aktif etmeyiniz.
+
+## Payment & Trial Architecture Notes
+- Current MVP/mock mode **does not charge cards**. Mock trial start creates a local flag state.
+- When `VITE_PAYMENT_PROVIDER` is enabled to `sandbox` or `production`, pricing CTAs shift automatically to "Start 7-Day Free Trial" or "Secure Checkout".
+- In production, trial starts with secure payment provider card collection. If not cancelled, it continues into the selected subscription.
+- Trial/subscription lifecycle (cancel/sync) relies entirely on backend state and Iyzico webhook handling. 
+- All real Iyzico calls must happen through Supabase Edge Functions. Iyzico secrets (like Gemini keys) are **never** exposed in the frontend.
 
 ---
 

@@ -2,14 +2,20 @@ import { supabase } from './supabaseClient';
 import { dataProvider } from './dataProvider';
 import { planService, PricingPlan } from './planService';
 
-export type SubscriptionStatus = 'trial' | 'active' | 'past_due' | 'canceled' | 'suspended';
+export type SubscriptionStatus = 'trialing' | 'active' | 'past_due' | 'cancelled' | 'expired' | 'none';
 
 export interface TenantSubscription {
   tenantId: string;
   planId: string;
   status: SubscriptionStatus;
-  currentPeriodEnd: string;
+  trialStart?: string;
+  trialEnd?: string;
+  currentPeriodStart?: string;
+  currentPeriodEnd?: string;
   cancelAtPeriodEnd: boolean;
+  paymentProvider?: string;
+  providerSubscriptionId?: string;
+  lastPaymentStatus?: string;
 }
 
 export interface TenantUsage {
@@ -31,27 +37,38 @@ export const subscriptionService = {
         .maybeSingle();
       if (error) {
         console.error("Error fetching subscription:", error);
-        return null; // fallback or handle error
+        return null;
       }
       if (data) {
         return {
           tenantId: data.tenant_id,
           planId: data.plan_id,
           status: data.status,
+          trialStart: data.trial_start,
+          trialEnd: data.trial_end,
+          currentPeriodStart: data.current_period_start,
           currentPeriodEnd: data.current_period_end,
-          cancelAtPeriodEnd: data.cancel_at_period_end
+          cancelAtPeriodEnd: data.cancel_at_period_end,
+          paymentProvider: data.provider,
+          providerSubscriptionId: data.provider_subscription_id
         };
       }
       return null;
     }
 
     // Mock Mode
+    const saved = localStorage.getItem(`mock_subscription_${tenantId}`);
+    if (saved) {
+      return JSON.parse(saved);
+    }
     return {
       tenantId,
       planId: 'professional',
       status: 'active',
+      currentPeriodStart: new Date().toISOString(),
       currentPeriodEnd: new Date(new Date().setMonth(new Date().getMonth() + 1)).toISOString(),
-      cancelAtPeriodEnd: false
+      cancelAtPeriodEnd: false,
+      paymentProvider: 'mock'
     };
   },
 
@@ -66,8 +83,6 @@ export const subscriptionService = {
     const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
 
     if (mode === 'supabase') {
-      // In a real app, you might do a `count` query on staff, services, and appointments for current month
-      // Here we will just provide dummy values to emulate usage in Supabase for now until usage tracking logic is implemented
       return {
         staffCount: 2,
         serviceCount: 5,
@@ -84,7 +99,7 @@ export const subscriptionService = {
     return {
       staffCount: staffList.length,
       serviceCount: servicesList.length,
-      monthlyAppointmentsCount: 45, // Dummy value for mock
+      monthlyAppointmentsCount: 45,
       aiUsageCount: aiUsage
     };
   },
@@ -93,7 +108,6 @@ export const subscriptionService = {
     const plan = await this.getPlanForTenant(tenantId);
     const usage = await this.getTenantUsage(tenantId);
     if (!plan) return false;
-    // Final enforcement MUST be server-side / RLS / Edge function in production!
     return usage.staffCount < plan.maxStaff;
   },
 
@@ -101,7 +115,6 @@ export const subscriptionService = {
     const plan = await this.getPlanForTenant(tenantId);
     const usage = await this.getTenantUsage(tenantId);
     if (!plan) return false;
-    // Final enforcement MUST be server-side!
     return usage.serviceCount < plan.maxServices;
   },
 
@@ -109,7 +122,6 @@ export const subscriptionService = {
     const plan = await this.getPlanForTenant(tenantId);
     const usage = await this.getTenantUsage(tenantId);
     if (!plan) return false;
-    // Final enforcement MUST be server-side!
     return usage.monthlyAppointmentsCount < plan.maxMonthlyAppointments;
   },
 
@@ -129,13 +141,13 @@ export const subscriptionService = {
           body: {
             tenantId,
             planId,
+            billingCycle: 'monthly', // default
             successUrl: `${window.location.origin}/admin?tab=kurulum`,
             cancelUrl: `${window.location.origin}/admin?tab=abonelik`
           }
         });
 
         if (error) {
-           // error.context usually contains the standard HTTP response body from supabase edge functions if handled
            let parsedError = error;
            try {
              if (error.context && typeof error.context.json === 'function') {
@@ -185,8 +197,29 @@ export const subscriptionService = {
     }
 
     // Mock Mode
-    console.log(`[Mock Mode] Starting checkout for ${tenantId} -> ${planId}`);
-    return `https://mock-checkout-url.com/pay/${planId}?tenant=${tenantId}`;
+    console.log(`[Mock Mode] Starting checkout/trial for ${tenantId} -> ${planId}`);
+    const plan = planService.getPlan(planId);
+    
+    if (plan && plan.trialDays && plan.trialDays > 0) {
+        const mockSub: TenantSubscription = {
+            tenantId,
+            planId,
+            status: 'trialing',
+            trialStart: new Date().toISOString(),
+            trialEnd: new Date(new Date().setDate(new Date().getDate() + plan.trialDays)).toISOString(),
+            currentPeriodStart: new Date().toISOString(),
+            currentPeriodEnd: new Date(new Date().setMonth(new Date().getMonth() + 1)).toISOString(),
+            cancelAtPeriodEnd: false,
+            paymentProvider: 'mock'
+        };
+        localStorage.setItem(`mock_subscription_${tenantId}`, JSON.stringify(mockSub));
+        alert("Mock deneme başlatıldı. Karttan ücret alınmadı.");
+        window.location.reload();
+        return '';
+    } else {
+        alert("Mock Live Payment Checkout Redirect (In an actual flow, this would redirect to Iyzico).");
+        return `https://mock-checkout-url.com/pay/${planId}?tenant=${tenantId}`;
+    }
   },
 
   async openBillingPortal(tenantId: string): Promise<void> {
@@ -205,7 +238,6 @@ export const subscriptionService = {
         if (error) throw error;
         
         if (data?.portalUrl) {
-          // Sometimes it might just be the same page with a notification
           if (data.note) alert(data.note);
           if (data.portalUrl.startsWith('http') || data.portalUrl.startsWith('/')) {
               window.location.href = data.portalUrl;

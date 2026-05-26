@@ -53,7 +53,7 @@ export interface Tenant {
   slug: string;
   subdomain?: string;
   customDomain?: string;
-  status: 'trial' | 'active' | 'past_due' | 'suspended';
+  status: 'trialing' | 'active' | 'past_due' | 'cancelled' | 'expired' | 'none';
   planId?: string;
   createdAt: string;
   updatedAt: string;

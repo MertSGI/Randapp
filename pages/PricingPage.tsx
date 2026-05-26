@@ -3,12 +3,15 @@ import { Link } from 'react-router-dom';
 import { planService, PricingPlan, BillingPeriod } from '../services/planService';
 import { useLanguage } from '../contexts/LanguageContext';
 import { translations } from '../utils/translations';
+import { resolvePaymentCta } from '../utils/paymentCtaResolver';
 
 const PricingPage: React.FC = () => {
   const { language } = useLanguage();
   const t = translations[language];
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>('monthly');
   const [plans, setPlans] = useState<PricingPlan[]>([]);
+  
+  const paymentMode = ((import.meta as any).env.VITE_PAYMENT_PROVIDER as 'mock' | 'sandbox' | 'production') || 'mock';
 
   useEffect(() => {
     // Only display active plans
@@ -54,6 +57,12 @@ const PricingPage: React.FC = () => {
           // For annual, display monthly equivalent
           const displayPrice = billingPeriod === 'annual' ? (price / 12) : price;
           const trialWording = t.marketing.pricing.trial_wording_plan?.replace('{days}', plan.trialDays?.toString() || '7');
+
+          const ctaConfig = resolvePaymentCta({
+            paymentMode,
+            plan,
+            language
+          });
 
           return (
           <div key={plan.id} className={`bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border ${isRecommended ? 'border-accent shadow-accent/20 shadow-xl relative transform md:-translate-y-2' : 'border-gray-200 dark:border-slate-700'} flex flex-col`}>
@@ -118,12 +127,18 @@ const PricingPage: React.FC = () => {
                 )}
             </ul>
             <div className="space-y-3 mt-auto">
-               <Link to="/demo" className={`block w-full text-center font-bold py-3.5 rounded-xl transition ${isRecommended ? 'bg-accent text-white hover:bg-blue-600 shadow-lg' : 'bg-gray-100 dark:bg-slate-700 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-slate-600'}`}>
-                 {t.marketing.pricing.btn_preview}
-               </Link>
-               <a href={`https://wa.me/905555555555?text=${encodeURIComponent(t.marketing.pricing.sales_wa_text.replace('{planName}', plan.name).replace('{period}', billingPeriod === 'annual' ? t.marketing.pricing.annual : t.marketing.pricing.monthly))}`} target="_blank" rel="noreferrer" className="block w-full text-center text-sm font-semibold text-gray-500 hover:text-gray-800 dark:hover:text-white py-2">
-                 {t.marketing.pricing.btn_sales}
-               </a>
+               {ctaConfig.safetyMessage && (
+                 <p className="text-xs text-yellow-600 dark:text-yellow-500 mb-2">{ctaConfig.safetyMessage}</p>
+               )}
+               {ctaConfig.actionType === 'talk_to_sales' ? (
+                 <a href={`https://wa.me/905555555555?text=${encodeURIComponent(t.marketing.pricing.sales_wa_text.replace('{planName}', plan.name).replace('{period}', billingPeriod === 'annual' ? t.marketing.pricing.annual : t.marketing.pricing.monthly))}`} target="_blank" rel="noreferrer" className={`block w-full text-center font-bold py-3.5 rounded-xl transition bg-gray-100 dark:bg-slate-700 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-slate-600`}>
+                   {ctaConfig.label}
+                 </a>
+               ) : (
+                 <Link to="/demo" className={`block w-full text-center font-bold py-3.5 rounded-xl transition ${isRecommended ? 'bg-accent text-white hover:bg-blue-600 shadow-lg' : 'bg-gray-100 dark:bg-slate-700 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-slate-600'}`}>
+                   {ctaConfig.label}
+                 </Link>
+               )}
             </div>
           </div>
         )})}
@@ -139,3 +154,4 @@ const PricingPage: React.FC = () => {
 };
 
 export default PricingPage;
+

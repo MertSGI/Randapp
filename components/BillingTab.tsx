@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTenant } from '../contexts/TenantContext';
 import { subscriptionService, TenantSubscription, TenantUsage } from '../services/subscriptionService';
 import { planService, PricingPlan } from '../services/planService';
+import { resolvePaymentCta } from '../utils/paymentCtaResolver';
 
 const BillingTab: React.FC = () => {
   const { tenant } = useTenant();
@@ -72,11 +73,12 @@ const BillingTab: React.FC = () => {
             onChange={(e) => setSubscription(prev => prev ? {...prev, status: e.target.value as any} : null)}
             className="text-sm bg-white border border-purple-300 rounded px-2 py-1 outline-none text-gray-800"
           >
-            <option value="trial">Trial</option>
+            <option value="trialing">Trialing</option>
             <option value="active">Active</option>
             <option value="past_due">Past Due</option>
-            <option value="canceled">Canceled</option>
-            <option value="suspended">Suspended</option>
+            <option value="cancelled">Cancelled</option>
+            <option value="expired">Expired</option>
+            <option value="none">None</option>
           </select>
         </div>
       )}
@@ -87,7 +89,7 @@ const BillingTab: React.FC = () => {
         
         {(import.meta as any).env.VITE_PAYMENT_PROVIDER === 'mock' && (
           <div className="mb-6 bg-yellow-50 border border-yellow-500 text-yellow-800 p-4 rounded-md text-sm">
-            <strong>Bilgi:</strong> Ödeme altyapısı test modundadır. Canlı ödeme henüz aktif değildir. Abonelik başlatmak için Randapp ekibiyle iletişime geçin.
+            <strong>Bilgi:</strong> Ödeme altyapısı test modundadır. Canlı ödeme henüz aktif değildir. Kart bilgisi alınmaz.
           </div>
         )}
 
@@ -105,17 +107,24 @@ const BillingTab: React.FC = () => {
           </div>
         )}
 
-        {subscription?.status === 'suspended' && (
+        {subscription?.status === 'expired' && (
           <div className="mb-6 bg-red-100 border border-red-500 p-4 rounded-md">
-            <h3 className="text-red-900 font-bold">Hesap Askıya Alındı</h3>
-            <p className="text-red-800 text-sm mt-1">Ödeme gecikmesi nedeniyle hesabınız askıya alınmıştır. Lütfen destek ekibiyle iletişime geçin veya ödeme yapın.</p>
+            <h3 className="text-red-900 font-bold">Abonelik Süresi Doldu</h3>
+            <p className="text-red-800 text-sm mt-1">Süreniz dolduğu için hesabınız askıya alınmıştır. Hizmetinize devam etmek için yeni bir plan seçin.</p>
           </div>
         )}
 
-        {subscription?.status === 'canceled' && (
+        {subscription?.status === 'cancelled' && (
           <div className="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded-r-md">
             <h3 className="text-red-800 font-medium">Abonelik İptal Edildi</h3>
             <p className="text-red-700 text-sm mt-1">Aboneliğiniz sonlandırılmıştır. Sistem erişiminiz kısıtlanmıştır, hizmetinize devam etmek için lütfen yeni bir plan seçin.</p>
+          </div>
+        )}
+
+        {subscription?.status === 'trialing' && subscription?.trialEnd && (
+          <div className="mb-6 bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-md">
+            <h3 className="text-blue-800 font-medium">Deneme Süresi Aktif</h3>
+            <p className="text-blue-700 text-sm mt-1">{new Date(subscription.trialEnd).toLocaleDateString('tr-TR')} tarihine kadar ücretsiz deneme süreniz devam etmektedir.</p>
           </div>
         )}
 
@@ -129,7 +138,7 @@ const BillingTab: React.FC = () => {
               <p className="text-sm text-gray-500 dark:text-gray-400">Durum</p>
               <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium uppercase ${
                 subscription?.status === 'active' ? 'bg-green-100 text-green-800' :
-                subscription?.status === 'trial' ? 'bg-blue-100 text-blue-800' :
+                subscription?.status === 'trialing' ? 'bg-blue-100 text-blue-800' :
                 subscription?.status === 'past_due' ? 'bg-yellow-100 text-yellow-800' :
                 'bg-gray-100 text-gray-800'
               }`}>
@@ -251,22 +260,38 @@ const BillingTab: React.FC = () => {
                 </li>
               </ul>
               
-              <button 
-                onClick={(import.meta as any).env.VITE_PAYMENT_PROVIDER === 'mock' 
-                   ? () => window.open(`https://wa.me/${(import.meta as any).env.VITE_SALES_WHATSAPP_NUMBER || ''}?text=Merhaba, ${plan.name} planına geçmek / abonelik başlatmak istiyorum.`, '_blank')
-                   : () => handleCheckout(plan.id)
-                }
-                disabled={currentPlan?.id === plan.id}
-                className={`w-full py-3 px-4 rounded-md font-bold text-center transition-colors ${
-                  currentPlan?.id === plan.id 
-                    ? 'bg-gray-100 dark:bg-slate-700 text-gray-400 cursor-not-allowed' 
-                    : 'bg-accent text-white hover:bg-blue-600'
-                }`}
-              >
-                {currentPlan?.id === plan.id 
-                    ? 'Mevcut Plan' 
-                    : ((import.meta as any).env.VITE_PAYMENT_PROVIDER === 'mock' ? 'Abonelik İçin Görüş' : 'Bu Plana Geç')}
-              </button>
+              {(() => {
+                const ctaConfig = resolvePaymentCta({
+                  paymentMode: ((import.meta as any).env.VITE_PAYMENT_PROVIDER as any) || 'mock',
+                  plan,
+                  currentSubscriptionPlanId: currentPlan?.id,
+                  subscriptionStatus: subscription?.status as any,
+                  language: 'tr'
+                });
+
+                return (
+                  <div className="mt-auto space-y-3">
+                    {ctaConfig.safetyMessage && (
+                      <p className="text-xs text-yellow-600 dark:text-yellow-500 text-center">{ctaConfig.safetyMessage}</p>
+                    )}
+                    <button 
+                      onClick={
+                        ctaConfig.actionType === 'talk_to_sales' 
+                          ? () => window.open(`https://wa.me/${(import.meta as any).env.VITE_SALES_WHATSAPP_NUMBER || ''}?text=Merhaba, ${plan.name} planına geçmek / abonelik başlatmak istiyorum.`, '_blank')
+                          : () => handleCheckout(plan.id)
+                      }
+                      disabled={ctaConfig.disabled}
+                      className={`w-full py-3 px-4 rounded-md font-bold text-center transition-colors ${
+                        ctaConfig.disabled
+                          ? 'bg-gray-100 dark:bg-slate-700 text-gray-400 cursor-not-allowed' 
+                          : 'bg-accent text-white hover:bg-blue-600'
+                      }`}
+                    >
+                      {ctaConfig.label}
+                    </button>
+                  </div>
+                );
+              })()}
             </div>
           ))}
         </div>

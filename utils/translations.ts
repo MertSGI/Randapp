@@ -183,7 +183,7 @@ export const translations = {
         ai_recommendation: 'AI Recommendations',
         ai_visualization: 'Premium AI Visualization',
         ai_quota: '{quota} AI Requests / month',
-        trial_wording_plan: '{days}-day free trial. Production payment flow will require secure card collection and automatic continuation unless cancelled.',
+        trial_wording_plan: '{days}-day free trial. If you do not cancel before the trial ends, your subscription continues on the selected plan. You can cancel from billing settings. No card is charged in mock mode.',
         btn_preview: 'Preview My Salon',
         btn_sales: 'Contact Sales',
         sales_wa_text: 'Hello, I would like to get information about the Randapp {planName} ({period}) plan.'
@@ -677,7 +677,7 @@ export const translations = {
         ai_recommendation: 'Yapay Zeka Tavsiyeleri',
         ai_visualization: 'Premium AI Görselleştirme',
         ai_quota: '{quota} AI İsteği / ay',
-        trial_wording_plan: '{days} gün ücretsiz deneme. Canlı ödeme aşamasında güvenli kart alma ve iptal edilmezse seçilen paketten otomatik devam etme akışı gerekecektir.',
+        trial_wording_plan: '{days} gün ücretsiz deneme. Deneme süresi bitmeden iptal etmezseniz aboneliğiniz otomatik devam eder. Faturalandırma ayarlarından iptal edebilirsiniz. Mock modda karttan ücret alınmaz.',
         btn_preview: 'Kendi Salonumu Önizle',
         btn_sales: 'Satış Ekibiyle Görüş',
         sales_wa_text: 'Merhaba, Randapp {planName} ({period}) planı hakkında bilgi almak istiyorum.'

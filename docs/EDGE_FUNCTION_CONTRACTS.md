@@ -3,24 +3,36 @@
 The following documents the planned Supabase Edge Functions for Randapp production. 
 All functions are isolated and securely hold secrets like `GEMINI_API_KEY` and `IYZICO_API_KEY`.
 
-## 1. checkout-session
+## 1. create-checkout-session
 * **Path**: `/functions/v1/create-checkout-session`
-* **Input Payload**: `tenantId`, `planId`, `successUrl`, `cancelUrl`
+* **Input Payload**: `tenantId`, `planId`, `billingCycle`, `successUrl`, `cancelUrl`
 * **Output Payload**: `checkoutUrl`, `sessionId`
 * **Auth Requirement**: Authenticated Salon Admin
 * **Secrets Required**: `IYZICO_API_KEY`, `IYZICO_SECRET_KEY`
-* **Side Effects**: Creates a session in provider, logs to `audit_logs`.
-* **Mock Fallback**: Directly simulates a success redirect.
+* **Side Effects**: Reads server-side plan configs (price, trialEnabled, trialDays). Creates an Iyzico subscription checkout request in sandbox/production. Logs to `audit_logs`.
+* **Mock Fallback**: Directly simulates a success redirect or local mock status update.
+* **Important Guidelines**: 
+  - Price must be validated from server-side database, not frontend payload.
+  - In a real iyzico subscription flow, trial plans should be configured with `trialPeriodDays` dynamically based on plan definitions.
+  - In the trial flow, card validation/card collection behavior is entirely payment-provider controlled.
+  - Randapp frontend NEVER signs iyzico requests directly or stores checkout keys.
 
 ## 2. payment-webhook
 * **Path**: `/functions/v1/payment-webhook`
-* **Input Payload**: Iyzico payload.
+* **Input Payload**: Iyzico generic event payload.
 * **Output Payload**: HTTP 200
 * **Auth Requirement**: Iyzico Signature Verification
 * **Secrets Required**: `IYZICO_SECRET_KEY`
-* **Side Effects**: Inserts into `payments`, updates `subscriptions` status, logs to `audit_logs`.
+* **Side Effects**: Inserts into `payments`, safely updates `subscriptions` status natively (idempotent), logs to `audit_logs`. Must handle retries idempotently.
 
-## 3. ai-recommendation
+## 3. subscription-sync
+* **Path**: `/functions/v1/subscription-sync`
+* **Input Payload**: `tenantId` (optional for bulk job)
+* **Output Payload**: `{ status: "synced" }`
+* **Auth Requirement**: System cron/cron expression or internal verified fetch.
+* **Side Effects**: Polls Iyzico API to reconcile out-of-sync subscriptions and past-due statuses.
+
+## 4. ai-recommendation
 * **Path**: `/functions/v1/ai-recommendation`
 * **Input Payload**: `tenantId`, `prompt`, `imageBase64` (Optional)
 * **Output Payload**: `{ text: "..." }`

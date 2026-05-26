@@ -23,8 +23,10 @@ This document outlines the ideal flow for demonstrating Randapp to salon owners 
 - **Goal:** Set the stage. Identify the pain points (notebooks, Instagram DMs, lost customer preferences).
 - **Say:** "Managing a salon means juggling Instagram DMs for appointments, remembering hair color formulas in your head, and trying to look professional. Randapp solves this by giving you a digital storefront, a smart appointment system, and a customer memory hub in one place. Best of all, it's incredibly simple to set up."
 
-## 2. Marketing Site & Instant Demo
+## 2. Marketing Site & Dynamic Pricing (Phase 5)
 - **Show:** Scroll through the features page.
+- **Action:** Open the Pricing page (`/#/pricing`).
+- **Explain:** "Our pricing CTAs are dynamic. During pre-launch where payment environments are set to Mock, the buttons say 'Abonelik İçin Görüş' (Talk to Sales). When we turn on Iyzico integration, these same CTAs will automatically change to 'Start 7-Day Free Trial' (7 Gün Ücretsiz Dene)."
 - **Action:** Click "Preview My Salon" (Kendi Salonumu Önizle) or navigate to `/demo`.
 - **Explain:** "We let business owners see what their app looks like instantly before they even sign up. They just enter their name, and we generate a personalized landing page."
 

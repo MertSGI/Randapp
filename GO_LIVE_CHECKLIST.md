@@ -7,10 +7,13 @@
 - [ ] Lock down storage buckets so reference photos are 100% private.
 
 ## 2. Payments (iyzico)
-- [ ] Complete Sandbox Webhook integration.
-- [ ] Test real success/failure card scenarios in Sandbox.
+- [ ] Connect Edge Functions for `create-checkout-session` and `payment-webhook`.
+- [ ] Trial/checkout CTAs should automatically replace Demo/Sales CTAs when `VITE_PAYMENT_PROVIDER` is set to sandbox/production.
+- [ ] Test real trials, secure card collection, and trial-to-paid auto-continuation in Sandbox.
+- [ ] Verify cancellation flows (cancelling trial vs. cancelling active subscription).
+- [ ] Complete sandbox webhook idempotency integration.
 - [ ] Migrate credentials from sandbox to live environment.
-- [ ] Super Admin triggers production mode flag.
+- [ ] Never place iyzico secrets in frontend code.
 
 ## 3. Communication Integration
 - [ ] Connect transactional SMS provider for appointment confirmations.

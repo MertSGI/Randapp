@@ -48,7 +48,7 @@ export const goLiveService = {
 
     const blockingReasons: string[] = [];
     
-    if (sub?.status !== 'active' && sub?.status !== 'trial') {
+    if (sub?.status !== 'active' && sub?.status !== 'trialing') {
       blockingReasons.push('Abonelik durumu aktif değil.');
     }
     if (!checklist.servicesCompleted) {
@@ -71,7 +71,7 @@ export const goLiveService = {
 
   async canTenantAcceptBookings(tenantId: string): Promise<{ allowed: boolean; reason?: string }> {
     const sub = await subscriptionService.getCurrentSubscription(tenantId);
-    if (sub?.status === 'suspended' || sub?.status === 'canceled') {
+    if (sub?.status === 'expired' || sub?.status === 'cancelled') {
       return { allowed: false, reason: 'Bu salonun online randevu sistemi geçici olarak kullanılamıyor.' };
     }
 
