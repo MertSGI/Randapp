@@ -26,7 +26,7 @@ This document outlines the ideal flow for demonstrating Randapp to salon owners 
 ## 2. Marketing Site & Dynamic Pricing (Phase 5)
 - **Show:** Scroll through the features page.
 - **Action:** Open the Pricing page (`/#/pricing`).
-- **Explain:** "Our pricing CTAs are dynamic. During pre-launch where payment environments are set to Mock, the buttons say 'Abonelik İçin Görüş' (Talk to Sales). When we turn on Iyzico integration, these same CTAs will automatically change to 'Start 7-Day Free Trial' (7 Gün Ücretsiz Dene)."
+- **Explain:** "Our pricing CTAs are exactly what the final customer sees. They say 'Start 7-Day Free Trial' (7 Gün Ücretsiz Dene) or 'Talk to Sales' for enterprise plans. Because payment integration is isolated for the final production rollout, clicking the trial button displays a professional placeholder message explaining that secure checkout will activate soon."
 - **Action:** Click "Preview My Salon" (Kendi Salonumu Önizle) or navigate to `/demo`.
 - **Explain:** "We let business owners see what their app looks like instantly before they even sign up. They just enter their name, and we generate a personalized landing page."
 

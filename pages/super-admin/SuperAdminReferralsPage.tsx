@@ -63,12 +63,23 @@ const SuperAdminReferralsPage: React.FC = () => {
                 <td className="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-400">
                   {c.rewardValue} {c.rewardType}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end gap-3">
                   <button 
                     onClick={() => toggleStatus(c.id, c.active)}
                     className={`${c.active ? 'text-orange-600 hover:text-orange-900' : 'text-green-600 hover:text-green-900'}`}
                   >
                     {c.active ? 'Durdur' : 'Başlat'}
+                  </button>
+                  <button 
+                    onClick={() => {
+                        if (window.confirm('Bu kampanyayı silmek istediğinizden emin misiniz?')) {
+                            referralService.deleteCampaign(c.id);
+                            setCampaigns(referralService.getAllCampaignsForSuperAdmin());
+                        }
+                    }}
+                    className="text-gray-400 hover:text-red-600 transition"
+                  >
+                    Sil
                   </button>
                 </td>
               </tr>

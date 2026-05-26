@@ -24,6 +24,9 @@ export interface PricingPlan {
   isActive: boolean;
   isRecommended: boolean;
   trialDays: number;
+  providerProductReferenceCode?: string;
+  providerPlanReferenceCodeMonthly?: string;
+  providerPlanReferenceCodeAnnual?: string;
 }
 
 export type BillingPeriod = 'monthly' | 'annual';
@@ -120,7 +123,7 @@ export const planService = {
         return JSON.parse(raw);
       } catch(e) {}
     }
-    return DEFAULT_PLANS;
+    return JSON.parse(JSON.stringify(DEFAULT_PLANS));
   },
   savePlanInfos(plans: Record<string, PricingPlan>) {
     localStorage.setItem('randapp_plans', JSON.stringify(plans));

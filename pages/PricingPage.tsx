@@ -140,9 +140,17 @@ const PricingPage: React.FC = () => {
                    {ctaConfig.label}
                  </a>
                ) : (
-                 <Link to="/demo" className={`block w-full text-center font-bold py-3.5 rounded-xl transition ${isRecommended ? 'bg-accent text-white hover:bg-blue-600 shadow-lg' : 'bg-gray-100 dark:bg-slate-700 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-slate-600'}`}>
+                 <button 
+                   onClick={(e) => {
+                     e.preventDefault();
+                     const alertMsg = language === 'tr' 
+                       ? 'Ödeme entegrasyonu henüz yapılandırılmadı. iyzico ve Supabase Edge Functions aktif edildiğinde bu buton güvenli ödeme akışını başlatacaktır.' 
+                       : 'Payment integration is not configured yet. This button will start secure checkout when iyzico and Supabase Edge Functions are enabled.';
+                     window.alert(alertMsg);
+                   }}
+                   className={`block w-full text-center font-bold py-3.5 rounded-xl transition ${isRecommended ? 'bg-accent text-white hover:bg-blue-600 shadow-lg' : 'bg-gray-100 dark:bg-slate-700 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-slate-600'}`}>
                    {ctaConfig.label}
-                 </Link>
+                 </button>
                )}
             </div>
           </div>

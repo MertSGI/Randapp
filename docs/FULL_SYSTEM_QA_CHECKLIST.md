@@ -25,7 +25,7 @@
 ## Marketing Visitor (Platform Domain / Preview Root)
 - [x] **`/#/` (Homepage)**: Loads `MarketingHomePage`, shows "Kendi Salonumu Önizle" CTAs, clear product promise (Website + Booking + AI).
 - [x] **`/#/features`**: Loads `FeaturesPage`, explains features logically.
-- [x] **`/#/pricing`**: Loads `PricingPage`, correct prices and plans. CTAs dynamically evaluate `VITE_PAYMENT_PROVIDER` and plan `trialEnabled` statuses avoiding fake live payment claims.
+- [x] **`/#/pricing`**: Loads `PricingPage`, correct prices and plans. Checkout and trial CTAs safely show an alert explaining that secure checkout will activate in the next integration phase.
 - [x] **`/#/contact`**: Loads `ContactPage`, forms redirect to WhatsApp with proper lead data (Salon Adı, İl/İlçe, Telefon).
 - [x] **`/#/demo`**: Loads `DemoLandingPage` (Onboarding/Sales entry point).
 - [x] **Mobile Nav**: Hamburger menu works and closes on selection.

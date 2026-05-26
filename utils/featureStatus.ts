@@ -4,7 +4,8 @@ export type FeatureStatus =
   | 'sandbox_ready'
   | 'backend_required'
   | 'roadmap'
-  | 'production_ready';
+  | 'production_ready'
+  | 'ai_backend_required';
 
 export interface FeatureDefinition {
   id: string;
@@ -98,7 +99,7 @@ export const FEATURE_STATUSES: Record<string, FeatureDefinition> = {
     id: 'ai_visualization',
     nameEn: 'AI Visualization',
     nameTr: 'Yapay Zeka Görselleştirme',
-    status: 'roadmap'
+    status: 'ai_backend_required'
   },
   mobile_app: {
     id: 'mobile_app',
@@ -136,9 +137,10 @@ export const getFeatureStatusBadge = (status: FeatureStatus, language: 'en' | 't
   const badges = {
     live_in_mock: { en: 'Mock Demo', tr: 'Mock Demo', color: 'bg-yellow-100 text-yellow-800 border-yellow-200' },
     pilot_ready: { en: 'Pilot-ready', tr: 'Pilot Hazır', color: 'bg-green-100 text-green-800 border-green-200' },
-    sandbox_ready: { en: 'Sandbox Ready', tr: 'Sandbox Hazır', color: 'bg-blue-100 text-blue-800 border-blue-200' },
+    sandbox_ready: { en: 'Ready for payment integration', tr: 'Ödeme entegrasyonuna hazır', color: 'bg-blue-100 text-blue-800 border-blue-200' },
     backend_required: { en: 'Backend Required', tr: 'Backend Gerekli', color: 'bg-purple-100 text-purple-800 border-purple-200' },
-    roadmap: { en: 'Roadmap', tr: 'Yol Haritası', color: 'bg-gray-100 text-gray-800 border-gray-200' },
+    ai_backend_required: { en: 'Premium AI feature, backend integration required', tr: 'Premium AI özelliği, backend entegrasyonu gerekli', color: 'bg-purple-100 text-purple-800 border-purple-200' },
+    roadmap: { en: 'Planned mobile app channel', tr: 'Planlanan mobil uygulama kanalı', color: 'bg-indigo-100 text-indigo-800 border-indigo-200' },
     production_ready: { en: 'Live', tr: 'Yayında', color: 'bg-emerald-100 text-emerald-800 border-emerald-200' }
   };
   

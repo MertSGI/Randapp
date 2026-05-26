@@ -162,16 +162,6 @@ const MarketingHomePage: React.FC = () => {
             <h4 className="font-bold text-lg mb-2 dark:text-white">{t.marketing.home.faq_5_q}</h4>
             <p className="text-gray-600 dark:text-gray-400">{t.marketing.home.faq_5_a}</p>
           </div>
-          <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700">
-            <h4 className="flex items-center gap-2 font-bold text-lg mb-2 dark:text-white">
-              {t.marketing.home.faq_6_q}
-            </h4>
-            <p className="text-gray-600 dark:text-gray-400">{t.marketing.home.faq_6_a}</p>
-          </div>
-          <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700">
-            <h4 className="font-bold text-lg mb-2 dark:text-white">{t.marketing.home.faq_7_q}</h4>
-            <p className="text-gray-600 dark:text-gray-400">{t.marketing.home.faq_7_a}</p>
-          </div>
         </div>
       </section>
 

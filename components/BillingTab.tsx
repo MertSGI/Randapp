@@ -40,6 +40,14 @@ const BillingTab: React.FC = () => {
   const handleCheckout = async (planId: string) => {
     if (!tenant) return;
     setCheckoutError(null);
+
+    // Presentation mode block
+    const isMock = (import.meta as any).env.VITE_PAYMENT_PROVIDER === 'mock' || !(import.meta as any).env.VITE_PAYMENT_PROVIDER;
+    if (isMock) {
+        window.alert('Ödeme entegrasyonu henüz yapılandırılmadı. iyzico ve Supabase Edge Functions aktif edildiğinde bu buton güvenli ödeme akışını başlatacaktır.');
+        return;
+    }
+
     try {
       const url = await subscriptionService.startCheckout(tenant.id, planId);
       if (url) {

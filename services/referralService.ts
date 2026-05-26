@@ -24,18 +24,18 @@ export const referralService = {
   // Campaigns
   getCampaigns: (tenantId: string): ReferralCampaign[] => {
     const raw = localStorage.getItem(CAMPAIGNS_KEY);
-    const campaigns: ReferralCampaign[] = raw ? JSON.parse(raw) : defaultPlatformCampaigns;
+    const campaigns: ReferralCampaign[] = raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(defaultPlatformCampaigns));
     return campaigns.filter(c => c.tenantId === tenantId);
   },
 
   getAllCampaignsForSuperAdmin: (): ReferralCampaign[] => {
     const raw = localStorage.getItem(CAMPAIGNS_KEY);
-    return raw ? JSON.parse(raw) : defaultPlatformCampaigns;
+    return raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(defaultPlatformCampaigns));
   },
 
   saveCampaign: (campaign: ReferralCampaign) => {
     const raw = localStorage.getItem(CAMPAIGNS_KEY);
-    const campaigns: ReferralCampaign[] = raw ? JSON.parse(raw) : defaultPlatformCampaigns;
+    const campaigns: ReferralCampaign[] = raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(defaultPlatformCampaigns));
     
     const existingIndex = campaigns.findIndex(c => c.id === campaign.id);
     if (existingIndex > -1) {
@@ -44,6 +44,13 @@ export const referralService = {
       campaigns.push(campaign);
     }
     
+    localStorage.setItem(CAMPAIGNS_KEY, JSON.stringify(campaigns));
+  },
+
+  deleteCampaign: (campaignId: string) => {
+    const raw = localStorage.getItem(CAMPAIGNS_KEY);
+    let campaigns: ReferralCampaign[] = raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(defaultPlatformCampaigns));
+    campaigns = campaigns.filter(c => c.id !== campaignId);
     localStorage.setItem(CAMPAIGNS_KEY, JSON.stringify(campaigns));
   },
 
