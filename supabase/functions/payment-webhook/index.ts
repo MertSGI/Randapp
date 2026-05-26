@@ -38,7 +38,15 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 
     if (!supabaseUrl || !supabaseKey) {
-      throw new Error("Missing Supabase admin config.");
+      console.log("[iyzico-webhook] Supabase admin config missing. Aborting DB sync.");
+      return new Response(JSON.stringify({
+        mode: 'sandbox_not_configured',
+        message: 'Webhook received but Supabase service role is missing. Real sync skipped.',
+        received: true
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200, // Safe diagnostic true
+      });
     }
 
     const supabaseAdmin = createClient(supabaseUrl, supabaseKey);

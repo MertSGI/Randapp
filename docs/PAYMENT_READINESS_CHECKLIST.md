@@ -2,8 +2,29 @@
 
 This document tracks the readiness state of the Randapp platform for processing real production payments.
 
-**Current State: Pre-Production Trial Ready (Phase 5)**
-*Production payment flows and live Iyzico connections are **DISABLED**, but dynamic CTA/Trial modes are pre-wired.*
+**Current State: Sandbox Dry-Run Preparation (Phase 7)**
+*Production payment flows and live Iyzico connections are **DISABLED**, but dynamic CTA/Trial modes are pre-wired. Edge functions are scaffolded.*
+
+## Sandbox Setup Steps
+1. Apply Supabase migrations.
+2. Deploy Edge Functions:
+   - `create-checkout-session`
+   - `payment-webhook`
+   - `subscription-sync`
+3. Set Supabase secrets:
+   - `IYZICO_API_KEY`
+   - `IYZICO_SECRET_KEY`
+   - `IYZICO_BASE_URL`
+   - `SUPABASE_SERVICE_ROLE_KEY`
+4. Configure iyzico sandbox product and plan reference codes.
+5. Configure plan provider reference codes in Super Admin.
+6. Test checkout session.
+7. Test trial start.
+8. Test webhook.
+9. Verify subscriptions table update.
+10. Verify payments table insert.
+11. Verify audit log insert.
+12. Test cancellation/failure/retry/idempotency.
 
 ## Phase 4 & 5 Status: Sandbox Readiness
 - [x] Initial payment logic abstractions added (`paymentProvider.ts`).
@@ -12,9 +33,9 @@ This document tracks the readiness state of the Randapp platform for processing 
 - [x] Edge Function contracts documented (including Trial Period configurations).
 - [x] Dynamic CTA transitions completed (Demo requests shift to 'Start Trial' automatically).
 - [x] Trial and cancellation texts legalized and translated carefully.
-- [ ] Implement `create-checkout-session` edge function natively.
-- [ ] Implement `payment-webhook` edge function natively.
-- [ ] Ensure idempotency handling for webhook logs.
+- [x] Implement `create-checkout-session` edge function natively (Scaffolded).
+- [x] Implement `payment-webhook` edge function natively (Scaffolded).
+- [x] Ensure idempotency handling for webhook logs (Scaffolded).
 
 **No card details are collected live. The frontend contains no Iyzico secrets.**
 
@@ -25,8 +46,8 @@ This document tracks the readiness state of the Randapp platform for processing 
 - [x] Super Admin has access to mock subscription toggle for operations.
 - [x] All real payment requests correctly route to Edge Function contracts and safely fail/dummy-redirect when offline.
 
-## 2. Infrastructure & Edge Functions (Next Phase)
-- [ ] Edge functions for Iyzico integration (e.g. `create-checkout-session`, `payment-webhook`) must be built and deployed via Supabase CLI.
+## 2. Infrastructure & Edge Functions (Sandbox Scaffolds Done)
+- [x] Edge functions for Iyzico integration (e.g. `create-checkout-session`, `payment-webhook`) scaffolded.
 - [ ] Supabase environment secrets required for Iyzico (e.g., `IYZICO_API_KEY`, `IYZICO_SECRET_KEY`) must be manually configured in the cloud environment.
 - [ ] Native Sandbox checkout must collect cards securely to initiate trials.
 

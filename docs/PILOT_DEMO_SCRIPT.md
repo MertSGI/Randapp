@@ -67,12 +67,12 @@ This document outlines the ideal flow for demonstrating Randapp to salon owners 
 - **Action:** Switch to "Reports".
 - **Explain:** "You immediately see your estimated revenue and appointment volume. No math required."
 - **Action:** Switch to "Subscription" (Abonelik).
-- **Explain:** "This is where you would upgrade your plan in the future. Under the hood, we are Sandbox ready with Iyzico payment endpoints, but currently operating in frictionless Mock Mode to display flow conversion without live card input constraints."
+- **Explain:** "This is where you would upgrade your plan in the future. Under the hood, Edge Functions for Iyzico payment endpoints are scaffolded. If payment provider mode is 'sandbox', clicking 'Start Trial' or 'Select Plan' talks to a secure backend bridge."
 
 ## 8. Super Admin Operations Center
 - **Action:** Log out. Log in as Super Admin (`superadmin@randapp.com` / `superadmin123`).
 - **Show:** The dashboard stats.
-- **Feature:** Show the Mock "Toggle Sub" button. Explain how the platform team can manually manage subscription states if they don't pay their real-life bill. "We have full operational control."
+- **Feature:** Show the Mock "Toggle Sub" button or sandbox plan config. Explain how the platform team can manually manage subscription states or configure Iyzico provider reference codes for plans. "We have full operational control over plans and subscriptions."
 
 ## 9. Closing Value Proposition
 - **Say:** "With Randapp, a salon owner steps away from pen and paper, elevates their brand, and builds an unforgettable customer experience through Customer Memory. We are ready to onboard our first test businesses."

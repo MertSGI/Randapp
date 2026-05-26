@@ -71,15 +71,29 @@ serve(async (req) => {
 
   } catch (error: any) {
     const isConfigError = error.message.includes('missing') || error.message.includes('not set');
+    
+    if (isConfigError) {
+      return new Response(JSON.stringify({ 
+        mode: 'sandbox_not_configured',
+        errorCode: 'CONFIG_ERROR',
+        message: 'Secure sandbox credentials are not fully configured in Edge Functions. Cannot start live checkout.',
+        provider: 'iyzico',
+        environment: 'sandbox'
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200, // Safe diagnostic response requested by requirements
+      });
+    }
+
     return new Response(JSON.stringify({ 
       ok: false,
-      errorCode: isConfigError ? 'CONFIG_ERROR' : 'VALIDATION_ERROR',
+      errorCode: 'VALIDATION_ERROR',
       message: error.message,
       provider: 'iyzico',
       environment: 'sandbox'
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: isConfigError ? 500 : 400,
+      status: 400,
     });
   }
 });

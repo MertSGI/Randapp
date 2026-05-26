@@ -15,6 +15,9 @@ Randapp pricing and subscription plans are centrally managed by the Super Admin,
 - `currency`: string
 - `trialEnabled`: boolean
 - `trialDays`: number
+- `providerProductReferenceCode`: string (iyzico product reference)
+- `providerPlanReferenceCodeMonthly`: string (iyzico plan reference)
+- `providerPlanReferenceCodeAnnual`: string (iyzico plan reference)
 - `maxStaff`: number
 - `maxServices`: number
 - `maxMonthlyAppointments`: number

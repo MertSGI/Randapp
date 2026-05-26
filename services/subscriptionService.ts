@@ -173,13 +173,23 @@ export const subscriptionService = {
           };
         }
 
+        if (data?.mode === 'sandbox_not_configured') {
+           throw {
+             isSafeStructure: true,
+             message: data.message || 'Payment provider sandbox is not configured.',
+             errorCode: 'SANDBOX_NOT_CONFIGURED',
+             raw: data
+           };
+        }
+
         if (data?.checkoutUrl) {
           return data.checkoutUrl;
         } else {
           throw {
             isSafeStructure: true,
             message: 'Ödeme oturumu URL döndürmedi. Lütfen sistem yöneticisiyle iletişime geçin.',
-            errorCode: 'MISSING_CHECKOUT_URL'
+            errorCode: 'MISSING_CHECKOUT_URL',
+            raw: data
           };
         }
       } catch (err: any) {

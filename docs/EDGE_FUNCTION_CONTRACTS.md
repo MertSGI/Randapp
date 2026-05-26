@@ -6,9 +6,9 @@ All functions are isolated and securely hold secrets like `GEMINI_API_KEY` and `
 ## 1. create-checkout-session
 * **Path**: `/functions/v1/create-checkout-session`
 * **Input Payload**: `tenantId`, `planId`, `billingCycle`, `successUrl`, `cancelUrl`
-* **Output Payload**: `checkoutUrl`, `sessionId`
+* **Output Payload**: `{ checkoutUrl: string }` or `{ mode: 'sandbox_not_configured', message: string }`
 * **Auth Requirement**: Authenticated Salon Admin
-* **Secrets Required**: `IYZICO_API_KEY`, `IYZICO_SECRET_KEY`
+* **Secrets Required**: `IYZICO_API_KEY`, `IYZICO_SECRET_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
 * **Side Effects**: Reads server-side plan configs (price, trialEnabled, trialDays). Creates an Iyzico subscription checkout request in sandbox/production. Logs to `audit_logs`.
 * **Mock Fallback**: Directly simulates a success redirect or local mock status update.
 * **Important Guidelines**: 
