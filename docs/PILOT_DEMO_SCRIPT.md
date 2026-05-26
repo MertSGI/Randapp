@@ -11,8 +11,8 @@ This document outlines the ideal flow for demonstrating Randapp to salon owners 
 
 ## Pre-Meeting Setup (5 mins before)
 1. Open the application.
-2. Ensure you are on the Marketing Home Page (`/`).
-3. Scroll to the footer, confirm you see "Demo Utils (Dev Mode Only)" (if enabled).
+2. Ensure you are on the Marketing Home Page (`/?demoTools=1`). You must add `?demoTools=1` to the URL.
+3. Scroll to the footer, confirm you see "Demo Utils (Dev Mode Only)".
 4. Click **"Reset Local Data"** to clear previous sessions.
 5. Click **"Seed Pilot Demo Data"** to load the polished demo tenant with mock appointments, staff, services, and customer memory.
 6. The app will reload. You are ready.

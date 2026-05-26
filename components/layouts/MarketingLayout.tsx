@@ -85,7 +85,7 @@ const MarketingLayout: React.FC = () => {
             </div>
         </div>
         <div className="max-w-7xl mx-auto px-4 text-center text-sm text-gray-400 dark:text-gray-600 mt-12 pt-8 border-t border-gray-100 dark:border-slate-800">
-          {(import.meta as any).env.VITE_DATA_MODE === 'mock' && (
+          {(import.meta as any).env.VITE_DATA_MODE === 'mock' && window.location.search.includes('demoTools=1') && (
             <div className="flex flex-col items-center gap-2 mb-6 p-4 bg-gray-100 dark:bg-slate-800 rounded-lg max-w-sm mx-auto">
               <span className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">
                 {language === 'tr' ? 'Demo Araçları (Sadece Geliştirici Modu)' : 'Demo Utils (Dev Mode Only)'}
