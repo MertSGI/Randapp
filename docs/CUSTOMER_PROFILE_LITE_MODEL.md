@@ -38,3 +38,10 @@ Before switching to the production database, the following must be enacted:
    - The bucket must **NOT** be public.
    - Postgres Row-Level Security (RLS) policies must mandate that the JWT `auth.uid()` corresponds exactly to the `tenant_id` linked to the customer entity.
 4. **Data Retention Policy:** Implement cron jobs or edge functions to eventually rotate or archive aged reference photos exceeding required retention constraints.
+
+## Strict AI Usage Boundaries
+- **No Automatic AI Submission:** Customer Memory private notes and reference photos are **NOT** sent to the AI by default.
+- **Explicit Processing Only:** Only photos/prompts explicitly submitted via the `/ai-visualizer` flow are sent to the AI backend proxy.
+- **Volatile Processing:** Edge Functions process AI imagery directly in memory and delete references. No images are stored by AI providers for training purposes.
+- **Storage Isolation:** Edge function operations isolate standard mock testing. Supabase storage boundaries segregate `tenant-public-media` and `customer-private-reference-photos`.
+- **No Deep AI Photo Analysis:** Customer faces are NOT subjected to biometric identification, facial recognition routines, or emotional profiling. Features are strictly limited to hair/eyebrow/style and beauty domain advice.

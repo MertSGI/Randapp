@@ -65,7 +65,7 @@ This document outlines the ideal flow for demonstrating Randapp to salon owners 
 - **Action:** Switch to "Reports".
 - **Explain:** "You immediately see your estimated revenue and appointment volume. No math required."
 - **Action:** Switch to "Subscription" (Abonelik).
-- **Explain:** "This is where you would upgrade your plan in the future. Currently, you are in a pilot mode, so live payments are not active."
+- **Explain:** "This is where you would upgrade your plan in the future. Under the hood, we are Sandbox ready with Iyzico payment endpoints, but currently operating in frictionless Mock Mode to display flow conversion without live card input constraints."
 
 ## 8. Super Admin Operations Center
 - **Action:** Log out. Log in as Super Admin (`superadmin@randapp.com` / `superadmin123`).

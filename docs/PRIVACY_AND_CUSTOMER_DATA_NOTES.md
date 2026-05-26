@@ -9,6 +9,7 @@
 - **No Automatic AI Submission:** Customer Memory private notes and reference photos are **NOT** sent to the AI by default.
 - **Explicit Processing Only:** Only photos/prompts explicitly submitted via the `/ai-visualizer` flow are sent to the AI backend proxy.
 - **Volatile Processing:** Edge Functions process AI imagery directly in memory and delete references. No images are stored by AI providers for training purposes (opted out by default in Cloud).
+- **Storage Isolation:** Edge function operations isolate standard mock testing. Supabase storage boundaries segregate `tenant-public-media` and `customer-private-reference-photos`.
 - **No Deep AI Photo Analysis:** Customer faces are NOT subjected to biometric identification, facial recognition routines, or emotional profiling. Features are strictly limited to hair/eyebrow/style and beauty domain advice.
 - **Privacy Copy:** The UI explicitly states: "Your photo is only used for temporary processing to generate recommendations. Please do not upload images containing sensitive personal information."
 

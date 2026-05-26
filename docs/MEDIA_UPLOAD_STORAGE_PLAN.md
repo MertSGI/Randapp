@@ -1,7 +1,25 @@
 # Media Upload & Storage Plan
 
-## Objective
-Replace raw URL-pasting inputs with a standard "Upload from computer" UX for images across the Salon Admin panel (Logos, Cover Images, Gallery, Staff/Service Photos).
+Randapp's media storage is driven by tenant-level isolation and strict access models, primarily mapping to Supabase Storage Buckets.
+
+## Supabase Storage Buckets
+1. **tenant-public-media**
+   - **Scope**: Cover images, staff profile pictures, service icons.
+   - **Access**: Public `SELECT` allowed. Upload restricted to authenticated salon tenant owners.
+   - **Retention**: Permanent until deleted by the salon instance.
+2. **customer-private-reference-photos**
+   - **Scope**: Sensitive Customer Memory images (past haircuts, styles).
+   - **Access**: Strictly private. Only authenticated salon owners can read/write.
+   - **AI Usage**: Never sent to AI tools by default. Never processed for biometrics.
+3. **ai-temp-uploads (Optional Future)**
+   - **Scope**: Customer images uploaded specifically from the `/ai-visualizer` flow.
+   - **Access**: Directly requested by backend Edge Functions.
+   - **Retention**: Immediately purged post-processing (e.g. 5 minutes). Ensure volatile bounds.
+
+## Restrictions
+- **MIME Types**: Images only (`image/png`, `image/jpeg`, `image/webp`).
+- **File Limits**: Maximum 5 MB per image.
+- **Tracking**: Uploads map to the user session, providing trails in `audit_logs` for GDPR/KVKK compliance. Export requests fetch all respective paths.
 
 ## Modes of Operation
 
@@ -11,21 +29,4 @@ Replace raw URL-pasting inputs with a standard "Upload from computer" UX for ima
 - These representations are persisted in `localStorage` alongside the business profile JSON. This is acceptable for local testing and sales demos, but comes with storage limits.
 
 ### Supabase Mode (`VITE_DATA_MODE=supabase`)
-- Relies on **Supabase Storage**.
-- A dedicated bucket named `tenant-media` is used.
-- **Path Structure**:
-  - `tenants/{tenantId}/logo/{filename}`
-  - `tenants/{tenantId}/covers/{filename}`
-  - `tenants/{tenantId}/gallery/{filename}`
-  - `tenants/{tenantId}/staff/{staffId}/{filename}`
-  - `tenants/{tenantId}/services/{serviceId}/{filename}`
-
-## Security Constraints
-- All paths are prefixed tightly by `tenantId`.
-- **Row Level Security (RLS) / Storage Policies**:
-  - `SELECT`: Publicly accessible (so the unauthenticated booking site can render images).
-  - `INSERT/UPDATE/DELETE`: Restricted strictly to `salon_owner` users where their `auth.uid()` matches the `tenantId` mapping in the database.
-
-## Validation
-- **File Types**: `.jpg`, `.jpeg`, `.png`, `.webp` (strictly enforced).
-- **Size Limits**: Maximum 5MB per file on the client-side before transmission.
+- Relies on **Supabase Storage** and explicit Edge Function processing.

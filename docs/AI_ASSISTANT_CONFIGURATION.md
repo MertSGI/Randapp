@@ -6,6 +6,7 @@ This document outlines the architecture, data flows, and security guidelines for
 - Gemini SDK (`@google/genai`) is completely removed from the frontend client bundle for security.
 - The `geminiService.ts` on the frontend acts solely as a safe API client or returns robust mock data when running locally (`VITE_DATA_MODE=mock`).
 - **Edge Function Scaffolds**: We have introduced `/supabase/functions/` placeholders (`ai-recommendation`, `ai-visualization`, `ai-quota-check`) to house the actual Gemini integration. In production, this ensures the `GEMINI_API_KEY` is completely hidden and requests are verified on the backend.
+- **Future Integration:** For full sandbox and production readiness, we have defined the Edge Function contracts in `EDGE_FUNCTION_CONTRACTS.md` and RLS permissions to restrict unauthorized API consumption.
 
 ## Plan-Based Capabilities
 AI capability gating is strictly managed by `SubscriptionPlan` features:

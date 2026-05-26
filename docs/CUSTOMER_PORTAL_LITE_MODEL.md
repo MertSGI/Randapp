@@ -6,7 +6,7 @@ The Customer Portal Lite allows salon customers to access, view, and cancel thei
 - **Method:** `VITE_DATA_MODE=mock` local storage authentication.
 - **Login:** Customers enter their phone number or email.
 - **Verification:** The system matches the normalized contact string against existing appointments or mock customer profiles. If a match is found, session state is persisted locally.
-- **Production Path:** In production (Supabase), this MUST be replaced with phone OTP, magic links, or a secure `Supabase Auth` provider to prevent unauthorized access. Passwords are intentionally avoided to maximize conversion.
+- **Production Path:** In production (Supabase), this MUST be replaced with phone OTP, magic links, or a secure `Supabase Auth` provider to prevent unauthorized access. Passwords are intentionally avoided to maximize conversion. This is governed by Edge Functions to enforce true Row Level Security (RLS).
 
 ## Features
 - **Upcoming Appointments:** View future appointments.

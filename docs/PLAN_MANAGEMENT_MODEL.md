@@ -36,3 +36,7 @@ Super Admins can:
 ## Billing Periods
 Users on the `PricingPage` and `BillingTab` can toggle between Monthly and Annual payments.
 Annual payments apply the `annualDiscountPercent` and often unlock extra features (like a custom `.com` domain).
+
+## AI and Storage Edge Rules (Phase 4 Updates)
+- AI features (`aiRecommendationsEnabled`, `aiVisualizationEnabled`) are checked entirely server-side in Edge Functions before invoking external APIs.
+- Media buckets (`tenant-public-media`, `customer-private-reference-photos`) map to strict RLS policies, bypassing generic mock constraints.

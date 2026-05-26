@@ -2,7 +2,19 @@
 
 This document tracks the readiness state of the Randapp platform for processing real production payments.
 
-**Current State: Safe for Pilot (No Live Payments)**
+**Current State: Sandbox Ready (Phase 4)**
+*Production payment flows and live Iyzico connections are **DISABLED**.*
+
+## Phase 4 Status: Sandbox Readiness
+- [x] Initial payment logic abstractions added (`paymentProvider.ts`).
+- [x] Schema drafted for `payments` and `subscriptions`.
+- [x] Mock trial flows established based on package configs.
+- [x] Edge Function contracts documented.
+- [ ] Implement `create-checkout-session` edge function.
+- [ ] Implement `payment-webhook` edge function.
+- [ ] Ensure idempotency handling for webhook logs.
+
+**No card details are collected live. The frontend contains no Iyzico secrets.**
 
 ## 1. Frontend UI State
 - [x] Payment UI safely defaults to mock/bypassed logic when `VITE_DATA_MODE=mock`.
