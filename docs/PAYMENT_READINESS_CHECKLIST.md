@@ -2,12 +2,13 @@
 
 This document tracks the readiness state of the Randapp platform for processing real production payments.
 
-**Current State: Sandbox Execution Readiness (Phase 9)**
-*Production payment flows and live Iyzico connections are **DISABLED**, but dynamic CTAs and diagnostic harnesses are ready. Edge functions are scaffolded with diagnostic capabilities.*
+**Current State: Sandbox Deployment Handoff (Phase 10)**
+*Production payment flows and live Iyzico connections are **DISABLED**, but dynamic CTAs and diagnostic harnesses are ready. Environment templates, guides, and runbooks are set up for final deployment.*
 
 ## Sandbox Setup Steps
-1. Apply Supabase migrations.
-2. Deploy Edge Functions:
+1. Read `docs/SUPABASE_DEPLOYMENT_GUIDE.md` and `docs/IYZICO_SANDBOX_SETUP_GUIDE.md`.
+2. Apply Supabase migrations.
+3. Deploy Edge Functions.
    - `create-checkout-session`
    - `payment-webhook`
    - `subscription-sync`
@@ -24,13 +25,16 @@ This document tracks the readiness state of the Randapp platform for processing 
 9. Test webhook via diagnostic curl.
 10. Verify subscriptions table update.
 
-## Phase 9 Status: Sandbox Execution Readiness
+## Phase 9 & 10 Status: Security & Handoff Readiness
 - [x] Edge Function contracts documented.
 - [x] Diagnostic `diagnostic: true` parameter implemented for safe secret verification.
 - [x] Super Admin Payment Test harness created.
 - [x] Plan provider reference codes logic mapped to Pricing and Checkout pages.
 - [x] Webhook state matrix (`trialing`, `active`, `past_due`, `payment_failed`, `cancelled`, `expired`) documented.
 - [x] Frontend checks for `VITE_PAYMENT_PROVIDER` and alerts users if not configured.
+- [x] Super Admin UI warns what's next via Runbook banner.
+- [x] Env templates isolated (frontend vs server-side).
+- [x] Safety scripts configured (`npm run check:secrets`, `npm run check:edge-contracts`).
 
 **No card details are collected live. The frontend contains no Iyzico secrets.**
 
