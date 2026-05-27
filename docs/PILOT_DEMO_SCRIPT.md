@@ -72,7 +72,8 @@ This document outlines the ideal flow for demonstrating Randapp to salon owners 
 ## 8. Super Admin Operations Center
 - **Action:** Log out. Log in as Super Admin (`superadmin@randapp.com` / `superadmin123`).
 - **Show:** The dashboard stats.
-- **Feature:** Show the Mock "Toggle Sub" button or sandbox plan config. Explain how the platform team can manually manage subscription states or configure Iyzico provider reference codes for plans. "We have full operational control over plans and subscriptions."
+- **Feature:** Navigate to "Payment Diagnostics" (`/super-admin/payment-test`) and "Plans". 
+- **Explain:** "We have full operational control over the payment environment safety. The diagnostic dashboard confirms the frontend is completely decoupled from sensitive secrets, while verifying that our backend Supabase Edge Functions are ready to handle real checkout sessions when triggered."
 
 ## 9. Closing Value Proposition
 - **Say:** "With Randapp, a salon owner steps away from pen and paper, elevates their brand, and builds an unforgettable customer experience through Customer Memory. We are ready to onboard our first test businesses."

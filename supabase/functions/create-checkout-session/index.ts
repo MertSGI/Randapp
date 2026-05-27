@@ -19,13 +19,36 @@ serve(async (req) => {
       throw new Error('Method not allowed');
     }
 
+    const body: any = await req.json();
+
+    if (body.diagnostic === true) {
+      const missingEnvNames = [];
+      const requiredEnvs = ['IYZICO_API_KEY', 'IYZICO_SECRET_KEY', 'IYZICO_BASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'SUPABASE_URL'];
+      const requiredEnvPresent: Record<string, boolean> = {};
+
+      for (const envVar of requiredEnvs) {
+        const val = Deno.env.get(envVar);
+        requiredEnvPresent[envVar] = !!val;
+        if (!val) missingEnvNames.push(envVar);
+      }
+
+      return new Response(JSON.stringify({
+        functionName: 'create-checkout-session',
+        mode: 'diagnostic',
+        requiredEnvPresent,
+        missingEnvNames,
+        timestamp: new Date().toISOString(),
+        canProceed: missingEnvNames.length === 0
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200,
+      });
+    }
+
+    const { tenantId, planId, successUrl, cancelUrl } = body;
+
     // Assert sandbox config is present (does not expose values)
     iyzicoClient.assertIyzicoSandboxConfig();
-
-    // TODO: Validate authenticated user via Supabase auth header
-    
-    const body: CreateCheckoutSessionRequest = await req.json();
-    const { tenantId, planId, successUrl, cancelUrl } = body;
 
     if (!tenantId || !planId) {
       throw new Error('Missing required fields: tenantId, planId');

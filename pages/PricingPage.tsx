@@ -141,8 +141,16 @@ const PricingPage: React.FC = () => {
                  </a>
                ) : (
                  <button 
-                   onClick={(e) => {
+                   onClick={async (e) => {
                      e.preventDefault();
+                     const isMock = (import.meta as any).env.VITE_PAYMENT_PROVIDER === 'mock' || !(import.meta as any).env.VITE_PAYMENT_PROVIDER;
+                     if (!isMock) {
+                         const testValidation = (await import('../services/paymentSandboxTestService')).paymentSandboxTestService.validatePlanReferenceCodes(plan.id);
+                         if (!testValidation.valid) {
+                             window.alert(language === 'tr' ? 'Bu paket için ödeme sağlayıcı referans kodları eksik.' : 'This plan is missing payment provider reference codes.');
+                             return;
+                         }
+                     }
                      const alertMsg = language === 'tr' 
                        ? 'Ödeme entegrasyonu henüz yapılandırılmadı. iyzico ve Supabase Edge Functions aktif edildiğinde bu buton güvenli ödeme akışını başlatacaktır.' 
                        : 'Payment integration is not configured yet. This button will start secure checkout when iyzico and Supabase Edge Functions are enabled.';

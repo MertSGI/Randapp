@@ -20,6 +20,40 @@ serve(async (req) => {
     // Read raw payload for signature verification
     const rawBody = await req.text();
     
+    let isDiagnostic = false;
+    try {
+      const parsedBody = JSON.parse(rawBody);
+      if (parsedBody.diagnostic === true) {
+        isDiagnostic = true;
+      }
+    } catch (e) {
+      // Ignore JSON parse errors for diagnostic check
+    }
+
+    if (isDiagnostic) {
+      const missingEnvNames = [];
+      const requiredEnvs = ['IYZICO_API_KEY', 'IYZICO_SECRET_KEY', 'IYZICO_BASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'SUPABASE_URL'];
+      const requiredEnvPresent: Record<string, boolean> = {};
+
+      for (const envVar of requiredEnvs) {
+        const val = Deno.env.get(envVar);
+        requiredEnvPresent[envVar] = !!val;
+        if (!val) missingEnvNames.push(envVar);
+      }
+
+      return new Response(JSON.stringify({
+        functionName: 'payment-webhook',
+        mode: 'diagnostic',
+        requiredEnvPresent,
+        missingEnvNames,
+        timestamp: new Date().toISOString(),
+        canProceed: missingEnvNames.length === 0
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200,
+      });
+    }
+
     // Verify signature using shared client
     const isValidSignature = iyzicoClient.verifyIyzicoWebhookSignature(rawBody, req.headers);
     if (!isValidSignature) {

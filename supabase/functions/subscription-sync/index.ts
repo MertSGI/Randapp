@@ -12,7 +12,33 @@ serve(async (req) => {
   }
 
   try {
-    const { tenantId } = await req.json();
+    const body = await req.json();
+
+    if (body.diagnostic === true) {
+      const missingEnvNames = [];
+      const requiredEnvs = ['IYZICO_API_KEY', 'IYZICO_SECRET_KEY', 'IYZICO_BASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'SUPABASE_URL'];
+      const requiredEnvPresent: Record<string, boolean> = {};
+
+      for (const envVar of requiredEnvs) {
+        const val = Deno.env.get(envVar);
+        requiredEnvPresent[envVar] = !!val;
+        if (!val) missingEnvNames.push(envVar);
+      }
+
+      return new Response(JSON.stringify({
+        functionName: 'subscription-sync',
+        mode: 'diagnostic',
+        requiredEnvPresent,
+        missingEnvNames,
+        timestamp: new Date().toISOString(),
+        canProceed: missingEnvNames.length === 0
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200,
+      });
+    }
+
+    const { tenantId } = body;
 
     if (!tenantId) {
       return new Response(JSON.stringify({ error: 'Missing tenantId' }), {

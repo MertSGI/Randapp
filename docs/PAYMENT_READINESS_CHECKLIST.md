@@ -2,8 +2,8 @@
 
 This document tracks the readiness state of the Randapp platform for processing real production payments.
 
-**Current State: Sandbox Dry-Run Preparation (Phase 7)**
-*Production payment flows and live Iyzico connections are **DISABLED**, but dynamic CTA/Trial modes are pre-wired. Edge functions are scaffolded.*
+**Current State: Sandbox Execution Readiness (Phase 9)**
+*Production payment flows and live Iyzico connections are **DISABLED**, but dynamic CTAs and diagnostic harnesses are ready. Edge functions are scaffolded with diagnostic capabilities.*
 
 ## Sandbox Setup Steps
 1. Apply Supabase migrations.
@@ -16,47 +16,42 @@ This document tracks the readiness state of the Randapp platform for processing 
    - `IYZICO_SECRET_KEY`
    - `IYZICO_BASE_URL`
    - `SUPABASE_SERVICE_ROLE_KEY`
-4. Configure iyzico sandbox product and plan reference codes.
+4. Configure iyzico sandbox product and plan reference codes in provider dashboard.
 5. Configure plan provider reference codes in Super Admin.
-6. Test checkout session.
-7. Test trial start.
-8. Test webhook.
-9. Verify subscriptions table update.
-10. Verify payments table insert.
-11. Verify audit log insert.
-12. Test cancellation/failure/retry/idempotency.
+6. Run Super Admin Payment Diagnostics (`/super-admin/payment-test`) to verify functions.
+7. Test checkout session local harness.
+8. Test trial start.
+9. Test webhook via diagnostic curl.
+10. Verify subscriptions table update.
 
-## Phase 4 & 5 Status: Sandbox Readiness
-- [x] Initial payment logic abstractions added (`paymentProvider.ts`).
-- [x] Schema drafted for `payments` and `subscriptions`.
-- [x] Mock trial flows established based on package configs.
-- [x] Edge Function contracts documented (including Trial Period configurations).
-- [x] Dynamic CTA transitions completed (Demo requests shift to 'Start Trial' automatically).
-- [x] Trial and cancellation texts legalized and translated carefully.
-- [x] Implement `create-checkout-session` edge function natively (Scaffolded).
-- [x] Implement `payment-webhook` edge function natively (Scaffolded).
-- [x] Ensure idempotency handling for webhook logs (Scaffolded).
+## Phase 9 Status: Sandbox Execution Readiness
+- [x] Edge Function contracts documented.
+- [x] Diagnostic `diagnostic: true` parameter implemented for safe secret verification.
+- [x] Super Admin Payment Test harness created.
+- [x] Plan provider reference codes logic mapped to Pricing and Checkout pages.
+- [x] Webhook state matrix (`trialing`, `active`, `past_due`, `payment_failed`, `cancelled`, `expired`) documented.
+- [x] Frontend checks for `VITE_PAYMENT_PROVIDER` and alerts users if not configured.
 
 **No card details are collected live. The frontend contains no Iyzico secrets.**
 
 ## 1. Frontend UI State
 - [x] Payment UI safely defaults to mock/bypassed logic when `VITE_PAYMENT_PROVIDER=mock`.
-- [x] Pricing Page clearly handles Trial-enabled plans dynamically and explicitly warns that cards are not collected in mock mode.
-- [x] Billing Tab accurately represents mock trial status (`trialing`), shows remaining days, without false "Payment Completed" claims.
-- [x] Super Admin has access to mock subscription toggle for operations.
-- [x] All real payment requests correctly route to Edge Function contracts and safely fail/dummy-redirect when offline.
+- [x] Pricing Page dynamically triggers safe "Integration not configured" alert if payment mode is active but reference codes are missing.
+- [x] Billing Tab accurately represents mock trial status (`trialing`), shows remaining days.
+- [x] Super Admin has dynamic diagnostic tools for backend payment health.
 
-## 2. Infrastructure & Edge Functions (Sandbox Scaffolds Done)
-- [x] Edge functions for Iyzico integration (e.g. `create-checkout-session`, `payment-webhook`) scaffolded.
-- [ ] Supabase environment secrets required for Iyzico (e.g., `IYZICO_API_KEY`, `IYZICO_SECRET_KEY`) must be manually configured in the cloud environment.
+## 2. Infrastructure & Edge Functions (Diagnostic Models Done)
+- [x] Edge functions for Iyzico integration (e.g. `create-checkout-session`, `payment-webhook`) scaffolded and support diagnostic endpoints.
+- [ ] Supabase environment secrets required for Iyzico must be manually configured in the cloud environment.
 - [ ] Native Sandbox checkout must collect cards securely to initiate trials.
 
-## 3. Webhook & Background Processes (Next Phase)
-- [ ] Webhook endpoint must be fully tested from external sandbox payload generators.
+## 3. Webhook & Background Processes
+- [x] Webhook payload signature mock parsing supported for diagnostics.
 - [ ] Trial cancellation and subscription termination must carefully align with webhook states.
+- [ ] Full webhook endpoint E2E testing from real iyzico sandbox payloads.
 
-## 4. Production Criteria (Next Phase)
+## 4. Production Criteria (Future Phase)
 Production Live Card Payments will NOT be activated until:
-1. All Edge Functions are confirmed deployed and successfully log sandbox events.
-2. The Database Subscription tracking completely aligns with Iyzico callback states, including trial-to-paid continuation handling.
-3. Super Admins pilot the webhook flow from start to finish without breaking the UI lock out.
+1. All Edge Functions log successful E2E sandbox events without bypassing signature validation.
+2. The Database Subscription tracking completely aligns with Iyzico callback states.
+3. Super Admins pilot the webhook flow from start to finish.

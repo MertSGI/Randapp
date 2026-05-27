@@ -5,32 +5,39 @@ All functions are isolated and securely hold secrets like `GEMINI_API_KEY` and `
 
 ## 1. create-checkout-session
 * **Path**: `/functions/v1/create-checkout-session`
-* **Input Payload**: `tenantId`, `planId`, `billingCycle`, `successUrl`, `cancelUrl`
-* **Output Payload**: `{ checkoutUrl: string }` or `{ mode: 'sandbox_not_configured', message: string }`
+* **Input Payload**: `tenantId`, `planId`, `billingCycle`, `successUrl`, `cancelUrl`, `diagnostic?`
+* **Output Payload**: `{ checkoutUrl: string }` or `{ mode: 'diagnostic', requiredEnvPresent: {} }`
 * **Auth Requirement**: Authenticated Salon Admin
-* **Secrets Required**: `IYZICO_API_KEY`, `IYZICO_SECRET_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
-* **Side Effects**: Reads server-side plan configs (price, trialEnabled, trialDays). Creates an Iyzico subscription checkout request in sandbox/production. Logs to `audit_logs`.
-* **Mock Fallback**: Directly simulates a success redirect or local mock status update.
+* **Secrets Required**: `IYZICO_API_KEY`, `IYZICO_SECRET_KEY`, `IYZICO_BASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`
+* **Side Effects**: Reads server-side plan configs (price, Iyzico provider codes). Creates an iyzico subscription checkout request in sandbox/production. Logs to `audit_logs`.
 * **Important Guidelines**: 
-  - Price must be validated from server-side database, not frontend payload.
-  - In a real iyzico subscription flow, trial plans should be configured with `trialPeriodDays` dynamically based on plan definitions.
-  - In the trial flow, card validation/card collection behavior is entirely payment-provider controlled.
+  - Supports `diagnostic: true` parameter for safe integration readiness checks (Phase 9 test harness).
+  - Price and reference codes must be evaluated server-side.
+  - In a real iyzico subscription flow, trial plans are configured directly in provider via product/plan endpoints.
   - Randapp frontend NEVER signs iyzico requests directly or stores checkout keys.
 
 ## 2. payment-webhook
 * **Path**: `/functions/v1/payment-webhook`
-* **Input Payload**: Iyzico generic event payload.
-* **Output Payload**: HTTP 200
-* **Auth Requirement**: Iyzico Signature Verification
-* **Secrets Required**: `IYZICO_SECRET_KEY`
-* **Side Effects**: Inserts into `payments`, safely updates `subscriptions` status natively (idempotent), logs to `audit_logs`. Must handle retries idempotently.
+* **Input Payload**: Iyzico generic event payload or `{"diagnostic": true}`.
+* **Output Payload**: HTTP 200 or diagnostic JSON.
+* **Auth Requirement**: Iyzico Signature Verification (`x-iyzico-signature`)
+* **Secrets Required**: `IYZICO_SECRET_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
+* **Side Effects**: Inserts into `payments`, safely updates `subscriptions` status natively (idempotent).
+* **Webhook State Mapping (Phase 9)**:
+  - `subscription.trial.created` -> `trialing`
+  - `subscription.activated` -> `active`
+  - `subscription.payment.success` -> `active`
+  - `subscription.payment.failed` -> `payment_failed`
+  - `subscription.canceled` -> `cancelled`
+  - `subscription.expired` -> `expired`
 
 ## 3. subscription-sync
 * **Path**: `/functions/v1/subscription-sync`
-* **Input Payload**: `tenantId` (optional for bulk job)
-* **Output Payload**: `{ status: "synced" }`
-* **Auth Requirement**: System cron/cron expression or internal verified fetch.
-* **Side Effects**: Polls Iyzico API to reconcile out-of-sync subscriptions and past-due statuses.
+* **Input Payload**: `tenantId` (optional for bulk job) or `{"diagnostic": true}`
+* **Output Payload**: `{ status: "synced" }` or diagnostic JSON.
+* **Auth Requirement**: System cron or diagnostic flag matching.
+* **Secrets Required**: `IYZICO_API_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
+* **Side Effects**: Polls iyzico API to reconcile out-of-sync subscriptions.
 
 ## 4. ai-recommendation
 * **Path**: `/functions/v1/ai-recommendation`

@@ -165,6 +165,16 @@ const SuperAdminPlansPage: React.FC = () => {
 
                         <div className="pt-4 grid grid-cols-1 gap-4 border-t border-gray-100 dark:border-slate-700">
                              <div>
+                                 <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Provider Product Reference <span className="font-normal text-[10px] text-gray-500">(Sandbox/Prod config)</span></label>
+                                 <input 
+                                    type="text" 
+                                    placeholder="e.g. prd_1234..."
+                                    value={plan.providerProductReferenceCode || ''} 
+                                    onChange={e => handleUpdate(plan.id, { providerProductReferenceCode: e.target.value })}
+                                    className="w-full border-gray-300 dark:border-slate-600 rounded-md p-2 text-sm bg-gray-50 dark:bg-slate-700 dark:text-white"
+                                 />
+                             </div>
+                             <div>
                                  <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Provider Plan Reference (Monthly) <span className="font-normal text-[10px] text-gray-500">(Sandbox/Prod config)</span></label>
                                  <input 
                                     type="text" 

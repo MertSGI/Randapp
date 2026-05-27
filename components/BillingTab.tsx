@@ -41,10 +41,17 @@ const BillingTab: React.FC = () => {
     if (!tenant) return;
     setCheckoutError(null);
 
-    // Presentation mode block
     const isMock = (import.meta as any).env.VITE_PAYMENT_PROVIDER === 'mock' || !(import.meta as any).env.VITE_PAYMENT_PROVIDER;
+
+    // Presentation mode block
     if (isMock) {
         window.alert('Ödeme entegrasyonu henüz yapılandırılmadı. iyzico ve Supabase Edge Functions aktif edildiğinde bu buton güvenli ödeme akışını başlatacaktır.');
+        return;
+    }
+
+    const testValidation = (await import('../services/paymentSandboxTestService')).paymentSandboxTestService.validatePlanReferenceCodes(planId);
+    if (!testValidation.valid) {
+        setCheckoutError('Bu paket için ödeme sağlayıcı referans kodları eksik.');
         return;
     }
 
