@@ -20,34 +20,54 @@ const ReferralTab: React.FC = () => {
   return (
     <div className="space-y-8">
       <div className="bg-white dark:bg-slate-800 shadow-sm rounded-lg border border-gray-200 dark:border-slate-700 p-6">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-          {t.admin.referrals_title}
-        </h2>
-        <p className="text-gray-600 dark:text-gray-400 mb-6">
-          {t.admin.referrals_subtitle}
-        </p>
-
-        <div className="bg-blue-50 dark:bg-slate-700/50 border border-blue-200 dark:border-slate-600 rounded-lg p-6 text-center">
-            <h3 className="text-lg font-bold text-blue-900 dark:text-white mb-2">
-               {t.admin.referrals_coming_soon}
-            </h3>
-            <p className="text-sm text-blue-800 dark:text-gray-300 max-w-lg mx-auto mb-4">
-                {t.admin.referrals_coming_soon_desc}
+        <div className="flex justify-between items-start mb-6">
+          <div>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+              {t.admin.referrals_title || 'Referrals & Points'}
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400">
+              {t.admin.referrals_subtitle || 'Manage customer referral programs.'}
             </p>
-            <button disabled className="bg-blue-600 text-white font-bold py-2 px-6 rounded-md shadow opacity-50 cursor-not-allowed">
-               {t.admin.referrals_add_btn}
-            </button>
+          </div>
+          <button 
+            onClick={() => {
+              if (tenant) {
+                 const newCampaign: ReferralCampaign = {
+                    id: `campaign_${Date.now()}`,
+                    tenantId: tenant.id,
+                    campaignType: 'customer_referral',
+                    title: 'Yeni Müşteri Kampanyası',
+                    description: 'Arkadaşını getirene %10 indirim',
+                    rewardType: 'discount',
+                    rewardValue: '10',
+                    active: true,
+                    createdBy: 'salon_owner',
+                    startDate: new Date().toISOString()
+                 };
+                 referralService.saveCampaign(newCampaign);
+                 setCampaigns(referralService.getCampaigns(tenant.id));
+              }
+            }}
+            className="bg-accent hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md shadow transition"
+          >
+             {t.admin.referrals_add_btn || '+ Add Campaign (Mock)'}
+          </button>
         </div>
       </div>
       
-      {campaigns.length > 0 && (
+      {campaigns.length === 0 ? (
+          <div className="bg-white dark:bg-slate-800 p-8 rounded-lg border border-gray-200 dark:border-slate-700 text-center">
+             <p className="text-gray-500">{t.admin.empty || 'Henüz kayıt bulunamadı.'}</p>
+          </div>
+      ) : (
           <div className="bg-white dark:bg-slate-800 shadow-sm rounded-lg border border-gray-200 dark:border-slate-700 overflow-hidden">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
                <thead className="bg-gray-50 dark:bg-slate-700">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t.admin.referrals_campaign_name}</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t.admin.referrals_reward}</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t.admin.referrals_status}</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t.admin.referrals_campaign_name || 'Campaign Name'}</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t.admin.referrals_reward || 'Reward'}</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t.admin.referrals_status || 'Status'}</th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">İşlem</th>
                   </tr>
                </thead>
                <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700 text-sm">
@@ -61,6 +81,19 @@ const ReferralTab: React.FC = () => {
                             }`}>
                                 {c.active ? 'Active' : 'Paused'}
                             </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right font-medium">
+                            <button 
+                              onClick={() => {
+                                 if(window.confirm('Bu kampanyayı silmek istediğinize emin misiniz?')) {
+                                     referralService.deleteCampaign(c.id);
+                                     if(tenant) setCampaigns(referralService.getCampaigns(tenant.id));
+                                 }
+                              }}
+                              className="text-red-500 hover:text-red-700"
+                            >
+                                Sil
+                            </button>
                         </td>
                      </tr>
                   ))}
