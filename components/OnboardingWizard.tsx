@@ -254,8 +254,8 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-      {/* Sidebar Wizard Navigation */}
-      <div className="md:col-span-1 border-r border-gray-200 dark:border-slate-700 pr-4">
+      {/* Sidebar Wizard Navigation - Hidden on mobile, visible on md and up */}
+      <div className="hidden md:block md:col-span-1 border-r border-gray-200 dark:border-slate-700 pr-4">
         <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Kurulum Sihirbazı</h2>
         <nav className="space-y-2">
           {steps.map(step => (
@@ -287,6 +287,21 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
 
       {/* Main Content Area */}
       <div className="md:col-span-3">
+        {/* Mobile Progress Header */}
+        <div className="md:hidden mb-4 flex items-center justify-between bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700">
+           <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 flex items-center justify-center font-bold text-sm">
+                 {activeStep}
+              </div>
+              <div className="font-semibold text-gray-900 dark:text-white">
+                 {steps.find(s => s.id === activeStep)?.name}
+              </div>
+           </div>
+           <div className="text-sm text-gray-500 dark:text-gray-400">
+              Adım {activeStep} / {steps.length}
+           </div>
+        </div>
+
         <div className="bg-white dark:bg-slate-800 shadow-sm rounded-lg border border-gray-200 dark:border-slate-700 p-6">
           
           {activeStep === 1 && (

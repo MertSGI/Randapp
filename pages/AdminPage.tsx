@@ -22,7 +22,7 @@ const AdminPage: React.FC = () => {
   const { t, language } = useLanguage();
   const { tenant, refreshTenant } = useTenant();
   const { currentUser, isLoading: authLoading, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState<'setup' | 'appointments' | 'staff' | 'services' | 'reports' | 'billing' | 'profile' | 'settings' | 'customers' | 'referrals'>('setup');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'setup' | 'appointments' | 'staff' | 'services' | 'reports' | 'billing' | 'profile' | 'settings' | 'customers' | 'referrals'>('dashboard');
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [staffList, setStaffList] = useState<Staff[]>([]);
   const [servicesList, setServicesList] = useState<Service[]>([]);
@@ -241,104 +241,86 @@ const AdminPage: React.FC = () => {
 
   return (
     <div className="space-y-6 container mx-auto px-4 max-w-7xl pt-6">
-      <div className="bg-white dark:bg-slate-800 shadow-sm rounded-xl border border-gray-200 dark:border-slate-700 px-6 py-6 mb-6">
-        {/* Top Header - Desktop & Mobile */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {/* Desktop Header & Tabs - Hidden on Mobile */}
+      <div className="hidden md:block bg-white dark:bg-slate-800 shadow-sm rounded-xl border border-gray-200 dark:border-slate-700 px-6 py-4 mb-6">
+        <div className="flex justify-between items-center pb-4 border-b border-gray-100 dark:border-slate-700">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">{t.admin.title}</h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">{t.admin.subtitle}</p>
+            <h1 className="text-xl font-bold text-gray-900 dark:text-white">{t.admin.title}</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{t.admin.subtitle}</p>
           </div>
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-2">
              <button 
                onClick={() => { window.open('/#/book?preview=true', '_blank'); }}
-               className="inline-flex items-center px-3 md:px-4 py-2 border border-gray-300 dark:border-slate-600 shadow-sm text-xs md:text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent"
+               className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-slate-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent"
              >
-               <svg className="w-4 h-4 mr-1.5 hidden md:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+               <svg className="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                {t.admin.open_site_preview}
-             </button>
-             <button 
-               onClick={runAnalysis}
-               disabled={loadingAnalysis}
-               className="inline-flex items-center px-3 md:px-4 py-2 border border-transparent shadow-sm text-xs md:text-sm font-medium rounded-md text-white bg-accent hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent disabled:opacity-50"
-             >
-               <svg className="w-4 h-4 mr-1.5 hidden md:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-               {loadingAnalysis ? t.admin.btn_analyzing : t.admin.btn_analysis}
-             </button>
-             <button 
-               onClick={() => { logout(); navigate('/login'); }}
-               className="inline-flex items-center px-3 md:px-4 py-2 border border-transparent shadow-sm text-xs md:text-sm font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-             >
-               <svg className="w-4 h-4 mr-1.5 hidden md:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-               {t.admin.btn_logout}
              </button>
           </div>
         </div>
-
-        {/* Desktop Tabs (Hidden on Mobile) */}
-        <div className="mt-6 border-t border-gray-100 dark:border-slate-700 pt-4 hidden md:block">
-          <nav className="-mb-px flex space-x-4 lg:space-x-6 overflow-x-auto">
-            <button
-              onClick={() => setActiveTab('setup')}
-              className={`${activeTab === 'setup' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
-            >
-              {t.admin.tab_setup}
-            </button>
-            <button
-              onClick={() => setActiveTab('appointments')}
-              className={`${activeTab === 'appointments' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
-            >
-              {t.admin.tab_appointments}
-            </button>
-            <button
-              onClick={() => setActiveTab('customers')}
-              className={`${activeTab === 'customers' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
-            >
-              {t.admin.tab_customers}
-            </button>
-            <button
-              onClick={() => setActiveTab('staff')}
-              className={`${activeTab === 'staff' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
-            >
-              {t.admin.tab_staff}
-            </button>
-            <button
-              onClick={() => setActiveTab('services')}
-              className={`${activeTab === 'services' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
-            >
-              {t.admin.tab_services}
-            </button>
-            <button
-              onClick={() => setActiveTab('reports')}
-              className={`${activeTab === 'reports' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
-            >
-              {t.admin.tab_reports}
-            </button>
-            <button
-              onClick={() => setActiveTab('billing')}
-              className={`${activeTab === 'billing' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
-            >
-              {t.admin.tab_billing}
-            </button>
-            <button
-              onClick={() => setActiveTab('referrals')}
-              className={`${activeTab === 'referrals' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
-            >
-              Referans & Puan
-            </button>
-            <button
-              onClick={() => setActiveTab('profile')}
-              className={`${activeTab === 'profile' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
-            >
-              {t.admin.tab_profile}
-            </button>
-            <button
-              onClick={() => setActiveTab('settings')}
-              className={`${activeTab === 'settings' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
-            >
-              {t.admin.tab_setup}
-            </button>
-          </nav>
-        </div>
+        
+        <nav className="-mb-px flex space-x-6 overflow-x-auto pt-4">
+          <button
+            onClick={() => setActiveTab('dashboard')}
+            className={`${activeTab === 'dashboard' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
+          >
+            Dashboard
+          </button>
+          <button
+            onClick={() => setActiveTab('appointments')}
+            className={`${activeTab === 'appointments' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
+          >
+            {t.admin.tab_appointments}
+          </button>
+          <button
+            onClick={() => setActiveTab('customers')}
+            className={`${activeTab === 'customers' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
+          >
+            {t.admin.tab_customers}
+          </button>
+          <button
+            onClick={() => setActiveTab('services')}
+            className={`${activeTab === 'services' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
+          >
+            {t.admin.tab_services}
+          </button>
+          <button
+            onClick={() => setActiveTab('staff')}
+            className={`${activeTab === 'staff' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
+          >
+            {t.admin.tab_staff}
+          </button>
+          <button
+            onClick={() => setActiveTab('profile')}
+            className={`${activeTab === 'profile' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
+          >
+            {t.admin.tab_profile}
+          </button>
+          <button
+            onClick={() => setActiveTab('referrals')}
+            className={`${activeTab === 'referrals' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
+          >
+            {t.admin.tab_referrals || 'Referans & Kayıt'}
+          </button>
+          <button
+            onClick={() => setActiveTab('reports')}
+            className={`${activeTab === 'reports' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
+          >
+            {t.admin.tab_reports}
+          </button>
+          <button
+            onClick={() => setActiveTab('billing')}
+            className={`${activeTab === 'billing' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
+          >
+            {t.admin.tab_billing}
+          </button>
+          <button
+            onClick={() => setActiveTab('settings')}
+            className={`${activeTab === 'settings' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
+          >
+            {t.admin.tab_settings || 'Settings'}
+          </button>
+        </nav>
       </div>
 
       {activeTab === 'setup' && (
@@ -366,8 +348,42 @@ const AdminPage: React.FC = () => {
         />
       )}
 
-      {activeTab === 'appointments' && (
-        <div className="space-y-8">
+      {activeTab === 'dashboard' && (
+        <div className="space-y-6">
+          <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
+             <h2 className="text-xl font-bold dark:text-white">Dashboard / Bugün</h2>
+             <div className="flex gap-2">
+                 <button 
+                   onClick={() => { window.open('/#/book?preview=true', '_blank'); }}
+                   className="inline-flex md:hidden items-center px-4 py-2 border border-gray-300 dark:border-slate-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-slate-700 hover:bg-gray-50 focus:outline-none"
+                 >
+                   <svg className="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                   Site Önizleme
+                 </button>
+                 <button 
+                   onClick={runAnalysis}
+                   disabled={loadingAnalysis}
+                   className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none disabled:opacity-50"
+                 >
+                   <svg className="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                   {loadingAnalysis ? t.admin.btn_analyzing : t.admin.btn_analysis}
+                 </button>
+             </div>
+          </div>
+          
+          {/* Setup Reminder */}
+          {(!tenant?.branding?.primaryColor || servicesList.length === 0 || staffList.length === 0) && (
+            <div className="bg-yellow-50 dark:bg-yellow-900/40 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 flex flex-col sm:flex-row justify-between sm:items-center gap-4 shadow-sm">
+              <div>
+                <h3 className="font-bold text-yellow-800 dark:text-yellow-400">Kurulum Tamamlanmadı</h3>
+                <p className="text-sm text-yellow-700 dark:text-yellow-500 mt-1">Müşterilerinizin randevu alabilmesi için işletme kurulumunu tamamlamanız gerekmektedir.</p>
+              </div>
+              <button onClick={() => setActiveTab('setup')} className="whitespace-nowrap px-4 py-2 bg-yellow-100 text-yellow-800 hover:bg-yellow-200 dark:bg-yellow-700 dark:hover:bg-yellow-600 dark:text-yellow-100 rounded-md text-sm font-medium transition-colors">
+                Kuruluma Devam Et
+              </button>
+            </div>
+          )}
+
           {/* AI Insight Box */}
           {aiAnalysis && (
             <div className="bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/40 dark:to-blue-900/40 border border-blue-100 dark:border-blue-800 rounded-lg p-4 shadow-sm transition-colors duration-300">
@@ -378,11 +394,11 @@ const AdminPage: React.FC = () => {
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm p-6 border border-gray-100 dark:border-slate-700 transition-colors duration-300">
+            <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm p-6 border border-gray-100 dark:border-slate-700 transition-colors duration-300 cursor-pointer" onClick={() => setActiveTab('appointments')}>
               <div className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase transition-colors duration-300">{t.admin.stats_total}</div>
               <div className="mt-2 text-3xl font-bold text-gray-900 dark:text-white transition-colors duration-300">{appointments.length}</div>
             </div>
-            <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm p-6 border border-gray-100 dark:border-slate-700 transition-colors duration-300">
+            <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm p-6 border border-gray-100 dark:border-slate-700 transition-colors duration-300 cursor-pointer" onClick={() => setActiveTab('appointments')}>
               <div className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase transition-colors duration-300">{t.admin.stats_confirmed}</div>
               <div className="mt-2 text-3xl font-bold text-green-600 dark:text-green-400 transition-colors duration-300">
                 {appointments.filter(a => a.date === new Date().toISOString().split('T')[0] && a.status === 'confirmed').length}
@@ -394,8 +410,11 @@ const AdminPage: React.FC = () => {
               <span className="text-xs text-gray-400 dark:text-gray-500 transition-colors duration-300">({t.admin.synced} via API)</span>
             </div>
           </div>
+        </div>
+      )}
 
-          <div className="bg-white dark:bg-slate-800 shadow-sm rounded-lg border border-gray-200 dark:border-slate-700 overflow-hidden transition-colors duration-300">
+      {activeTab === 'appointments' && (
+          <div className="bg-white dark:bg-slate-800 shadow overflow-hidden sm:rounded-md transition-colors duration-300">
             <div className="px-4 py-5 sm:px-6 bg-gray-50 dark:bg-slate-800/80 border-b border-gray-200 dark:border-slate-700 transition-colors duration-300">
               <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white transition-colors duration-300">{t.admin.recent_title}</h3>
             </div>
@@ -462,7 +481,6 @@ const AdminPage: React.FC = () => {
               )}
             </ul>
           </div>
-        </div>
       )}
 
       {activeTab === 'staff' && (
@@ -707,9 +725,9 @@ const AdminPage: React.FC = () => {
       {/* Mobile Bottom Navigation Menu */}
       <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-gray-200 dark:border-slate-700 md:hidden z-50 px-2 pb-safe shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
          <div className="flex justify-between items-center h-16">
-            <button onClick={() => setActiveTab('setup')} className={`flex flex-col items-center justify-center w-full h-full ${activeTab === 'setup' ? 'text-accent dark:text-blue-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}>
+            <button onClick={() => setActiveTab('dashboard')} className={`flex flex-col items-center justify-center w-full h-full ${activeTab === 'dashboard' ? 'text-accent dark:text-blue-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}>
                <svg className="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-               <span className="text-[10px] font-medium leading-none">{t.admin.tab_setup}</span>
+               <span className="text-[10px] font-medium leading-none">Bugün</span>
             </button>
             <button onClick={() => setActiveTab('appointments')} className={`flex flex-col items-center justify-center w-full h-full ${activeTab === 'appointments' ? 'text-accent dark:text-blue-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}>
                <div className="relative">
@@ -737,34 +755,37 @@ const AdminPage: React.FC = () => {
                   <div className="fixed inset-0 z-40 bg-black/20" onClick={() => setIsMobileMoreMenuOpen(false)}></div>
                 )}
                 
-                {/* Mobile More Menu Popup */}
-                {isMobileMoreMenuOpen && (
-                  <div className="absolute bottom-16 right-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-gray-100 dark:border-slate-700 overflow-hidden transform transition-all z-50">
-                      <div className="py-1 flex flex-col items-start w-full" onClick={() => setIsMobileMoreMenuOpen(false)}>
-                          <button onClick={() => setActiveTab('staff')} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 ${activeTab === 'staff' ? 'bg-blue-50 dark:bg-slate-700 text-accent font-semibold' : 'text-gray-700 dark:text-gray-300'}`}>
-                             {t.admin.tab_staff}
-                          </button>
-                          <button onClick={() => setActiveTab('services')} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 ${activeTab === 'services' ? 'bg-blue-50 dark:bg-slate-700 text-accent font-semibold' : 'text-gray-700 dark:text-gray-300'}`}>
-                             {t.admin.tab_services}
-                          </button>
-                          <button onClick={() => setActiveTab('reports')} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 ${activeTab === 'reports' ? 'bg-blue-50 dark:bg-slate-700 text-accent font-semibold' : 'text-gray-700 dark:text-gray-300'}`}>
-                             {t.admin.tab_reports}
-                          </button>
-                          <button onClick={() => setActiveTab('billing')} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 ${activeTab === 'billing' ? 'bg-blue-50 dark:bg-slate-700 text-accent font-semibold' : 'text-gray-700 dark:text-gray-300'}`}>
-                             {t.admin.tab_billing}
-                          </button>
-                          <button onClick={() => setActiveTab('referrals')} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 ${activeTab === 'referrals' ? 'bg-blue-50 dark:bg-slate-700 text-accent font-semibold' : 'text-gray-700 dark:text-gray-300'}`}>
-                             Referans & Puan
-                          </button>
-                          <button onClick={() => setActiveTab('profile')} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 ${activeTab === 'profile' ? 'bg-blue-50 dark:bg-slate-700 text-accent font-semibold' : 'text-gray-700 dark:text-gray-300'}`}>
-                             {t.admin.tab_profile}
-                          </button>
-                          <button onClick={() => setActiveTab('settings')} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 ${activeTab === 'settings' ? 'bg-blue-50 dark:bg-slate-700 text-accent font-semibold' : 'text-gray-700 dark:text-gray-300'}`}>
-                             {t.admin.tab_setup}
-                          </button>
-                      </div>
-                  </div>
-                )}
+        {/* Mobile More Menu Popup */}
+        {isMobileMoreMenuOpen && (
+          <div className="absolute bottom-16 right-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-gray-100 dark:border-slate-700 overflow-hidden transform transition-all z-50">
+              <div className="py-1 flex flex-col items-start w-full" onClick={() => setIsMobileMoreMenuOpen(false)}>
+                  <button onClick={() => setActiveTab('staff')} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 ${activeTab === 'staff' ? 'bg-blue-50 dark:bg-slate-700 text-accent font-semibold' : 'text-gray-700 dark:text-gray-300'}`}>
+                     {t.admin.tab_staff}
+                  </button>
+                  <button onClick={() => setActiveTab('services')} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 ${activeTab === 'services' ? 'bg-blue-50 dark:bg-slate-700 text-accent font-semibold' : 'text-gray-700 dark:text-gray-300'}`}>
+                     {t.admin.tab_services}
+                  </button>
+                  <button onClick={() => setActiveTab('reports')} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 ${activeTab === 'reports' ? 'bg-blue-50 dark:bg-slate-700 text-accent font-semibold' : 'text-gray-700 dark:text-gray-300'}`}>
+                     {t.admin.tab_reports}
+                  </button>
+                  <button onClick={() => setActiveTab('billing')} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 ${activeTab === 'billing' ? 'bg-blue-50 dark:bg-slate-700 text-accent font-semibold' : 'text-gray-700 dark:text-gray-300'}`}>
+                     {t.admin.tab_billing}
+                  </button>
+                  <button onClick={() => setActiveTab('referrals')} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 ${activeTab === 'referrals' ? 'bg-blue-50 dark:bg-slate-700 text-accent font-semibold' : 'text-gray-700 dark:text-gray-300'}`}>
+                     {t.admin.tab_referrals || 'Referans & Puan'}
+                  </button>
+                  <button onClick={() => setActiveTab('profile')} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 ${activeTab === 'profile' ? 'bg-blue-50 dark:bg-slate-700 text-accent font-semibold' : 'text-gray-700 dark:text-gray-300'}`}>
+                     {t.admin.tab_profile}
+                  </button>
+                  <button onClick={() => setActiveTab('settings')} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 ${activeTab === 'settings' ? 'bg-blue-50 dark:bg-slate-700 text-accent font-semibold' : 'text-gray-700 dark:text-gray-300'}`}>
+                     {t.admin.tab_settings || 'Ayarlar'}
+                  </button>
+                  <button onClick={() => { logout(); navigate('/login'); }} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 text-red-600 dark:text-red-400 font-medium border-t border-gray-100 dark:border-slate-700`}>
+                     Çıkış Yap
+                  </button>
+              </div>
+          </div>
+        )}
             </div>
          </div>
       </div>

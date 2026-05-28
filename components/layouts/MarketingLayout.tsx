@@ -104,7 +104,7 @@ const MarketingLayout: React.FC = () => {
                    <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">R</div>
                    <span className="font-semibold text-xl dark:text-white">Randapp</span>
                 </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xs">{language === 'tr' ? 'Randevulu çalışan tüm işletmeler (Kuaförler, klinikler, stüdyolar) için profesyonel web sitesi, akıllı online randevu ve müşteri yönetim platformu.' : 'Professional website, smart booking, and customer management platform for any appointment-based business.'}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xs">{language === 'tr' ? 'Kuaförler, klinikler, stüdyolar ve randevu yönetimine ihtiyaç duyan tüm yerel işletmeler için tasarlanmış profesyonel web sitesi ve akıllı yönetim platformu.' : 'Professional website, smart booking, and customer management platform for any appointment-based business.'}</p>
             </div>
             <div>
                 <h4 className="font-bold text-gray-900 dark:text-white mb-4">{language === 'tr' ? 'Ürün' : 'Product'}</h4>

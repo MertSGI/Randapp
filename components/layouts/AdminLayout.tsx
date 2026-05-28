@@ -36,7 +36,7 @@ const AdminLayout: React.FC = () => {
           </div>
           <button
             onClick={handleLogout}
-            className="text-sm font-medium text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors"
+            className="hidden sm:block text-sm font-medium text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors"
           >
             {t.admin.logout || "Çıkış Yap"}
           </button>

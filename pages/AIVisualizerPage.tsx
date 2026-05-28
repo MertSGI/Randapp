@@ -85,30 +85,30 @@ const AIVisualizerPage: React.FC = () => {
 
   const t = {
     en: {
-      title: "AI Recommendation",
-      subtitle: "Describe what you want, and optionally upload a photo. Our AI proxy will generate personalized suggestions.",
+      title: "AI Style Recommendation",
+      subtitle: "Describe what you want, and optionally upload a photo. Our AI model will generate personalized style suggestions just for you.",
       uploadTitle: "1. Upload Your Photo (Optional)",
-      uploadDesc: "Your photo is only used for temporary processing to generate recommendations. Please do not upload images containing sensitive personal information.",
+      uploadDesc: "Your photo is used to generate personalized recommendations. Please do not upload images containing sensitive personal information.",
       uploadBtn: "Choose Photo",
       promptLabel: "2. What kind of style or color do you want?",
       promptPlaceholder: "e.g., Short messy fringe...",
       generateBtn: "Get Recommendation",
       generating: "Analyzing & Designing...",
       resultsTitle: "Your Personal Recommendation",
-      premiumVisualizationNotice: "Premium AI visualization will be powered through secure backend AI processing. It is not processed directly in the browser."
+      premiumVisualizationNotice: "Premium AI visualization generates high-quality style previews based on your selections."
     },
     tr: {
-      title: "Yapay Zeka Tavsiyesi",
-      subtitle: "İstediğiniz stili anlatın, isterseniz fotoğraf yükleyin. Güvenli AI sağlayıcımız kişiselleştirilmiş öneriler sunacak.",
+      title: "Yapay Zeka Destekli Tavsiye",
+      subtitle: "İstediğiniz stili anlatın, isterseniz fotoğraf yükleyin. Yapay zeka sizin yüz hatlarınıza uygun, kişiselleştirilmiş öneriler sunsun.",
       uploadTitle: "1. Fotoğrafınızı Yükleyin (Opsiyonel)",
-      uploadDesc: "Fotoğrafınız yalnızca geçici olarak öneri oluşturmak için kullanılır. Lütfen hassas kişisel bilgi içeren görseller yüklemeyin.",
+      uploadDesc: "Fotoğrafınız size özel öneriler oluşturmak için kullanılır. Lütfen hassas kişisel bilgi içeren görseller yüklemeyin.",
       uploadBtn: "Fotoğraf Seç",
       promptLabel: "2. Nasıl bir stil veya renk istersiniz?",
       promptPlaceholder: "örn., Yanlar kısa üstler dağınık...",
       generateBtn: "Tavsiye Al",
       generating: "Analiz Ediliyor & Tasarlanıyor...",
       resultsTitle: "Kişisel Tavsiyeniz",
-      premiumVisualizationNotice: "Premium AI görselleştirme güvenli backend AI işleme üzerinden çalışacaktır. Doğrudan tarayıcı içinde işlenmez."
+      premiumVisualizationNotice: "Premium yapay zeka yüksek kaliteli stil önizlemeleri oluşturur."
     }
   }[language];
 
