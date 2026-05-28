@@ -48,6 +48,7 @@ const AdminPage: React.FC = () => {
   const [newServiceDuration, setNewServiceDuration] = useState<number>(30);
   const [newServiceImage, setNewServiceImage] = useState('');
   const [newServiceActive, setNewServiceActive] = useState(true);
+  const [isMobileMoreMenuOpen, setIsMobileMoreMenuOpen] = useState(false);
 
   useEffect(() => {
     if (authLoading) return;
@@ -241,37 +242,41 @@ const AdminPage: React.FC = () => {
   return (
     <div className="space-y-6 container mx-auto px-4 max-w-7xl pt-6">
       <div className="bg-white dark:bg-slate-800 shadow-sm rounded-xl border border-gray-200 dark:border-slate-700 px-6 py-6 mb-6">
+        {/* Top Header - Desktop & Mobile */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">{t.admin.title}</h1>
             <p className="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">{t.admin.subtitle}</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
              <button 
                onClick={() => { window.open('/#/book?preview=true', '_blank'); }}
-               className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-slate-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent"
+               className="inline-flex items-center px-3 md:px-4 py-2 border border-gray-300 dark:border-slate-600 shadow-sm text-xs md:text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent"
              >
+               <svg className="w-4 h-4 mr-1.5 hidden md:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                {t.admin.open_site_preview}
              </button>
              <button 
                onClick={runAnalysis}
                disabled={loadingAnalysis}
-               className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-accent hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent disabled:opacity-50"
+               className="inline-flex items-center px-3 md:px-4 py-2 border border-transparent shadow-sm text-xs md:text-sm font-medium rounded-md text-white bg-accent hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent disabled:opacity-50"
              >
+               <svg className="w-4 h-4 mr-1.5 hidden md:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                {loadingAnalysis ? t.admin.btn_analyzing : t.admin.btn_analysis}
              </button>
              <button 
                onClick={() => { logout(); navigate('/login'); }}
-               className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+               className="inline-flex items-center px-3 md:px-4 py-2 border border-transparent shadow-sm text-xs md:text-sm font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
              >
+               <svg className="w-4 h-4 mr-1.5 hidden md:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
                {t.admin.btn_logout}
              </button>
           </div>
         </div>
 
-        {/* Tabs inside the header block */}
-        <div className="mt-6 border-t border-gray-100 dark:border-slate-700 pt-4">
-          <nav className="-mb-px flex space-x-4 md:space-x-6 overflow-x-auto snap-x scrollbar-hide pb-2">
+        {/* Desktop Tabs (Hidden on Mobile) */}
+        <div className="mt-6 border-t border-gray-100 dark:border-slate-700 pt-4 hidden md:block">
+          <nav className="-mb-px flex space-x-4 lg:space-x-6 overflow-x-auto">
             <button
               onClick={() => setActiveTab('setup')}
               className={`${activeTab === 'setup' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
@@ -683,7 +688,7 @@ const AdminPage: React.FC = () => {
       {activeTab === 'referrals' && <ReferralTab />}
       
       {activeTab === 'settings' && (
-        <div className="bg-white dark:bg-slate-800 shadow-sm rounded-lg border border-gray-200 dark:border-slate-700 p-6">
+        <div className="bg-white dark:bg-slate-800 shadow-sm rounded-lg border border-gray-200 dark:border-slate-700 p-6 pb-24 md:pb-6">
            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">{t.admin.working_hours}</h3>
            <p className="text-gray-600 dark:text-gray-400 mb-6 border-b border-gray-200 dark:border-slate-700 pb-4">
                {t.admin.working_hours_desc}
@@ -695,6 +700,74 @@ const AdminPage: React.FC = () => {
            </p>
         </div>
       )}
+      
+      {/* Spacer for mobile bottom nav */}
+      <div className="h-20 md:hidden w-full"></div>
+
+      {/* Mobile Bottom Navigation Menu */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-gray-200 dark:border-slate-700 md:hidden z-50 px-2 pb-safe shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+         <div className="flex justify-between items-center h-16">
+            <button onClick={() => setActiveTab('setup')} className={`flex flex-col items-center justify-center w-full h-full ${activeTab === 'setup' ? 'text-accent dark:text-blue-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}>
+               <svg className="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+               <span className="text-[10px] font-medium leading-none">{t.admin.tab_setup}</span>
+            </button>
+            <button onClick={() => setActiveTab('appointments')} className={`flex flex-col items-center justify-center w-full h-full ${activeTab === 'appointments' ? 'text-accent dark:text-blue-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}>
+               <div className="relative">
+                 <svg className="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                 {appointments.filter(a => a.date === new Date().toISOString().split('T')[0]).length > 0 && (
+                   <span className="absolute top-0 right-0 -mt-1 -mr-1 flex h-3 w-3 items-center justify-center rounded-full bg-red-500 text-[8px] font-bold text-white ring-2 ring-white dark:ring-slate-800">
+                      {appointments.filter(a => a.date === new Date().toISOString().split('T')[0]).length}
+                   </span>
+                 )}
+               </div>
+               <span className="text-[10px] font-medium leading-none">{t.admin.tab_appointments}</span>
+            </button>
+            <button onClick={() => setActiveTab('customers')} className={`flex flex-col items-center justify-center w-full h-full ${activeTab === 'customers' ? 'text-accent dark:text-blue-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}>
+               <svg className="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+               <span className="text-[10px] font-medium leading-none">{t.admin.tab_customers}</span>
+            </button>
+            <div className="relative w-full h-full flex justify-center dropdown-container">
+                <button className={`flex flex-col items-center justify-center w-full h-full ${(['staff', 'services', 'reports', 'billing', 'profile', 'referrals', 'settings'].includes(activeTab)) ? 'text-accent dark:text-blue-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`} onClick={() => setIsMobileMoreMenuOpen(!isMobileMoreMenuOpen)}>
+                   <svg className="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16"/></svg>
+                   <span className="text-[10px] font-medium leading-none">Diğer</span>
+                </button>
+                
+                {/* Mobile More Menu Overlay */}
+                {isMobileMoreMenuOpen && (
+                  <div className="fixed inset-0 z-40 bg-black/20" onClick={() => setIsMobileMoreMenuOpen(false)}></div>
+                )}
+                
+                {/* Mobile More Menu Popup */}
+                {isMobileMoreMenuOpen && (
+                  <div className="absolute bottom-16 right-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-gray-100 dark:border-slate-700 overflow-hidden transform transition-all z-50">
+                      <div className="py-1 flex flex-col items-start w-full" onClick={() => setIsMobileMoreMenuOpen(false)}>
+                          <button onClick={() => setActiveTab('staff')} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 ${activeTab === 'staff' ? 'bg-blue-50 dark:bg-slate-700 text-accent font-semibold' : 'text-gray-700 dark:text-gray-300'}`}>
+                             {t.admin.tab_staff}
+                          </button>
+                          <button onClick={() => setActiveTab('services')} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 ${activeTab === 'services' ? 'bg-blue-50 dark:bg-slate-700 text-accent font-semibold' : 'text-gray-700 dark:text-gray-300'}`}>
+                             {t.admin.tab_services}
+                          </button>
+                          <button onClick={() => setActiveTab('reports')} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 ${activeTab === 'reports' ? 'bg-blue-50 dark:bg-slate-700 text-accent font-semibold' : 'text-gray-700 dark:text-gray-300'}`}>
+                             {t.admin.tab_reports}
+                          </button>
+                          <button onClick={() => setActiveTab('billing')} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 ${activeTab === 'billing' ? 'bg-blue-50 dark:bg-slate-700 text-accent font-semibold' : 'text-gray-700 dark:text-gray-300'}`}>
+                             {t.admin.tab_billing}
+                          </button>
+                          <button onClick={() => setActiveTab('referrals')} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 ${activeTab === 'referrals' ? 'bg-blue-50 dark:bg-slate-700 text-accent font-semibold' : 'text-gray-700 dark:text-gray-300'}`}>
+                             Referans & Puan
+                          </button>
+                          <button onClick={() => setActiveTab('profile')} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 ${activeTab === 'profile' ? 'bg-blue-50 dark:bg-slate-700 text-accent font-semibold' : 'text-gray-700 dark:text-gray-300'}`}>
+                             {t.admin.tab_profile}
+                          </button>
+                          <button onClick={() => setActiveTab('settings')} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 ${activeTab === 'settings' ? 'bg-blue-50 dark:bg-slate-700 text-accent font-semibold' : 'text-gray-700 dark:text-gray-300'}`}>
+                             {t.admin.tab_setup}
+                          </button>
+                      </div>
+                  </div>
+                )}
+            </div>
+         </div>
+      </div>
     </div>
   );
 };

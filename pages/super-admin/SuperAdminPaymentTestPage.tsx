@@ -65,7 +65,7 @@ const SuperAdminPaymentTestPage: React.FC = () => {
       
       <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow space-y-4">
         <h2 className="text-xl font-semibold dark:text-white">Environment Config & Safety</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded border dark:border-slate-700">
             <span className="text-xs text-slate-500 uppercase">Provider</span>
             <div className="font-mono text-lg dark:text-white">{envInfo.paymentProvider}</div>
@@ -140,7 +140,7 @@ const SuperAdminPaymentTestPage: React.FC = () => {
             <span className="text-xs font-semibold bg-gray-100 text-gray-600 dark:bg-slate-700 dark:text-gray-300 px-2 py-1 rounded border border-gray-200 dark:border-slate-600">Simulates User CTA</span>
         </div>
         
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1 dark:text-slate-300">Tenant ID (Mock)</label>
             <input type="text" value={tenantId} readOnly className="w-full border p-2 rounded dark:bg-slate-900 bg-gray-100 text-gray-500 dark:border-slate-700" />

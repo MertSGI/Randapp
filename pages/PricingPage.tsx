@@ -152,8 +152,8 @@ const PricingPage: React.FC = () => {
                          }
                      }
                      const alertMsg = language === 'tr' 
-                       ? 'Ödeme entegrasyonu henüz yapılandırılmadı. iyzico ve Supabase Edge Functions aktif edildiğinde bu buton güvenli ödeme akışını başlatacaktır.' 
-                       : 'Payment integration is not configured yet. This button will start secure checkout when iyzico and Supabase Edge Functions are enabled.';
+                       ? 'Ödeme altyapısı şu anda test aşamasındadır. Canlı ödeme akışı yakında aktif edilecektir.' 
+                       : 'Payment integration is currently in testing mode. Live checkout will be available soon.';
                      window.alert(alertMsg);
                    }}
                    className={`block w-full text-center font-bold py-3.5 md:py-4 rounded-xl transition shadow-md ${isRecommended ? 'bg-accent text-white hover:bg-blue-600 hover:shadow-lg' : 'bg-gray-100 dark:bg-slate-700 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-slate-600'} text-sm md:text-base`}>

@@ -61,18 +61,18 @@ const SuperAdminPlansPage: React.FC = () => {
     };
 
     return (
-        <div className="p-8 max-w-6xl mx-auto space-y-6">
-            <div className="flex justify-between items-center mb-6">
+        <div className="p-4 sm:p-8 max-w-6xl mx-auto space-y-4 sm:space-y-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 sm:mb-6">
                 <div>
-                   <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Planlar ve Fiyatlandırma Yönetimi</h2>
+                   <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Planlar ve Fiyatlandırma Yönetimi</h2>
                    <p className="text-sm text-gray-500 mt-1">Paketleri dinamik olarak oluşturun, fiyatları ve deneme sürelerini ayarlayın.</p>
                 </div>
-                <div className="flex gap-3">
-                   <button onClick={handleAddPlan} className="flex items-center gap-2 border border-accent text-accent hover:bg-accent/10 px-4 py-2 rounded-md font-medium transition">
-                      <Plus className="w-4 h-4" /> Yeni Paket
+                <div className="flex flex-wrap gap-2 sm:gap-3">
+                   <button onClick={handleAddPlan} className="flex items-center gap-2 border border-accent text-accent hover:bg-accent/10 px-3 sm:px-4 py-2 rounded-md font-medium transition text-sm sm:text-base">
+                      <Plus className="w-4 h-4" /> Yeni
                    </button>
-                   <button onClick={handleSave} className="flex items-center gap-2 bg-accent hover:bg-blue-600 text-white px-6 py-2 rounded-md font-medium transition">
-                      <Save className="w-4 h-4" /> Bütün Değişiklikleri Kaydet
+                   <button onClick={handleSave} className="flex items-center gap-2 bg-accent hover:bg-blue-600 text-white px-4 sm:px-6 py-2 rounded-md font-medium transition text-sm sm:text-base">
+                      <Save className="w-4 h-4" /> Kaydet
                    </button>
                 </div>
             </div>
