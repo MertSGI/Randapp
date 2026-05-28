@@ -36,8 +36,8 @@ const ReferralTab: React.FC = () => {
                     id: `campaign_${Date.now()}`,
                     tenantId: tenant.id,
                     campaignType: 'customer_referral',
-                    title: 'Yeni Müşteri Kampanyası',
-                    description: 'Arkadaşını getirene %10 indirim',
+                    title: language === 'tr' ? 'Yeni Müşteri Kampanyası' : 'New Customer Campaign',
+                    description: language === 'tr' ? 'Arkadaşını getirene %10 indirim' : '10% off for friend referral',
                     rewardType: 'discount',
                     rewardValue: '10',
                     active: true,
@@ -67,7 +67,7 @@ const ReferralTab: React.FC = () => {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t.admin.referrals_campaign_name || 'Campaign Name'}</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t.admin.referrals_reward || 'Reward'}</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t.admin.referrals_status || 'Status'}</th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">İşlem</th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t.admin.delete || 'Delete'}</th>
                   </tr>
                </thead>
                <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700 text-sm">
@@ -79,20 +79,20 @@ const ReferralTab: React.FC = () => {
                             <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
                                 c.active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
                             }`}>
-                                {c.active ? 'Active' : 'Paused'}
+                                {c.active ? (t.admin.status_active || 'Active') : (t.admin.status_inactive || 'Paused')}
                             </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right font-medium">
                             <button 
                               onClick={() => {
-                                 if(window.confirm('Bu kampanyayı silmek istediğinize emin misiniz?')) {
+                                 if(window.confirm(t.admin.confirm_delete || 'Are you sure you want to delete this?')) {
                                      referralService.deleteCampaign(c.id);
                                      if(tenant) setCampaigns(referralService.getCampaigns(tenant.id));
                                  }
                               }}
                               className="text-red-500 hover:text-red-700"
                             >
-                                Sil
+                                {t.admin.delete || 'Delete'}
                             </button>
                         </td>
                      </tr>

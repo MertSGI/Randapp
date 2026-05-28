@@ -174,9 +174,9 @@ const CustomerPortalPage: React.FC = () => {
                   <div key={apt.id} className="bg-white dark:bg-slate-800 rounded-lg p-5 shadow-sm border-l-4 border-accent relative">
                     <div className="flex justify-between items-start">
                        <div>
-                          <h3 className="font-bold text-gray-900 dark:text-white text-lg">{service?.name || 'Unknown Service'}</h3>
+                          <h3 className="font-bold text-gray-900 dark:text-white text-lg">{service ? (language === 'tr' ? (service.name_tr || service.name) : service.name) : (t.admin.unknown_service || 'Unknown Service')}</h3>
                           <p className="text-sm text-gray-600 dark:text-gray-300 flex items-center gap-1 mt-1">
-                            {staff?.name || 'Unknown Staff'}
+                            {staff?.name || t.admin.unknown_staff || 'Unknown Staff'}
                           </p>
                           <div className="flex items-center gap-3 mt-3 text-sm text-gray-500 dark:text-gray-400">
                             <span className="flex items-center gap-1"><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg> {apt.date}</span>
@@ -218,8 +218,8 @@ const CustomerPortalPage: React.FC = () => {
                 return (
                   <div key={apt.id} className="bg-gray-50 dark:bg-slate-800/50 rounded-lg p-4 border border-gray-200 dark:border-slate-700 flex justify-between items-center opacity-80 hover:opacity-100 transition">
                      <div>
-                        <h4 className="font-medium text-gray-800 dark:text-gray-200 text-sm">{service?.name || 'Unknown Service'}</h4>
-                        <p className="text-xs text-gray-500 mt-1">{apt.date} {apt.time} • {staff?.name}</p>
+                        <h4 className="font-medium text-gray-800 dark:text-gray-200 text-sm">{service ? (language === 'tr' ? (service.name_tr || service.name) : service.name) : (t.admin.unknown_service || 'Unknown Service')}</h4>
+                        <p className="text-xs text-gray-500 mt-1">{apt.date} {apt.time} • {staff?.name || t.admin.unknown_staff || 'Unknown Staff'}</p>
                      </div>
                      <div>
                        {getStatusBadge(apt.status)}
