@@ -236,14 +236,16 @@ const BookingPage: React.FC = () => {
     if (step === 0 || step === 5) return null;
     
     const stepLabels = ['Hizmet Seç', 'Uzman Seç', 'Saat Seç', 'Bilgiler'];
+    const activeLabel = stepLabels[step - 1];
 
     return (
-      <div className="mb-10 max-w-2xl mx-auto hidden sm:block">
-        <div className="flex items-center justify-between relative px-2">
-          <div className="absolute left-6 right-6 top-1/2 h-0.5 bg-gray-200 -z-10 w-[calc(100%-3rem)]"></div>
+      <div className="mb-6 md:mb-10 max-w-2xl mx-auto">
+        {/* Desktop Stepper */}
+        <div className="hidden sm:flex items-center justify-between relative px-2">
+          <div className="absolute left-6 right-6 top-1/2 h-0.5 bg-gray-200 dark:bg-slate-700 -z-10 w-[calc(100%-3rem)]"></div>
           {[1, 2, 3, 4].map((s, index) => (
-            <div key={s} className="flex flex-col items-center">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 shadow-sm ${step >= s ? 'bg-accent text-white ring-4 ring-blue-50' : 'bg-white border-2 border-gray-200 text-gray-400'}`}>
+            <div key={s} className="flex flex-col items-center z-0 bg-transparent">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 shadow-sm ${step >= s ? 'bg-accent text-white ring-4 ring-blue-50 dark:ring-blue-900/40' : 'bg-white dark:bg-slate-800 border-2 border-gray-200 dark:border-slate-700 text-gray-400'}`}>
                 {s}
               </div>
               <span className={`mt-2 text-xs font-semibold ${step >= s ? 'text-gray-900 dark:text-white' : 'text-gray-400'} w-20 text-center whitespace-nowrap`}>
@@ -252,12 +254,27 @@ const BookingPage: React.FC = () => {
             </div>
           ))}
         </div>
+        
+        {/* Mobile Stepper */}
+        <div className="sm:hidden flex flex-col items-center">
+            <div className="text-xs font-bold text-accent dark:text-blue-400 uppercase tracking-wider mb-2">
+               Adım {step} / 4
+            </div>
+            <div className="text-lg font-bold text-gray-900 dark:text-white mb-3">
+               {activeLabel}
+            </div>
+            <div className="w-full bg-gray-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden flex">
+               {[1, 2, 3, 4].map((s) => (
+                 <div key={s} className={`h-full flex-1 ${s <= step ? 'bg-accent' : 'bg-transparent'} ${s < 4 ? 'border-r border-white/20 dark:border-slate-800/20' : ''}`}></div>
+               ))}
+            </div>
+        </div>
       </div>
     );
   };
 
   return (
-    <div className={step === 0 ? "w-full min-h-screen" : "max-w-lg mx-auto"}>
+    <div className={step === 0 ? "w-full min-h-screen" : "max-w-3xl mx-auto pt-6 md:pt-10 pb-12 px-4"}>
       {isAuthorizedPreview && (
          <div className={`mb-6 p-3 ${currentUser?.role === 'super_admin' ? 'bg-purple-100 text-purple-800 border-purple-200' : 'bg-blue-100 text-blue-800 border-blue-200'} border rounded-lg text-sm text-center font-medium shadow-sm`}>
             {currentUser?.role === 'super_admin' ? 'Super Admin Önizleme Modu: Bu sayfa müşterilere açık değildir.' : 'Önizleme Modu: Bu sayfa henüz müşterilere açık değildir.'}

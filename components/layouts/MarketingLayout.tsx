@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -19,45 +19,81 @@ const ThemeToggle = () => {
 const MarketingLayout: React.FC = () => {
   const { language, setLanguage } = useLanguage();
   const location = useLocation();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Close mobile menu when navigating
+  React.useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-slate-900 transition-colors duration-300">
-      <nav className="sm:block bg-white dark:bg-slate-800 shadow-sm sticky top-0 z-40 transition-colors duration-300">
+      <header className="bg-white dark:bg-slate-800 shadow-sm sticky top-0 z-40 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
+          <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Link to="/" className="flex-shrink-0 flex items-center gap-2">
                 <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold tracking-tighter">R</div>
-                <span className="font-semibold text-xl text-primary dark:text-white">Randapp</span>
+                <span className="font-semibold text-xl text-primary dark:text-white whitespace-nowrap">Randapp</span>
               </Link>
-              <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-                <Link to="/features" className={`border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-1 pt-1 border-b-2 text-sm font-medium ${location.pathname === '/features' ? 'text-gray-900 border-blue-500' : ''}`}>{language === 'tr' ? 'Özellikler' : 'Features'}</Link>
-                <Link to="/mobile-app" className={`border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-1 pt-1 border-b-2 text-sm font-medium ${location.pathname === '/mobile-app' ? 'text-gray-900 border-accent' : ''}`}>{language === 'tr' ? 'Mobil Uygulama' : 'Mobile App'}</Link>
-                <Link to="/pricing" className={`border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-1 pt-1 border-b-2 text-sm font-medium ${location.pathname === '/pricing' ? 'text-gray-900 border-blue-500' : ''}`}>{language === 'tr' ? 'Fiyatlar' : 'Pricing'}</Link>
-                <Link to="/contact" className={`border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-1 pt-1 border-b-2 text-sm font-medium ${location.pathname === '/contact' ? 'text-gray-900 border-blue-500' : ''}`}>{language === 'tr' ? 'İletişim' : 'Contact'}</Link>
-              </div>
+              <nav className="hidden md:ml-8 md:flex md:space-x-8">
+                <Link to="/features" className={`border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-1 py-5 border-b-2 text-sm font-medium ${location.pathname === '/features' ? 'text-gray-900 border-blue-500' : ''}`}>{language === 'tr' ? 'Özellikler' : 'Features'}</Link>
+                <Link to="/mobile-app" className={`border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-1 py-5 border-b-2 text-sm font-medium ${location.pathname === '/mobile-app' ? 'text-gray-900 border-accent' : ''}`}>{language === 'tr' ? 'Mobil Uygulama' : 'Mobile App'}</Link>
+                <Link to="/pricing" className={`border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-1 py-5 border-b-2 text-sm font-medium ${location.pathname === '/pricing' ? 'text-gray-900 border-blue-500' : ''}`}>{language === 'tr' ? 'Fiyatlar' : 'Pricing'}</Link>
+                <Link to="/contact" className={`border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-1 py-5 border-b-2 text-sm font-medium ${location.pathname === '/contact' ? 'text-gray-900 border-blue-500' : ''}`}>{language === 'tr' ? 'İletişim' : 'Contact'}</Link>
+              </nav>
             </div>
-            <div className="flex items-center gap-4">
+            
+            <div className="hidden md:flex items-center gap-4">
               <ThemeToggle />
               <div className="flex bg-gray-100 dark:bg-slate-700 rounded-lg p-1">
                 <button onClick={() => setLanguage('en')} className={`px-3 py-1 rounded-md text-xs font-semibold ${language === 'en' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 dark:text-gray-300'}`}>EN</button>
                 <button onClick={() => setLanguage('tr')} className={`px-3 py-1 rounded-md text-xs font-semibold ${language === 'tr' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 dark:text-gray-300'}`}>TR</button>
               </div>
-              <Link to="/login" className="text-gray-600 dark:text-gray-200 text-sm font-medium hover:text-blue-600 dark:hover:text-blue-400">{language === 'tr' ? 'Giriş Yap' : 'Login'}</Link>
-              <Link to="/demo" className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-bold hover:bg-blue-700 transition hidden sm:block">{language === 'tr' ? 'Kendi Salonumu Önizle' : 'Preview My Salon'}</Link>
+              <Link to="/login" className="text-gray-600 dark:text-gray-200 text-sm font-medium hover:text-blue-600 dark:hover:text-blue-400 whitespace-nowrap">{language === 'tr' ? 'Giriş Yap' : 'Login'}</Link>
+              <Link to="/demo" className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-bold hover:bg-blue-700 transition whitespace-nowrap">{language === 'tr' ? 'Kendi Salonumu Önizle' : 'Preview My Salon'}</Link>
+            </div>
+
+            <div className="flex items-center md:hidden gap-2">
+               <ThemeToggle />
+               <button
+                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                 className="p-2 -mr-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white"
+                 aria-label="Menu"
+               >
+                 {mobileMenuOpen ? (
+                   <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                 ) : (
+                   <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" /></svg>
+                 )}
+               </button>
             </div>
           </div>
         </div>
-        {/* Mobile Navigation */}
-        <div className="sm:hidden flex gap-4 overflow-x-auto px-4 py-3 bg-white dark:bg-slate-800 border-t border-gray-100 dark:border-slate-700 whitespace-nowrap hide-scrollbar">
-            <Link to="/" className={`text-sm font-medium border-b-2 ${location.pathname === '/' ? 'text-gray-900 dark:text-white border-blue-500' : 'text-gray-600 dark:text-gray-300 border-transparent'}`}>{language === 'tr' ? 'Ana Sayfa' : 'Home'}</Link>
-            <Link to="/features" className={`text-sm font-medium border-b-2 ${location.pathname === '/features' ? 'text-gray-900 dark:text-white border-blue-500' : 'text-gray-600 dark:text-gray-300 border-transparent'}`}>{language === 'tr' ? 'Özellikler' : 'Features'}</Link>
-            <Link to="/mobile-app" className={`text-sm font-medium border-b-2 ${location.pathname === '/mobile-app' ? 'text-gray-900 dark:text-white border-accent' : 'text-gray-600 dark:text-gray-300 border-transparent'}`}>{language === 'tr' ? 'Mobil App' : 'App'}</Link>
-            <Link to="/pricing" className={`text-sm font-medium border-b-2 ${location.pathname === '/pricing' ? 'text-gray-900 dark:text-white border-blue-500' : 'text-gray-600 dark:text-gray-300 border-transparent'}`}>{language === 'tr' ? 'Fiyatlar' : 'Pricing'}</Link>
-            <Link to="/contact" className={`text-sm font-medium border-b-2 ${location.pathname === '/contact' ? 'text-gray-900 dark:text-white border-blue-500' : 'text-gray-600 dark:text-gray-300 border-transparent'}`}>{language === 'tr' ? 'İletişim' : 'Contact'}</Link>
-            <Link to="/demo" className={`text-sm font-medium border-b-2 ${location.pathname === '/demo' ? 'text-blue-600 dark:text-blue-400 border-blue-500' : 'text-blue-600 dark:text-blue-400 border-transparent'}`}>{language === 'tr' ? 'Önizle' : 'Preview'}</Link>
-        </div>
-      </nav>
+        
+        {/* Mobile Navigation Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-gray-100 dark:border-slate-700 bg-white dark:bg-slate-800 absolute w-full left-0 shadow-lg top-16">
+            <div className="flex flex-col px-4 pt-2 pb-6 space-y-1">
+              <Link to="/" className={`block px-3 py-2 rounded-md text-base font-medium ${location.pathname === '/' ? 'bg-blue-50 text-blue-600 dark:bg-slate-700 dark:text-blue-400' : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-slate-700'}`}>{language === 'tr' ? 'Ana Sayfa' : 'Home'}</Link>
+              <Link to="/features" className={`block px-3 py-2 rounded-md text-base font-medium ${location.pathname === '/features' ? 'bg-blue-50 text-blue-600 dark:bg-slate-700 dark:text-blue-400' : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-slate-700'}`}>{language === 'tr' ? 'Özellikler' : 'Features'}</Link>
+              <Link to="/mobile-app" className={`block px-3 py-2 rounded-md text-base font-medium ${location.pathname === '/mobile-app' ? 'bg-blue-50 text-blue-600 dark:bg-slate-700 dark:text-blue-400' : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-slate-700'}`}>{language === 'tr' ? 'Mobil Uygulama' : 'Mobile App'}</Link>
+              <Link to="/pricing" className={`block px-3 py-2 rounded-md text-base font-medium ${location.pathname === '/pricing' ? 'bg-blue-50 text-blue-600 dark:bg-slate-700 dark:text-blue-400' : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-slate-700'}`}>{language === 'tr' ? 'Fiyatlar' : 'Pricing'}</Link>
+              <Link to="/contact" className={`block px-3 py-2 rounded-md text-base font-medium ${location.pathname === '/contact' ? 'bg-blue-50 text-blue-600 dark:bg-slate-700 dark:text-blue-400' : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-slate-700'}`}>{language === 'tr' ? 'İletişim' : 'Contact'}</Link>
+              
+              <div className="border-t border-gray-100 dark:border-slate-700 my-2 pt-2"></div>
+              
+              <div className="flex bg-gray-100 dark:bg-slate-700 rounded-lg p-1 mx-3 mb-2 max-w-[120px]">
+                <button onClick={() => setLanguage('en')} className={`flex-1 py-1 rounded-md text-xs font-semibold ${language === 'en' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 dark:text-gray-300'}`}>EN</button>
+                <button onClick={() => setLanguage('tr')} className={`flex-1 py-1 rounded-md text-xs font-semibold ${language === 'tr' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 dark:text-gray-300'}`}>TR</button>
+              </div>
+              
+              <Link to="/login" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-slate-700">{language === 'tr' ? 'Giriş Yap' : 'Login'}</Link>
+              <Link to="/demo" className="block w-full text-center mt-2 px-3 py-3 rounded-md text-base font-bold bg-blue-600 text-white hover:bg-blue-700">{language === 'tr' ? 'Kendi Salonumu Önizle' : 'Preview My Salon'}</Link>
+            </div>
+          </div>
+        )}
+      </header>
       <main className="flex-grow w-full">
         <Outlet />
       </main>

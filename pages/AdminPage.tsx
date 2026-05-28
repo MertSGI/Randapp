@@ -270,65 +270,65 @@ const AdminPage: React.FC = () => {
         </div>
 
         {/* Tabs inside the header block */}
-        <div className="mt-6">
-          <nav className="-mb-px flex space-x-6 overflow-x-auto">
+        <div className="mt-6 border-t border-gray-100 dark:border-slate-700 pt-4">
+          <nav className="-mb-px flex space-x-4 md:space-x-6 overflow-x-auto snap-x scrollbar-hide pb-2">
             <button
               onClick={() => setActiveTab('setup')}
-              className={`${activeTab === 'setup' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
+              className={`${activeTab === 'setup' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
             >
               {t.admin.tab_setup}
             </button>
             <button
               onClick={() => setActiveTab('appointments')}
-              className={`${activeTab === 'appointments' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
+              className={`${activeTab === 'appointments' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
             >
               {t.admin.tab_appointments}
             </button>
             <button
               onClick={() => setActiveTab('customers')}
-              className={`${activeTab === 'customers' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
+              className={`${activeTab === 'customers' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
             >
               {t.admin.tab_customers}
             </button>
             <button
               onClick={() => setActiveTab('staff')}
-              className={`${activeTab === 'staff' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
+              className={`${activeTab === 'staff' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
             >
               {t.admin.tab_staff}
             </button>
             <button
               onClick={() => setActiveTab('services')}
-              className={`${activeTab === 'services' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
+              className={`${activeTab === 'services' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
             >
               {t.admin.tab_services}
             </button>
             <button
               onClick={() => setActiveTab('reports')}
-              className={`${activeTab === 'reports' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
+              className={`${activeTab === 'reports' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
             >
               {t.admin.tab_reports}
             </button>
             <button
               onClick={() => setActiveTab('billing')}
-              className={`${activeTab === 'billing' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
+              className={`${activeTab === 'billing' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
             >
               {t.admin.tab_billing}
             </button>
             <button
               onClick={() => setActiveTab('referrals')}
-              className={`${activeTab === 'referrals' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
+              className={`${activeTab === 'referrals' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
             >
               Referans & Puan
             </button>
             <button
               onClick={() => setActiveTab('profile')}
-              className={`${activeTab === 'profile' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
+              className={`${activeTab === 'profile' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
             >
               {t.admin.tab_profile}
             </button>
             <button
               onClick={() => setActiveTab('settings')}
-              className={`${activeTab === 'settings' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500'} whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-300`}
+              className={`${activeTab === 'settings' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
             >
               {t.admin.tab_setup}
             </button>
@@ -404,27 +404,27 @@ const AdminPage: React.FC = () => {
                   const serviceName = language === 'tr' ? (assignedService?.name_tr || assignedService?.name) : assignedService?.name;
                   return (
                     <li key={apt.id} className="p-4 hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors duration-300">
-                      <div className="flex items-center justify-between">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-0">
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-accent dark:text-blue-400 truncate transition-colors duration-300">
                             {apt.user_name}
                           </p>
-                          <p className="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">
+                          <p className="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300 mt-0.5">
                             {apt.date} at {apt.time} • {serviceName || t.admin.unknown_service} {assignedStaff && `(${t.admin.with} ${assignedStaff.name})`}
                           </p>
-                          <div className="mt-1 flex items-center text-xs text-gray-400 dark:text-gray-500 gap-2 transition-colors duration-300">
+                          <div className="mt-1 flex flex-wrap items-center text-xs text-gray-400 dark:text-gray-500 gap-x-2 gap-y-1 transition-colors duration-300">
                               <span>{apt.user_email}</span>
-                              <span>•</span>
+                              <span className="hidden sm:inline">•</span>
                               <span>{apt.phone || t.admin.no_phone}</span>
                           </div>
                         </div>
-                        <div className="ml-4 flex-shrink-0 flex items-center gap-4">
+                        <div className="flex-shrink-0 flex items-center gap-3 sm:gap-4 justify-between sm:justify-end w-full sm:w-auto mt-2 sm:mt-0">
                           <button 
                             onClick={() => {
                               setTargetAppointmentId(apt.id);
                               setActiveTab('customers');
                             }}
-                            className="text-accent hover:text-blue-700 text-sm font-medium mr-2"
+                            className="text-accent hover:text-blue-700 text-sm font-medium"
                           >
                             {t.admin.view_profile || 'View Profile'}
                           </button>
@@ -436,7 +436,7 @@ const AdminPage: React.FC = () => {
                               {t.customer_portal?.[`status_${apt.status}`] || apt.status}
                             </span>
                             {apt.status.includes('cancel') && apt.cancelReason && (
-                              <span className="text-[10px] text-red-500 max-w-[150px] truncate" title={apt.cancelReason}>
+                              <span className="text-[10px] text-red-500 max-w-[150px] truncate block text-right" title={apt.cancelReason}>
                                 {apt.cancelReason}
                               </span>
                             )}

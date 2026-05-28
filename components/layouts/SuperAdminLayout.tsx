@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Outlet, NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -19,6 +19,7 @@ const ThemeToggle = () => {
 };
 
 const SuperAdminLayout: React.FC = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { currentUser, logout } = useAuth();
   const location = useLocation();
   const { language } = useLanguage();
@@ -40,16 +41,28 @@ const SuperAdminLayout: React.FC = () => {
 
   return (
     <div className="min-h-screen flex bg-gray-50 dark:bg-slate-900 transition-colors duration-300">
+      {/* Mobile Drawer Overlay */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 md:hidden block"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="w-64 bg-slate-900 dark:bg-slate-950 text-white flex flex-col shrink-0">
-        <div className="h-16 flex items-center px-6 font-bold text-lg tracking-wide border-b border-slate-800">
-          {t.super_admin.panel_title || 'Randapp Master'}
+      <aside className={`fixed inset-y-0 left-0 w-64 bg-slate-900 dark:bg-slate-950 text-white flex flex-col shrink-0 z-50 transform transition-transform duration-300 md:relative md:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="h-16 flex items-center justify-between px-6 border-b border-slate-800">
+          <span className="font-bold text-lg tracking-wide">{t.super_admin.panel_title || 'Randapp Master'}</span>
+          <button onClick={() => setIsMobileMenuOpen(false)} className="md:hidden text-gray-400 hover:text-white">
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
         </div>
-        <nav className="flex-1 px-4 py-6 space-y-2">
+        <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
           {links.map((l) => (
             <NavLink
               key={l.path}
               to={l.path}
+              onClick={() => setIsMobileMenuOpen(false)}
               end={l.path === '/super-admin'}
               className={({ isActive }) => `block px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 isActive
@@ -70,14 +83,19 @@ const SuperAdminLayout: React.FC = () => {
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0">
-        <header className="h-16 bg-white dark:bg-slate-800 shadow-sm flex items-center justify-end px-8 z-10">
+      <div className="flex-1 flex flex-col min-w-0 md:ml-0">
+        <header className="h-16 bg-white dark:bg-slate-800 shadow-sm flex items-center justify-between px-4 sm:px-8 z-10 shrink-0">
+          <div className="flex items-center gap-3">
+             <button onClick={() => setIsMobileMenuOpen(true)} className="md:hidden p-2 text-gray-500 hover:bg-gray-100 rounded-lg">
+               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
+             </button>
+          </div>
           <div className="flex items-center gap-4">
-            <span className="text-xs font-bold bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400 px-2 py-1 rounded-full border border-purple-200 dark:border-purple-800">SUPER ADMIN</span>
+            <span className="text-[10px] sm:text-xs font-bold bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400 px-2 py-1 rounded-full border border-purple-200 dark:border-purple-800">SUPER ADMIN</span>
             <ThemeToggle />
           </div>
         </header>
-        <main className="flex-1 overflow-x-hidden overflow-y-auto p-8">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 sm:p-8">
           <Outlet />
         </main>
       </div>
