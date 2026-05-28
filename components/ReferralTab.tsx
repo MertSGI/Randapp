@@ -79,13 +79,13 @@ const ReferralTab: React.FC = () => {
                             <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
                                 c.active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
                             }`}>
-                                {c.active ? (t.admin.status_active || 'Active') : (t.admin.status_inactive || 'Paused')}
+                                {c.active ? (language === 'tr' ? 'Aktif' : 'Active') : (t.admin.inactive || 'Inactive')}
                             </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right font-medium">
                             <button 
                               onClick={() => {
-                                 if(window.confirm(t.admin.confirm_delete || 'Are you sure you want to delete this?')) {
+                                 if(window.confirm(language === 'tr' ? 'Bu kampanyayı silmek istediğinize emin misiniz?' : 'Are you sure you want to delete this campaign?')) {
                                      referralService.deleteCampaign(c.id);
                                      if(tenant) setCampaigns(referralService.getCampaigns(tenant.id));
                                  }
