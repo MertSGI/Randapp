@@ -125,3 +125,10 @@
 - [x] Verified missing translations are handled.
 - [x] Added `public_display_name` to correctly mask `tenant.name` in public views.
 - [x] Checked that no production credentials (iyzico/firebase) are loaded on frontend.
+
+### Phase 15 Final Presentation & Product QA
+- [x] **Marketing Re-alignment**: Marketing pages explicitly support general appointment-based businesses, not just salons. Rotating phrases correctly positioned.
+- [x] **Dialog Context Cleanup**: Removed raw `window.alert` and `window.confirm` across Marketing and Admin contexts; replaced with `useDialog`.
+- [x] **Super Admin Dashboard Cleanup**: Removed duplicate desktop-only lists; centralized on clear KPI summary cards and links to specific modules.
+- [x] **CRUD Sandbox Checks**: Verified typescript build and CRUD logic boundaries.
+- [x] **Copy/Localization**: Improved Turkish phrases and maintained context-safe terminology.

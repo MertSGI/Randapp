@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { planService, PricingPlan, BillingPeriod } from '../services/planService';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useDialog } from '../contexts/DialogContext';
 import { translations } from '../utils/translations';
 import { resolvePaymentCta } from '../utils/paymentCtaResolver';
 import { FeatureBadge } from '../components/FeatureBadge';
@@ -12,6 +13,7 @@ const PricingPage: React.FC = () => {
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>('monthly');
   const [plans, setPlans] = useState<PricingPlan[]>([]);
   
+  const { alert: showAlert } = useDialog();
   const paymentMode = ((import.meta as any).env.VITE_PAYMENT_PROVIDER as 'mock' | 'sandbox' | 'production') || 'mock';
 
   useEffect(() => {
@@ -147,14 +149,14 @@ const PricingPage: React.FC = () => {
                      if (!isMock) {
                          const testValidation = (await import('../services/paymentSandboxTestService')).paymentSandboxTestService.validatePlanReferenceCodes(plan.id);
                          if (!testValidation.valid) {
-                             window.alert(language === 'tr' ? 'Bu paket için ödeme sağlayıcı referans kodları eksik.' : 'This plan is missing payment provider reference codes.');
+                             showAlert(language === 'tr' ? 'Bu paket için ödeme sağlayıcı referans kodları eksik.' : 'This plan is missing payment provider reference codes.');
                              return;
                          }
                      }
                      const alertMsg = language === 'tr' 
                        ? 'Ödeme altyapısı şu anda test aşamasındadır. Canlı ödeme akışı yakında aktif edilecektir.' 
                        : 'Payment integration is currently in testing mode. Live checkout will be available soon.';
-                     window.alert(alertMsg);
+                     showAlert(alertMsg);
                    }}
                    className={`block w-full text-center font-bold py-3.5 md:py-4 rounded-xl transition shadow-md ${isRecommended ? 'bg-accent text-white hover:bg-blue-600 hover:shadow-lg' : 'bg-gray-100 dark:bg-slate-700 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-slate-600'} text-sm md:text-base`}>
                    {ctaConfig.label}

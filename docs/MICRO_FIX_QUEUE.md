@@ -18,3 +18,6 @@
 | MF-14 | UI/UX | AdminSettingsTab.tsx | Duplicate Public Profile config | P1 | fixed | Removed duplicated public settings, left only AI governance warning |
 | MF-15 | UX | BusinessProfileTab.tsx | Missing display name control | P1 | fixed | Moved public_display_name to Business Profile Tab where it belongs |
 | MF-16 | UI/UX | SalonWebsiteView.tsx | Using plain tenant.name | P1 | fixed | Enforced public_display_name fallback overriding tenant.name on public UI |
+| MF-17 | Refactor | SuperAdminDashboard.tsx | Contains duplicate legacy tables | P1 | fixed | Replaced heavy desktop list with quick overview cards |
+| MF-18 | UX | PricingPage.tsx | raw window.alert used for checks | P2 | fixed | Substituted iframe-breaking window.alert with useDialog |
+| MF-19 | Copy | MarketingHomePage.tsx | Too salon-specific | P2 | fixed | Adjusted rotating text to represent all SaaS targets |

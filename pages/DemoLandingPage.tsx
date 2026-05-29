@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useDialog } from '../contexts/DialogContext';
 import { translations } from '../utils/translations';
 
 const DemoLandingPage: React.FC = () => {
   const { language } = useLanguage();
+  const { alert: showAlert } = useDialog();
   const t = translations[language];
 
   const [salonName, setSalonName] = useState('My Salon');
@@ -35,12 +37,12 @@ const DemoLandingPage: React.FC = () => {
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      alert(t.marketing.demo.err_image);
+      showAlert(t.marketing.demo.err_image);
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      alert(t.marketing.demo.err_size);
+      showAlert(t.marketing.demo.err_size);
       return;
     }
 
@@ -57,14 +59,14 @@ const DemoLandingPage: React.FC = () => {
 
   const handleWhatsappLead = () => {
     if (!salonName.trim()) {
-       alert(t.marketing.demo.err_salon_name);
+       showAlert(t.marketing.demo.err_salon_name);
        return;
     }
 
     const salesNumber = (import.meta as any).env.VITE_SALES_WHATSAPP_NUMBER;
     if (!salesNumber) {
        console.warn("Satış WhatsApp numarası .env içinde tanımlı değil.");
-       alert("Sistem yapılandırma eksikliği: WhatsApp yönlendirmesi şu an çalışmıyor.");
+       showAlert("Sistem yapılandırma eksikliği: WhatsApp yönlendirmesi şu an çalışmıyor.");
        return;
     }
 
@@ -84,7 +86,7 @@ const DemoLandingPage: React.FC = () => {
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href);
-    alert(t.marketing.demo.copied);
+    showAlert(t.marketing.demo.copied);
   };
 
   return (

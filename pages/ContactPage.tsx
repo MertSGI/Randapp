@@ -5,13 +5,13 @@ import { translations } from '../utils/translations';
 const ContactPage: React.FC = () => {
   const { language } = useLanguage();
   const t = translations[language];
-  const [salonName, setSalonName] = useState('');
+  const [businessName, setBusinessName] = useState('');
   const [city, setCity] = useState('');
   const [phone, setPhone] = useState('');
   
   const handleWhatsAppRedirect = (e: React.FormEvent) => {
     e.preventDefault();
-    const text = t.marketing.contact.wa_template.replace('{salon}', salonName).replace('{city}', city).replace('{phone}', phone);
+    const text = t.marketing.contact.wa_template.replace('{salon}', businessName).replace('{city}', city).replace('{phone}', phone);
     const num = (import.meta as any).env.VITE_SALES_WHATSAPP_NUMBER || '905555555555';
     window.open(`https://wa.me/${num}?text=${encodeURIComponent(text)}`, '_blank');
   };
@@ -34,7 +34,7 @@ const ContactPage: React.FC = () => {
            <form onSubmit={handleWhatsAppRedirect} className="space-y-4 md:space-y-5">
              <div>
                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t.marketing.contact.form_salon}</label>
-               <input required type="text" autoComplete="organization" value={salonName} onChange={e => setSalonName(e.target.value)} className="w-full rounded-xl border border-gray-300 dark:border-slate-600 p-3 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition" />
+               <input required type="text" autoComplete="organization" value={businessName} onChange={e => setBusinessName(e.target.value)} className="w-full rounded-xl border border-gray-300 dark:border-slate-600 p-3 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition" />
              </div>
              <div>
                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t.marketing.contact.form_city}</label>

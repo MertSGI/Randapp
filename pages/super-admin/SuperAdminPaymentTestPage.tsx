@@ -3,9 +3,11 @@ import { subscriptionService } from '../../services/subscriptionService';
 import { paymentDiagnosticsService, DiagnosticResponse } from '../../services/paymentDiagnosticsService';
 import { paymentSandboxTestService } from '../../services/paymentSandboxTestService';
 import { useAuth } from '../../contexts/AuthContext';
+import { useDialog } from '../../contexts/DialogContext';
 
 const SuperAdminPaymentTestPage: React.FC = () => {
   const { currentUser } = useAuth();
+  const { alert: showAlert } = useDialog();
   
   const [tenantId, setTenantId] = useState<string>('sandbox-tenant-123');
   const [planId, setPlanId] = useState<string>('starter');
@@ -181,7 +183,7 @@ const SuperAdminPaymentTestPage: React.FC = () => {
   -H "Content-Type: application/json" \\
   -H "x-iyzico-signature: sandbox-test" \\
   -d '{"event":"subscription.trial.created", "subscriptionReferenceCode":"MOCK_123"}'`);
-           alert("Copied local curl payload to clipboard");
+           showAlert("Copied local curl payload to clipboard");
         }} className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded font-mono text-sm">
           Copy Webhook Mock cURL
         </button>

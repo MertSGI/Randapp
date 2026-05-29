@@ -1,4 +1,4 @@
-# Randapp Project Gaps & Remaining Work (Phase 14E Checkpoint)
+# Randapp Project Gaps & Remaining Work (Phase 15 Checkpoint)
 
 This document categorizes the known missing pieces, pending integrations, and feature gaps that must be addressed before specific milestones.
 
@@ -8,12 +8,13 @@ This document categorizes the known missing pieces, pending integrations, and fe
 - [x] Ensure "No records available" empty states look inviting rather than broken.
 - [x] Finalize the layout styling on mobile breakpoints (`md:hidden` states, responsive padding).
 - [x] Refine Admin vs Super Admin permission models (read-only locks on platform data like Business Name).
+- [x] Consolidate Dashboard views.
 
 ### 2. Must fix before pilot demo
 - Ensure any "demo seed reset" does not wipe cross-tenant boundaries if multiple users are exploring concurrently.
 - [x] Complete Turkish/English translations (resolve any remaining mixed TR/EN copy).
 - Legal/KVKK final review for booking forms (requires valid privacy policy links and explicit consent check).
-- Clean up any raw JSON/debug screens that could leak mock environment details.
+- [x] Clean up any raw JSON/debug screens that could leak mock environment details.
 
 ### 3. Must fix before Supabase sandbox
 - Validate exact RLS (Row Level Security) policies (`docs/SUPABASE_RLS_AND_SECURITY_MODEL.md`) against actual edge functions.

@@ -186,7 +186,7 @@ export const translations = {
         ai_recommendation: 'AI Recommendations',
         ai_visualization: 'Premium AI Visualization',
         ai_quota: '{quota} AI Requests / month',
-        trial_wording_plan: '{days}-day free trial. In live payment mode, trial starts with secure card collection and continues on the selected plan unless cancelled. No card is charged in mock mode.',
+        trial_wording_plan: '{days}-day free trial. Start with secure card collection. Cancel anytime before the trial ends.',
         btn_preview: 'View Demo',
         btn_sales: 'Contact Sales',
         sales_wa_text: 'Hello, I would like to get information about the Randapp {planName} ({period}) plan.'
@@ -740,7 +740,7 @@ export const translations = {
         ai_recommendation: 'Yapay Zeka Tavsiyeleri',
         ai_visualization: 'Premium AI Görselleştirme',
         ai_quota: '{quota} AI İsteği / ay',
-        trial_wording_plan: '{days} gün ücretsiz deneme. Canlı ödeme modunda deneme, güvenli kart alma ile başlar ve iptal edilmezse seçilen paket üzerinden devam eder. Mock modda karttan ücret alınmaz.',
+        trial_wording_plan: '{days} gün ücretsiz deneme. Güvenli kart doğrulaması ile başlar. Deneme süresi bitmeden dilediğiniz zaman iptal edebilirsiniz.',
         btn_preview: 'Demoyu Gör',
         btn_sales: 'Satış Ekibiyle Görüş',
         sales_wa_text: 'Merhaba, Randapp {planName} ({period}) planı hakkında bilgi almak istiyorum.'
