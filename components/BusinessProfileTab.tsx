@@ -130,6 +130,16 @@ const BusinessProfileTab: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Açık Profil Adı (Display Name)</label>
+            <input 
+              type="text" 
+              value={profile.public_display_name || ''} 
+              onChange={e => setProfile({...profile, public_display_name: e.target.value})}
+              className="w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 p-2 text-sm dark:text-white focus:ring-accent focus:border-accent"
+              placeholder="Web sitenizde gözükecek isim"
+            />
+          </div>
+          <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Kısa Açıklama (Slogan)</label>
             <input 
               type="text" 

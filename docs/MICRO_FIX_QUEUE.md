@@ -15,3 +15,6 @@
 | MF-11 | Admin | AdminSettingsTab.tsx | Need actual Admin Settings implementation | P0 | fixed | Implemented saving settings in Admin Dashboard |
 | MF-12 | Permissions | AdminSettingsTab.tsx | Business Name logic overlap | P0 | fixed | Differentiated officialName (read-only) and displayName (editable) |
 | MF-13 | UI/UX | SuperAdmin | Mobile tables squeezed | P1 | fixed | Implemented responsive mobile cards for tables in Super Admin pages |
+| MF-14 | UI/UX | AdminSettingsTab.tsx | Duplicate Public Profile config | P1 | fixed | Removed duplicated public settings, left only AI governance warning |
+| MF-15 | UX | BusinessProfileTab.tsx | Missing display name control | P1 | fixed | Moved public_display_name to Business Profile Tab where it belongs |
+| MF-16 | UI/UX | SalonWebsiteView.tsx | Using plain tenant.name | P1 | fixed | Enforced public_display_name fallback overriding tenant.name on public UI |

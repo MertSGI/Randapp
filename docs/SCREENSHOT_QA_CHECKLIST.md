@@ -38,10 +38,28 @@ This checklist defines the required screenshots for final visual and responsive 
 
 ## 4. Super Admin Platform Operations (Adaptive)
 **Route:** `/super-admin`
-- [ ] **Mobile Super Admin Navigation:** Collapsed or flexible menu layout.
+- [ ] **Mobile Super Admin Navigation:** Collapsed drawer or menu layout working on mobile.
+- [ ] **Mobile Tenants Page:** Table replaced by stacked cards.
+- [ ] **Mobile Onboarding/Review:** Table replaced by responsive cards. 
 - [ ] **Mobile Super Admin Plans Page:** Inputs stack cleanly, buttons don't overflow.
-- [ ] **Mobile Payment Test Page:** Environment grids and diagnostic sections stack nicely.
+- [ ] **Mobile Referrals Page:** Global campaign management.
+- [ ] **Mobile Payment Test Page:** Diagnostics clearly visible and stack nicely.
 - [ ] **Desktop Super Admin Dashboard:** Operations feel rich and powerful.
+
+## 5. Phase 14J Final Screenshot Readiness Checklist
+Ensure these exact screens are captured and reviewed:
+1. [ ] Admin Settings mobile (Persistence and fields)
+2. [ ] Admin Settings desktop
+3. [ ] Super Admin mobile navigation/drawer
+4. [ ] Super Admin Tenants mobile
+5. [ ] Super Admin Onboarding mobile
+6. [ ] Super Admin Plans mobile
+7. [ ] Super Admin Referrals mobile
+8. [ ] Super Admin Payment Test mobile
+9. [ ] Pricing desktop/mobile
+10. [ ] Public booking mobile
+11. [ ] Booking success mobile
+12. [ ] Customer portal mobile
 
 ## General Testing Rules
 - Both **TR** and **EN** languages must be tested.

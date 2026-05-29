@@ -76,10 +76,10 @@ const SalonWebsiteView: React.FC<SalonWebsiteViewProps> = ({
                <img src={businessProfile.logo_url} alt="Logo" className="w-10 h-10 rounded-lg object-cover shadow-sm bg-white border border-gray-100 dark:border-slate-700" />
             ) : (
                <div className="w-10 h-10 rounded-lg bg-accent flex items-center justify-center text-white font-bold text-lg shadow-sm">
-                 {tenant?.name?.charAt(0) || 'S'}
+                 {(businessProfile?.public_display_name || tenant?.name)?.charAt(0) || 'S'}
                </div>
             )}
-            <span className="font-bold text-gray-900 dark:text-white truncate max-w-[150px] sm:max-w-md">{tenant?.name}</span>
+            <span className="font-bold text-gray-900 dark:text-white truncate max-w-[150px] sm:max-w-md">{businessProfile?.public_display_name || tenant?.name}</span>
          </div>
          <div className="flex items-center gap-3">
             {savedCustomer && (
@@ -147,11 +147,11 @@ const SalonWebsiteView: React.FC<SalonWebsiteViewProps> = ({
             <img src={businessProfile.logo_url} alt="Profile" className="w-28 h-28 md:w-36 md:h-36 bg-white rounded-full border-4 border-white dark:border-slate-800 shadow-md mx-auto -mt-14 md:-mt-18 object-cover relative z-10" />
           ) : (
             <div className="w-28 h-28 md:w-36 md:h-36 rounded-full border-4 border-white dark:border-slate-800 shadow-md mx-auto -mt-14 md:-mt-18 flex items-center justify-center text-white font-bold text-4xl md:text-5xl relative z-10 bg-accent">
-              {tenant?.name?.charAt(0) || 'S'}
+              {(businessProfile?.public_display_name || tenant?.name)?.charAt(0) || 'S'}
             </div>
           )}
           
-          <h1 className="text-3xl md:text-4xl font-bold mt-5 text-gray-900 dark:text-white tracking-tight">{tenant?.name}</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mt-5 text-gray-900 dark:text-white tracking-tight">{businessProfile?.public_display_name || tenant?.name}</h1>
           {businessProfile?.short_description && (
               <p className="text-base md:text-lg text-gray-500 dark:text-gray-400 mt-2 font-medium max-w-2xl mx-auto leading-relaxed">{businessProfile.short_description}</p>
           )}

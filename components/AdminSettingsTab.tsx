@@ -8,7 +8,6 @@ const AdminSettingsTab: React.FC = () => {
   
   const [formData, setFormData] = useState({
     businessName: '',
-    displayName: '',
     ownerName: '',
     ownerEmail: '',
     defaultLanguage: 'tr',
@@ -21,7 +20,6 @@ const AdminSettingsTab: React.FC = () => {
     kvkkText: 'Kişisel Verilerin Korunması Kanunu uyarınca aydınlatma metni.',
     marketingConsentText: 'İletişim bilgilerime kampanya duyuruları gönderilmesini onaylıyorum.',
     customerMemoryEnabled: true,
-    publicProfileEnabled: true,
   });
 
   useEffect(() => {
@@ -134,26 +132,13 @@ const AdminSettingsTab: React.FC = () => {
           </div>
         </div>
 
-        {/* Görünürlük & Diğer */}
+        {/* Yapay Zeka & Ek Hizmetler */}
         <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm">
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Görünürlük & Profil (Website)</h3>
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Platform Limitleri & AI Yönergeleri</h3>
           <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Açık Profil Adı (Display Name)</label>
-              <input type="text" name="displayName" value={formData.displayName} onChange={handleChange} className="w-full p-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-lg text-sm dark:text-white" placeholder="Website Header Title" />
-            </div>
-            
-            <div className="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg">
-               <div className="flex items-center gap-3 mb-2">
-                 <input type="checkbox" id="publicProfileEnabled" name="publicProfileEnabled" checked={formData.publicProfileEnabled} onChange={handleChange} className="w-4 h-4 text-indigo-600 rounded border-gray-300" />
-                 <label htmlFor="publicProfileEnabled" className="text-sm font-bold text-blue-900 dark:text-blue-300">Açık Profil Görünürlüğü (Online Rezervasyon)</label>
-               </div>
-               <p className="text-xs text-blue-700 dark:text-blue-400 ml-7">Bunu kapattığınızda müşteriler kendi başlarına randevu sayfasına erişemez. Bu işlem geçici randevu kapatmaları için idealdir.</p>
-            </div>
-            
-            <div className="bg-purple-50 dark:bg-purple-900/30 p-4 rounded-lg mt-4">
-              <h4 className="text-sm font-bold text-purple-900 dark:text-purple-300 mb-1">Yapay Zeka (AI) Yönergeleri</h4>
-              <p className="text-xs text-purple-700 dark:text-purple-400 mb-3">AI Asistan kuralları ve kota yönetimi üst paket (Super Admin) kontrolündedir.</p>
+            <div className="bg-purple-50 dark:bg-purple-900/30 p-4 rounded-lg">
+              <h4 className="text-sm font-bold text-purple-900 dark:text-purple-300 mb-1">Yapay Zeka (AI) ve Platform İzinleri</h4>
+              <p className="text-xs text-purple-700 dark:text-purple-400 mb-3">AI Asistan kuralları, kota yönetimi, abonelik durumu ve global özellik aç/kapa yetkileri üst paket (Platform Super Admin) kontrolündedir. Bu ayarları değiştirmek için platform yöneticinizle iletişime geçin.</p>
             </div>
           </div>
         </div>

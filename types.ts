@@ -16,6 +16,7 @@ export interface TenantBranding {
 export interface SalonBusinessProfile {
   id: string;
   tenant_id: string;
+  public_display_name?: string;
   short_description?: string;
   about_text?: string;
   business_category?: string;

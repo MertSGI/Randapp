@@ -107,13 +107,21 @@
 - [ ] No hardcoded string constants exist inside `window.confirm` dialogs without matching the localized application context.
 
 ### Phase 14I Admin Permissions & Role Boundaries
-- [x] Official Business Name (`businessName`) is read-only and disabled in Admin Settings, accompanied by a warning that changes require platform review.
-- [x] Display Name (`displayName`) and Public Profile configuration are clearly editable by the Admin.
+- [x] Official Business Name (`tenant.name`) is logically separated from `public_display_name` via `businessProfile`.
+- [x] Display Name (`public_display_name`) configuration is editable by the Admin in `BusinessProfileTab`.
 - [x] Platform name, trial limits, and global AI toggles are isolated safely within Super Admin Platform Settings.
-- [x] Admin Settings (`AdminSettingsTab.tsx`) uses a dedicated form state and strictly persists allowed tenant-level changes (like communication channels, default language, display name) via correct local persistence without escalating to protected keys.
+- [x] Admin Settings (`AdminSettingsTab.tsx`) strictly persists allowed tenant-level changes (channels, policies) via local persistence.
+- [x] `tenant.name` is protected and NOT editable by standard Admins.
 
 ### Phase 14I Super Admin Mobile UX
 - [x] **Tenants Page**: Replaced wide desktop table with stacked card layout on mobile. Primary status and actions are clearly visible within each card.
 - [x] **Subscriptions Page**: Replaced desktop table with stacked cards showing plan details and quick-action buttons on mobile.
 - [x] **Onboarding Approvals**: Transitioned to mobile cards focusing on tenant name, profile completeness, and critical review actions.
 - [x] **Referrals/Campaigns**: Replicated responsive stacked cards approach to ensure start/stop/delete functions are accessible on narrow viewports without horizontal scrolling.
+
+### Phase 14J Final Verification Complete
+- [x] Verified `showConfirm` from `useDialog` is correctly used in place of raw `window.confirm` for primary Super Admin actions.
+- [x] Verified `BookingPage` and `SalonWebsiteView` are fully responsive and lack horizontal scrolling issues.
+- [x] Verified missing translations are handled.
+- [x] Added `public_display_name` to correctly mask `tenant.name` in public views.
+- [x] Checked that no production credentials (iyzico/firebase) are loaded on frontend.
