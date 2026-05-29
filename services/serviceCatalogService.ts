@@ -44,9 +44,14 @@ export const getServices = async (tenantId: string, options?: { activeOnly?: boo
   const existingServices = await dataProvider.getList<Service>(key);
   
   if (!existingServices || existingServices.length === 0) {
+    const isSeeded = localStorage.getItem(`randapp:${tenantId}:is_seeded`) === 'true';
+    if (isSeeded) {
+      return [];
+    }
     // Seed with demo services if none exist for this tenant
     const seededServices = DEMO_SERVICES.map(s => ({ ...s, tenantId }));
     await dataProvider.set(key, seededServices);
+    localStorage.setItem(`randapp:${tenantId}:is_seeded`, 'true');
     return options?.activeOnly ? seededServices.filter(s => s.active !== false) : seededServices;
   }
   

@@ -55,8 +55,13 @@ export const getStaffList = async (tenantId: string, options?: { activeOnly?: bo
   const existingStaff = await dataProvider.getList<Staff>(key);
   
   if (!existingStaff || existingStaff.length === 0) {
+    const isSeeded = localStorage.getItem(`randapp:${tenantId}:is_seeded`) === 'true';
+    if (isSeeded) {
+      return [];
+    }
     const seededStaff = DEMO_STAFF.map(s => ({ ...s, tenantId }));
     await dataProvider.set(key, seededStaff);
+    localStorage.setItem(`randapp:${tenantId}:is_seeded`, 'true');
     return options?.activeOnly ? seededStaff.filter(s => s.active !== false) : seededStaff;
   }
   

@@ -37,6 +37,9 @@ import CustomerPortalPage from './pages/customer/CustomerPortalPage';
 
 import MobileAppPage from './pages/MobileAppPage';
 
+// Diagnostic tools
+import { MockDiagnosticTool } from './components/MockDiagnosticTool';
+
 // Contexts
 import { ThemeProvider } from './contexts/ThemeContext';
 import { LanguageProvider } from './contexts/LanguageContext';
@@ -140,6 +143,7 @@ const App: React.FC = () => {
             <AuthProvider>
               <Router>
                 <AppFlowSwitcher />
+                <MockDiagnosticTool />
               </Router>
             </AuthProvider>
           </TenantProvider>
