@@ -17,6 +17,7 @@ import SalonReportsTab from '../components/SalonReportsTab';
 import BusinessProfileTab from '../components/BusinessProfileTab';
 import CustomerMemoryTab from '../components/CustomerMemoryTab';
 import ReferralTab from '../components/ReferralTab';
+import AdminSettingsTab from '../components/AdminSettingsTab';
 
 const AdminPage: React.FC = () => {
   const navigate = useNavigate();
@@ -724,19 +725,7 @@ const AdminPage: React.FC = () => {
       
       {activeTab === 'referrals' && <ReferralTab />}
       
-      {activeTab === 'settings' && (
-        <div className="bg-white dark:bg-slate-800 shadow-sm rounded-lg border border-gray-200 dark:border-slate-700 p-6 pb-24 md:pb-6">
-           <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">{t.admin.working_hours}</h3>
-           <p className="text-gray-600 dark:text-gray-400 mb-6 border-b border-gray-200 dark:border-slate-700 pb-4">
-               {t.admin.working_hours_desc}
-           </p>
-           
-           <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">{t.admin.cancellation_policy}</h3>
-           <p className="text-gray-600 dark:text-gray-400 mb-4">
-               {t.admin.cancellation_policy_desc}
-           </p>
-        </div>
-      )}
+      {activeTab === 'settings' && <AdminSettingsTab />}
       
       {/* Spacer for mobile bottom nav */}
       <div className="h-20 md:hidden w-full"></div>

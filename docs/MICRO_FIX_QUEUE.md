@@ -7,3 +7,9 @@
 | MF-03 | Content | Public | Mixed TR/EN in public pages | P2 | fixed | Component correctly varies syntax by language |
 | MF-04 | Admin | CustomerMemoryTab.tsx | Deletion of notes/photos doesn't work locally | P2 | fixed | Confirmed state object reference swap resolves view |
 | MF-05 | System | Supabase | Storage/Edge functions missing ID checks | P1 | open | Edge functions properly validate JWT and tenant boundaries |
+| MF-06 | Super Admin | SuperAdminTenantsPage.tsx | Missing page functionality | P0 | fixed | Implemented functional list of tenants |
+| MF-07 | Super Admin | SuperAdminSubscriptionsPage.tsx | Missing page functionality | P0 | fixed | Hooked to mock dashboard data |
+| MF-08 | Super Admin | SuperAdminOnboardingPage.tsx | Missing page functionality | P0 | fixed | Go-live approval and setup send-back implemented |
+| MF-09 | Super Admin | SuperAdminReportsPage.tsx | Missing page functionality | P0 | fixed | Functional overview with mock data stats |
+| MF-10 | Super Admin | SuperAdminSettingsPage.tsx | Missing page functionality | P0 | fixed | Setup basic feature toggles |
+| MF-11 | Admin | AdminSettingsTab.tsx | Need actual Admin Settings implementation | P0 | fixed | Implemented saving settings in Admin Dashboard |

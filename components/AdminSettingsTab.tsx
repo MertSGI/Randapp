@@ -1,0 +1,156 @@
+import React, { useState, useEffect } from 'react';
+import { useDialog } from '../contexts/DialogContext';
+import { useTenant } from '../contexts/TenantContext';
+
+const AdminSettingsTab: React.FC = () => {
+  const { alert: showAlert } = useDialog();
+  const { tenant } = useTenant();
+  
+  const [formData, setFormData] = useState({
+    businessName: '',
+    ownerName: '',
+    ownerEmail: '',
+    defaultLanguage: 'tr',
+    cancellationPolicyHours: 12,
+    minAdvanceBookingTime: 2,
+    maxDaysAhead: 30,
+    allowNoPreference: true,
+    whatsappEnabled: true,
+    reminderText: 'Randevunuz yaklaşıyor.',
+    kvkkText: 'Kişisel Verilerin Korunması Kanunu uyarınca aydınlatma metni.',
+    marketingConsentText: 'İletişim bilgilerime kampanya duyuruları gönderilmesini onaylıyorum.',
+    customerMemoryEnabled: true,
+    publicProfileEnabled: true,
+  });
+
+  useEffect(() => {
+    if (!tenant) return;
+    const localStr = localStorage.getItem(`admin_settings_${tenant.id}`);
+    if (localStr) {
+      setFormData(JSON.parse(localStr));
+    } else {
+      setFormData(f => ({ ...f, businessName: tenant.name }));
+    }
+  }, [tenant]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value, type } = e.target;
+    const val = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
+    setFormData(prev => ({ ...prev, [name]: val }));
+  };
+
+  const handleSave = () => {
+    if (!tenant) return;
+    localStorage.setItem(`admin_settings_${tenant.id}`, JSON.stringify(formData));
+    showAlert('Ayarlar başarıyla kaydedildi.');
+  };
+
+  return (
+    <div className="space-y-6 pb-24 md:pb-6">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white">İşletme Yönetim Ayarları</h2>
+        <button onClick={handleSave} className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 text-sm font-semibold rounded-lg shadow-sm">
+          Kaydet
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        {/* İşletme Hesap Ayarları */}
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Hesap ve Genel Ayarlar</h3>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">İşletme Adı</label>
+              <input type="text" name="businessName" value={formData.businessName} onChange={handleChange} className="w-full p-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-lg text-sm dark:text-white" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Yetkili / Sahip Adı</label>
+              <input type="text" name="ownerName" value={formData.ownerName} onChange={handleChange} className="w-full p-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-lg text-sm dark:text-white" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Hesap Email (Salt Okunur)</label>
+              <input type="email" name="ownerEmail" value={formData.ownerEmail} disabled className="w-full p-2.5 bg-gray-100 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600 rounded-lg text-sm dark:text-gray-400 opacity-75" placeholder="owner@salon.com" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Varsayılan Dil</label>
+              <select name="defaultLanguage" value={formData.defaultLanguage} onChange={handleChange} className="w-full p-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-lg text-sm dark:text-white">
+                <option value="tr">Türkçe</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Rezervasyon Kuralları */}
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Rezervasyon Kuralları</h3>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">İptal Politikası (Saat)</label>
+              <input type="number" name="cancellationPolicyHours" value={formData.cancellationPolicyHours} onChange={handleChange} className="w-full p-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-lg text-sm dark:text-white" />
+              <p className="text-xs text-gray-500 mt-1">Müşteriler randevuya kaç saat kalana kadar iptal edebilir?</p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Önceden Rezervasyon Süresi (Saat)</label>
+              <input type="number" name="minAdvanceBookingTime" value={formData.minAdvanceBookingTime} onChange={handleChange} className="w-full p-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-lg text-sm dark:text-white" />
+              <p className="text-xs text-gray-500 mt-1">En az kaç saat sonrasına randevu alınabilir?</p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Maksimum İleri Tarih (Gün)</label>
+              <input type="number" name="maxDaysAhead" value={formData.maxDaysAhead} onChange={handleChange} className="w-full p-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-lg text-sm dark:text-white" />
+            </div>
+            <div className="flex items-center gap-3 pt-2 border-t border-gray-100 dark:border-slate-700">
+               <input type="checkbox" id="allowNoPreference" name="allowNoPreference" checked={formData.allowNoPreference} onChange={handleChange} className="w-4 h-4 text-indigo-600 rounded border-gray-300" />
+               <label htmlFor="allowNoPreference" className="text-sm font-medium text-gray-700 dark:text-gray-300">"Fark Etmez" Personel Seçimine İzin Ver</label>
+            </div>
+          </div>
+        </div>
+
+        {/* Veri & İletişim */}
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">İletişim ve Müşteri Verisi</h3>
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+               <input type="checkbox" id="whatsappEnabled" name="whatsappEnabled" checked={formData.whatsappEnabled} onChange={handleChange} className="w-4 h-4 text-indigo-600 rounded border-gray-300" />
+               <label htmlFor="whatsappEnabled" className="text-sm font-medium text-gray-700 dark:text-gray-300">WhatsApp İletişim Butonunu Gizle/Göster</label>
+            </div>
+            <div className="flex items-center gap-3">
+               <input type="checkbox" id="customerMemoryEnabled" name="customerMemoryEnabled" checked={formData.customerMemoryEnabled} onChange={handleChange} className="w-4 h-4 text-indigo-600 rounded border-gray-300" />
+               <label htmlFor="customerMemoryEnabled" className="text-sm font-medium text-gray-700 dark:text-gray-300">Müşteri Hafızası (Notlar ve Fotoğraflar) Aktif</label>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Müşteri Aydınlatma (KVKK) Metni</label>
+              <textarea name="kvkkText" value={formData.kvkkText} onChange={handleChange} rows={2} className="w-full p-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-lg text-sm dark:text-white" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Pazarlama İzni Metni</label>
+              <textarea name="marketingConsentText" value={formData.marketingConsentText} onChange={handleChange} rows={2} className="w-full p-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-lg text-sm dark:text-white" />
+            </div>
+          </div>
+        </div>
+
+        {/* Görünürlük & Diğer */}
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Görünürlük & AI</h3>
+          <div className="space-y-4">
+            <div className="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg">
+               <div className="flex items-center gap-3 mb-2">
+                 <input type="checkbox" id="publicProfileEnabled" name="publicProfileEnabled" checked={formData.publicProfileEnabled} onChange={handleChange} className="w-4 h-4 text-indigo-600 rounded border-gray-300" />
+                 <label htmlFor="publicProfileEnabled" className="text-sm font-bold text-blue-900 dark:text-blue-300">Açık Profil Görünürlüğü (Online Rezervasyon)</label>
+               </div>
+               <p className="text-xs text-blue-700 dark:text-blue-400 ml-7">Bunu kapattığınızda müşteriler kendi başlarına randevu sayfasına erişemez. Bu işlem geçici randevu kapatmaları için idealdir.</p>
+            </div>
+            
+            <div className="bg-purple-50 dark:bg-purple-900/30 p-4 rounded-lg mt-4">
+              <h4 className="text-sm font-bold text-purple-900 dark:text-purple-300 mb-1">Yapay Zeka (AI) Yönergeleri</h4>
+              <p className="text-xs text-purple-700 dark:text-purple-400 mb-3">AI Asistan kuralları ve kota yönetimi üst paket (Super Admin) kontrolündedir. Ancak genel AI önerilerini pasife alabilirsiniz.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+};
+export default AdminSettingsTab;

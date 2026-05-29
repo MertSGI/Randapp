@@ -6,7 +6,7 @@ This document categorizes the known missing pieces, pending integrations, and fe
 - [x] Ensure all generated/placeholder visual assets are strictly professional or user-facing friendly (no 'mock/debug' labels visible).
 - [x] Review all destructive button visual hierarchy (delete/deactivate actions should look intentional and warnings clear). (Fixed via Dialog context)
 - [x] Ensure "No records available" empty states look inviting rather than broken.
-- Finalize the layout styling on mobile breakpoints (`md:hidden` states, responsive padding).
+- [x] Finalize the layout styling on mobile breakpoints (`md:hidden` states, responsive padding).
 
 ### 2. Must fix before pilot demo
 - Ensure any "demo seed reset" does not wipe cross-tenant boundaries if multiple users are exploring concurrently.
