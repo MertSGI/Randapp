@@ -3,17 +3,25 @@
 This checklist defines the required screenshots for final visual and responsive acceptance. A local automated Playwright script is provided to capture these systematically.
 
 ## Automated Capture Instructions
-To automatically capture all essential QA screenshots in both mobile (390x844) and desktop (1440x1000) viewports:
 
-1. Ensure the local development server is running via `npm run dev`.
-2. Run the automated QA script from the project root:
-   ```bash
-   npm run qa:screenshots
-   ```
-3. Review the outputs inside the generated folder:
-   - `qa-screenshots/QA_SCREENSHOT_REPORT.html` (Visual review dashboard)
-   - `qa-screenshots/mobile/`
-   - `qa-screenshots/desktop/`
+### Using GitHub Actions (Recommended)
+You can run the screenshot QA workflow securely through GitHub without setting up local tools.
+1. Go to the **Actions** tab in your GitHub repository.
+2. Select the **QA Screenshots Capture** workflow from the left sidebar.
+3. Click **Run workflow**. (This will run the build, start the preview server, and execute Playwright fully automatically in the cloud).
+4. Wait for the workflow to complete.
+5. Download the `randapp-qa-screenshots` artifact zip file generated at the bottom of the workflow run page.
+6. Extract the zip and open `QA_SCREENSHOT_REPORT.html` to review all generated captures.
+
+**Note:** No real payment or production secrets are used during this capture process. The app intentionally runs in a secure mock/presentation mode.
+
+### Running Locally
+If you prefer to capture screenshots on your local machine:
+1. `npm ci`
+2. `npx playwright install --with-deps chromium`
+3. `npm run build`
+4. `npm run preview` (Starts Vite server on local port)
+5. In a separate terminal run: `QA_BASE_URL=http://localhost:4173 npm run qa:screenshots`
 
 **Priority Review Order:**
 1. Homepage (`/`)

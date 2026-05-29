@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Appointment, Staff } from '../types';
 import * as GeminiService from '../services/geminiService';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -21,11 +21,29 @@ import AdminSettingsTab from '../components/AdminSettingsTab';
 
 const AdminPage: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t, language } = useLanguage();
   const { tenant, refreshTenant } = useTenant();
   const { currentUser, isLoading: authLoading, logout } = useAuth();
   const { alert: showAlert, confirm: showConfirm } = useDialog();
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'setup' | 'appointments' | 'staff' | 'services' | 'reports' | 'billing' | 'profile' | 'settings' | 'customers' | 'referrals'>('dashboard');
+  const getInitialTab = () => {
+    const pathSegments = location.pathname.split('/');
+    const lastSegment = pathSegments[pathSegments.length - 1];
+    const validTabs = ['dashboard', 'setup', 'appointments', 'staff', 'services', 'reports', 'billing', 'profile', 'settings', 'customers', 'referrals'];
+    if (validTabs.includes(lastSegment)) return lastSegment;
+    return 'dashboard';
+  };
+
+  const [activeTab, setActiveTabState] = useState<'dashboard' | 'setup' | 'appointments' | 'staff' | 'services' | 'reports' | 'billing' | 'profile' | 'settings' | 'customers' | 'referrals'>(getInitialTab() as any);
+
+  const setActiveTab = (tab: any) => {
+    setActiveTabState(tab);
+    navigate(`/admin/${tab}`, { replace: true });
+  };
+
+  useEffect(() => {
+    setActiveTabState(getInitialTab() as any);
+  }, [location.pathname]);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [staffList, setStaffList] = useState<Staff[]>([]);
   const [servicesList, setServicesList] = useState<Service[]>([]);

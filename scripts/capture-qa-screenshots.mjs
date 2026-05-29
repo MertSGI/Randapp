@@ -32,8 +32,18 @@ const CUSTOMER_AUTH_ROUTES = [
 ]
 
 const ADMIN_ROUTES = [
-  { name: 'Admin Dashboard', path: '/admin' },
-  // { name: 'Admin Site Preview', path: '/admin/site-preview' },
+  { name: 'Admin Dashboard', path: '/admin/dashboard' },
+  { name: 'Admin Setup', path: '/admin/setup' },
+  { name: 'Admin Appointments', path: '/admin/appointments' },
+  { name: 'Admin Customers', path: '/admin/customers' },
+  { name: 'Admin Services', path: '/admin/services' },
+  { name: 'Admin Staff', path: '/admin/staff' },
+  { name: 'Admin Profile', path: '/admin/profile' },
+  { name: 'Admin Referrals', path: '/admin/referrals' },
+  { name: 'Admin Reports', path: '/admin/reports' },
+  { name: 'Admin Billing', path: '/admin/billing' },
+  { name: 'Admin Settings', path: '/admin/settings' },
+  { name: 'Admin Site Preview', path: '/admin/site-preview' }
 ];
 
 const SUPER_ADMIN_ROUTES = [
@@ -48,6 +58,7 @@ const SUPER_ADMIN_ROUTES = [
   { name: 'SA AI Settings', path: '/super-admin/ai-settings' },
   { name: 'SA Plans', path: '/super-admin/plans' },
   { name: 'SA Referrals', path: '/super-admin/referrals' },
+  { name: 'SA Tenant Preview', path: '/super-admin/tenant-preview/tenant_demo' }
 ];
 
 async function captureScreenshots() {

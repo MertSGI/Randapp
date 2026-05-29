@@ -59,6 +59,11 @@ Projenin frontend kodu hiçbir canlı (live) Google Gemini API anahtarı veya se
 ### 2️⃣ Demoya Başlangıç
 Satış sunumları için uygulamaya hızlıca geçiş yapıp veri ekleten demo yardımcı araçları Footer'a sınırlandırılmış şekilde mock modunda bırakılmıştır.
 
+### 3️⃣ Automated QA & Screenshots
+We have a GitHub Actions based screenshot automation workflow. This captures full-page scenarios (Desktop & Mobile) across the entire product.
+- **Using GitHub Actions:** Go to the **Actions** tab in GitHub, select **QA Screenshots Capture**, run it manually via `workflow_dispatch`, and download the generated `randapp-qa-screenshots` artifact.
+- **Locally:** You can run `npm run qa:screenshots` locally after starting Vite. See `docs/SCREENSHOT_QA_CHECKLIST.md` for more details. 
+
 ## Feature Status: Current MVP vs Sandbox vs Roadmap
 
 **Current MVP/Mock Demo:**
