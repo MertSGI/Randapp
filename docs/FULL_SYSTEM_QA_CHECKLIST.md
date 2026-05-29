@@ -132,3 +132,10 @@
 - [x] **Super Admin Dashboard Cleanup**: Removed duplicate desktop-only lists; centralized on clear KPI summary cards and links to specific modules.
 - [x] **CRUD Sandbox Checks**: Verified typescript build and CRUD logic boundaries.
 - [x] **Copy/Localization**: Improved Turkish phrases and maintained context-safe terminology.
+
+### Phase 17 Automated Screenshot QA System
+- [x] Integrated Playwright for automated full-page captures.
+- [x] Configured routes across Marketing, Public, Admin, and Super Admin flows.
+- [x] Validated mock user auth hooks properly set storage before loading protected routes.
+- [x] Established visual QA reporting dashboard (`qa-screenshots/QA_SCREENSHOT_REPORT.html`).
+- [x] Prevented explicit test framework artifacts or debug views from impacting the output UI (`?devTools=0`).

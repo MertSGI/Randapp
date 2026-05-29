@@ -1,10 +1,31 @@
-# Responsive & Screenshot QA Checklist (Phase 14)
+# Automated Responsive & Screenshot QA Checklist (Phase 17)
 
-This checklist defines the required screenshots for final visual and responsive acceptance before proceeding further. Use this list to capture screens across mobile and desktop.
+This checklist defines the required screenshots for final visual and responsive acceptance. A local automated Playwright script is provided to capture these systematically.
 
-**Required Viewports:**
-- Mobile Small (360px / 390px / 430px)
-- Desktop (1024px / 1440px)
+## Automated Capture Instructions
+To automatically capture all essential QA screenshots in both mobile (390x844) and desktop (1440x1000) viewports:
+
+1. Ensure the local development server is running via `npm run dev`.
+2. Run the automated QA script from the project root:
+   ```bash
+   npm run qa:screenshots
+   ```
+3. Review the outputs inside the generated folder:
+   - `qa-screenshots/QA_SCREENSHOT_REPORT.html` (Visual review dashboard)
+   - `qa-screenshots/mobile/`
+   - `qa-screenshots/desktop/`
+
+**Priority Review Order:**
+1. Homepage (`/`)
+2. Pricing (`/pricing`)
+3. Booking Flow (`/book`)
+4. Booking Success (if script generated or manually added)
+5. Admin Mobile (`/admin`)
+6. Admin Settings
+7. Super Admin Mobile (`/super-admin`)
+8. Payment Diagnostics (`/super-admin/payment-test`)
+
+---
 
 ## 1. Marketing Site (Mobile & Desktop)
 **Routes:** `/`, `/features`, `/pricing`, `/demo`, `/contact`, `/mobile-app`

@@ -10,7 +10,8 @@
     "lint": "tsc --noEmit",
     "check:secrets": "node scripts/scan-frontend-secrets.mjs",
     "check:payment-env": "node scripts/check-payment-env.mjs",
-    "check:edge-contracts": "node scripts/check-edge-contracts.mjs"
+    "check:edge-contracts": "node scripts/check-edge-contracts.mjs",
+    "qa:screenshots": "node scripts/capture-qa-screenshots.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.106.0",
@@ -24,6 +25,7 @@
     "@tailwindcss/typography": "^0.5.19",
     "@types/node": "^22.14.0",
     "@vitejs/plugin-react": "^5.0.0",
+    "playwright": "^1.60.0",
     "typescript": "~5.8.2",
     "vite": "^6.2.0"
   }
