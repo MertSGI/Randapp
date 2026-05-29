@@ -10,8 +10,8 @@ const getStaffKey = (tenantId: string) => `randapp:${tenantId}:staff`;
 const DEMO_STAFF: Staff[] = [
   {
     id: 'staff_1',
-    name: 'Mustafa Ali Yılmaz',
-    title: 'Master Designer',
+    name: 'Cemil Kaya',
+    title: 'Senior Specialist',
     image: 'https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?auto=format&fit=crop&q=80&w=200',
     isOwner: true,
   }

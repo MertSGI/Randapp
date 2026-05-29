@@ -21,3 +21,4 @@
 | MF-17 | Refactor | SuperAdminDashboard.tsx | Contains duplicate legacy tables | P1 | fixed | Replaced heavy desktop list with quick overview cards |
 | MF-18 | UX | PricingPage.tsx | raw window.alert used for checks | P2 | fixed | Substituted iframe-breaking window.alert with useDialog |
 | MF-19 | Copy | MarketingHomePage.tsx | Too salon-specific | P2 | fixed | Adjusted rotating text to represent all SaaS targets |
+| MF-20 | Super Admin | SuperAdminAISettingsPage.tsx | Non-blocking backlog for AI integration | P3 | open | Integrate Edge Functions, fix mobile view, and enforce privacy defaults |

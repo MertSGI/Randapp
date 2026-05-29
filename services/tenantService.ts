@@ -5,15 +5,15 @@ import { supabase } from './supabaseClient';
 const DEMO_TENANT: Tenant = {
   id: 'tenant_demo',
   slug: 'demo',
-  name: 'Nexus Salon',
+  name: 'Nexus Studio',
   status: 'active',
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
   branding: {
     tenantId: 'tenant_demo',
-    businessName: 'MA Yılmaz Design',
-    tagline: 'Premium Hair & Beauty',
-    footerText: 'MA Yılmaz Hair Design. All rights reserved.',
+    businessName: 'Nexus Studio',
+    tagline: 'Premium Wellness & Style',
+    footerText: 'Nexus Studio. All rights reserved.',
     primaryColor: '#000000',
   }
 };

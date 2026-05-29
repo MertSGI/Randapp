@@ -69,7 +69,7 @@ const MarketingHomePage: React.FC = () => {
           {/* Mockup of public page */}
           <div className="bg-slate-100 dark:bg-slate-900 px-3 py-2 md:px-4 md:py-3 border-b border-gray-200 dark:border-slate-700 flex items-center gap-2">
             <div className="flex gap-1.5"><div className="w-2.5 h-2.5 md:w-3 md:h-3 bg-red-400 rounded-full"></div><div className="w-2.5 h-2.5 md:w-3 md:h-3 bg-yellow-400 rounded-full"></div><div className="w-2.5 h-2.5 md:w-3 md:h-3 bg-green-400 rounded-full"></div></div>
-            <div className="mx-auto bg-white dark:bg-slate-800 text-[10px] md:text-xs px-12 md:px-24 py-1 rounded shadow-sm text-gray-500 whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px] md:max-w-none">randapp.com/{language === 'tr' ? 'benimsalonum' : 'mysalon'}</div>
+            <div className="mx-auto bg-white dark:bg-slate-800 text-[10px] md:text-xs px-12 md:px-24 py-1 rounded shadow-sm text-gray-500 whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px] md:max-w-none">randapp.com/{language === 'tr' ? 'benimisletmem' : 'mybusiness'}</div>
           </div>
           <div className="h-48 sm:h-72 md:h-80 bg-gray-50 dark:bg-slate-800 relative z-10 transform skew-y-2 opacity-90 p-4 md:p-8 flex flex-col">
             <div className="w-full flex-grow border-2 border-dashed border-gray-300 dark:border-slate-600 rounded-xl flex items-center justify-center p-4">

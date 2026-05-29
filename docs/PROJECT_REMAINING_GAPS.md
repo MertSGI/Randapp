@@ -1,20 +1,18 @@
-# Randapp Project Gaps & Remaining Work (Phase 15 Checkpoint)
+# Randapp Project Gaps & Remaining Work (Phase 16 Checkpoint)
 
 This document categorizes the known missing pieces, pending integrations, and feature gaps that must be addressed before specific milestones.
 
-### 1. Must fix before screenshot QA
-- [x] Ensure all generated/placeholder visual assets are strictly professional or user-facing friendly (no 'mock/debug' labels visible).
-- [x] Review all destructive button visual hierarchy (delete/deactivate actions should look intentional and warnings clear). (Fixed via Dialog context)
-- [x] Ensure "No records available" empty states look inviting rather than broken.
-- [x] Finalize the layout styling on mobile breakpoints (`md:hidden` states, responsive padding).
-- [x] Refine Admin vs Super Admin permission models (read-only locks on platform data like Business Name).
-- [x] Consolidate Dashboard views.
+### 1. Ready for Pilot Demo (Phase 16 Checkpoint)
+- [x] End-To-End product flows (Marketing, Admin, Booking, Super Admin) fully vetted.
+- [x] Mock CRUD and visual states are consistent with production quality.
+- [x] TR/EN translations are complete and natural.
+- [x] Demo data persona (Nexus Studio) is realistic, eliminating all random data.
+- [x] Pilot Demo Script is finalized and actionable.
 
-### 2. Must fix before pilot demo
-- Ensure any "demo seed reset" does not wipe cross-tenant boundaries if multiple users are exploring concurrently.
-- [x] Complete Turkish/English translations (resolve any remaining mixed TR/EN copy).
-- Legal/KVKK final review for booking forms (requires valid privacy policy links and explicit consent check).
-- [x] Clean up any raw JSON/debug screens that could leak mock environment details.
+### 2. Super Admin Non-Blocking Backlog
+- AI Settings: Improve mobile layout for Super Admin AI Config page.
+- AI Settings: Connect Gemini/Imagen keys via secure Edge Functions (do not store frontend).
+- AI Settings: Make visual AI outputs dynamically render based on customer reference photo pipeline permissions (keep strict KVKK consent checks).
 
 ### 3. Must fix before Supabase sandbox
 - Validate exact RLS (Row Level Security) policies (`docs/SUPABASE_RLS_AND_SECURITY_MODEL.md`) against actual edge functions.
