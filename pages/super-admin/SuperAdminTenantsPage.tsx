@@ -41,7 +41,41 @@ const SuperAdminTenantsPage: React.FC = () => {
       </div>
       
       <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden">
-        <div className="overflow-x-auto">
+        {/* Mobile View: Cards */}
+        <div className="md:hidden divide-y divide-gray-100 dark:divide-slate-700">
+          {tenants.map(t => (
+            <div key={t.tenant.id} className="p-4 space-y-3">
+              <div className="flex justify-between items-start">
+                <div>
+                  <div className="font-bold text-gray-900 dark:text-white">{t.tenant.businessName || 'İsimsiz'}</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">ID: {t.tenant.id}</div>
+                </div>
+                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400`}>
+                  {t.setupStatus}
+                </span>
+              </div>
+              <div className="text-sm text-gray-700 dark:text-gray-300">
+                Email: {t.tenant.ownerEmail || '-'}
+              </div>
+              <div className="flex justify-end space-x-3 pt-2 text-sm font-medium">
+                <Link to={`/super-admin/tenant-preview/${t.tenant.id}`} className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300">
+                   Önizle
+                </Link>
+                <button onClick={() => handlePause(t.tenant.id, t.tenant.businessName || 'İşletme')} className="text-red-600 hover:text-red-900 dark:hover:text-red-400">
+                   Durdur
+                </button>
+              </div>
+            </div>
+          ))}
+          {tenants.length === 0 && (
+            <div className="p-8 text-center text-gray-500 dark:text-gray-400">
+              Kayıtlı işletme bulunamadı.
+            </div>
+          )}
+        </div>
+
+        {/* Desktop View: Table */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
             <thead className="bg-gray-50 dark:bg-slate-900 border-b border-gray-200 dark:border-slate-700">
               <tr>

@@ -13,3 +13,5 @@
 | MF-09 | Super Admin | SuperAdminReportsPage.tsx | Missing page functionality | P0 | fixed | Functional overview with mock data stats |
 | MF-10 | Super Admin | SuperAdminSettingsPage.tsx | Missing page functionality | P0 | fixed | Setup basic feature toggles |
 | MF-11 | Admin | AdminSettingsTab.tsx | Need actual Admin Settings implementation | P0 | fixed | Implemented saving settings in Admin Dashboard |
+| MF-12 | Permissions | AdminSettingsTab.tsx | Business Name logic overlap | P0 | fixed | Differentiated officialName (read-only) and displayName (editable) |
+| MF-13 | UI/UX | SuperAdmin | Mobile tables squeezed | P1 | fixed | Implemented responsive mobile cards for tables in Super Admin pages |

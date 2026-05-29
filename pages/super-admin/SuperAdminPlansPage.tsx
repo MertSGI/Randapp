@@ -181,36 +181,44 @@ const SuperAdminPlansPage: React.FC = () => {
                         </div>
 
                         <div className="pt-4 grid grid-cols-1 gap-4 border-t border-gray-100 dark:border-slate-700">
-                             <div>
-                                 <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Provider Product Reference <span className="font-normal text-[10px] text-gray-500">(Sandbox/Prod config)</span></label>
-                                 <input 
-                                    type="text" 
-                                    placeholder="e.g. prd_1234..."
-                                    value={plan.providerProductReferenceCode || ''} 
-                                    onChange={e => handleUpdate(plan.id, { providerProductReferenceCode: e.target.value })}
-                                    className="w-full border-gray-300 dark:border-slate-600 rounded-md p-2 text-sm bg-gray-50 dark:bg-slate-700 dark:text-white"
-                                 />
-                             </div>
-                             <div>
-                                 <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Provider Plan Reference (Monthly) <span className="font-normal text-[10px] text-gray-500">(Sandbox/Prod config)</span></label>
-                                 <input 
-                                    type="text" 
-                                    placeholder="e.g. 1a2b3c4d-..."
-                                    value={plan.providerPlanReferenceCodeMonthly || ''} 
-                                    onChange={e => handleUpdate(plan.id, { providerPlanReferenceCodeMonthly: e.target.value })}
-                                    className="w-full border-gray-300 dark:border-slate-600 rounded-md p-2 text-sm bg-gray-50 dark:bg-slate-700 dark:text-white"
-                                 />
-                             </div>
-                             <div>
-                                 <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Provider Plan Reference (Annual) <span className="font-normal text-[10px] text-gray-500">(Sandbox/Prod config)</span></label>
-                                 <input 
-                                    type="text" 
-                                    placeholder="e.g. 5e6f7g8h-..."
-                                    value={plan.providerPlanReferenceCodeAnnual || ''} 
-                                    onChange={e => handleUpdate(plan.id, { providerPlanReferenceCodeAnnual: e.target.value })}
-                                    className="w-full border-gray-300 dark:border-slate-600 rounded-md p-2 text-sm bg-gray-50 dark:bg-slate-700 dark:text-white"
-                                 />
-                             </div>
+                             <details className="group">
+                               <summary className="text-sm font-semibold text-gray-700 dark:text-gray-300 cursor-pointer list-none flex items-center justify-between p-2 rounded hover:bg-gray-50 dark:hover:bg-slate-700/50 transition">
+                                 <span>Gelişmiş: Ödeme Altyapısı Eşleştirmeleri</span>
+                                 <span className="text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+                               </summary>
+                               <div className="pt-3 space-y-3 px-2">
+                                 <div>
+                                     <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Provider Product Reference <span className="font-normal text-[10px] text-gray-500">(Sandbox/Prod config)</span></label>
+                                     <input 
+                                        type="text" 
+                                        placeholder="e.g. prd_1234..."
+                                        value={plan.providerProductReferenceCode || ''} 
+                                        onChange={e => handleUpdate(plan.id, { providerProductReferenceCode: e.target.value })}
+                                        className="w-full border-gray-300 dark:border-slate-600 rounded-md p-2 text-sm bg-gray-50 dark:bg-slate-700 dark:text-white"
+                                     />
+                                 </div>
+                                 <div>
+                                     <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Provider Plan Reference (Monthly) <span className="font-normal text-[10px] text-gray-500">(Sandbox/Prod config)</span></label>
+                                     <input 
+                                        type="text" 
+                                        placeholder="e.g. 1a2b3c4d-..."
+                                        value={plan.providerPlanReferenceCodeMonthly || ''} 
+                                        onChange={e => handleUpdate(plan.id, { providerPlanReferenceCodeMonthly: e.target.value })}
+                                        className="w-full border-gray-300 dark:border-slate-600 rounded-md p-2 text-sm bg-gray-50 dark:bg-slate-700 dark:text-white"
+                                     />
+                                 </div>
+                                 <div>
+                                     <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Provider Plan Reference (Annual) <span className="font-normal text-[10px] text-gray-500">(Sandbox/Prod config)</span></label>
+                                     <input 
+                                        type="text" 
+                                        placeholder="e.g. 5e6f7g8h-..."
+                                        value={plan.providerPlanReferenceCodeAnnual || ''} 
+                                        onChange={e => handleUpdate(plan.id, { providerPlanReferenceCodeAnnual: e.target.value })}
+                                        className="w-full border-gray-300 dark:border-slate-600 rounded-md p-2 text-sm bg-gray-50 dark:bg-slate-700 dark:text-white"
+                                     />
+                                 </div>
+                               </div>
+                             </details>
                         </div>
 
                         <div className="pt-2 space-y-2 border-t border-gray-100 dark:border-slate-700">

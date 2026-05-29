@@ -53,7 +53,66 @@ const SuperAdminReferralsPage: React.FC = () => {
       </div>
 
       <div className="bg-white dark:bg-slate-800 shadow-sm rounded-lg border border-gray-200 dark:border-slate-700 overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
+        {/* Mobile View: Cards */}
+        <div className="md:hidden divide-y divide-gray-100 dark:divide-slate-700">
+          {campaigns.map(c => (
+            <div key={c.id} className="p-4 space-y-3">
+              <div className="flex justify-between items-start">
+                <div>
+                  <div className="font-bold text-gray-900 dark:text-white">
+                    {c.title}
+                  </div>
+                  {c.tenantId !== 'global' && <div className="text-xs text-blue-500 mt-0.5">Müşteri Kampanyası (Tenant: {c.tenantId})</div>}
+                </div>
+                <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                  c.active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                }`}>
+                  {c.active ? 'Active' : 'Paused'}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-2 text-sm text-gray-700 dark:text-gray-300">
+                 <div>Tip: <span className="font-medium text-gray-900 dark:text-white">{c.campaignType}</span></div>
+                 <div>Ödül: <span className="font-medium text-gray-900 dark:text-white">{c.rewardValue} {c.rewardType}</span></div>
+              </div>
+              <div className="flex justify-end gap-2 pt-2 text-sm font-medium">
+                <button 
+                  onClick={() => toggleStatus(c.id, c.active)}
+                  className={`px-3 py-1.5 rounded-lg ${c.active ? 'bg-orange-50 text-orange-700 dark:bg-orange-900/20 dark:text-orange-400' : 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400'}`}
+                >
+                  {c.active ? 'Durdur' : 'Başlat'}
+                </button>
+                <button 
+                  onClick={async () => {
+                      const confirmed = await showConfirm({ message: `'${c.title}' kampanyasını silmek istediğinizden emin misiniz?` });
+                      if (confirmed) {
+                          const res = referralService.deleteCampaign(c.id);
+                          if(res.ok) {
+                              if(res.action === 'deactivated') {
+                                  await showAlert(`'${c.title}' kullanımda olduğu için inaktif yapıldı.`);
+                              } else {
+                                  await showAlert(`'${c.title}' başarıyla silindi.`);
+                              }
+                              setCampaigns(referralService.getAllCampaignsForSuperAdmin());
+                          } else {
+                              await showAlert('İşlem başarısız.');
+                          }
+                      }
+                  }}
+                  className="px-3 py-1.5 bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/40"
+                >
+                  Sil
+                </button>
+              </div>
+            </div>
+          ))}
+          {campaigns.length === 0 && (
+            <div className="p-8 text-center text-gray-500">Henüz kampanya yok.</div>
+          )}
+        </div>
+
+        {/* Desktop View: Table */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
           <thead className="bg-gray-50 dark:bg-slate-700">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Kampanya Adı</th>
@@ -121,6 +180,7 @@ const SuperAdminReferralsPage: React.FC = () => {
             )}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );

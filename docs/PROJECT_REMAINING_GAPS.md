@@ -7,6 +7,7 @@ This document categorizes the known missing pieces, pending integrations, and fe
 - [x] Review all destructive button visual hierarchy (delete/deactivate actions should look intentional and warnings clear). (Fixed via Dialog context)
 - [x] Ensure "No records available" empty states look inviting rather than broken.
 - [x] Finalize the layout styling on mobile breakpoints (`md:hidden` states, responsive padding).
+- [x] Refine Admin vs Super Admin permission models (read-only locks on platform data like Business Name).
 
 ### 2. Must fix before pilot demo
 - Ensure any "demo seed reset" does not wipe cross-tenant boundaries if multiple users are exploring concurrently.

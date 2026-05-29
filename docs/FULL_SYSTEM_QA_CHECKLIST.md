@@ -105,3 +105,15 @@
 - [ ] Missing translations (`cannot_delete_in_use`, `action_failed`, `deactivated_success`) are correctly registered in `translations.ts`.
 - [ ] Unimplemented AI recommendations, Stripe/Iyzico payments, or Native Mobile App integrations are clearly labeled as "Planned" or "Mock" to protect customer transparency.
 - [ ] No hardcoded string constants exist inside `window.confirm` dialogs without matching the localized application context.
+
+### Phase 14I Admin Permissions & Role Boundaries
+- [x] Official Business Name (`businessName`) is read-only and disabled in Admin Settings, accompanied by a warning that changes require platform review.
+- [x] Display Name (`displayName`) and Public Profile configuration are clearly editable by the Admin.
+- [x] Platform name, trial limits, and global AI toggles are isolated safely within Super Admin Platform Settings.
+- [x] Admin Settings (`AdminSettingsTab.tsx`) uses a dedicated form state and strictly persists allowed tenant-level changes (like communication channels, default language, display name) via correct local persistence without escalating to protected keys.
+
+### Phase 14I Super Admin Mobile UX
+- [x] **Tenants Page**: Replaced wide desktop table with stacked card layout on mobile. Primary status and actions are clearly visible within each card.
+- [x] **Subscriptions Page**: Replaced desktop table with stacked cards showing plan details and quick-action buttons on mobile.
+- [x] **Onboarding Approvals**: Transitioned to mobile cards focusing on tenant name, profile completeness, and critical review actions.
+- [x] **Referrals/Campaigns**: Replicated responsive stacked cards approach to ensure start/stop/delete functions are accessible on narrow viewports without horizontal scrolling.
