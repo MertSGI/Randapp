@@ -62,6 +62,12 @@ const SUPER_ADMIN_ROUTES = [
 ];
 
 async function captureScreenshots() {
+  // Total routes calculation
+  const allRoutes = [...MARKETING_ROUTES, ...CUSTOMER_ROUTES, ...CUSTOMER_AUTH_ROUTES, ...ADMIN_ROUTES, ...SUPER_ADMIN_ROUTES];
+  const expectedRouteCount = allRoutes.length;
+  const expectedScreenshotCount = expectedRouteCount * 2; // mobile + desktop
+  const skippedRoutes = []; // We didn't intentionally skip any supported pilot routes based on App.tsx, but if we did, add here.
+
   console.log(`Starting QA Screenshot Capture to ${OUT_DIR}...`);
   if (!fs.existsSync(OUT_DIR)) fs.mkdirSync(OUT_DIR, { recursive: true });
   if (!fs.existsSync(path.join(OUT_DIR, 'mobile'))) fs.mkdirSync(path.join(OUT_DIR, 'mobile'), { recursive: true });
@@ -76,31 +82,39 @@ async function captureScreenshots() {
   const delay = (ms) => new Promise(res => setTimeout(res, ms));
 
   // Visit a dummy route to ensure localStorage can be set easily on that origin
-  await page.goto(`${BASE_URL}/`);
-  await page.waitForLoadState('networkidle');
+  try {
+    await page.goto(`${BASE_URL}/`);
+    await page.waitForLoadState('networkidle');
+  } catch(e) {
+    console.error("Could not reach BASE_URL:", BASE_URL, e);
+  }
 
   // Ensure devtools param to hide/show panel
   const getUrl = (p) => `${BASE_URL}/#${p}${p.includes('?') ? '&' : '?'}devTools=${DEVTOOLS ? '1' : '0'}&lang=tr`;
 
   const capture = async (group, viewportName, route) => {
-    await page.setViewportSize(VIEWPORTS[viewportName]);
-    await page.goto(getUrl(route.path));
-    await page.waitForLoadState('networkidle');
-    await delay(1000); // Give React time to render
+    try {
+      await page.setViewportSize(VIEWPORTS[viewportName]);
+      await page.goto(getUrl(route.path));
+      await page.waitForLoadState('networkidle');
+      await delay(1000); // Give React time to render
 
-    const filename = `${group}-${route.name.replace(/\\s+/g, '-').toLowerCase()}-${viewportName}.png`;
-    const filepath = path.join(OUT_DIR, viewportName, filename);
+      const filename = `${group.replace(/\\s+/g, '')}-${route.name.replace(/\\s+/g, '-').toLowerCase()}-${viewportName}.png`;
+      const filepath = path.join(OUT_DIR, viewportName, filename);
 
-    await page.screenshot({ path: filepath, fullPage: true });
-    
-    reportItems.push({
-      group,
-      name: route.name,
-      path: route.path,
-      viewport: viewportName,
-      file: `${viewportName}/${filename}`
-    });
-    console.log(`📸 Captured: ${route.name} (${viewportName})`);
+      await page.screenshot({ path: filepath, fullPage: true });
+      
+      reportItems.push({
+        group,
+        name: route.name,
+        path: route.path,
+        viewport: viewportName,
+        file: `${viewportName}/${filename}`
+      });
+      console.log(`📸 Captured: ${route.name} (${viewportName})`);
+    } catch(err) {
+      console.error(`Failed to capture ${route.name} (${viewportName}):`, err);
+    }
   };
 
   // 1. Marketing
@@ -129,7 +143,7 @@ async function captureScreenshots() {
   // 3. Admin
   await page.evaluate(() => {
     localStorage.setItem('randapp_mock_user', JSON.stringify({
-      id: "usr_admin", name: "Cemil Kaya", email: "admin@randapp.com", role: "admin", tenantId: "tenant_demo"
+      id: "usr_admin", name: "Cemil Kaya", email: "admin@randapp.com", role: "salon_owner", tenantId: "tenant_demo"
     }));
   });
   for (const route of ADMIN_ROUTES) {
@@ -160,6 +174,10 @@ async function captureScreenshots() {
   <style>
     body { font-family: system-ui, sans-serif; background: #f9fafb; color: #111827; padding: 2rem; margin: 0; }
     h1 { border-bottom: 2px solid #e5e7eb; padding-bottom: 0.5rem; }
+    .summary { background: #eff6ff; padding: 1.5rem; border-radius: 0.5rem; border: 1px solid #bfdbfe; margin-bottom: 2rem; }
+    .summary h2 { margin-top: 0; }
+    .summary ul { margin: 0; padding-left: 1.5rem; }
+    .skipped { background: #fefce8; padding: 1rem; border-radius: 0.5rem; border: 1px solid #fef08a; margin-bottom: 2rem; }
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem; margin-top: 2rem; }
     .card { background: white; border-radius: 0.5rem; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
     .card-header { padding: 1rem; border-bottom: 1px solid #e5e7eb; background: #f3f4f6; }
@@ -171,7 +189,22 @@ async function captureScreenshots() {
 </head>
 <body>
   <h1>Randapp QA Screenshot Report</h1>
-  <p>Screenshots captured at: ${new Date().toLocaleString()}</p>
+  <div class="summary">
+    <h2>Summary</h2>
+    <ul>
+      <li><strong>Date:</strong> ${new Date().toLocaleString()}</li>
+      <li><strong>Expected Routes:</strong> ${expectedRouteCount}</li>
+      <li><strong>Expected Screenshots:</strong> ${expectedScreenshotCount} (Mobile + Desktop)</li>
+      <li><strong>Captured Screenshots:</strong> ${reportItems.length}</li>
+    </ul>
+  </div>
+  ${skippedRoutes.length > 0 ? `
+  <div class="skipped">
+    <h3>Skipped Routes</h3>
+    <ul>
+      ${skippedRoutes.map(sr => `<li><strong>${sr.name}:</strong> ${sr.reason}</li>`).join('')}
+    </ul>
+  </div>` : ''}
   
   <div class="grid">
     ${reportItems.map(item => `
@@ -193,6 +226,10 @@ async function captureScreenshots() {
   `.trim();
 
   fs.writeFileSync(path.join(OUT_DIR, 'QA_SCREENSHOT_REPORT.html'), htmlContent);
+  console.log('\\n📊 Summary:');
+  console.log(`- Expected Routes: ${expectedRouteCount}`);
+  console.log(`- Expected Screenshots: ${expectedScreenshotCount}`);
+  console.log(`- Captured Screenshots: ${reportItems.length}`);
   console.log('✅ Generated QA_SCREENSHOT_REPORT.html');
 
   // Generate README.md
