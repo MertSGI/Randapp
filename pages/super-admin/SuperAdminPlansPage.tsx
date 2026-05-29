@@ -44,14 +44,28 @@ const SuperAdminPlansPage: React.FC = () => {
             isRecommended: false,
             trialDays: 7
         };
-        await planService.addPlan(newPlan);
+        const res = await planService.addPlan(newPlan);
+        if (res.ok) {
+            alert('Yeni plan başarıyla eklendi.');
+        } else {
+            alert('Plan eklenirken hata oluştu.');
+        }
         setPlans(planService.getAllPlans());
     };
 
-    const handleDeletePlan = async (planId: string) => {
-        if(window.confirm('Bu planı silmek istediğinize emin misiniz?')) {
-            await planService.deletePlan(planId);
-            setPlans(planService.getAllPlans());
+    const handleDeletePlan = async (planId: string, planName: string) => {
+        if(window.confirm(`'${planName}' planını silmek istediğinize emin misiniz?`)) {
+            const res = await planService.deletePlan(planId);
+            if(res.ok) {
+                if(res.action === 'deactivated') {
+                    alert(`'${planName}' başarıyla inaktif yapıldı. (Varsayılan veya kullanımda olduğu için tamamen silinmedi)`);
+                } else {
+                    alert(`'${planName}' başarıyla silindi.`);
+                }
+                setPlans(planService.getAllPlans());
+            } else {
+                alert('Silme işlemi başarısız.');
+            }
         }
     };
 
@@ -101,7 +115,7 @@ const SuperAdminPlansPage: React.FC = () => {
                                onChange={e => handleUpdate(plan.id, { name: e.target.value })}
                                className="text-lg font-bold text-gray-900 dark:text-white bg-transparent border-b border-dashed border-gray-300 dark:border-slate-600 focus:border-accent outline-none pb-1"
                            />
-                           <button onClick={() => handleDeletePlan(plan.id)} className="text-gray-400 hover:text-red-500 transition">
+                           <button onClick={() => handleDeletePlan(plan.id, plan.name)} className="text-gray-400 hover:text-red-500 transition">
                               <Trash2 className="w-4 h-4" />
                            </button>
                         </div>

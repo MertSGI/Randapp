@@ -1,6 +1,8 @@
 import { dataProvider } from './dataProvider';
 import { supabase } from './supabaseClient';
 import { Service, SERVICES as DEMO_SERVICES } from '../types';
+import { getAppointments } from './appointmentService';
+import { createSuccess, createError, MutationResult } from '../utils/mutationResult';
 
 const getServicesKey = (tenantId: string) => `randapp:${tenantId}:services`;
 
@@ -126,8 +128,17 @@ export const updateService = async (tenantId: string, serviceId: string, updates
   return updatedService;
 };
 
-export const deleteService = async (tenantId: string, serviceId: string): Promise<boolean> => {
+export const deleteService = async (tenantId: string, serviceId: string): Promise<MutationResult<void>> => {
   if (isSupabaseMode()) {
+    // Check if appointments use this service
+    const { data: apts } = await supabase.from('appointments').select('id').eq('service_id', serviceId).eq('tenant_id', tenantId).limit(1);
+    
+    if (apts && apts.length > 0) {
+       const { error: updErr } = await supabase.from('services').update({ active: false }).eq('id', serviceId);
+       if (updErr) return createError('deactivated', 'action_failed');
+       return createSuccess('deactivated');
+    }
+
     const { error } = await supabase
       .from('services')
       .delete()
@@ -136,17 +147,26 @@ export const deleteService = async (tenantId: string, serviceId: string): Promis
       
     if (error) {
       console.error('Error deleting service:', error);
-      return false;
+      return createError('deleted', 'action_failed');
     }
-    return true;
+    return createSuccess('deleted');
   }
 
   const key = getServicesKey(tenantId);
   const existingServices = await dataProvider.getList<Service>(key);
   
+  const allAppointments = await getAppointments(tenantId);
+  const hasAppointments = allAppointments.some(a => a.serviceId === serviceId);
+
+  if (hasAppointments) {
+    const newServicesList = existingServices.map(s => s.id === serviceId ? { ...s, active: false } : s);
+    await dataProvider.set(key, newServicesList);
+    return createSuccess('deactivated');
+  }
+
   const filtered = existingServices.filter((s) => s.id !== serviceId);
-  if (filtered.length === existingServices.length) return false;
+  if (filtered.length === existingServices.length) return createError('deleted', 'action_failed');
   
   await dataProvider.set(key, filtered);
-  return true;
+  return createSuccess('deleted');
 };

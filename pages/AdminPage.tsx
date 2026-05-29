@@ -109,8 +109,17 @@ const AdminPage: React.FC = () => {
   const handleDeleteService = async (id: string) => {
     if (!tenant) return;
     if (window.confirm(t.admin.confirm_delete_service)) {
-      await deleteService(tenant.id, id);
-      loadData();
+      const res = await deleteService(tenant.id, id);
+      if (res.ok) {
+        if (res.action === 'deactivated') {
+          alert((t.admin as any).service_deactivated || 'Service deactivated because it has appointments.');
+        } else {
+          alert((t.admin as any).service_deleted || 'Service deleted.');
+        }
+        loadData();
+      } else {
+        alert((t.admin as any)[res.messageKey as string] || 'Action failed.');
+      }
     }
   };
 
@@ -170,13 +179,18 @@ const AdminPage: React.FC = () => {
 
   const handleDeleteStaff = async (id: string, name: string) => {
     if (!tenant) return;
-    if (id === 'stf_1' || name.toLowerCase().includes('mustafa ali yılmaz')) {
-      alert(t.admin.cannot_delete_owner);
-      return;
-    }
     if (window.confirm(t.admin.confirm_delete_staff)) {
-      await deleteStaff(tenant.id, id);
-      loadData();
+      const res = await deleteStaff(tenant.id, id);
+      if (res.ok) {
+        if (res.action === 'deactivated') {
+          alert((t.admin as any).staff_deactivated || 'Staff deactivated because they have appointments.');
+        } else {
+          alert((t.admin as any).staff_deleted || 'Staff deleted.');
+        }
+        loadData();
+      } else {
+        alert((t.admin as any)[res.messageKey as string] || (t.admin as any).action_failed || 'Action failed.');
+      }
     }
   };
 
@@ -351,7 +365,7 @@ const AdminPage: React.FC = () => {
       {activeTab === 'dashboard' && (
         <div className="space-y-6">
           <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
-             <h2 className="text-xl font-bold dark:text-white">Dashboard / Bugün</h2>
+             <h2 className="text-xl font-bold dark:text-white">{t.admin.dashboard_today || 'Kayıtlar / Bugün'}</h2>
              <div className="flex gap-2">
                  <button 
                    onClick={() => { window.open('/#/book?preview=true', '_blank'); }}
@@ -723,13 +737,13 @@ const AdminPage: React.FC = () => {
       <div className="h-20 md:hidden w-full"></div>
 
       {/* Mobile Bottom Navigation Menu */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-gray-200 dark:border-slate-700 md:hidden z-50 px-2 pb-safe shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-         <div className="flex justify-between items-center h-16">
-            <button onClick={() => setActiveTab('dashboard')} className={`flex flex-col items-center justify-center w-full h-full ${activeTab === 'dashboard' ? 'text-accent dark:text-blue-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}>
+      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-gray-200 dark:border-slate-700 md:hidden z-[90] px-1 pb-safe shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+         <div className="flex justify-between items-center h-16 w-full">
+            <button onClick={() => setActiveTab('dashboard')} className={`flex flex-col items-center justify-center flex-1 h-full ${activeTab === 'dashboard' ? 'text-accent dark:text-blue-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}>
                <svg className="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                <span className="text-[10px] font-medium leading-none">Bugün</span>
             </button>
-            <button onClick={() => setActiveTab('appointments')} className={`flex flex-col items-center justify-center w-full h-full ${activeTab === 'appointments' ? 'text-accent dark:text-blue-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}>
+            <button onClick={() => setActiveTab('appointments')} className={`flex flex-col items-center justify-center flex-1 h-full ${activeTab === 'appointments' ? 'text-accent dark:text-blue-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}>
                <div className="relative">
                  <svg className="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                  {appointments.filter(a => a.date === new Date().toISOString().split('T')[0]).length > 0 && (
@@ -738,16 +752,20 @@ const AdminPage: React.FC = () => {
                    </span>
                  )}
                </div>
-               <span className="text-[10px] font-medium leading-none">{t.admin.tab_appointments}</span>
+               <span className="text-[10px] font-medium leading-none truncate w-full text-center px-1 text-ellipsis overflow-hidden">{t.admin.tab_appointments}</span>
             </button>
-            <button onClick={() => setActiveTab('customers')} className={`flex flex-col items-center justify-center w-full h-full ${activeTab === 'customers' ? 'text-accent dark:text-blue-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}>
+            <button onClick={() => setActiveTab('customers')} className={`flex flex-col items-center justify-center flex-1 h-full ${activeTab === 'customers' ? 'text-accent dark:text-blue-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}>
                <svg className="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-               <span className="text-[10px] font-medium leading-none">{t.admin.tab_customers}</span>
+               <span className="text-[10px] font-medium leading-none truncate w-full text-center px-1 text-ellipsis overflow-hidden">{t.admin.tab_customers}</span>
             </button>
-            <div className="relative w-full h-full flex justify-center dropdown-container">
-                <button className={`flex flex-col items-center justify-center w-full h-full ${(['staff', 'services', 'reports', 'billing', 'profile', 'referrals', 'settings'].includes(activeTab)) ? 'text-accent dark:text-blue-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`} onClick={() => setIsMobileMoreMenuOpen(!isMobileMoreMenuOpen)}>
+            <button onClick={() => setActiveTab('services')} className={`flex flex-col items-center justify-center flex-1 h-full ${activeTab === 'services' ? 'text-accent dark:text-blue-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}>
+               <svg className="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 10l-2 1m0 0l-2-1m2 1v2m-2-1l-2-1m2 1v2m2-1v-2m0 0l2 1" /></svg>
+               <span className="text-[10px] font-medium leading-none truncate w-full text-center px-1 text-ellipsis overflow-hidden">{t.admin.tab_services}</span>
+            </button>
+            <div className="relative flex-1 h-full flex justify-center dropdown-container">
+                <button className={`flex flex-col items-center justify-center w-full h-full ${(['staff', 'reports', 'billing', 'profile', 'referrals', 'settings'].includes(activeTab)) ? 'text-accent dark:text-blue-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`} onClick={() => setIsMobileMoreMenuOpen(!isMobileMoreMenuOpen)}>
                    <svg className="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16"/></svg>
-                   <span className="text-[10px] font-medium leading-none">Diğer</span>
+                   <span className="text-[10px] font-medium leading-none truncate w-full text-center px-1 text-ellipsis overflow-hidden">Diğer</span>
                 </button>
                 
                 {/* Mobile More Menu Overlay */}
@@ -761,9 +779,6 @@ const AdminPage: React.FC = () => {
               <div className="py-1 flex flex-col items-start w-full" onClick={() => setIsMobileMoreMenuOpen(false)}>
                   <button onClick={() => setActiveTab('staff')} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 ${activeTab === 'staff' ? 'bg-blue-50 dark:bg-slate-700 text-accent font-semibold' : 'text-gray-700 dark:text-gray-300'}`}>
                      {t.admin.tab_staff}
-                  </button>
-                  <button onClick={() => setActiveTab('services')} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 ${activeTab === 'services' ? 'bg-blue-50 dark:bg-slate-700 text-accent font-semibold' : 'text-gray-700 dark:text-gray-300'}`}>
-                     {t.admin.tab_services}
                   </button>
                   <button onClick={() => setActiveTab('reports')} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 ${activeTab === 'reports' ? 'bg-blue-50 dark:bg-slate-700 text-accent font-semibold' : 'text-gray-700 dark:text-gray-300'}`}>
                      {t.admin.tab_reports}
@@ -779,6 +794,9 @@ const AdminPage: React.FC = () => {
                   </button>
                   <button onClick={() => setActiveTab('settings')} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 ${activeTab === 'settings' ? 'bg-blue-50 dark:bg-slate-700 text-accent font-semibold' : 'text-gray-700 dark:text-gray-300'}`}>
                      {t.admin.tab_settings || 'Ayarlar'}
+                  </button>
+                  <button onClick={() => { window.open('/#/book?preview=true', '_blank'); }} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 text-gray-700 dark:text-gray-300 border-t border-gray-100 dark:border-slate-700`}>
+                     Site Önizleme
                   </button>
                   <button onClick={() => { logout(); navigate('/login'); }} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 text-red-600 dark:text-red-400 font-medium border-t border-gray-100 dark:border-slate-700`}>
                      Çıkış Yap

@@ -20,6 +20,24 @@ const SuperAdminReferralsPage: React.FC = () => {
     setCampaigns([...updated]);
   };
 
+  const addMockCampaign = () => {
+    const newCamp: ReferralCampaign = {
+        id: `campaign_mock_${Date.now()}`,
+        tenantId: 'global',
+        campaignType: 'business_referral',
+        title: 'Platform Önerisi (Mock)',
+        description: 'Arkadaşını getir, bedava ay kazan.',
+        rewardType: 'free_month',
+        rewardValue: '1',
+        active: true,
+        createdBy: 'super_admin',
+        startDate: new Date().toISOString()
+    };
+    referralService.saveCampaign(newCamp);
+    setCampaigns(referralService.getAllCampaignsForSuperAdmin());
+    alert('Mock kampanya başarıyla eklendi.');
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -27,7 +45,7 @@ const SuperAdminReferralsPage: React.FC = () => {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Referans & Kampanya Yönetimi (MVP Mock)</h1>
           <p className="text-sm text-gray-500 mt-1">Platform geneli (Business-to-Platform) kampanyaları yönetin.</p>
         </div>
-        <button className="bg-accent text-white px-4 py-2 rounded-lg font-bold shadow hover:bg-blue-600 transition">
+        <button onClick={addMockCampaign} className="bg-accent text-white px-4 py-2 rounded-lg font-bold shadow hover:bg-blue-600 transition">
           + Yeni Kampanya (Mock)
         </button>
       </div>
@@ -72,9 +90,18 @@ const SuperAdminReferralsPage: React.FC = () => {
                   </button>
                   <button 
                     onClick={() => {
-                        if (window.confirm('Bu kampanyayı silmek istediğinizden emin misiniz?')) {
-                            referralService.deleteCampaign(c.id);
-                            setCampaigns(referralService.getAllCampaignsForSuperAdmin());
+                        if (window.confirm(`'${c.title}' kampanyasını silmek istediğinizden emin misiniz?`)) {
+                            const res = referralService.deleteCampaign(c.id);
+                            if(res.ok) {
+                                if(res.action === 'deactivated') {
+                                    alert(`'${c.title}' kullanımda olduğu için inaktif yapıldı.`);
+                                } else {
+                                    alert(`'${c.title}' başarıyla silindi.`);
+                                }
+                                setCampaigns(referralService.getAllCampaignsForSuperAdmin());
+                            } else {
+                                alert('İşlem başarısız.');
+                            }
                         }
                     }}
                     className="text-gray-400 hover:text-red-600 transition"

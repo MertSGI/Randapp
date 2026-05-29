@@ -78,3 +78,30 @@
 
 ---
 **Status**: Dynamic Try/Buy UI routing established. The platform is ready for Edge Function integration for genuine iyzico/Supabase endpoints.
+
+## Phase 14C Quality Gate Checklists
+
+### CRUD & Mutation Reliability
+- [ ] Add/Edit/Delete/Deactivate flows must rely on a unified `MutationResult`.
+- [ ] No action fails silently across Admin/SuperAdmin.
+- [ ] UI must refresh explicitly after a mutation using the application's source of truth.
+- [ ] Direct constant mutations inside local memory are strictly forbidden (deep cloning must be enforced).
+- [ ] Operations successfully persist across page reloads (or `F5` browser refresh).
+
+### Destructive Action UX
+- [ ] All delete/cancel/deactivate actions trigger a localized confirmation dialog.
+- [ ] Confirmation phrasing explicitly references the entity name (e.g. `'Kampanya X' silinsin mi?`).
+- [ ] Hard deletion is gracefully rejected if an entity is referenced (e.g., staff with active appointments). Use deactivation (soft delete) instead and explain the choice.
+- [ ] Feedback alerts must explicitly mention whether an action succeeded, failed, or was down-graded to deactivation for safety.
+
+### Admin Mobile Information Architecture (IA)
+- [ ] No duplicate top header or duplicate logout CTAs on mobile layouts.
+- [ ] No generic "Panel" cards unnecessarily wasting vertical screen space.
+- [ ] Setup wizard dominates the screen ONLY in the 'setup' route. Otherwise, it collapses to a compact reminder badge.
+- [ ] Mobile navigation prioritizes daily tasks on a fixed bottom bar: Today (Dashboard), Appointments, Customers, Services, and More.
+- [ ] Horizontal tab scroll containers are strictly forbidden on small screens inside Admin panels.
+
+### Copy & Misdirection Sweeps
+- [ ] Missing translations (`cannot_delete_in_use`, `action_failed`, `deactivated_success`) are correctly registered in `translations.ts`.
+- [ ] Unimplemented AI recommendations, Stripe/Iyzico payments, or Native Mobile App integrations are clearly labeled as "Planned" or "Mock" to protect customer transparency.
+- [ ] No hardcoded string constants exist inside `window.confirm` dialogs without matching the localized application context.

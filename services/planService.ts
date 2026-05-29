@@ -1,3 +1,5 @@
+import { createSuccess, createError, MutationResult } from '../utils/mutationResult';
+
 export interface PricingPlan {
   id: string;
   name: string;
@@ -137,30 +139,44 @@ export const planService = {
   getPlan(planId: string): PricingPlan | undefined {
     return this.getStoredPlans()[planId];
   },
-  updatePlan(planId: string, updates: Partial<PricingPlan>): Promise<void> {
+  updatePlan(planId: string, updates: Partial<PricingPlan>): Promise<MutationResult<void>> {
     return new Promise((resolve) => {
       const plans = this.getStoredPlans();
       if(plans[planId]) {
          plans[planId] = { ...plans[planId], ...updates };
          this.savePlanInfos(plans);
+         resolve(createSuccess('updated'));
+      } else {
+         resolve(createError('updated', 'action_failed'));
       }
-      resolve();
     });
   },
-  addPlan(plan: PricingPlan): Promise<void> {
+  addPlan(plan: PricingPlan): Promise<MutationResult<void>> {
     return new Promise((resolve) => {
       const plans = this.getStoredPlans();
       plans[plan.id] = plan;
       this.savePlanInfos(plans);
-      resolve();
+      resolve(createSuccess('created'));
     });
   },
-  deletePlan(planId: string): Promise<void> {
+  deletePlan(planId: string): Promise<MutationResult<void>> {
     return new Promise((resolve) => {
       const plans = this.getStoredPlans();
+      
+      if (!plans[planId]) {
+         return resolve(createError('deleted', 'action_failed'));
+      }
+      
+      // Default plans shouldn't be hard-deleted as they may break mock dependencies
+      if (['starter', 'professional', 'premium'].includes(planId)) {
+        plans[planId].isActive = false;
+        this.savePlanInfos(plans);
+        return resolve(createSuccess('deactivated'));
+      }
+
       delete plans[planId];
       this.savePlanInfos(plans);
-      resolve();
+      resolve(createSuccess('deleted'));
     });
   },
   calculatePlanPrice(planId: string, billingPeriod: BillingPeriod): number {

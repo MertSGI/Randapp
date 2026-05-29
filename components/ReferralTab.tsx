@@ -85,12 +85,21 @@ const ReferralTab: React.FC = () => {
                         <td className="px-6 py-4 whitespace-nowrap text-right font-medium">
                             <button 
                               onClick={() => {
-                                 if(window.confirm(language === 'tr' ? 'Bu kampanyayı silmek istediğinize emin misiniz?' : 'Are you sure you want to delete this campaign?')) {
-                                     referralService.deleteCampaign(c.id);
-                                     if(tenant) setCampaigns(referralService.getCampaigns(tenant.id));
+                                 if(window.confirm(language === 'tr' ? `'${c.title}' kampanyasını silmek istediğinize emin misiniz?` : `Are you sure you want to delete the '${c.title}' campaign?`)) {
+                                     const res = referralService.deleteCampaign(c.id);
+                                     if(res.ok) {
+                                         if(res.action === 'deactivated') {
+                                           alert(language === 'tr' ? `'${c.title}' kod oluşturulduğu için inaktif yapıldı.` : `'${c.title}' is in use, deactivated instead.`);
+                                         } else {
+                                           alert(language === 'tr' ? `'${c.title}' başarıyla silindi.` : `'${c.title}' was successfully deleted.`);
+                                         }
+                                         if(tenant) setCampaigns(referralService.getCampaigns(tenant.id));
+                                     } else {
+                                         alert(language === 'tr' ? 'İşlem başarısız.' : 'Action failed.');
+                                     }
                                  }
                               }}
-                              className="text-red-500 hover:text-red-700"
+                              className="text-red-500 hover:text-red-700 font-medium px-3 py-1 bg-red-50 hover:bg-red-100 rounded-md transition-colors duration-200"
                             >
                                 {t.admin.delete || 'Delete'}
                             </button>

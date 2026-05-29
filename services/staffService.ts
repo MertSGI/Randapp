@@ -1,6 +1,8 @@
 import { dataProvider } from './dataProvider';
 import { supabase } from './supabaseClient';
 import { Staff } from '../types';
+import { getAppointments } from './appointmentService';
+import { createSuccess, createError, MutationResult } from '../utils/mutationResult';
 
 const getStaffKey = (tenantId: string) => `randapp:${tenantId}:staff`;
 
@@ -135,12 +137,21 @@ export const updateStaff = async (tenantId: string, staffId: string, updates: Pa
   return updatedStaff;
 };
 
-export const deleteStaff = async (tenantId: string, staffId: string): Promise<boolean> => {
+export const deleteStaff = async (tenantId: string, staffId: string): Promise<MutationResult<void>> => {
   if (isSupabaseMode()) {
     // Quick check to prevent owner deletion if that logic is strictly enforced in API
     const { data } = await supabase.from('staff').select('is_owner').eq('id', staffId).single();
-    if (data?.is_owner) return false;
+    if (data?.is_owner) return createError('deleted', 'owner_cannot_be_deleted');
     
+    // Check if staff has appointments
+    const { data: apts } = await supabase.from('appointments').select('id').eq('staff_id', staffId).eq('tenant_id', tenantId).limit(1);
+    if (apts && apts.length > 0) {
+       // Deactivate instead
+       const { error: updErr } = await supabase.from('staff').update({ active: false }).eq('id', staffId);
+       if (updErr) return createError('deactivated', 'action_failed');
+       return createSuccess('deactivated');
+    }
+
     const { error } = await supabase
       .from('staff')
       .delete()
@@ -149,23 +160,34 @@ export const deleteStaff = async (tenantId: string, staffId: string): Promise<bo
       
     if (error) {
       console.error('Error deleting staff:', error);
-      return false;
+      return createError('deleted', 'action_failed');
     }
-    return true;
+    return createSuccess('deleted');
   }
 
   const key = getStaffKey(tenantId);
   const existingStaff = await dataProvider.getList<Staff>(key);
   
   const idx = existingStaff.findIndex((s) => s.id === staffId);
-  if (idx === -1) return false;
+  if (idx === -1) return createError('deleted', 'action_failed');
   
   // Prevent deletion of master designer / owner in demo
   if (existingStaff[idx].id === 'staff_1' || existingStaff[idx].isOwner) {
-    return false;
+    return createError('deleted', 'owner_cannot_be_deleted');
   }
   
+  const allAppointments = await getAppointments(tenantId);
+  const hasAppointments = allAppointments.some(a => a.staffId === staffId);
+
+  if (hasAppointments) {
+    // Deactivate instead
+    // Note: We need a deep clone if we modify
+    const newStaffList = existingStaff.map(s => s.id === staffId ? { ...s, active: false } : s);
+    await dataProvider.set(key, newStaffList);
+    return createSuccess('deactivated');
+  }
+
   const filtered = existingStaff.filter((s) => s.id !== staffId);
   await dataProvider.set(key, filtered);
-  return true;
+  return createSuccess('deleted');
 };

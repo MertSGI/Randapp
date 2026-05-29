@@ -1,4 +1,5 @@
 import { ReferralCampaign, ReferralCode, ReferralLead } from '../types';
+import { createSuccess, createError, MutationResult } from '../utils/mutationResult';
 
 // Mock storage keys
 const CAMPAIGNS_KEY = 'randapp_referral_campaigns';
@@ -37,21 +38,40 @@ export const referralService = {
     const raw = localStorage.getItem(CAMPAIGNS_KEY);
     const campaigns: ReferralCampaign[] = raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(defaultPlatformCampaigns));
     
-    const existingIndex = campaigns.findIndex(c => c.id === campaign.id);
+    // Deep clone campaign
+    const newCamp = JSON.parse(JSON.stringify(campaign));
+    const existingIndex = campaigns.findIndex(c => c.id === newCamp.id);
     if (existingIndex > -1) {
-      campaigns[existingIndex] = campaign;
+      campaigns[existingIndex] = newCamp;
     } else {
-      campaigns.push(campaign);
+      campaigns.push(newCamp);
     }
     
     localStorage.setItem(CAMPAIGNS_KEY, JSON.stringify(campaigns));
   },
 
-  deleteCampaign: (campaignId: string) => {
+  deleteCampaign: (campaignId: string): MutationResult<void> => {
     const raw = localStorage.getItem(CAMPAIGNS_KEY);
     let campaigns: ReferralCampaign[] = raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(defaultPlatformCampaigns));
+    
+    const cmpg = campaigns.find(c => c.id === campaignId);
+    if (!cmpg) return createError('deleted', 'action_failed');
+
+    // Check if codes generated for campaign 
+    const rawCodes = localStorage.getItem(CODES_KEY);
+    const codes: ReferralCode[] = rawCodes ? JSON.parse(rawCodes) : [];
+    const hasCodes = codes.some(c => c.campaignId === campaignId);
+
+    if (hasCodes) {
+       // deactivate
+       const newList = campaigns.map(c => c.id === campaignId ? { ...c, active: false } : c);
+       localStorage.setItem(CAMPAIGNS_KEY, JSON.stringify(newList));
+       return createSuccess('deactivated');
+    }
+
     campaigns = campaigns.filter(c => c.id !== campaignId);
     localStorage.setItem(CAMPAIGNS_KEY, JSON.stringify(campaigns));
+    return createSuccess('deleted');
   },
 
   // Codes
