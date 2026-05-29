@@ -45,6 +45,7 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { TenantProvider, useTenant } from './contexts/TenantContext';
 import { AuthProvider } from './contexts/AuthContext';
+import { DialogProvider } from './contexts/DialogContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import AppErrorBoundary from './components/AppErrorBoundary';
 
@@ -138,16 +139,18 @@ const App: React.FC = () => {
   return (
     <AppErrorBoundary>
       <ThemeProvider>
-        <LanguageProvider>
-          <TenantProvider>
-            <AuthProvider>
-              <Router>
-                <AppFlowSwitcher />
-                <MockDiagnosticTool />
-              </Router>
-            </AuthProvider>
-          </TenantProvider>
-        </LanguageProvider>
+        <DialogProvider>
+          <LanguageProvider>
+            <TenantProvider>
+              <AuthProvider>
+                <Router>
+                  <AppFlowSwitcher />
+                  <MockDiagnosticTool />
+                </Router>
+              </AuthProvider>
+            </TenantProvider>
+          </LanguageProvider>
+        </DialogProvider>
       </ThemeProvider>
     </AppErrorBoundary>
   );

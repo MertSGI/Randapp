@@ -7,12 +7,14 @@ import { Appointment, CustomerProfile, Staff, Service, Role } from '../../types'
 import { getAppointments, updateAppointmentStatus } from '../../services/appointmentService';
 import { getStaffList } from '../../services/staffService';
 import { getServices } from '../../services/serviceCatalogService';
+import { useDialog } from '../../contexts/DialogContext';
 
 const CustomerPortalPage: React.FC = () => {
   const { language } = useLanguage();
   const t = translations[language];
   const { tenant } = useTenant();
   const navigate = useNavigate();
+  const { confirm: showConfirm, alert: showAlert } = useDialog();
 
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [staffList, setStaffList] = useState<Staff[]>([]);
@@ -79,7 +81,7 @@ const CustomerPortalPage: React.FC = () => {
     const hoursDifference = (aptDateTime - now) / (1000 * 60 * 60);
 
     if (hoursDifference < 12) {
-      window.alert(t.customer_portal.cancel_error_window);
+      showAlert(t.customer_portal.cancel_error_window);
       return;
     }
 
@@ -91,7 +93,8 @@ const CustomerPortalPage: React.FC = () => {
   const confirmCancel = async () => {
     if (!selectedAppointment || !tenant) return;
     
-    if (window.confirm(t.customer_portal.cancel_confirm_msg)) {
+    const confirmed = await showConfirm({ message: t.customer_portal.cancel_confirm_msg });
+    if (confirmed) {
       await updateAppointmentStatus(
         tenant.id, 
         selectedAppointment.id, 

@@ -109,7 +109,7 @@ async function runTests() {
       rewardType: 'discount',
       rewardValue: '10',
       active: true,
-      createdBy: 'tenant_admin'
+      createdBy: 'salon_owner'
     });
     
     let currentCamps = referralService.getCampaigns(tenantId);
@@ -135,14 +135,13 @@ async function runTests() {
     await planService.addPlan({
       id: 'test_plan_999',
       name: 'Tester Plan',
-      priceMonthly: 10,
-      priceYearly: 100,
-      features: [],
+      annualPrice: 100,
+      monthlyPrice: 10,
       maxStaff: 1,
       maxServices: 1,
       isRecommended: false,
       trialDays: 0
-    });
+    } as any);
     
     let currentPlans = planService.getAllPlans();
     if (currentPlans.length !== beforeCount + 1) throw new Error('Plan did not add');

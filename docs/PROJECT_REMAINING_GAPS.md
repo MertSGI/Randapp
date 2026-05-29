@@ -3,14 +3,14 @@
 This document categorizes the known missing pieces, pending integrations, and feature gaps that must be addressed before specific milestones.
 
 ### 1. Must fix before screenshot QA
-- Ensure all generated/placeholder visual assets are strictly professional or user-facing friendly (no 'mock/debug' labels visible).
-- Review all destructive button visual hierarchy (delete/deactivate actions should look intentional and warnings clear).
+- [x] Ensure all generated/placeholder visual assets are strictly professional or user-facing friendly (no 'mock/debug' labels visible).
+- [x] Review all destructive button visual hierarchy (delete/deactivate actions should look intentional and warnings clear). (Fixed via Dialog context)
+- [x] Ensure "No records available" empty states look inviting rather than broken.
 - Finalize the layout styling on mobile breakpoints (`md:hidden` states, responsive padding).
-- Ensure "No records available" empty states look inviting rather than broken.
 
 ### 2. Must fix before pilot demo
 - Ensure any "demo seed reset" does not wipe cross-tenant boundaries if multiple users are exploring concurrently.
-- Complete Turkish/English translations (resolve any remaining mixed TR/EN copy).
+- [x] Complete Turkish/English translations (resolve any remaining mixed TR/EN copy).
 - Legal/KVKK final review for booking forms (requires valid privacy policy links and explicit consent check).
 - Clean up any raw JSON/debug screens that could leak mock environment details.
 

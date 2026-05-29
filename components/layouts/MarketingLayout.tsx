@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useDialog } from '../../contexts/DialogContext';
 
 const ThemeToggle = () => {
   const { theme, toggleTheme } = useTheme();
@@ -20,6 +21,7 @@ const MarketingLayout: React.FC = () => {
   const { language, setLanguage } = useLanguage();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { confirm: showConfirm } = useDialog();
 
   // Close mobile menu when navigating
   React.useEffect(() => {
@@ -134,8 +136,9 @@ const MarketingLayout: React.FC = () => {
                  }} className="text-blue-500 hover:text-blue-700 text-xs font-semibold uppercase tracking-wider">
                    {language === 'tr' ? 'Pilot Demo Verisi Yükle' : 'Seed Pilot Demo Data'}
                  </button>
-                 <button onClick={() => {
-                    if(window.confirm(language === 'tr' ? 'Tüm yerel veriler silinecek (Demo sıfırlama). Bu işlem geri alınamaz. Emin misiniz?' : 'All local demo data will be wiped. This Cannot be undone. Are you sure?')) {
+                 <button onClick={async () => {
+                    const confirmed = await showConfirm({ message: language === 'tr' ? 'Tüm yerel veriler silinecek (Demo sıfırlama). Bu işlem geri alınamaz. Emin misiniz?' : 'All local demo data will be wiped. This Cannot be undone. Are you sure?'});
+                    if(confirmed) {
                        localStorage.clear();
                        window.location.reload();
                     }

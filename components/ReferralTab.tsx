@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { translations } from '../utils/translations';
 import { useTenant } from '../contexts/TenantContext';
+import { useDialog } from '../contexts/DialogContext';
 import { referralService } from '../services/referralService';
 import { ReferralCampaign } from '../types';
 
@@ -9,6 +10,7 @@ const ReferralTab: React.FC = () => {
   const { language } = useLanguage();
   const t = translations[language];
   const { tenant } = useTenant();
+  const { alert: showAlert, confirm: showConfirm } = useDialog();
   const [campaigns, setCampaigns] = useState<ReferralCampaign[]>([]);
 
   useEffect(() => {
@@ -84,18 +86,21 @@ const ReferralTab: React.FC = () => {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right font-medium">
                             <button 
-                              onClick={() => {
-                                 if(window.confirm(language === 'tr' ? `'${c.title}' kampanyasını silmek istediğinize emin misiniz?` : `Are you sure you want to delete the '${c.title}' campaign?`)) {
+                              onClick={async () => {
+                                 const confirmed = await showConfirm({
+                                   message: language === 'tr' ? `'${c.title}' kampanyasını silmek istediğinize emin misiniz?` : `Are you sure you want to delete the '${c.title}' campaign?`
+                                 });
+                                 if(confirmed) {
                                      const res = referralService.deleteCampaign(c.id);
                                      if(res.ok) {
                                          if(res.action === 'deactivated') {
-                                           alert(language === 'tr' ? `'${c.title}' kod oluşturulduğu için inaktif yapıldı.` : `'${c.title}' is in use, deactivated instead.`);
+                                           await showAlert(language === 'tr' ? `'${c.title}' kod oluşturulduğu için inaktif yapıldı.` : `'${c.title}' is in use, deactivated instead.`);
                                          } else {
-                                           alert(language === 'tr' ? `'${c.title}' başarıyla silindi.` : `'${c.title}' was successfully deleted.`);
+                                           await showAlert(language === 'tr' ? `'${c.title}' başarıyla silindi.` : `'${c.title}' was successfully deleted.`);
                                          }
                                          if(tenant) setCampaigns(referralService.getCampaigns(tenant.id));
                                      } else {
-                                         alert(language === 'tr' ? 'İşlem başarısız.' : 'Action failed.');
+                                         await showAlert(language === 'tr' ? 'İşlem başarısız.' : 'Action failed.');
                                      }
                                  }
                               }}

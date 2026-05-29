@@ -3,6 +3,7 @@ import { CustomerProfile, Appointment, Staff, Service, CustomerMemoryNote, Custo
 import { adminCustomerService } from '../services/adminCustomerService';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTenant } from '../contexts/TenantContext';
+import { useDialog } from '../contexts/DialogContext';
 
 interface CustomerMemoryTabProps {
   appointments: Appointment[];
@@ -15,6 +16,7 @@ interface CustomerMemoryTabProps {
 const CustomerMemoryTab: React.FC<CustomerMemoryTabProps> = ({ appointments, staffList, servicesList, targetAppointmentId, onClearTarget }) => {
   const { t, language } = useLanguage();
   const { tenant } = useTenant();
+  const { confirm: showConfirm, alert: showAlert } = useDialog();
   const [customers, setCustomers] = useState<CustomerProfile[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useState<CustomerProfile | null>(null);
 
@@ -83,14 +85,19 @@ const CustomerMemoryTab: React.FC<CustomerMemoryTabProps> = ({ appointments, sta
     if(updatedCust) setSelectedCustomer(updatedCust);
   };
 
-  const handleDeleteNote = (noteId: string) => {
+  const handleDeleteNote = async (noteId: string) => {
     if (!tenant || !selectedCustomer) return;
+    const confirmed = await showConfirm({ message: (t.admin as any).confirm_delete_note || 'Notu silmek istediğinize emin misiniz?' });
+    if (!confirmed) return;
+    
     adminCustomerService.deleteNote(tenant.id, selectedCustomer.id, noteId);
     
     const loaded = adminCustomerService.getCustomers(tenant.id, appointments);
-    setCustomers(loaded);
+    setCustomers([...loaded]);
     const updatedCust = loaded.find(c => c.id === selectedCustomer.id);
-    if(updatedCust) setSelectedCustomer(updatedCust);
+    if(updatedCust) {
+      setSelectedCustomer({...updatedCust});
+    }
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -118,14 +125,19 @@ const CustomerMemoryTab: React.FC<CustomerMemoryTabProps> = ({ appointments, sta
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
-  const handleDeletePhoto = (photoId: string) => {
+  const handleDeletePhoto = async (photoId: string) => {
     if (!tenant || !selectedCustomer) return;
+    const confirmed = await showConfirm({ message: 'Fotoğrafı silmek istediğinize emin misiniz?' });
+    if (!confirmed) return;
+
     adminCustomerService.deletePhoto(tenant.id, selectedCustomer.id, photoId);
     
     const loaded = adminCustomerService.getCustomers(tenant.id, appointments);
-    setCustomers(loaded);
+    setCustomers([...loaded]);
     const updatedCust = loaded.find(c => c.id === selectedCustomer.id);
-    if(updatedCust) setSelectedCustomer(updatedCust);
+    if(updatedCust) {
+      setSelectedCustomer({...updatedCust});
+    }
   };
 
   if (!selectedCustomer) {

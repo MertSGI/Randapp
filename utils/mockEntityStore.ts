@@ -36,24 +36,24 @@ export const mockEntityStore = {
   },
 
   createItem<T extends MockEntity>(key: string, item: T): MutationResult<T> {
-    const collection = this.readCollection<T>(key);
+    const collection = mockEntityStore.readCollection<T>(key);
     collection.push(item);
-    this.writeCollection(key, collection);
+    mockEntityStore.writeCollection(key, collection);
     return createSuccess('created', item);
   },
 
   updateItem<T extends MockEntity>(key: string, id: string, patch: Partial<T>): MutationResult<T> {
-    const collection = this.readCollection<T>(key);
+    const collection = mockEntityStore.readCollection<T>(key);
     const index = collection.findIndex(i => i.id === id);
     if (index === -1) return createError('error', 'not_found');
     
     collection[index] = { ...collection[index], ...patch };
-    this.writeCollection(key, collection);
+    mockEntityStore.writeCollection(key, collection);
     return createSuccess('updated', collection[index]);
   },
 
   deleteItem<T extends MockEntity>(key: string, id: string): MutationResult<void> {
-    const collection = this.readCollection<T>(key);
+    const collection = mockEntityStore.readCollection<T>(key);
     const beforeCount = collection.length;
     
     const filtered = collection.filter(i => i.id !== id);

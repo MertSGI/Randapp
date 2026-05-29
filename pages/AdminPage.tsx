@@ -9,6 +9,7 @@ import { getAppointments, updateAppointmentStatus } from '../services/appointmen
 import { getStaffList, createStaff, updateStaff, deleteStaff } from '../services/staffService';
 import { getServices, createService, updateService, deleteService } from '../services/serviceCatalogService';
 import { Service } from '../types';
+import { useDialog } from '../contexts/DialogContext';
 
 import BillingTab from '../components/BillingTab';
 import OnboardingWizard from '../components/OnboardingWizard';
@@ -22,6 +23,7 @@ const AdminPage: React.FC = () => {
   const { t, language } = useLanguage();
   const { tenant, refreshTenant } = useTenant();
   const { currentUser, isLoading: authLoading, logout } = useAuth();
+  const { alert: showAlert, confirm: showConfirm } = useDialog();
   const [activeTab, setActiveTab] = useState<'dashboard' | 'setup' | 'appointments' | 'staff' | 'services' | 'reports' | 'billing' | 'profile' | 'settings' | 'customers' | 'referrals'>('dashboard');
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [staffList, setStaffList] = useState<Staff[]>([]);
@@ -81,7 +83,8 @@ const AdminPage: React.FC = () => {
 
   const handleCancel = async (id: string) => {
     if (!tenant) return;
-    if (window.confirm(t.admin.confirm_cancel)) {
+    const confirmed = await showConfirm({ message: t.admin.confirm_cancel });
+    if (confirmed) {
       await updateAppointmentStatus(tenant.id, id, 'cancelled_by_salon', '', 'salon');
       loadData();
     }
@@ -108,17 +111,18 @@ const AdminPage: React.FC = () => {
 
   const handleDeleteService = async (id: string) => {
     if (!tenant) return;
-    if (window.confirm(t.admin.confirm_delete_service)) {
+    const confirmed = await showConfirm({ message: t.admin.confirm_delete_service });
+    if (confirmed) {
       const res = await deleteService(tenant.id, id);
       if (res.ok) {
         if (res.action === 'deactivated') {
-          alert((t.admin as any).service_deactivated || 'Service deactivated because it has appointments.');
+          showAlert((t.admin as any).service_deactivated || 'Service deactivated because it has appointments.');
         } else {
-          alert((t.admin as any).service_deleted || 'Service deleted.');
+          showAlert((t.admin as any).service_deleted || 'Service deleted.');
         }
         loadData();
       } else {
-        alert((t.admin as any)[res.messageKey as string] || 'Action failed.');
+        showAlert((t.admin as any)[res.messageKey as string] || 'Action failed.');
       }
     }
   };
@@ -132,7 +136,7 @@ const AdminPage: React.FC = () => {
       const canAdd = await subscriptionService.canAddService(tenant.id);
       if (!canAdd) {
         // Final enforcement must happen server-side via Supabase Edge Functions or RLS policies.
-        alert(t.admin.plan_limit_services);
+        showAlert(t.admin.plan_limit_services);
         return;
       }
     }
@@ -179,17 +183,18 @@ const AdminPage: React.FC = () => {
 
   const handleDeleteStaff = async (id: string, name: string) => {
     if (!tenant) return;
-    if (window.confirm(t.admin.confirm_delete_staff)) {
+    const confirmed = await showConfirm({ message: t.admin.confirm_delete_staff });
+    if (confirmed) {
       const res = await deleteStaff(tenant.id, id);
       if (res.ok) {
         if (res.action === 'deactivated') {
-          alert((t.admin as any).staff_deactivated || 'Staff deactivated because they have appointments.');
+          showAlert((t.admin as any).staff_deactivated || 'Staff deactivated because they have appointments.');
         } else {
-          alert((t.admin as any).staff_deleted || 'Staff deleted.');
+          showAlert((t.admin as any).staff_deleted || 'Staff deleted.');
         }
         loadData();
       } else {
-        alert((t.admin as any)[res.messageKey as string] || (t.admin as any).action_failed || 'Action failed.');
+        showAlert((t.admin as any)[res.messageKey as string] || (t.admin as any).action_failed || 'Action failed.');
       }
     }
   };
@@ -314,7 +319,7 @@ const AdminPage: React.FC = () => {
             onClick={() => setActiveTab('referrals')}
             className={`${activeTab === 'referrals' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
           >
-            {t.admin.tab_referrals || 'Referans & Kayıt'}
+            {(t.admin as any).tab_referrals || 'Referans & Kayıt'}
           </button>
           <button
             onClick={() => setActiveTab('reports')}
@@ -332,7 +337,7 @@ const AdminPage: React.FC = () => {
             onClick={() => setActiveTab('settings')}
             className={`${activeTab === 'settings' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
           >
-            {t.admin.tab_settings || 'Settings'}
+            {(t.admin as any).tab_settings || 'Settings'}
           </button>
         </nav>
       </div>
@@ -365,7 +370,7 @@ const AdminPage: React.FC = () => {
       {activeTab === 'dashboard' && (
         <div className="space-y-6">
           <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
-             <h2 className="text-xl font-bold dark:text-white">{t.admin.dashboard_today || 'Kayıtlar / Bugün'}</h2>
+             <h2 className="text-xl font-bold dark:text-white">{(t.admin as any).dashboard_today || 'Kayıtlar / Bugün'}</h2>
              <div className="flex gap-2">
                  <button 
                    onClick={() => { window.open('/#/book?preview=true', '_blank'); }}
@@ -787,13 +792,13 @@ const AdminPage: React.FC = () => {
                      {t.admin.tab_billing}
                   </button>
                   <button onClick={() => setActiveTab('referrals')} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 ${activeTab === 'referrals' ? 'bg-blue-50 dark:bg-slate-700 text-accent font-semibold' : 'text-gray-700 dark:text-gray-300'}`}>
-                     {t.admin.tab_referrals || 'Referans & Puan'}
+                     {(t.admin as any).tab_referrals || 'Referans & Puan'}
                   </button>
                   <button onClick={() => setActiveTab('profile')} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 ${activeTab === 'profile' ? 'bg-blue-50 dark:bg-slate-700 text-accent font-semibold' : 'text-gray-700 dark:text-gray-300'}`}>
                      {t.admin.tab_profile}
                   </button>
                   <button onClick={() => setActiveTab('settings')} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 ${activeTab === 'settings' ? 'bg-blue-50 dark:bg-slate-700 text-accent font-semibold' : 'text-gray-700 dark:text-gray-300'}`}>
-                     {t.admin.tab_settings || 'Ayarlar'}
+                     {(t.admin as any).tab_settings || 'Ayarlar'}
                   </button>
                   <button onClick={() => { window.open('/#/book?preview=true', '_blank'); }} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 text-gray-700 dark:text-gray-300 border-t border-gray-100 dark:border-slate-700`}>
                      Site Önizleme

@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { TenantFullData, superAdminService } from '../services/superAdminService';
 import { useLanguage } from '../contexts/LanguageContext';
 import { translations } from '../utils/translations';
+import { useDialog } from '../contexts/DialogContext';
 
 const SuperAdminDashboard: React.FC = () => {
   const [data, setData] = useState<{stats: any, tenants: TenantFullData[]} | null>(null);
   const [loading, setLoading] = useState(true);
   const { language } = useLanguage();
   const trl = translations[language];
+  const { alert: showAlert, confirm: showConfirm } = useDialog();
 
   const [selectedTenant, setSelectedTenant] = useState<TenantFullData | null>(null);
 
@@ -27,9 +29,10 @@ const SuperAdminDashboard: React.FC = () => {
   }, []);
 
   const handleApprove = async (tenantId: string) => {
-    if (window.confirm(trl.super_admin?.approve_prompt || 'Approve this business for live bookings?')) {
+    const confirmed = await showConfirm({ message: trl.super_admin?.approve_prompt || 'Approve this business for live bookings?' });
+    if (confirmed) {
         await superAdminService.approveGoLive(tenantId);
-        alert(trl.super_admin?.approve_success || 'Business is live.');
+        await showAlert(trl.super_admin?.approve_success || 'Business is live.');
         loadData();
     }
   };
@@ -38,15 +41,16 @@ const SuperAdminDashboard: React.FC = () => {
     const note = window.prompt(trl.super_admin?.send_back_prompt || 'Enter note (optional):');
     if (note !== null) {
         await superAdminService.sendBackToSetup(tenantId, note);
-        alert(trl.super_admin?.send_back_success || 'Business sent back.');
+        await showAlert(trl.super_admin?.send_back_success || 'Business sent back.');
         loadData();
     }
   };
 
   const handlePause = async (tenantId: string) => {
-    if (window.confirm(trl.super_admin?.pause_prompt || 'Pause bookings for this business?')) {
+    const confirmed = await showConfirm({ message: trl.super_admin?.pause_prompt || 'Pause bookings for this business?' });
+    if (confirmed) {
         await superAdminService.pauseBookings(tenantId);
-        alert(trl.super_admin?.pause_success || 'Action completed.');
+        await showAlert(trl.super_admin?.pause_success || 'Action completed.');
         loadData();
     }
   };

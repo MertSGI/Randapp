@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { ReferralCampaign } from '../../types';
 import { referralService } from '../../services/referralService';
+import { useDialog } from '../../contexts/DialogContext';
 
 const SuperAdminReferralsPage: React.FC = () => {
   const [campaigns, setCampaigns] = useState<ReferralCampaign[]>([]);
+  const { alert: showAlert, confirm: showConfirm } = useDialog();
 
   useEffect(() => {
     setCampaigns(referralService.getAllCampaignsForSuperAdmin());
@@ -89,18 +91,19 @@ const SuperAdminReferralsPage: React.FC = () => {
                     {c.active ? 'Durdur' : 'Başlat'}
                   </button>
                   <button 
-                    onClick={() => {
-                        if (window.confirm(`'${c.title}' kampanyasını silmek istediğinizden emin misiniz?`)) {
+                    onClick={async () => {
+                        const confirmed = await showConfirm({ message: `'${c.title}' kampanyasını silmek istediğinizden emin misiniz?` });
+                        if (confirmed) {
                             const res = referralService.deleteCampaign(c.id);
                             if(res.ok) {
                                 if(res.action === 'deactivated') {
-                                    alert(`'${c.title}' kullanımda olduğu için inaktif yapıldı.`);
+                                    await showAlert(`'${c.title}' kullanımda olduğu için inaktif yapıldı.`);
                                 } else {
-                                    alert(`'${c.title}' başarıyla silindi.`);
+                                    await showAlert(`'${c.title}' başarıyla silindi.`);
                                 }
                                 setCampaigns(referralService.getAllCampaignsForSuperAdmin());
                             } else {
-                                alert('İşlem başarısız.');
+                                await showAlert('İşlem başarısız.');
                             }
                         }
                     }}

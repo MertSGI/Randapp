@@ -1,13 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { Database, Trash2, RefreshCw, X, AlertTriangle, Eye, EyeOff, Layout, List } from 'lucide-react';
+import { Database, Trash2, RefreshCw, X, AlertTriangle, Eye, EyeOff, Layout, List, PlayCircle } from 'lucide-react';
+import { createStaff, deleteStaff, getStaffList } from '../services/staffService';
+import { createService, deleteService, getServices } from '../services/serviceCatalogService';
+import { referralService } from '../services/referralService';
+import { planService } from '../services/planService';
+import { useDialog } from '../contexts/DialogContext';
 
 export const MockDiagnosticTool: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeKeys, setActiveKeys] = useState<{ key: string; value: string; size: number }[]>([]);
   const [selectedKeyValue, setSelectedKeyValue] = useState<{ key: string; value: string } | null>(null);
+  const [crudTestResult, setCrudTestResult] = useState<any[]>([]);
+  const [isRunningCrudTest, setIsRunningCrudTest] = useState(false);
+  const { alert: showAlert, confirm: showConfirm } = useDialog();
 
   // Checks URL and mode to see if dev tools should render
-  const isMockMode = (import.meta as any).env.VITE_DATA_MODE === 'mock';
+  const isMockMode = (() => { try { return (import.meta as any).env?.VITE_DATA_MODE === 'mock'; } catch { return true; } })();
   const hasDevParam = window.location.href.includes('devTools=1') || window.location.href.includes('demoTools=1');
   const isVisible = isMockMode && hasDevParam;
 
@@ -45,10 +53,77 @@ export const MockDiagnosticTool: React.FC = () => {
     }
   }, [isVisible]);
 
+  const runBrowserCrudTest = async () => {
+    setIsRunningCrudTest(true);
+    setCrudTestResult([]);
+    const results = [];
+    const tenantId = 'demo-tenant-1';
+
+    try {
+      // 1. Staff Test
+      const staffList = await getStaffList(tenantId);
+      const beforeCount = staffList.length;
+      await createStaff(tenantId, { name: 'UI Smoke Staff', title: 'Test', active: true, image: '' } as any);
+      
+      let curStaff = await getStaffList(tenantId);
+      let passedCreate = curStaff.length === beforeCount + 1;
+      
+      const newStaff = curStaff.find(s => s.name === 'UI Smoke Staff');
+      let res = { ok: false };
+      let passedDel = false;
+      if (newStaff) {
+         res = await deleteStaff(tenantId, newStaff.id);
+         curStaff = await getStaffList(tenantId);
+         passedDel = res.ok && curStaff.length === beforeCount;
+      }
+      
+      results.push({ name: 'Staff CRUD', passes: passedCreate && passedDel, details: `Create:${passedCreate} Del: ${passedDel}` });
+
+      // 2. Service Test
+      const srvList = await getServices(tenantId);
+      const bCount = srvList.length;
+      await createService(tenantId, { name: 'UI Smoke Service', duration: 15, price: 10, active: true } as any);
+      let curSrv = await getServices(tenantId);
+      let pCreate = curSrv.length === bCount + 1;
+
+      const newSrv = curSrv.find(s => s.name === 'UI Smoke Service');
+      let pDel = false;
+      if (newSrv) {
+         let r = await deleteService(tenantId, newSrv.id);
+         curSrv = await getServices(tenantId);
+         pDel = r.ok && curSrv.length === bCount;
+      }
+      results.push({ name: 'Service CRUD', passes: pCreate && pDel, details: `Create:${pCreate} Del: ${pDel}` });
+
+      // 3. Referral
+      const camps = referralService.getCampaigns(tenantId);
+      await referralService.saveCampaign({ id: 'ui_camp_99', tenantId, campaignType: 'customer_referral', title: 'UI Test', description: '', rewardType: 'discount', rewardValue: '1', active: true, createdBy: 'salon_owner' });
+      let pC = referralService.getCampaigns(tenantId).length === camps.length + 1;
+      await referralService.deleteCampaign('ui_camp_99');
+      let pD = referralService.getCampaigns(tenantId).length === camps.length;
+      results.push({ name: 'Referral CRUD', passes: pC && pD, details: `Create:${pC} Del: ${pD}` });
+
+      // 4. Plans
+      const plans = planService.getAllPlans();
+      await planService.addPlan({ id: 'ui_plan_99', name: 'UI', monthlyPrice: 1, annualPrice: 1, maxStaff: 1, maxServices: 1, trialDays: 0, isRecommended: false } as any);
+      let ppC = planService.getAllPlans().length === plans.length + 1;
+      await planService.deletePlan('ui_plan_99');
+      let ppD = planService.getAllPlans().length === plans.length;
+      results.push({ name: 'Plan CRUD', passes: ppC && ppD, details: `Create:${ppC} Del: ${ppD}` });
+
+    } catch (e: any) {
+      results.push({ name: 'Crash', passes: false, details: e.message });
+    }
+
+    setCrudTestResult(results);
+    setIsRunningCrudTest(false);
+  };
+
   if (!isVisible) return null;
 
-  const handleResetAllMockData = () => {
-    if (window.confirm('Emin misiniz? \n\nSadece Randapp mock verileri temizlenecek ve ilk durumlarına dönecektir (Tema ve dil tercihleriniz korunur).')) {
+  const handleResetAllMockData = async () => {
+    const confirmed = await showConfirm({ message: 'Emin misiniz? \n\nSadece Randapp mock verileri temizlenecek ve ilk durumlarına dönecektir (Tema ve dil tercihleriniz korunur).' });
+    if (confirmed) {
       // Clean only Randapp mock keys
       const keysToRemove: string[] = [];
       for (let i = 0; i < localStorage.length; i++) {
@@ -69,13 +144,14 @@ export const MockDiagnosticTool: React.FC = () => {
       // Clear seeding flags
       localStorage.removeItem('randapp:demo-tenant-1:is_seeded');
       
-      alert('Mock verileri sıfırlandı. Sayfa yenileniyor...');
+      await showAlert('Mock verileri sıfırlandı. Sayfa yenileniyor...');
       window.location.reload();
     }
   };
 
-  const handleDeleteIndividualKey = (key: string) => {
-    if (window.confirm(`'${key}' anahtarını silmek istediğinize emin misiniz?`)) {
+  const handleDeleteIndividualKey = async (key: string) => {
+    const confirmed = await showConfirm({ message: `'${key}' anahtarını silmek istediğinize emin misiniz?` });
+    if (confirmed) {
       localStorage.removeItem(key);
       scanStorage();
       if (selectedKeyValue?.key === key) {
@@ -155,7 +231,29 @@ export const MockDiagnosticTool: React.FC = () => {
                     <RefreshCw className="w-4 h-4" />
                     Şimdi Yeniden Tara (Rescan)
                   </button>
+                  <button
+                    onClick={runBrowserCrudTest}
+                    disabled={isRunningCrudTest}
+                    className="flex-1 min-w-[150px] flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2.5 text-xs font-bold transition shadow-sm disabled:opacity-50"
+                  >
+                    <PlayCircle className="w-4 h-4" />
+                    {isRunningCrudTest ? 'Testing...' : 'Run UI CRUD Smoke Test'}
+                  </button>
                 </div>
+
+                {crudTestResult.length > 0 && (
+                  <div className="mt-4 p-3 bg-white dark:bg-slate-950 border border-gray-200 dark:border-slate-800 rounded-lg text-xs font-mono">
+                    <h5 className="font-bold mb-2">Smoke Test Results:</h5>
+                    <ul className="space-y-1">
+                      {crudTestResult.map((res, i) => (
+                        <li key={i} className={`flex items-center gap-2 ${res.passes ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                          <span>{res.passes ? '✅' : '❌'}</span>
+                          <strong>{res.name}</strong> - <span>{res.details}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
 
               {/* Inspector Split View */}

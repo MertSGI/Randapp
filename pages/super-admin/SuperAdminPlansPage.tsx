@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { planService, PricingPlan } from '../../services/planService';
 import { Plus, Trash2, Save, Star } from 'lucide-react';
+import { useDialog } from '../../contexts/DialogContext';
 
 const SuperAdminPlansPage: React.FC = () => {
     const [plans, setPlans] = useState<PricingPlan[]>([]);
     const [saved, setSaved] = useState(false);
+    const { confirm: showConfirm, alert: showAlert } = useDialog();
 
     useEffect(() => {
         setPlans(planService.getAllPlans());
@@ -46,25 +48,26 @@ const SuperAdminPlansPage: React.FC = () => {
         };
         const res = await planService.addPlan(newPlan);
         if (res.ok) {
-            alert('Yeni plan başarıyla eklendi.');
+            await showAlert('Yeni plan başarıyla eklendi.');
         } else {
-            alert('Plan eklenirken hata oluştu.');
+            await showAlert('Plan eklenirken hata oluştu.');
         }
         setPlans(planService.getAllPlans());
     };
 
     const handleDeletePlan = async (planId: string, planName: string) => {
-        if(window.confirm(`'${planName}' planını silmek istediğinize emin misiniz?`)) {
+        const confirmed = await showConfirm({ message: `'${planName}' planını silmek istediğinize emin misiniz?` });
+        if(confirmed) {
             const res = await planService.deletePlan(planId);
             if(res.ok) {
                 if(res.action === 'deactivated') {
-                    alert(`'${planName}' başarıyla inaktif yapıldı. (Varsayılan veya kullanımda olduğu için tamamen silinmedi)`);
+                    await showAlert(`'${planName}' başarıyla inaktif yapıldı. (Varsayılan veya kullanımda olduğu için tamamen silinmedi)`);
                 } else {
-                    alert(`'${planName}' başarıyla silindi.`);
+                    await showAlert(`'${planName}' başarıyla silindi.`);
                 }
                 setPlans(planService.getAllPlans());
             } else {
-                alert('Silme işlemi başarısız.');
+                await showAlert('Silme işlemi başarısız.');
             }
         }
     };
