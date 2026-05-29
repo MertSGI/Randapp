@@ -2,9 +2,9 @@ import { dataProvider } from './dataProvider';
 import { supabase } from './supabaseClient';
 import { Appointment } from '../types';
 
-const getAppointmentsKey = (tenantId: string) => `randapp:${tenantId}:appointments`;
+export const getAppointmentsKey = (tenantId: string) => `randapp:${tenantId}:appointments`;
 
-const isSupabaseMode = () => ((import.meta as any).env.VITE_DATA_MODE || 'mock') === 'supabase';
+const isSupabaseMode = () => { try { return (import.meta as any).env?.VITE_DATA_MODE === 'supabase'; } catch(e) { return false; } };
 
 const dbAppointmentToAppointment = (dbAppt: any): Appointment => {
   return {

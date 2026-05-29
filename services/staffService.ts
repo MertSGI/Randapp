@@ -17,7 +17,7 @@ const DEMO_STAFF: Staff[] = [
   }
 ];
 
-const isSupabaseMode = () => ((import.meta as any).env.VITE_DATA_MODE || 'mock') === 'supabase';
+const isSupabaseMode = () => { try { return (import.meta as any).env?.VITE_DATA_MODE === 'supabase'; } catch(e) { return false; } };
 
 const dbStaffToStaff = (dbStaff: any): Staff => ({
   id: dbStaff.id,
@@ -171,7 +171,10 @@ export const deleteStaff = async (tenantId: string, staffId: string): Promise<Mu
   }
 
   const key = getStaffKey(tenantId);
-  const existingStaff = await dataProvider.getList<Staff>(key);
+  const { mockEntityStore } = await import('../utils/mockEntityStore');
+  
+  // Need to get staff list using sync mockEntityStore to avoid race conditions
+  const existingStaff = mockEntityStore.readCollection<Staff>(key);
   
   const idx = existingStaff.findIndex((s) => s.id === staffId);
   if (idx === -1) return createError('deleted', 'action_failed');
@@ -181,18 +184,17 @@ export const deleteStaff = async (tenantId: string, staffId: string): Promise<Mu
     return createError('deleted', 'owner_cannot_be_deleted');
   }
   
-  const allAppointments = await getAppointments(tenantId);
-  const hasAppointments = allAppointments.some(a => a.staffId === staffId);
+  // We can read appointments via mockEntityStore synchronously too
+  const { getAppointmentsKey } = await import('./appointmentService');
+  const aptKey = getAppointmentsKey(tenantId);
+  const allAppointments = mockEntityStore.readCollection<any>(aptKey);
+  const hasAppointments = allAppointments.some(a => a.staffId === staffId && a.tenantId === tenantId);
 
   if (hasAppointments) {
-    // Deactivate instead
-    // Note: We need a deep clone if we modify
-    const newStaffList = existingStaff.map(s => s.id === staffId ? { ...s, active: false } : s);
-    await dataProvider.set(key, newStaffList);
-    return createSuccess('deactivated');
+    const res = mockEntityStore.deactivateItem(key, staffId, 'active');
+    return res.ok ? createSuccess('deactivated') : createError('deactivated', 'action_failed');
   }
 
-  const filtered = existingStaff.filter((s) => s.id !== staffId);
-  await dataProvider.set(key, filtered);
-  return createSuccess('deleted');
+  const res = mockEntityStore.deleteItem(key, staffId);
+  return res.ok ? createSuccess('deleted') : createError('deleted', 'action_failed');
 };

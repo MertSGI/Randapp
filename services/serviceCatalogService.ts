@@ -6,7 +6,7 @@ import { createSuccess, createError, MutationResult } from '../utils/mutationRes
 
 const getServicesKey = (tenantId: string) => `randapp:${tenantId}:services`;
 
-const isSupabaseMode = () => ((import.meta as any).env.VITE_DATA_MODE || 'mock') === 'supabase';
+const isSupabaseMode = () => { try { return (import.meta as any).env?.VITE_DATA_MODE === 'supabase'; } catch(e) { return false; } };
 
 const dbServiceToService = (dbService: any): Service => ({
   id: dbService.id,
@@ -158,20 +158,24 @@ export const deleteService = async (tenantId: string, serviceId: string): Promis
   }
 
   const key = getServicesKey(tenantId);
-  const existingServices = await dataProvider.getList<Service>(key);
+  const { mockEntityStore } = await import('../utils/mockEntityStore');
   
-  const allAppointments = await getAppointments(tenantId);
-  const hasAppointments = allAppointments.some(a => a.serviceId === serviceId);
+  // Use synchronous mockEntityStore to prevent race conditions
+  const existingServices = mockEntityStore.readCollection<Service>(key);
+  
+  const idx = existingServices.findIndex((s) => s.id === serviceId);
+  if (idx === -1) return createError('deleted', 'action_failed');
+  
+  const { getAppointmentsKey } = await import('./appointmentService');
+  const aptKey = getAppointmentsKey(tenantId);
+  const allAppointments = mockEntityStore.readCollection<any>(aptKey);
+  const hasAppointments = allAppointments.some(a => a.serviceId === serviceId && a.tenantId === tenantId);
 
   if (hasAppointments) {
-    const newServicesList = existingServices.map(s => s.id === serviceId ? { ...s, active: false } : s);
-    await dataProvider.set(key, newServicesList);
-    return createSuccess('deactivated');
+    const res = mockEntityStore.deactivateItem(key, serviceId, 'active');
+    return res.ok ? createSuccess('deactivated') : createError('deactivated', 'action_failed');
   }
 
-  const filtered = existingServices.filter((s) => s.id !== serviceId);
-  if (filtered.length === existingServices.length) return createError('deleted', 'action_failed');
-  
-  await dataProvider.set(key, filtered);
-  return createSuccess('deleted');
+  const res = mockEntityStore.deleteItem(key, serviceId);
+  return res.ok ? createSuccess('deleted') : createError('deleted', 'action_failed');
 };
