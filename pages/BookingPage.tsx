@@ -466,27 +466,34 @@ const BookingPage: React.FC = () => {
 
               <div className="flex-grow">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-300">{t.booking.step2_slots} ({selectedDate})</label>
-                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
-                  {timeSlots.map((time) => {
-                    const isBooked = bookedSlots.includes(time);
-                    return (
-                      <button
-                        key={time}
-                        disabled={isBooked}
-                        onClick={() => handleTimeSelect(time)}
-                        className={`
-                          py-3 px-2 rounded-xl text-sm font-medium transition-all text-center
-                          ${isBooked 
-                            ? 'bg-gray-100 dark:bg-slate-800 text-gray-400 dark:text-slate-500 cursor-not-allowed decoration-slice' 
-                            : 'bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 text-gray-700 dark:text-gray-200 hover:border-accent hover:text-accent dark:hover:text-accent hover:shadow-md active:bg-accent active:text-white dark:active:text-white'
-                          }
-                        `}
-                      >
-                        {time}
-                      </button>
-                    );
-                  })}
-                </div>
+                {timeSlots.length === 0 || timeSlots.every(time => bookedSlots.includes(time)) ? (
+                  <div className="py-8 text-center text-gray-500 dark:text-gray-400 flex flex-col items-center bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-slate-700">
+                     <svg className="w-12 h-12 text-gray-300 dark:text-gray-600 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                     <span>{language === 'tr' ? 'Bu gün için uygun saat yok. Başka bir gün seçebilirsiniz.' : 'No available slots for this day. Please select another day.'}</span>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
+                    {timeSlots.map((time) => {
+                      const isBooked = bookedSlots.includes(time);
+                      return (
+                        <button
+                          key={time}
+                          disabled={isBooked}
+                          onClick={() => handleTimeSelect(time)}
+                          className={`
+                            py-3 px-2 rounded-xl text-sm font-medium transition-all text-center
+                            ${isBooked 
+                              ? 'bg-gray-100 dark:bg-slate-800 text-gray-400 dark:text-slate-500 cursor-not-allowed decoration-slice opacity-50' 
+                              : 'bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 text-gray-700 dark:text-gray-200 hover:border-accent hover:text-accent dark:hover:text-accent hover:shadow-md active:bg-accent active:text-white dark:active:text-white'
+                            }
+                          `}
+                        >
+                          {time}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             </div>
           </div>

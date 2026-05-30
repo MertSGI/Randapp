@@ -380,11 +380,11 @@ async function captureScreenshots() {
     .skipped { background: #fefce8; padding: 1rem; border-radius: 0.5rem; border: 1px solid #fef08a; margin-bottom: 2rem; }
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem; margin-top: 2rem; }
     .card { background: white; border-radius: 0.5rem; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    .card-header { padding: 1rem; border-bottom: 1px solid #e5e7eb; }
+    .card-header { padding: 1rem; border-bottom: 1px solid #e5e7eb; background: #f3f4f6; }
     .card-header h3 { margin: 0; font-size: 1.1rem; }
-    .card-header p { margin: 0.5rem 0 0; color: #6b7280; font-size: 0.875rem; }
-    .img-container { padding: 1rem; background: #f3f4f6; }
-    .img-container img { max-width: 100%; height: auto; border-radius: 0.25rem; object-fit: contain; max-height: 800px; display: block; margin: 0 auto; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+    .card-header p { margin: 0.2rem 0 0; font-size: 0.85rem; color: #4b5563; }
+    .img-container { padding: 1rem; background: #e5e7eb; display: flex; justify-content: center; }
+    img { max-width: 100%; height: auto; border: 1px solid #d1d5db; border-radius: 0.25rem; }
   </style>
 </head>
 <body>
@@ -403,76 +403,6 @@ async function captureScreenshots() {
       <li><strong>Viewport Mismatches:</strong> ${viewportMismatches.length}</li>
     </ul>
     ${hasQaError ? '<p style="color: #b91c1c; font-weight: bold; margin-top: 1rem;">Warning: QA run is incomplete or has failed assertions.</p>' : ''}
-  </div>
-  ${skippedRoutes.length > 0 ? \`
-  <div class="skipped">
-    <h3 style="margin-top: 0; color: #b45309;">Failed Routes & Assertions</h3>
-    <ul style="color: #92400e; margin-bottom: 0;">
-      \${skippedRoutes.map(sr => \`<li><strong>\${sr.name}:</strong> \${sr.reason}</li>\`).join('')}
-    </ul>
-  </div>\` : ''}
-  
-  <h2>Base Route Screenshots</h2>
-  <div class="grid">
-    ${baseSnapshots.map(item => \`
-      <div class="card">
-        <div class="card-header">
-          <h3>\${item.group} - \${item.name} (\${item.viewport})</h3>
-          <p>Path: <code>\${item.path}</code></p>
-        </div>
-        <div class="img-container">
-          <a href="\${item.file}" target="_blank">
-            <img src="\${item.file}" alt="\${item.name}" loading="lazy" />
-          </a>
-        </div>
-      </div>
-    \`).join('')}
-  </div>
-
-  <h2>Booking Interaction Screenshots</h2>
-  <div class="grid" style="margin-top: 1rem;">
-    ${interactionSnapshots.map(item => \`
-      <div class="card">
-        <div class="card-header">
-          <h3>\${item.group} - \${item.name} (\${item.viewport})</h3>
-          <p>Path: <code>\${item.path}</code></p>
-        </div>
-        <div class="img-container">
-          <a href="\${item.file}" target="_blank">
-            <img src="\${item.file}" alt="\${item.name}" loading="lazy" />
-          </a>
-        </div>
-      </div>
-    \`).join('')}
-  </div>
-</body>
-</html>
-  \`.trim();
-    .status-fail { color: #b91c1c; font-weight: bold; font-size: 1.2rem; }
-    .skipped { background: #fefce8; padding: 1rem; border-radius: 0.5rem; border: 1px solid #fef08a; margin-bottom: 2rem; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem; margin-top: 2rem; }
-    .card { background: white; border-radius: 0.5rem; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    .card-header { padding: 1rem; border-bottom: 1px solid #e5e7eb; background: #f3f4f6; }
-    .card-header h3 { margin: 0; font-size: 1.1rem; }
-    .card-header p { margin: 0.2rem 0 0; font-size: 0.85rem; color: #4b5563; }
-    .img-container { padding: 1rem; background: #e5e7eb; display: flex; justify-content: center; }
-    img { max-width: 100%; height: auto; border: 1px solid #d1d5db; border-radius: 0.25rem; }
-  </style>
-</head>
-<body>
-  <h1>Randapp QA Screenshot Report</h1>
-  <div class="summary">
-    <h2>Summary</h2>
-    <ul>
-      <li><strong>Overall Status:</strong> <span class="${(skippedRoutes.length > 0 || uniqueBadDuplicates.length > 0) ? 'status-fail' : 'status-pass'}">${(skippedRoutes.length > 0 || uniqueBadDuplicates.length > 0) ? 'FAIL' : 'PASS'}</span></li>
-      <li><strong>Date:</strong> ${new Date().toLocaleString()}</li>
-      <li><strong>Expected Base Routes:</strong> ${expectedRouteCount}</li>
-      <li><strong>Expected Base Screenshots:</strong> ${expectedScreenshotCount} (Mobile + Desktop)</li>
-      <li><strong>Captured Screenshots (Including Interactions):</strong> ${reportItems.length}</li>
-      <li><strong>Skipped/Failed Routes:</strong> ${skippedRoutes.length}</li>
-      <li><strong>Identical Clusters:</strong> ${duplicateGroups.length}</li>
-    </ul>
-    ${(skippedRoutes.length > 0 || uniqueBadDuplicates.length > 0) ? '<p style="color: #b91c1c; font-weight: bold; margin-top: 1rem;">Warning: QA run is incomplete or has failed assertions.</p>' : ''}
   </div>
   ${skippedRoutes.length > 0 ? `
   <div class="skipped">

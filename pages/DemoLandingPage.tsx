@@ -11,6 +11,40 @@ const DemoLandingPage: React.FC = () => {
   const { alert: showAlert } = useDialog();
   const t = translations[language];
 
+  const [showStickyCta, setShowStickyCta] = useState(false);
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Show sticky CTA after scrolling past the hero area
+      if (window.scrollY > 400) {
+        setShowStickyCta(true);
+      } else {
+        setShowStickyCta(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+
+    const handleFocus = (e: Event) => {
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+        setIsKeyboardOpen(true);
+      }
+    };
+    const handleBlur = () => {
+      setIsKeyboardOpen(false);
+    };
+
+    document.addEventListener('focusin', handleFocus);
+    document.addEventListener('focusout', handleBlur);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('focusin', handleFocus);
+      document.removeEventListener('focusout', handleBlur);
+    };
+  }, []);
+
   const [phraseIndex, setPhraseIndex] = useState(0);
   const phrases = language === 'tr' 
     ? ['Kuaför salonunuz', 'Berber işletmeniz', 'Güzellik merkeziniz', 'Nail studio’nuz', 'Kliniğiniz', 'Randevulu işletmeniz']
@@ -69,7 +103,7 @@ const DemoLandingPage: React.FC = () => {
   };
 
   return (
-    <div className="bg-slate-50 dark:bg-slate-900 min-h-screen pt-24 pb-16 transition-colors duration-300">
+    <div className="bg-slate-50 dark:bg-slate-900 min-h-screen pt-24 pb-28 sm:pb-16 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Hero Section */}
@@ -330,30 +364,32 @@ const DemoLandingPage: React.FC = () => {
               </div>
             </div>
 
-             {/* Action Row Under Preview (Sticky on Mobile) */}
-             <div className="fixed sm:static bottom-0 left-0 right-0 z-50 bg-white dark:bg-slate-900 sm:bg-transparent sm:dark:bg-transparent p-4 sm:p-0 border-t border-slate-200 dark:border-slate-800 sm:border-none shadow-[0_-4px_20px_rgba(0,0,0,0.05)] sm:shadow-none mt-0 sm:mt-6 flex flex-col gap-3 sm:max-w-[380px] sm:mx-auto">
+             {/* Post-Preview Action Row */}
+             <div className="mt-8 flex flex-col gap-3 max-w-[380px] mx-auto w-full">
                 <button 
                   onClick={handleContinue}
-                  className="w-full text-white px-6 py-3.5 sm:py-4 rounded-xl font-bold shadow-lg shadow-blue-500/20 hover:bg-blue-700 transition-colors text-base sm:text-lg"
+                  className="w-full text-white px-6 py-4 rounded-xl font-bold shadow-lg shadow-blue-500/20 hover:bg-blue-700 transition-colors text-lg"
                   style={{ backgroundColor: '#2563EB' }}
                 >
-                  {language === 'tr' ? '7 Gün Ücretsiz Dene' : 'Start 7-Day Free Trial'}
+                  {language === 'tr' ? 'Bu Önizlemeyle Devam Et' : 'Continue with this Preview'}
                 </button>
-                <div className="grid grid-cols-2 gap-3 hidden sm:grid">
+                <div className="grid grid-cols-2 gap-3">
                    <button 
-                     onClick={handleContinue}
+                     onClick={() => navigate('/pricing')}
                      className="w-full bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-gray-200 dark:border-slate-700 font-bold px-4 py-3 rounded-xl hover:border-gray-300 dark:hover:border-slate-600 transition-colors shadow-sm"
+                     style={{ fontSize: '13px' }}
                    >
                      {language === 'tr' ? 'Paketleri Gör' : 'View Plans'}
                    </button>
                    <button 
                      onClick={handleCopyLink}
                      className="w-full bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white font-bold px-4 py-3 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+                     style={{ fontSize: '13px' }}
                    >
-                     {language === 'tr' ? 'Link Kopyala' : 'Copy Link'}
+                     {language === 'tr' ? 'Kopyala' : 'Copy Link'}
                    </button>
                 </div>
-                <p className="text-xs text-center text-slate-500 px-4 mt-1 sm:mt-2 leading-relaxed hidden sm:block">
+                <p className="text-xs text-center text-slate-500 px-4 mt-2 leading-relaxed">
                    {language === 'tr' ? 'Bu bilgiler kurulum adımında kullanılacaktır.' : 'These details will be used during setup.'}
                 </p>
              </div>
@@ -361,8 +397,28 @@ const DemoLandingPage: React.FC = () => {
 
         </div>
       </div>
-      {/* Mobile Safe Space for Fixed Bottom Bar */}
-      <div className="h-24 sm:h-0 block"></div>
+      
+      {/* Smart Sticky Mobile CTA */}
+      <div 
+        className={`fixed bottom-0 left-0 right-0 z-[100] sm:hidden bg-white/85 dark:bg-slate-900/85 backdrop-blur-md border-t border-gray-200/50 dark:border-slate-700/50 p-4 pb-[max(env(safe-area-inset-bottom),_1rem)] transition-transform duration-300 ${
+          showStickyCta && !isKeyboardOpen ? 'translate-y-0' : 'translate-y-full'
+        }`}
+      >
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={handleContinue}
+            className="flex-1 bg-blue-600 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-600/20 active:scale-[0.98] transition-transform text-center"
+          >
+            {language === 'tr' ? '7 Gün Ücretsiz Dene' : 'Start 7-Day Free Trial'}
+          </button>
+          <button 
+            onClick={() => navigate('/pricing')}
+            className="text-[13px] font-bold text-slate-700 dark:text-slate-300 px-4 py-3.5 rounded-xl bg-slate-100 dark:bg-slate-800 active:scale-[0.98] transition-transform"
+          >
+            {language === 'tr' ? 'Paketler' : 'Pricing'}
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

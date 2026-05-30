@@ -73,7 +73,7 @@ const PricingPage: React.FC = () => {
             )}
             <h3 className="text-xl md:text-2xl font-bold mb-2 dark:text-white">{plan.name}</h3>
             <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 mb-6 min-h-[2.5rem] leading-relaxed">
-               {((t.marketing.pricing as any)[`plan_desc_${plan.id}`]) || t.marketing.pricing.plan_desc}
+               {((t.marketing.pricing as any)[`plan_desc_${plan.id}`]) || ''}
             </p>
             <div className="flex items-end gap-1 mb-2">
                 <span className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white tracking-tight">₺{displayPrice.toLocaleString()}</span>
