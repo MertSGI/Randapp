@@ -27,11 +27,11 @@ const MarketingHomePage: React.FC = () => {
         <div className="inline-block bg-blue-50 dark:bg-slate-800 text-blue-600 dark:text-blue-400 font-semibold px-4 py-1.5 rounded-full text-xs md:text-sm mb-6 border border-blue-100 dark:border-slate-700">
           {t.marketing.home.badge}
         </div>
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-6 leading-tight">
+        <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-6 leading-tight">
           {language === 'tr' ? (
             <>
-              <div className="h-[1.2em] relative overflow-hidden inline-block w-full align-bottom px-2">
-                 <span key={currentPhrase} className="absolute inset-x-0 bottom-0 animate-slideUpFade whitespace-nowrap text-gray-800 dark:text-gray-200">
+              <div className="h-[1.2em] relative overflow-hidden inline-flex w-full justify-center align-bottom px-0 md:px-2 flex-col">
+                 <span key={currentPhrase} className="absolute inset-x-0 bottom-0 animate-slideUpFade whitespace-nowrap overflow-visible text-gray-800 dark:text-gray-200 text-[0.85em] sm:text-[1em]">
                    {currentPhrase}
                  </span>
               </div>
@@ -41,8 +41,8 @@ const MarketingHomePage: React.FC = () => {
           ) : (
             <>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Website + smart booking</span> system<br/>
-              for your <div className="h-[1.2em] relative overflow-hidden inline-block min-w-[280px] align-bottom ml-2">
-                 <span key={currentPhrase} className="absolute left-0 bottom-0 animate-slideUpFade whitespace-nowrap text-gray-800 dark:text-gray-200">
+              for your <div className="h-[1.2em] relative overflow-hidden inline-flex min-w-[240px] md:min-w-[280px] align-bottom ml-1 md:ml-2">
+                 <span key={currentPhrase} className="absolute left-0 bottom-0 animate-slideUpFade whitespace-nowrap overflow-visible text-gray-800 dark:text-gray-200 text-[0.85em] sm:text-[1em]">
                    {currentPhrase}
                  </span>
               </div>
