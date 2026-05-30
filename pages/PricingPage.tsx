@@ -65,9 +65,9 @@ const PricingPage: React.FC = () => {
           });
 
           return (
-          <div key={plan.id} className={`bg-white dark:bg-slate-800 p-6 md:p-8 rounded-3xl shadow-sm border ${isRecommended ? 'border-accent shadow-accent/20 shadow-xl relative transform md:-translate-y-2 lg:-translate-y-4' : 'border-gray-200 dark:border-slate-700 mt-0 lg:mt-4'} flex flex-col`}>
+          <div key={plan.id} className={`bg-white dark:bg-slate-800 p-6 md:p-8 rounded-3xl shadow-sm border ${isRecommended ? 'border-violet-500 shadow-violet-500/20 shadow-2xl relative transform md:-translate-y-2 lg:-translate-y-4 ring-2 ring-violet-500/20' : 'border-slate-200 dark:border-slate-700 mt-0 lg:mt-4'} flex flex-col`}>
             {isRecommended && (
-               <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-accent text-white px-4 md:px-6 py-1 md:py-1.5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest shadow-md">
+               <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600 to-violet-600 text-white px-5 md:px-6 py-1.5 md:py-2 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg shadow-violet-500/30 whitespace-nowrap">
                  {t.marketing.pricing.most_popular}
                </div>
             )}

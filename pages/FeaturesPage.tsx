@@ -41,16 +41,19 @@ const FeaturesPage: React.FC = () => {
            </div>
            <div className="w-full md:w-1/2 order-1 md:order-2">
               <div className="bg-slate-100 dark:bg-slate-800 rounded-3xl p-6 aspect-[4/3] flex flex-col items-center justify-center border border-slate-200 dark:border-slate-700 relative overflow-hidden shadow-inner">
-                 <div className="bg-white dark:bg-slate-900 w-full max-w-sm rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 p-4 transform translate-x-4 lg:translate-x-8 translate-y-4">
-                     <div className="flex items-center gap-3 mb-4">
-                         <div className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-full"></div>
-                         <div><div className="w-32 h-3 bg-slate-200 dark:bg-slate-700 rounded mb-1.5"></div><div className="w-20 h-2 bg-slate-100 dark:bg-slate-800 rounded"></div></div>
-                     </div>
-                     <div className="space-y-2">
-                         <div className="w-full h-10 bg-slate-50 dark:bg-slate-800 rounded flex justify-between items-center px-3"><div className="w-24 h-2 bg-slate-200 dark:bg-slate-700 rounded"></div><div className="w-10 h-2 bg-slate-300 dark:bg-slate-600 rounded"></div></div>
-                         <div className="w-full h-10 bg-slate-50 dark:bg-slate-800 rounded flex justify-between items-center px-3"><div className="w-32 h-2 bg-slate-200 dark:bg-slate-700 rounded"></div><div className="w-12 h-2 bg-slate-300 dark:bg-slate-600 rounded"></div></div>
-                     </div>
-                 </div>
+                 <div className="bg-white dark:bg-slate-900 w-full max-w-sm rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 p-0 transform translate-x-4 lg:translate-x-8 translate-y-4 overflow-hidden">
+                      <div className="bg-gradient-to-r from-blue-600 to-violet-600 h-24 p-5 flex flex-col justify-end">
+                          <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-blue-600 font-bold -mb-10 shadow border border-slate-100">ST</div>
+                      </div>
+                      <div className="pt-12 px-5 pb-5">
+                          <div className="h-4 w-32 bg-slate-800 dark:bg-slate-200 rounded mb-2"></div>
+                          <div className="h-2 w-48 bg-slate-400 rounded mb-6"></div>
+                          <div className="space-y-3">
+                              <div className="w-full h-12 bg-slate-50 dark:bg-slate-800 rounded-lg flex justify-between items-center px-4 border border-slate-100 dark:border-slate-700"><div className="w-24 h-2.5 bg-slate-400 dark:bg-slate-500 rounded"></div><div className="w-16 h-8 bg-blue-600 rounded text-center leading-8 text-[10px] text-white font-bold tracking-wider">AL</div></div>
+                              <div className="w-full h-12 bg-slate-50 dark:bg-slate-800 rounded-lg flex justify-between items-center px-4 border border-slate-100 dark:border-slate-700"><div className="w-32 h-2.5 bg-slate-400 dark:bg-slate-500 rounded"></div><div className="w-16 h-8 bg-blue-600 rounded text-center leading-8 text-[10px] text-white font-bold tracking-wider">AL</div></div>
+                          </div>
+                      </div>
+                  </div>
               </div>
            </div>
         </div>
@@ -59,11 +62,26 @@ const FeaturesPage: React.FC = () => {
         <div className="flex flex-col md:flex-row gap-8 md:gap-16 items-center">
            <div className="w-full md:w-1/2 order-1">
               <div className="bg-slate-100 dark:bg-slate-800 rounded-3xl p-6 aspect-[4/3] flex flex-col items-center justify-center border border-slate-200 dark:border-slate-700 relative overflow-hidden shadow-inner">
-                 <div className="bg-white dark:bg-slate-900 w-full max-w-sm rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 p-4 transform -translate-x-4 lg:-translate-x-8 -translate-y-4">
-                     <div className="w-full h-12 bg-blue-50 dark:bg-slate-800 rounded flex justify-between items-center px-4 mb-3"><div className="w-32 h-3 bg-blue-200 dark:bg-slate-600 rounded"></div><div className="w-8 h-8 bg-blue-100 dark:bg-slate-700 rounded-full"></div></div>
-                     <div className="w-full h-12 bg-slate-50 dark:bg-slate-800 rounded flex justify-between items-center px-4 mb-3"><div className="w-40 h-3 bg-slate-200 dark:bg-slate-700 rounded"></div></div>
-                     <div className="w-full h-12 bg-slate-50 dark:bg-slate-800 rounded flex justify-between items-center px-4"><div className="w-24 h-3 bg-slate-200 dark:bg-slate-700 rounded"></div></div>
-                 </div>
+                 <div className="bg-white dark:bg-slate-900 w-full max-w-sm rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 p-5 transform -translate-x-4 lg:-translate-x-8 -translate-y-4">
+                      <div className="flex gap-2 mb-6">
+                           <div className="px-3 py-1 bg-violet-100 text-violet-700 font-bold text-[10px] rounded uppercase">Bugün</div>
+                           <div className="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-500 font-bold text-[10px] rounded uppercase">Yarın</div>
+                      </div>
+                      <div className="w-full bg-violet-50 text-violet-900 dark:bg-slate-800/80 dark:text-violet-100 rounded-lg border-l-4 border-violet-500 p-3 mb-3">
+                           <div className="flex justify-between items-center mb-1">
+                               <div className="font-bold text-sm">Ayşe Yılmaz</div>
+                               <div className="text-xs opacity-70">10:00 - 11:30</div>
+                           </div>
+                           <div className="text-xs opacity-80">Saç Kesimi & Boya</div>
+                      </div>
+                      <div className="w-full bg-blue-50 text-blue-900 dark:bg-slate-800/80 dark:text-blue-100 rounded-lg border-l-4 border-blue-500 p-3 mb-3">
+                           <div className="flex justify-between items-center mb-1">
+                               <div className="font-bold text-sm">Ece K.</div>
+                               <div className="text-xs opacity-70">13:00 - 14:00</div>
+                           </div>
+                           <div className="text-xs opacity-80">Manikür</div>
+                      </div>
+                  </div>
               </div>
            </div>
            <div className="w-full md:w-1/2 order-2">
@@ -98,19 +116,29 @@ const FeaturesPage: React.FC = () => {
            </div>
            <div className="w-full md:w-1/2 order-1 md:order-2">
               <div className="bg-slate-100 dark:bg-slate-800 rounded-3xl p-6 aspect-[4/3] flex flex-col items-center justify-center border border-slate-200 dark:border-slate-700 relative overflow-hidden shadow-inner">
-                 <div className="bg-white dark:bg-slate-900 w-full max-w-sm rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 p-5 transform translate-x-4 lg:translate-x-8 translate-y-4">
-                     <div className="flex justify-between items-start mb-4">
-                         <div><div className="w-32 h-4 bg-slate-800 dark:bg-slate-200 rounded mb-2"></div><div className="w-20 h-2.5 bg-slate-400 rounded"></div></div>
-                         <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-xs">⭐</div>
-                     </div>
-                     <div className="space-y-3">
-                         <div className="w-full bg-amber-50 dark:bg-slate-800 rounded border border-amber-100 dark:border-slate-700 p-3"><div className="w-16 h-2 bg-amber-300 dark:bg-slate-600 rounded mb-2"></div><div className="w-full h-2 bg-amber-200 dark:bg-slate-700 rounded mb-1.5"></div><div className="w-4/5 h-2 bg-amber-200 dark:bg-slate-700 rounded"></div></div>
-                         <div className="flex gap-2">
-                            <div className="w-16 h-16 bg-slate-200 dark:bg-slate-800 rounded-lg"></div>
-                            <div className="w-16 h-16 bg-slate-200 dark:bg-slate-800 rounded-lg"></div>
-                         </div>
-                     </div>
-                 </div>
+                 <div className="bg-white dark:bg-slate-900 w-full max-w-sm rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 p-5 transform translate-x-4 lg:translate-x-8 translate-y-4">
+                      <div className="flex justify-between items-start mb-4">
+                          <div>
+                              <div className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-1">Merve Y.</div>
+                              <div className="text-xs text-slate-500">Kayıt: 2024 • 12 Ziyaret</div>
+                          </div>
+                      </div>
+                      <div className="space-y-4">
+                          <div className="w-full bg-amber-50 dark:bg-slate-800/50 rounded-lg border border-amber-200 dark:border-slate-700 p-3">
+                              <div className="flex items-center gap-2 mb-2">
+                                  <span className="text-[10px] text-amber-700 font-bold uppercase rounded bg-amber-200 px-1.5 py-0.5">Gizli Not</span>
+                              </div>
+                              <div className="text-[11px] text-slate-700 dark:text-slate-300">Saç derisi hassas. Boya işleminde 20 volume oksidan kullanılmalı.</div>
+                          </div>
+                          <div>
+                              <div className="text-xs font-bold text-slate-500 mb-2">Geçmiş İşlemler</div>
+                              <div className="flex gap-2">
+                                 <div className="flex-1 h-16 bg-slate-200 dark:bg-slate-800 rounded-lg"></div>
+                                 <div className="flex-1 h-16 bg-slate-200 dark:bg-slate-800 rounded-lg"></div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
               </div>
            </div>
         </div>

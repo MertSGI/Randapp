@@ -8,7 +8,9 @@ const MarketingHomePage: React.FC = () => {
   const t = translations[language];
 
   const [phraseIndex, setPhraseIndex] = useState(0);
-  const phrases = t.marketing.rotating_phrases || [];
+  const phrases = language === 'tr' 
+    ? ['Kuaförler için', 'Berberler için', 'Güzellik salonları için', 'Klinikler için', 'Randevulu işletmeler için', "Nail Studio'lar için"]
+    : ['For Barbers', 'For Hair Salons', 'For Beauty Clinics', 'For Nail Studios', 'For Spas', 'For Appointment Businesses'];
 
   useEffect(() => {
     if (!phrases || phrases.length === 0) return;
@@ -24,14 +26,21 @@ const MarketingHomePage: React.FC = () => {
     <div className="flex flex-col space-y-16 md:space-y-24 py-8 md:py-12">
       {/* Hero Section */}
       <section className="text-center px-4 max-w-5xl mx-auto">
-        <div className="inline-block bg-blue-50 dark:bg-slate-800 text-blue-600 dark:text-blue-400 font-bold px-5 py-2 rounded-full text-xs md:text-sm mb-8 border border-blue-100 dark:border-slate-700">
+        <div className="inline-block bg-violet-50 dark:bg-violet-900/30 text-violet-700 dark:text-violet-400 font-bold px-5 py-2 rounded-full text-xs md:text-sm mb-8 border border-violet-100 dark:border-violet-800">
           {t.marketing.home.badge}
         </div>
+        
+        <div className="mb-6 min-h-[3rem] sm:min-h-[1.3em] relative inline-flex w-full justify-center align-bottom px-2 flex-col">
+            <span key={currentPhrase} className="animate-slideUpFade text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-violet-600 dark:from-blue-400 dark:to-violet-400 font-extrabold text-2xl sm:text-4xl md:text-5xl leading-tight">
+                {currentPhrase}
+            </span>
+        </div>
+        
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-6 leading-[1.15]">
-          {t.marketing.home.title}
+          {language === 'tr' ? 'Web siteniz, randevularınız ve müşteri hafızanız tek panelde.' : 'Your website, bookings, and CRM in one single dashboard.'}
         </h1>
         <p className="mt-6 text-lg md:text-xl text-slate-600 dark:text-slate-300 mx-auto leading-relaxed max-w-3xl">
-          {t.marketing.home.subtitle}
+          {language === 'tr' ? 'Randapp; işletmenize profesyonel bir dijital vitrin, online randevu akışı, müşteri notları ve kampanya yönetimi sunar.' : t.marketing.home.subtitle}
         </p>
         
         <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
@@ -45,10 +54,74 @@ const MarketingHomePage: React.FC = () => {
 
         {/* Trust Chips */}
         <div className="mt-12 flex flex-wrap justify-center gap-3 text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-400">
-           <div className="flex items-center gap-1.5"><span className="text-green-500">✓</span> 7 gün ücretsiz demo</div>
-           <div className="flex items-center gap-1.5 hidden sm:flex"><span className="text-green-500">✓</span> Bu demoda satış/kredi kartı kapalı</div>
-           <div className="flex items-center gap-1.5"><span className="text-green-500">✓</span> Web sitesi + online randevu</div>
-           <div className="flex items-center gap-1.5"><span className="text-green-500">✓</span> Müşteri hafızası</div>
+           <div className="flex items-center gap-1.5"><span className="text-green-500">✓</span> {language === 'tr' ? '7 gün ücretsiz demo' : '7 day free demo'}</div>
+           <div className="flex items-center gap-1.5 hidden sm:flex"><span className="text-amber-500">✓</span> {language === 'tr' ? 'Bu demoda satış/kredi kartı kapalı' : 'Payments disabled in demo'}</div>
+           <div className="flex items-center gap-1.5"><span className="text-violet-500">✓</span> {language === 'tr' ? 'Web sitesi + online randevu' : 'Website + online booking'}</div>
+           <div className="flex items-center gap-1.5"><span className="text-blue-500">✓</span> {language === 'tr' ? 'Müşteri hafızası' : 'Customer memory'}</div>
+        </div>
+
+        {/* Hero Product Visual Collage */}
+        <div className="mt-16 md:mt-24 relative max-w-5xl mx-auto hidden sm:block h-[400px] mb-8">
+           <div className="absolute left-0 top-10 w-1/3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl p-4 transform -rotate-3 z-10 hover:rotate-0 transition-transform duration-500">
+              <div className="flex items-center gap-2 mb-4 border-b border-slate-100 dark:border-slate-800 pb-2">
+                 <div className="w-8 h-8 rounded-full bg-violet-100 dark:bg-violet-900/30 text-violet-600 flex items-center justify-center font-bold text-xs">V</div>
+                 <div>
+                    <div className="h-3 w-24 bg-slate-800 dark:bg-slate-200 rounded mb-1"></div>
+                    <div className="h-2 w-16 bg-slate-400 rounded"></div>
+                 </div>
+              </div>
+              <div className="space-y-3">
+                 <div className="h-10 bg-slate-50 dark:bg-slate-800 rounded-lg w-full flex items-center px-3 justify-between">
+                    <div className="h-2 w-20 bg-slate-300 dark:bg-slate-600 rounded"></div>
+                    <div className="h-3 w-10 bg-blue-500 rounded"></div>
+                 </div>
+                 <div className="h-10 bg-slate-50 dark:bg-slate-800 rounded-lg w-full flex items-center px-3 justify-between">
+                    <div className="h-2 w-24 bg-slate-300 dark:bg-slate-600 rounded"></div>
+                    <div className="h-3 w-10 bg-blue-500 rounded"></div>
+                 </div>
+                 <div className="h-8 bg-blue-600 rounded-lg w-full mt-4"></div>
+              </div>
+           </div>
+           
+           <div className="absolute left-1/2 -translate-x-1/2 top-0 w-[45%] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl p-5 z-20 hover:-translate-y-2 transition-transform duration-500">
+              <div className="flex justify-between items-center mb-6">
+                 <div className="flex gap-1.5"><div className="w-3 h-3 bg-red-400 rounded-full"></div><div className="w-3 h-3 bg-amber-400 rounded-full"></div><div className="w-3 h-3 bg-green-400 rounded-full"></div></div>
+                 <div className="bg-slate-100 dark:bg-slate-800 px-6 py-1 rounded-full text-[10px] text-slate-500 font-mono hidden md:block">randapp.com/studio</div>
+              </div>
+              <div className="flex flex-col items-center mb-6 text-center">
+                 <div className="w-20 h-20 bg-gradient-to-tr from-blue-500 to-violet-600 rounded-full shadow-lg mb-4"></div>
+                 <div className="h-4 w-32 bg-slate-800 dark:bg-slate-200 rounded mb-2"></div>
+                 <div className="h-2 w-48 bg-slate-400 rounded"></div>
+              </div>
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                 <div className="h-24 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-800"></div>
+                 <div className="h-24 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-800"></div>
+              </div>
+              <div className="h-12 bg-blue-600 rounded-xl w-full flex items-center justify-center">
+                 <div className="h-3 w-24 bg-white/80 rounded"></div>
+              </div>
+           </div>
+
+           <div className="absolute right-0 top-12 w-1/3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl p-4 transform rotate-3 z-10 hover:rotate-0 transition-transform duration-500">
+              <div className="flex justify-between items-start mb-4">
+                  <div>
+                     <div className="w-24 h-3 bg-slate-800 dark:bg-slate-200 rounded mb-2"></div>
+                     <div className="w-16 h-2 bg-slate-400 rounded"></div>
+                  </div>
+                  <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-xs">⭐</div>
+              </div>
+              <div className="space-y-3">
+                  <div className="w-full bg-amber-50/50 dark:bg-slate-800 rounded border border-amber-100 dark:border-slate-700 p-3">
+                     <div className="w-16 h-2 bg-amber-300 dark:bg-slate-600 rounded mb-2"></div>
+                     <div className="w-full h-2 bg-amber-200 dark:bg-slate-700 rounded mb-1.5"></div>
+                     <div className="w-4/5 h-2 bg-amber-200 dark:bg-slate-700 rounded"></div>
+                  </div>
+                  <div className="flex gap-2 mt-2">
+                     <div className="flex-1 h-16 bg-slate-100 dark:bg-slate-800 rounded-lg"></div>
+                     <div className="flex-1 h-16 bg-slate-100 dark:bg-slate-800 rounded-lg"></div>
+                  </div>
+              </div>
+           </div>
         </div>
       </section>
 
@@ -105,42 +178,6 @@ const MarketingHomePage: React.FC = () => {
              <div className="w-16 h-16 rounded-full bg-green-50 dark:bg-green-900/20 flex items-center justify-center text-2xl font-black text-green-500 mb-6">4</div>
              <h4 className="font-bold text-lg mb-3 text-slate-900 dark:text-white">{t.marketing.home.step_4_title}</h4>
              <p className="text-sm text-slate-600 dark:text-slate-400">{t.marketing.home.step_4_desc}</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Demo Mockup Section */}
-      <section className="px-4 pt-10 pb-20 max-w-5xl mx-auto w-full">
-        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-700">
-          <div className="bg-slate-100 dark:bg-slate-900 px-4 py-3 border-b border-slate-200 dark:border-slate-700 flex items-center gap-2">
-            <div className="flex gap-1.5"><div className="w-3 h-3 bg-red-400 rounded-full"></div><div className="w-3 h-3 bg-amber-400 rounded-full"></div><div className="w-3 h-3 bg-green-400 rounded-full"></div></div>
-            <div className="mx-auto bg-white dark:bg-slate-800 text-xs px-12 md:px-24 py-1.5 rounded-md shadow-sm text-slate-500 whitespace-nowrap overflow-hidden text-ellipsis w-1/2 text-center">randapp.com/{language === 'tr' ? 'benimisletmem' : 'mybusiness'}</div>
-          </div>
-          <div className="bg-slate-50 dark:bg-slate-800 p-8 flex flex-col md:flex-row gap-8 items-center justify-center">
-             <div className="flex-1 w-full max-w-sm">
-                <div className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
-                   <div className="w-20 h-20 bg-gradient-to-tr from-blue-500 to-violet-500 rounded-full shadow-md mb-4"></div>
-                   <div className="h-5 bg-slate-200 dark:bg-slate-700 rounded w-3/4 mb-3"></div>
-                   <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-1/2 mb-8"></div>
-                   <div className="h-12 bg-blue-600 rounded-xl w-full mb-4"></div>
-                   <div className="h-10 bg-slate-100 dark:bg-slate-800 rounded-lg w-full"></div>
-                </div>
-             </div>
-             <div className="flex-1 w-full max-w-sm hidden md:block">
-                 <div className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg p-6">
-                    <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/3 mb-6"></div>
-                    <div className="space-y-4">
-                       <div className="flex items-center gap-4 p-3 border border-slate-100 dark:border-slate-800 rounded-lg">
-                          <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-full"></div>
-                          <div className="flex-1"><div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-2/3"></div></div>
-                       </div>
-                       <div className="flex items-center gap-4 p-3 border border-slate-100 dark:border-slate-800 rounded-lg">
-                          <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-full"></div>
-                          <div className="flex-1"><div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-1/2"></div></div>
-                       </div>
-                    </div>
-                 </div>
-             </div>
           </div>
         </div>
       </section>

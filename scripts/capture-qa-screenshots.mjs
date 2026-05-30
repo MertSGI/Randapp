@@ -192,7 +192,7 @@ async function captureScreenshots() {
   const doBookingInteractions = async (viewportName) => {
     try {
       await page.setViewportSize(VIEWPORTS[viewportName]);
-      await page.goto(getUrl({ path: '/book' }));
+      await page.goto(getUrl('/book'));
       await page.waitForLoadState('networkidle');
       await delay(1500);
 
@@ -354,6 +354,14 @@ async function captureScreenshots() {
   }
 
   // Generate HTML Report
+  const baseSnapshots = reportItems.filter(i => i.group !== 'Customer Interaction');
+  const interactionSnapshots = reportItems.filter(i => i.group === 'Customer Interaction');
+  const expectedInteractionCount = 12; // 6 interactions x 2 viewports
+  
+  const viewportMismatches = interactionSnapshots.filter(i => !i.file.startsWith(i.viewport + '/'));
+
+  const hasQaError = skippedRoutes.length > 0 || uniqueBadDuplicates.length > 0 || baseSnapshots.length < expectedScreenshotCount || interactionSnapshots.length < expectedInteractionCount || viewportMismatches.length > 0;
+
   const htmlContent = `
 <!DOCTYPE html>
 <html lang="en">
@@ -368,6 +376,78 @@ async function captureScreenshots() {
     .summary ul { margin: 0; padding-left: 1.5rem; list-style-type: none; padding-left: 0; }
     .summary li { margin-bottom: 0.5rem; }
     .status-pass { color: #15803d; font-weight: bold; font-size: 1.2rem; }
+    .status-fail { color: #b91c1c; font-weight: bold; font-size: 1.2rem; }
+    .skipped { background: #fefce8; padding: 1rem; border-radius: 0.5rem; border: 1px solid #fef08a; margin-bottom: 2rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem; margin-top: 2rem; }
+    .card { background: white; border-radius: 0.5rem; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .card-header { padding: 1rem; border-bottom: 1px solid #e5e7eb; }
+    .card-header h3 { margin: 0; font-size: 1.1rem; }
+    .card-header p { margin: 0.5rem 0 0; color: #6b7280; font-size: 0.875rem; }
+    .img-container { padding: 1rem; background: #f3f4f6; }
+    .img-container img { max-width: 100%; height: auto; border-radius: 0.25rem; object-fit: contain; max-height: 800px; display: block; margin: 0 auto; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+  </style>
+</head>
+<body>
+  <h1>Randapp QA Screenshot Report</h1>
+  <div class="summary">
+    <h2>Summary</h2>
+    <ul>
+      <li><strong>Overall Status:</strong> <span class="${hasQaError ? 'status-fail' : 'status-pass'}">${hasQaError ? 'FAIL' : 'PASS'}</span></li>
+      <li><strong>Date:</strong> ${new Date().toLocaleString()}</li>
+      <li><strong>Expected Base Screenshots:</strong> ${expectedScreenshotCount} (Mobile + Desktop)</li>
+      <li><strong>Captured Base Screenshots:</strong> ${baseSnapshots.length}</li>
+      <li><strong>Expected Interactions:</strong> ${expectedInteractionCount}</li>
+      <li><strong>Captured Interactions:</strong> ${interactionSnapshots.length}</li>
+      <li><strong>Skipped/Failed Routes:</strong> ${skippedRoutes.length}</li>
+      <li><strong>Identical Clusters:</strong> ${duplicateGroups.length}</li>
+      <li><strong>Viewport Mismatches:</strong> ${viewportMismatches.length}</li>
+    </ul>
+    ${hasQaError ? '<p style="color: #b91c1c; font-weight: bold; margin-top: 1rem;">Warning: QA run is incomplete or has failed assertions.</p>' : ''}
+  </div>
+  ${skippedRoutes.length > 0 ? \`
+  <div class="skipped">
+    <h3 style="margin-top: 0; color: #b45309;">Failed Routes & Assertions</h3>
+    <ul style="color: #92400e; margin-bottom: 0;">
+      \${skippedRoutes.map(sr => \`<li><strong>\${sr.name}:</strong> \${sr.reason}</li>\`).join('')}
+    </ul>
+  </div>\` : ''}
+  
+  <h2>Base Route Screenshots</h2>
+  <div class="grid">
+    ${baseSnapshots.map(item => \`
+      <div class="card">
+        <div class="card-header">
+          <h3>\${item.group} - \${item.name} (\${item.viewport})</h3>
+          <p>Path: <code>\${item.path}</code></p>
+        </div>
+        <div class="img-container">
+          <a href="\${item.file}" target="_blank">
+            <img src="\${item.file}" alt="\${item.name}" loading="lazy" />
+          </a>
+        </div>
+      </div>
+    \`).join('')}
+  </div>
+
+  <h2>Booking Interaction Screenshots</h2>
+  <div class="grid" style="margin-top: 1rem;">
+    ${interactionSnapshots.map(item => \`
+      <div class="card">
+        <div class="card-header">
+          <h3>\${item.group} - \${item.name} (\${item.viewport})</h3>
+          <p>Path: <code>\${item.path}</code></p>
+        </div>
+        <div class="img-container">
+          <a href="\${item.file}" target="_blank">
+            <img src="\${item.file}" alt="\${item.name}" loading="lazy" />
+          </a>
+        </div>
+      </div>
+    \`).join('')}
+  </div>
+</body>
+</html>
+  \`.trim();
     .status-fail { color: #b91c1c; font-weight: bold; font-size: 1.2rem; }
     .skipped { background: #fefce8; padding: 1rem; border-radius: 0.5rem; border: 1px solid #fef08a; margin-bottom: 2rem; }
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem; margin-top: 2rem; }
@@ -470,8 +550,16 @@ npm run qa:screenshots
       console.error('❌ QA Failed: Some required routes were skipped or assertions failed.');
       hasError = true;
   }
-  if (reportItems.length < expectedScreenshotCount) {
-      console.error(`❌ QA Failed: Expected at least ${expectedScreenshotCount} screenshots, but only captured ${reportItems.length}.`);
+  if (baseSnapshots.length < expectedScreenshotCount) {
+      console.error(`❌ QA Failed: Expected at least ${expectedScreenshotCount} base screenshots, but only captured ${baseSnapshots.length}.`);
+      hasError = true;
+  }
+  if (interactionSnapshots.length < expectedInteractionCount) {
+      console.error(`❌ QA Failed: Expected at least ${expectedInteractionCount} interaction screenshots, but only captured ${interactionSnapshots.length}.`);
+      hasError = true;
+  }
+  if (viewportMismatches.length > 0) {
+      console.error(`❌ QA Failed: ${viewportMismatches.length} interaction screenshots have the wrong viewport.`);
       hasError = true;
   }
   if (uniqueBadDuplicates.length > 0) {
