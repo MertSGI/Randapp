@@ -85,27 +85,6 @@ const BillingTab: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      {/* Dev Only Status Control */}
-      {(import.meta as any).env.VITE_DATA_MODE !== 'supabase' && (
-        <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 flex items-center justify-between">
-          <div className="text-purple-800 text-sm font-medium">
-             [Dev Only] Test Mock Subscription Status
-          </div>
-          <select 
-            value={subscription?.status || 'active'}
-            onChange={(e) => setSubscription(prev => prev ? {...prev, status: e.target.value as any} : null)}
-            className="text-sm bg-white border border-purple-300 rounded px-2 py-1 outline-none text-gray-800"
-          >
-            <option value="trialing">Trialing</option>
-            <option value="active">Active</option>
-            <option value="past_due">Past Due</option>
-            <option value="cancelled">Cancelled</option>
-            <option value="expired">Expired</option>
-            <option value="none">None</option>
-          </select>
-        </div>
-      )}
-
       {/* Current Status */}
       <div className="bg-white dark:bg-slate-800 shadow-sm rounded-lg border border-gray-200 dark:border-slate-700 p-6">
         <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">{t.billing.current_subscription_status}</h2>

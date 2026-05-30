@@ -14,6 +14,20 @@ const DEMO_STAFF: Staff[] = [
     title: 'Senior Specialist',
     image: 'https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?auto=format&fit=crop&q=80&w=200',
     isOwner: true,
+  },
+  {
+    id: 'staff_2',
+    name: 'Ayşe Yılmaz',
+    title: 'Hair Colorist',
+    image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200',
+    isOwner: false,
+  },
+  {
+    id: 'staff_3',
+    name: 'Burak Öz',
+    title: 'Barber',
+    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200',
+    isOwner: false,
   }
 ];
 

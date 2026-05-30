@@ -52,29 +52,24 @@ export const CheckoutPreviewModal: React.FC<CheckoutPreviewModalProps> = ({ isOp
               </p>
            </div>
 
-           {/* Fake Card Form */}
-           <div className="space-y-4 mb-6 relative">
-              <div className="absolute inset-0 z-10 flex items-center justify-center rounded-xl bg-white/40 dark:bg-slate-900/40 backdrop-blur-[2px]">
-                 <span className="bg-slate-900 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg">
-                    {language === 'tr' ? 'ÖNİZLEME MODU (KART İSTENMEZ)' : 'PREVIEW MODE (NO CARD NEEDED)'}
-                 </span>
-              </div>
+           {/* Card Form Placeholders */}
+           <div className="space-y-4 mb-6">
               <div>
                  <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">{language === 'tr' ? 'Kart Üzerindeki İsim' : 'Name on Card'}</label>
-                 <div className="w-full h-10 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg"></div>
+                 <input disabled placeholder={language === 'tr' ? 'Ad Soyad' : 'Full Name'} className="w-full h-10 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-500" />
               </div>
               <div>
                  <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">{language === 'tr' ? 'Kart Numarası' : 'Card Number'}</label>
-                 <div className="w-full h-10 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg"></div>
+                 <input disabled placeholder="**** **** **** ****" className="w-full h-10 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-500" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                  <div>
                     <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">{language === 'tr' ? 'Son Kullanma' : 'Expiry'}</label>
-                    <div className="w-full h-10 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg"></div>
+                    <input disabled placeholder="AA / YY" className="w-full h-10 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-500" />
                  </div>
                  <div>
                     <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">CVC</label>
-                    <div className="w-full h-10 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg"></div>
+                    <input disabled placeholder="***" className="w-full h-10 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-500" />
                  </div>
               </div>
            </div>

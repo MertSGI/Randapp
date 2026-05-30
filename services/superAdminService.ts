@@ -51,10 +51,10 @@ export const superAdminService = {
               businessName: 'Vibes Hair Studio',
               ownerEmail: 'owner@vibes.com',
               domain: 'vibes.randapp.com',
-              created_at: new Date().toISOString()
+              created_at: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
             },
             subscriptionStatus: 'active',
-            planId: 'professional',
+            planId: 'pro',
             setupStatus: provStatus1,
             monthlyAppointments: 145,
             estimatedRevenue: 45000,
@@ -63,17 +63,47 @@ export const superAdminService = {
           {
             tenant: {
               id: 'tenant_demo',
-              businessName: 'Sandbox Salon',
-              ownerEmail: 'admin@randapp.com',
-              domain: null,
-              created_at: new Date().toISOString()
+              businessName: 'Nexus Studio',
+              ownerEmail: 'admin@nexus.com',
+              domain: 'nexus.randapp.com',
+              created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
             },
-            subscriptionStatus: 'active',
-            planId: 'starter',
+            subscriptionStatus: 'trialing',
+            planId: 'premium',
             setupStatus: provStatus2,
             monthlyAppointments: 12,
             estimatedRevenue: 1200,
-            hasProfile: false
+            hasProfile: true
+          },
+          {
+            tenant: {
+              id: 'mock_tenant_3',
+              businessName: 'Luxe Beauty Clinic',
+              ownerEmail: 'contact@luxe.com',
+              domain: 'luxe.randapp.com',
+              created_at: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString()
+            },
+            subscriptionStatus: 'active',
+            planId: 'premium',
+            setupStatus: 'live',
+            monthlyAppointments: 320,
+            estimatedRevenue: 120000,
+            hasProfile: true
+          },
+          {
+            tenant: {
+              id: 'mock_tenant_4',
+              businessName: 'Barber Bros',
+              ownerEmail: 'hi@barberbros.com',
+              domain: 'barberbros.randapp.com',
+              created_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString()
+            },
+            subscriptionStatus: 'past_due',
+            planId: 'starter',
+            setupStatus: 'live',
+            monthlyAppointments: 45,
+            estimatedRevenue: 4500,
+            hasProfile: true
           }
         ];
         
@@ -84,10 +114,10 @@ export const superAdminService = {
           trialSalons: 3,
           pastDueSalons: 1,
           suspendedSalons: 1,
-          monthlyRecurringRevenue: 12500,
+          monthlyRecurringRevenue: 18500,
           setupFees: 4500,
           awaitingSetup: tenants.filter(t => t.setupStatus !== 'live').length,
-          liveSalons: tenants.filter(t => t.setupStatus === 'live').length
+          liveSalons: 10
         },
         tenants
       };

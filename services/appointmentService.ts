@@ -40,7 +40,50 @@ export const getAppointments = async (tenantId: string): Promise<Appointment[]> 
     }
     return (data || []).map(dbAppointmentToAppointment);
   }
-  return dataProvider.getList<Appointment>(getAppointmentsKey(tenantId));
+  
+  const key = getAppointmentsKey(tenantId);
+  const existingRecords = await dataProvider.getList<Appointment>(key);
+  
+  if (!existingRecords || existingRecords.length === 0) {
+    const isSeeded = localStorage.getItem(`randapp:${tenantId}:appointments_seeded`) === 'true';
+    if (!isSeeded) {
+      const today = new Date();
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+
+      const toISODate = (d: Date) => d.toISOString().split('T')[0];
+
+      const seededAppointments: Appointment[] = [
+        {
+          id: 'apt_demo_1', tenantId, customerId: 'cust_demo_1', user_name: 'Ahmet Yılmaz', user_email: 'ahmet@example.com', phone: '+90 555 123 4567',
+          serviceId: 'srv_1', staffId: 'staff_1', date: toISODate(today), time: '10:00', status: 'confirmed', createdAt: yesterday.toISOString(), syncedToGoogle: false
+        },
+        {
+          id: 'apt_demo_2', tenantId, customerId: 'cust_demo_2', user_name: 'Mehmet Demir', user_email: 'mehmet@example.com', phone: '+90 555 987 6543',
+          serviceId: 'srv_2', staffId: 'staff_2', date: toISODate(today), time: '14:30', status: 'confirmed', createdAt: yesterday.toISOString(), syncedToGoogle: false
+        },
+        {
+          id: 'apt_demo_3', tenantId, customerId: 'cust_demo_3', user_name: 'Ayşe Kaya', user_email: 'ayse@example.com', phone: '+90 555 333 2211',
+          serviceId: 'srv_3', staffId: 'staff_1', date: toISODate(tomorrow), time: '11:00', status: 'confirmed', createdAt: today.toISOString(), syncedToGoogle: false
+        },
+        {
+          id: 'apt_demo_4', tenantId, customerId: 'cust_demo_4', user_name: 'Fatma Çelik', user_email: 'fatma@example.com', phone: '+90 555 444 5566',
+          serviceId: 'srv_5', staffId: 'staff_1', date: toISODate(yesterday), time: '15:00', status: 'completed', createdAt: today.toISOString(), syncedToGoogle: false
+        },
+         {
+          id: 'apt_demo_5', tenantId, customerId: 'cust_demo_5', user_name: 'Ali Vefa', user_email: 'ali@example.com', phone: '+90 555 111 2222',
+          serviceId: 'srv_4', staffId: 'staff_3', date: toISODate(tomorrow), time: '16:00', status: 'cancelled_by_customer', cancelReason: 'İşim çıktı', cancelledAt: today.toISOString(), cancelledBy: 'customer', createdAt: yesterday.toISOString(), syncedToGoogle: false
+        }
+      ];
+      await dataProvider.set(key, seededAppointments);
+      localStorage.setItem(`randapp:${tenantId}:appointments_seeded`, 'true');
+      return seededAppointments;
+    }
+  }
+
+  return existingRecords || [];
 };
 
 export const createAppointment = async (tenantId: string, appointment: Omit<Appointment, 'id' | 'tenantId' | 'createdAt'>): Promise<Appointment> => {

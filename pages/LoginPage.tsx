@@ -48,7 +48,7 @@ const LoginPage: React.FC = () => {
         <h2 className="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-white transition-colors duration-300">{t.login.title}</h2>
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">Email (Mock: admin@ or superadmin@)</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">Email (admin@... or superadmin@...)</label>
             <input
               type="email"
               value={email}
@@ -58,7 +58,7 @@ const LoginPage: React.FC = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">{t.login.password} (Mock: admin123 / superadmin123)</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">{t.login.password} (admin123 / superadmin123)</label>
             <input
               type="password"
               value={password}
