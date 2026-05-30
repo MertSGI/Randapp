@@ -113,14 +113,17 @@ const MarketingLayout: React.FC = () => {
                 <ul className="space-y-2 text-sm text-gray-500 dark:text-gray-400">
                     <li><Link to="/features" className="hover:text-blue-600">{language === 'tr' ? 'Özellikler' : 'Features'}</Link></li>
                     <li><Link to="/pricing" className="hover:text-blue-600">{language === 'tr' ? 'Fiyatlar' : 'Pricing'}</Link></li>
-                    <li><Link to="/demo" className="hover:text-blue-600">{language === 'tr' ? 'Demo Alın' : 'Get Demo'}</Link></li>
+                    <li><Link to="/ai-visualizer" className="hover:text-blue-600">{language === 'tr' ? 'AI Stil Asistanı' : 'AI Style Assistant'}</Link></li>
+                    <li><Link to="/demo" className="hover:text-blue-600">{language === 'tr' ? 'Kendi İşletmeni Önizle' : 'Preview Your Business'}</Link></li>
                 </ul>
             </div>
             <div>
                 <h4 className="font-bold text-gray-900 dark:text-white mb-4">{language === 'tr' ? 'Şirket' : 'Company'}</h4>
                 <ul className="space-y-2 text-sm text-gray-500 dark:text-gray-400">
-                    <li><Link to="/contact" className="hover:text-blue-600">{language === 'tr' ? 'İletişime Geçin' : 'Contact Us'}</Link></li>
-                    <li><a href="https://wa.me/905555555555" target="_blank" rel="noreferrer" className="hover:text-blue-600">{language === 'tr' ? 'WhatsApp Destek' : 'WhatsApp Support'}</a></li>
+                    <li><Link to="/contact" className="hover:text-blue-600">{language === 'tr' ? 'İletişim' : 'Contact Us'}</Link></li>
+                    <li><Link to="/contact" className="hover:text-blue-600">{language === 'tr' ? 'Yardım / Destek' : 'Help / Support'}</Link></li>
+                    <li><Link to="/contact" className="hover:text-blue-600">{language === 'tr' ? 'KVKK & Gizlilik' : 'Privacy & KVKK'}</Link></li>
+                    <li><Link to="/contact" className="hover:text-blue-600">{language === 'tr' ? 'Kullanım Şartları' : 'Terms of Service'}</Link></li>
                 </ul>
             </div>
         </div>

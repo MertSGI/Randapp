@@ -1,0 +1,97 @@
+import React from 'react';
+import { useLanguage } from '../contexts/LanguageContext';
+import { PricingPlan } from '../services/planService';
+
+interface CheckoutPreviewModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  plan: PricingPlan | null;
+}
+
+export const CheckoutPreviewModal: React.FC<CheckoutPreviewModalProps> = ({ isOpen, onClose, plan }) => {
+  const { language } = useLanguage();
+
+  if (!isOpen || !plan) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-lg shadow-2xl border border-gray-100 dark:border-slate-800 overflow-hidden mt-10 md:mt-0">
+        
+        {/* Header */}
+        <div className="px-6 py-4 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
+           <h3 className="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
+              <svg className="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+              {language === 'tr' ? 'Güvenli Ödeme Önizlemesi' : 'Secure Checkout Preview'}
+           </h3>
+           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+           </button>
+        </div>
+
+        {/* Content */}
+        <div className="p-6">
+           <div className="flex items-start justify-between mb-6">
+              <div>
+                 <p className="text-sm font-semibold text-accent uppercase tracking-wider">{plan.name}</p>
+                 <p className="font-bold text-slate-900 dark:text-white mt-1">
+                    {language === 'tr' ? 'Aylık Abonelik' : 'Monthly Subscription'}
+                 </p>
+              </div>
+              <div className="text-right">
+                 <p className="text-2xl font-extrabold text-slate-900 dark:text-white">₺{plan.monthlyPrice}</p>
+                 <p className="text-xs text-slate-500">{language === 'tr' ? 'KDV Dahil' : 'Inc. VAT'}</p>
+              </div>
+           </div>
+
+           <div className="bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30 rounded-xl p-4 mb-6">
+              <h4 className="font-bold text-blue-900 dark:text-blue-300 text-sm mb-1">
+                 {language === 'tr' ? `${plan.trialDays} Günlük Ücretsiz Deneme` : `${plan.trialDays}-Day Free Trial`}
+              </h4>
+              <p className="text-xs text-blue-700 dark:text-blue-400">
+                 {language === 'tr' ? 'Bugün ödeme alınmayacak. Deneme süresi sonunda seçtiğiniz paketin ücreti tahsil edilecektir.' : 'No charge today. The subscription amount will be charged after your trial ends.'}
+              </p>
+           </div>
+
+           {/* Fake Card Form */}
+           <div className="space-y-4 mb-6 relative">
+              <div className="absolute inset-0 z-10 flex items-center justify-center rounded-xl bg-white/40 dark:bg-slate-900/40 backdrop-blur-[2px]">
+                 <span className="bg-slate-900 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg">
+                    {language === 'tr' ? 'ÖNİZLEME MODU (KART İSTENMEZ)' : 'PREVIEW MODE (NO CARD NEEDED)'}
+                 </span>
+              </div>
+              <div>
+                 <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">{language === 'tr' ? 'Kart Üzerindeki İsim' : 'Name on Card'}</label>
+                 <div className="w-full h-10 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg"></div>
+              </div>
+              <div>
+                 <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">{language === 'tr' ? 'Kart Numarası' : 'Card Number'}</label>
+                 <div className="w-full h-10 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg"></div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                 <div>
+                    <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">{language === 'tr' ? 'Son Kullanma' : 'Expiry'}</label>
+                    <div className="w-full h-10 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg"></div>
+                 </div>
+                 <div>
+                    <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">CVC</label>
+                    <div className="w-full h-10 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg"></div>
+                 </div>
+              </div>
+           </div>
+
+           {/* Consent */}
+           <div className="flex items-start gap-3 mb-6">
+              <input type="checkbox" checked readOnly className="mt-1 shrink-0 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
+              <p className="text-xs text-slate-600 dark:text-slate-400">
+                 {language === 'tr' ? 'KVKK Aydınlatma Metni, Kullanım Şartları ve Mesafeli Satış/Abonelik koşullarını okudum ve kabul ediyorum. Kart bilgilerimin güvenli ödeme altyapısı üzerinden işlenmesine onay veriyorum.' : 'I have read and agree to the KVKK Privacy Policy, Terms of Use, and Distance Selling / Subscription Agreements. I agree that my card information will be processed via a secure payment infrastructure.'}
+              </p>
+           </div>
+
+           <button onClick={onClose} className="w-full bg-slate-900 dark:bg-blue-600 text-white font-bold py-3.5 rounded-xl hover:opacity-90 transition-opacity">
+              {language === 'tr' ? 'Aboneliği Başlat' : 'Start Subscription'}
+           </button>
+        </div>
+      </div>
+    </div>
+  );
+};

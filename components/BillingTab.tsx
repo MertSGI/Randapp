@@ -5,6 +5,7 @@ import { useTenant } from '../contexts/TenantContext';
 import { subscriptionService, TenantSubscription, TenantUsage } from '../services/subscriptionService';
 import { planService, PricingPlan } from '../services/planService';
 import { resolvePaymentCta } from '../utils/paymentCtaResolver';
+import { CheckoutPreviewModal } from './CheckoutPreviewModal';
 
 const BillingTab: React.FC = () => {
   const { language } = useLanguage();
@@ -16,6 +17,8 @@ const BillingTab: React.FC = () => {
   const [plans, setPlans] = useState<PricingPlan[]>([]);
   const [loading, setLoading] = useState(true);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  
+  const [previewPlan, setPreviewPlan] = useState<PricingPlan | null>(null);
 
   useEffect(() => {
     if (tenant) {
@@ -49,7 +52,8 @@ const BillingTab: React.FC = () => {
 
     // Presentation mode block
     if (isMock) {
-        window.alert(translations[language || 'tr']?.billing?.checkout_not_configured || 'Ödeme entegrasyonu henüz yapılandırılmadı. iyzico ve Supabase Edge Functions aktif edildiğinde bu buton güvenli ödeme akışını başlatacaktır.');
+        const selected = plans.find(p => p.id === planId);
+        if (selected) setPreviewPlan(selected);
         return;
     }
 
@@ -309,6 +313,7 @@ const BillingTab: React.FC = () => {
           ))}
         </div>
       </div>
+      <CheckoutPreviewModal isOpen={!!previewPlan} onClose={() => setPreviewPlan(null)} plan={previewPlan} />
     </div>
   );
 };
