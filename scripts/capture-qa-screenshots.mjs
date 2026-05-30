@@ -142,10 +142,43 @@ async function captureScreenshots() {
     }
   };
 
-  // Inject go_live_status for demo tenant so /book works
+  // Inject go_live_status and some demo data for demo tenant so /book and admin panels work with rich data
   await page.evaluate(() => {
     localStorage.setItem('randapp:tenant_demo:go_live_status', '"live"');
     localStorage.setItem('randapp:tenant_demo:provisioning_status', '"live"');
+    
+    // Inject Mock staff and services if absent to ensure good screenshots
+    const s1 = { id: 'svc_1', name: 'Premium Haircut', name_tr: 'Premium Saç Kesimi', price: 50, duration: 45, active: true };
+    const s2 = { id: 'svc_2', name: 'Beard Trim', name_tr: 'Sakal Tıraşı', price: 25, duration: 30, active: true };
+    localStorage.setItem('randapp:tenant_demo:services', JSON.stringify([s1, s2]));
+    
+    const st1 = { id: 'stf_1', name: 'Ali Yılmaz', title: 'Senior Barber', active: true };
+    localStorage.setItem('randapp:tenant_demo:staff', JSON.stringify([st1]));
+
+    const today = new Date().toISOString().split('T')[0];
+    let tomorrowDate = new Date();
+    tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+    const tomorrow = tomorrowDate.toISOString().split('T')[0];
+
+    const a1 = { id: 'apt_1', tenantId: 'tenant_demo', date: today, time: '10:00', serviceId: 'svc_1', staffId: 'stf_1', user_name: 'Demo User', user_email: 'demo@user.com', phone: '5551234567', status: 'confirmed' };
+    const a2 = { id: 'apt_2', tenantId: 'tenant_demo', date: yesterday(), time: '14:00', serviceId: 'svc_2', staffId: 'stf_1', user_name: 'Demo User', user_email: 'demo@user.com', phone: '5551234567', status: 'completed' };
+    const a3 = { id: 'apt_3', tenantId: 'tenant_demo', date: tomorrow, time: '11:00', serviceId: 'svc_1', staffId: 'stf_1', user_name: 'Ahmet K.', user_email: 'ahmet@test.com', phone: '5559876543', status: 'confirmed' };
+    
+    // helper for yesterday inside evaluate
+    function yesterday() {
+        let y = new Date(); y.setDate(y.getDate() - 1); return y.toISOString().split('T')[0];
+    }
+    
+    localStorage.setItem('randapp:tenant_demo:appointments', JSON.stringify([
+      a1, 
+      {...a2, date: yesterday()},
+      a3
+    ]));
+    
+    localStorage.setItem('randapp:tenant_demo:customers', JSON.stringify([
+       { id: 'cust_1', fullName: 'Demo User', email: 'demo@user.com', phone: '5551234567', registrationDate: today, totalAppointments: 2, totalSpent: 75, preferredLanguage: 'tr' },
+       { id: 'cust_2', fullName: 'Ahmet K.', email: 'ahmet@test.com', phone: '5559876543', registrationDate: today, totalAppointments: 1, totalSpent: 0, preferredLanguage: 'tr' }
+    ]));
   });
   await page.reload();
   await page.waitForLoadState('networkidle');
@@ -154,6 +187,42 @@ async function captureScreenshots() {
   for (const route of MARKETING_ROUTES) {
     await capture('Marketing', 'desktop', route);
     await capture('Marketing', 'mobile', route);
+  }
+
+  // Booking Flow interactions
+  await page.goto(`${BASE_URL}/#book?devTools=${DEVTOOLS ? '1' : '0'}&lang=tr`);
+  await page.waitForLoadState('networkidle');
+  await delay(1500);
+  try {
+     const bookBtn = await page.$('button:text-is("Randevu Al"), button:has-text("Randevu")');
+     if (bookBtn) {
+         await bookBtn.click();
+         await delay(1000);
+         const path1 = path.join(OUT_DIR, 'desktop', 'customer-book-service-step-desktop.png');
+         await page.screenshot({ path: path1, fullPage: true });
+         reportItems.push({ group: 'Customer Interaction', name: 'Book Service Step', path: '/book', viewport: 'desktop', file: 'desktop/customer-book-service-step-desktop.png', hash: 'none' });
+
+         const serviceBtn = await page.$('button.group.relative');
+         if (serviceBtn) {
+           await serviceBtn.click();
+           await delay(1000);
+           const path2 = path.join(OUT_DIR, 'desktop', 'customer-book-staff-step-desktop.png');
+           await page.screenshot({ path: path2, fullPage: true });
+           reportItems.push({ group: 'Customer Interaction', name: 'Book Staff Step', path: '/book', viewport: 'desktop', file: 'desktop/customer-book-staff-step-desktop.png', hash: 'none' });
+
+           const staffBtn = await page.$('button:has-text("Bana Fark Etmez")');
+           if (staffBtn) {
+              await staffBtn.click();
+              await delay(2000);
+              const path3 = path.join(OUT_DIR, 'desktop', 'customer-book-info-step-desktop.png');
+              await page.screenshot({ path: path3, fullPage: true });
+              reportItems.push({ group: 'Customer Interaction', name: 'Book Info Step', path: '/book', viewport: 'desktop', file: 'desktop/customer-book-info-step-desktop.png', hash: 'none' });
+           }
+         }
+     }
+  } catch (err) {
+     console.error('Booking flow interaction failed:', err);
+     skippedRoutes.push({ name: 'Booking Flow Interaction', reason: err.message });
   }
 
   // 2. Customer
@@ -166,8 +235,8 @@ async function captureScreenshots() {
   await page.goto(`${BASE_URL}/`);
   await page.waitForLoadState('networkidle');
   await page.evaluate(() => {
-    localStorage.setItem('randapp_customer_profile_tenant_demo', JSON.stringify({
-      id: "cust_demo", phone: "5551234567", name: "Demo User", email: "demo@user.com"
+    localStorage.setItem('randapp_customer_auth', JSON.stringify({
+      id: "cust_demo", phone: "5551234567", name: "Demo User", email: "demo@user.com", tenantId: "tenant_demo"
     }));
   });
   await page.reload();
@@ -246,7 +315,10 @@ async function captureScreenshots() {
     h1 { border-bottom: 2px solid #e5e7eb; padding-bottom: 0.5rem; }
     .summary { background: #eff6ff; padding: 1.5rem; border-radius: 0.5rem; border: 1px solid #bfdbfe; margin-bottom: 2rem; }
     .summary h2 { margin-top: 0; }
-    .summary ul { margin: 0; padding-left: 1.5rem; }
+    .summary ul { margin: 0; padding-left: 1.5rem; list-style-type: none; padding-left: 0; }
+    .summary li { margin-bottom: 0.5rem; }
+    .status-pass { color: #15803d; font-weight: bold; font-size: 1.2rem; }
+    .status-fail { color: #b91c1c; font-weight: bold; font-size: 1.2rem; }
     .skipped { background: #fefce8; padding: 1rem; border-radius: 0.5rem; border: 1px solid #fef08a; margin-bottom: 2rem; }
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem; margin-top: 2rem; }
     .card { background: white; border-radius: 0.5rem; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
@@ -262,17 +334,20 @@ async function captureScreenshots() {
   <div class="summary">
     <h2>Summary</h2>
     <ul>
+      <li><strong>Overall Status:</strong> <span class="${(skippedRoutes.length > 0 || uniqueBadDuplicates.length > 0) ? 'status-fail' : 'status-pass'}">${(skippedRoutes.length > 0 || uniqueBadDuplicates.length > 0) ? 'FAIL' : 'PASS'}</span></li>
       <li><strong>Date:</strong> ${new Date().toLocaleString()}</li>
-      <li><strong>Expected Routes:</strong> ${expectedRouteCount}</li>
-      <li><strong>Expected Screenshots:</strong> ${expectedScreenshotCount} (Mobile + Desktop)</li>
-      <li><strong>Captured Screenshots:</strong> ${reportItems.length}</li>
+      <li><strong>Expected Base Routes:</strong> ${expectedRouteCount}</li>
+      <li><strong>Expected Base Screenshots:</strong> ${expectedScreenshotCount} (Mobile + Desktop)</li>
+      <li><strong>Captured Screenshots (Including Interactions):</strong> ${reportItems.length}</li>
+      <li><strong>Skipped/Failed Routes:</strong> ${skippedRoutes.length}</li>
       <li><strong>Identical Clusters:</strong> ${duplicateGroups.length}</li>
     </ul>
+    ${(skippedRoutes.length > 0 || uniqueBadDuplicates.length > 0) ? '<p style="color: #b91c1c; font-weight: bold; margin-top: 1rem;">Warning: QA run is incomplete or has failed assertions.</p>' : ''}
   </div>
   ${skippedRoutes.length > 0 ? `
   <div class="skipped">
-    <h3>Skipped Routes</h3>
-    <ul>
+    <h3 style="margin-top: 0; color: #b45309;">Failed Routes & Assertions</h3>
+    <ul style="color: #92400e; margin-bottom: 0;">
       ${skippedRoutes.map(sr => `<li><strong>${sr.name}:</strong> ${sr.reason}</li>`).join('')}
     </ul>
   </div>` : ''}
@@ -339,6 +414,24 @@ npm run qa:screenshots
   fs.writeFileSync(path.join(OUT_DIR, 'README.md'), readmeContent);
   console.log('✅ Generated README.md');
   console.log('🎉 Screenshot Capture Complete!');
+
+  let hasError = false;
+  if (skippedRoutes.length > 0) {
+      console.error('❌ QA Failed: Some required routes were skipped or assertions failed.');
+      hasError = true;
+  }
+  if (reportItems.length < expectedScreenshotCount) {
+      console.error(`❌ QA Failed: Expected at least ${expectedScreenshotCount} screenshots, but only captured ${reportItems.length}.`);
+      hasError = true;
+  }
+  if (uniqueBadDuplicates.length > 0) {
+      console.error('❌ QA Failed: Unacceptable screenshot duplication detected.');
+      hasError = true;
+  }
+
+  if (hasError) {
+      process.exit(1);
+  }
 }
 
 captureScreenshots().catch(console.error);

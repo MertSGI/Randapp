@@ -278,7 +278,7 @@ const AdminPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 container mx-auto px-4 max-w-7xl pt-6">
+    <div className="space-y-6 container mx-auto px-4 max-w-7xl pt-6 pb-safe pb-24 md:pb-6">
       {/* Desktop Header & Tabs - Hidden on Mobile */}
       <div className="hidden md:block bg-white dark:bg-slate-800 shadow-sm rounded-xl border border-gray-200 dark:border-slate-700 px-6 py-4 mb-6">
         <div className="flex justify-between items-center pb-4 border-b border-gray-100 dark:border-slate-700">
