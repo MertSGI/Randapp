@@ -142,6 +142,112 @@ const FeaturesPage: React.FC = () => {
               </div>
            </div>
         </div>
+
+        {/* New AI Section */}
+        <div className="mt-32 border-t border-slate-200 dark:border-slate-800 pt-20">
+           <div className="text-center max-w-3xl mx-auto mb-16">
+              <div className="inline-block bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-400 font-bold px-4 py-1.5 rounded-full text-xs mb-6 border border-violet-200 dark:border-violet-800 uppercase tracking-widest">
+                 {language === 'tr' ? 'Mock AI / Yakında Canlı' : 'Mock AI / Coming Soon'}
+              </div>
+              <h2 className="text-3xl md:text-5xl font-bold mb-6 dark:text-white leading-tight">
+                 {language === 'tr' ? 'Yapay zekâ destekli işletme analizi' : 'AI-supported business analysis'}
+              </h2>
+              <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
+                 {language === 'tr'
+                   ? 'Randapp, randevu ve müşteri geçmişinizi anlamlandırarak işletmenize daha akıllı kararlar aldırmayı hedefler. Bu demo ortamında AI özellikleri güvenli mock modda gösterilir; canlı AI sağlayıcı bağlantısı kullanılmaz.'
+                   : 'Randapp aims to make your business smarter by analyzing booking and customer history. In this demo, AI features are securely mocked; no live AI provider is connected.'}
+              </p>
+              <div className="bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/30 text-amber-800 dark:text-amber-400 text-xs md:text-sm p-4 rounded-xl text-left shadow-sm">
+                 <strong>{language === 'tr' ? 'Veri Gizliliği Notu:' : 'Privacy Note:'}</strong> {language === 'tr' ? 'Özel müşteri notları ve referans fotoğrafları varsayılan olarak AI analizine gönderilmez. Canlı entegrasyon aşamasında açık izin, veri minimizasyonu ve güvenli sunucu tarafı işleme esas alınacaktır.' : 'Private customer notes and reference photos are not sent to AI analysis by default. In live production, explicit permission, data minimization, and secure server-side processing principles will apply.'}
+              </div>
+           </div>
+
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto">
+              <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm relative overflow-hidden group">
+                 <div className="absolute top-0 right-0 w-32 h-32 bg-violet-500/10 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
+                 <h3 className="text-xl font-bold mb-3 dark:text-white text-slate-900 flex items-center gap-2">
+                    <span className="w-8 h-8 rounded-lg bg-violet-100 dark:bg-violet-900/30 text-violet-600 flex items-center justify-center text-lg">📈</span>
+                    {language === 'tr' ? 'Yoğun saat ve gün analizi' : 'Peak hour and day analysis'}
+                 </h3>
+                 <p className="text-slate-600 dark:text-slate-400">
+                    {language === 'tr' ? 'Hangi gün ve saatlerde daha fazla randevu aldığınızı görerek personel planlamasını ve kampanya zamanlamasını daha bilinçli yapın.' : 'See which days and times bring the most bookings to plan staff and campaigns more consciously.'}
+                 </p>
+              </div>
+
+              <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm relative overflow-hidden group">
+                 <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
+                 <h3 className="text-xl font-bold mb-3 dark:text-white text-slate-900 flex items-center gap-2">
+                    <span className="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/30 text-amber-600 flex items-center justify-center text-lg">✨</span>
+                    {language === 'tr' ? 'Müşteri geri dönüş önerileri' : 'Client return recommendations'}
+                 </h3>
+                 <p className="text-slate-600 dark:text-slate-400">
+                    {language === 'tr' ? 'Ziyaret geçmişi ve tercih bilgilerine göre hangi müşteriye ne zaman hatırlatma veya kampanya sunulabileceğini görün.' : 'See which clients should receive reminders or offers, based on their visit history and preferences.'}
+                 </p>
+              </div>
+
+              <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm relative overflow-hidden group">
+                 <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
+                 <h3 className="text-xl font-bold mb-3 dark:text-white text-slate-900 flex items-center gap-2">
+                    <span className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center text-lg">💰</span>
+                    {language === 'tr' ? 'Hizmet performansı' : 'Service performance insight'}
+                 </h3>
+                 <p className="text-slate-600 dark:text-slate-400">
+                    {language === 'tr' ? 'En çok tercih edilen hizmetleri, tahmini gelir katkısını ve geliştirme fırsatlarını tek bakışta takip edin.' : 'Track top-performing services, estimated revenue contributions, and growth opportunities at a glance.'}
+                 </p>
+              </div>
+
+              <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm relative overflow-hidden group">
+                 <div className="absolute top-0 right-0 w-32 h-32 bg-violet-500/10 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
+                 <h3 className="text-xl font-bold mb-3 dark:text-white text-slate-900 flex items-center gap-2">
+                    <span className="w-8 h-8 rounded-lg bg-violet-100 dark:bg-violet-900/30 text-violet-600 flex items-center justify-center text-lg">💡</span>
+                    {language === 'tr' ? 'Akıllı öneri kartları' : 'Smart recommendation cards'}
+                 </h3>
+                 <p className="text-slate-600 dark:text-slate-400">
+                    {language === 'tr' ? 'Sistem, yoğunluk, tekrar ziyaret ve müşteri tercihleri gibi sinyallere göre uygulanabilir öneriler sunacak şekilde yapılandırılır.' : 'The system will be designed to offer actionable insights based on traffic, repeat visits, and preferences.'}
+                 </p>
+              </div>
+           </div>
+        </div>
+
+        {/* New Mobile App Roadmap Section */}
+        <div className="mt-24 border-t border-slate-200 dark:border-slate-800 pt-20">
+           <div className="text-center max-w-3xl mx-auto mb-16">
+              <div className="inline-block bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 font-bold px-4 py-1.5 rounded-full text-xs mb-6 border border-blue-200 dark:border-blue-800 uppercase tracking-widest">
+                 {language === 'tr' ? 'Yol Haritası' : 'Roadmap'}
+              </div>
+              <h2 className="text-3xl md:text-5xl font-bold mb-6 dark:text-white leading-tight">
+                 {language === 'tr' ? 'Mobil uygulama ile gelecek avantajlar' : 'Advantages coming with the mobile app'}
+              </h2>
+              <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
+                 {language === 'tr'
+                   ? 'Randapp’ın mobil uygulama yol haritası, müşterilerin tekrar randevu almasını, kampanyaları takip etmesini ve işletmeleri keşfetmesini kolaylaştıracak ek bir büyüme kanalı olarak planlanır.'
+                   : 'Randapp’s mobile app roadmap is planned as an additional growth channel to help clients rebook, track campaigns, and discover businesses effortlessly.'}
+              </p>
+           </div>
+
+           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+              <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 text-center">
+                 <div className="w-12 h-12 bg-white dark:bg-slate-700 rounded-full shadow-sm border border-slate-200 dark:border-slate-600 flex items-center justify-center text-blue-600 mx-auto mb-4 text-xl">⚡</div>
+                 <h4 className="font-bold text-slate-900 dark:text-white mb-2">{language === 'tr' ? 'Daha hızlı tekrar randevu' : 'Faster rebooking'}</h4>
+                 <p className="text-sm text-slate-600 dark:text-slate-400">{language === 'tr' ? 'Müşteriler favori işletmesine ve geçmiş hizmetlerine daha hızlı ulaşarak tekrar randevu oluşturabilir.' : 'Clients can easily access their favorite salon and past services for quick rebooking.'}</p>
+              </div>
+              <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 text-center">
+                 <div className="w-12 h-12 bg-white dark:bg-slate-700 rounded-full shadow-sm border border-slate-200 dark:border-slate-600 flex items-center justify-center text-green-600 mx-auto mb-4 text-xl">🔔</div>
+                 <h4 className="font-bold text-slate-900 dark:text-white mb-2">{language === 'tr' ? 'Bildirim ve hatırlatma kanalı' : 'Notification channel'}</h4>
+                 <p className="text-sm text-slate-600 dark:text-slate-400">{language === 'tr' ? 'Randevu hatırlatmaları, kampanya duyuruları ve uygun saat bilgilendirmeleri için doğrudan bir iletişim.' : 'Direct communication channel for appointment reminders, promos, and availability updates.'}</p>
+              </div>
+              <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 text-center">
+                 <div className="w-12 h-12 bg-white dark:bg-slate-700 rounded-full shadow-sm border border-slate-200 dark:border-slate-600 flex items-center justify-center text-amber-500 mx-auto mb-4 text-xl">🎁</div>
+                 <h4 className="font-bold text-slate-900 dark:text-white mb-2">{language === 'tr' ? 'Sadakat ve referral' : 'Loyalty & referral'}</h4>
+                 <p className="text-sm text-slate-600 dark:text-slate-400">{language === 'tr' ? 'Referans kampanyaları, sadakat avantajları ve geri dönüş teklifleri mobil deneyim içinde görünür hale gelir.' : 'Referral programs, loyalty perks, and client comeback offers become highly visible.'}</p>
+              </div>
+              <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 text-center">
+                 <div className="w-12 h-12 bg-white dark:bg-slate-700 rounded-full shadow-sm border border-slate-200 dark:border-slate-600 flex items-center justify-center text-violet-600 mx-auto mb-4 text-xl">🔍</div>
+                 <h4 className="font-bold text-slate-900 dark:text-white mb-2">{language === 'tr' ? 'İşletme keşfi' : 'Business discovery'}</h4>
+                 <p className="text-sm text-slate-600 dark:text-slate-400">{language === 'tr' ? 'Gelecekte müşteriler yakınındaki randevulu işletmeleri keşfedebilir. (Bu özellik yol haritası kapsamındadır)' : 'Clients will be able to discover local businesses. (This feature is part of the roadmap).'}</p>
+              </div>
+           </div>
+        </div>
       </div>
 
       <div className="mt-24 md:mt-32 text-center px-4 max-w-3xl mx-auto">
