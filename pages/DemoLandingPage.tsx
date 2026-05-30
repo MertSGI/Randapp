@@ -377,11 +377,18 @@ const DemoLandingPage: React.FC = () => {
                   className="w-full text-white px-6 py-4 rounded-xl font-bold shadow-lg hover:opacity-90 transition-opacity text-lg text-center"
                   style={{ backgroundColor: primaryColor }}
                 >
-                  {t.marketing.demo.btn_wa_demand}
+                  {language === 'tr' ? 'Demo kullanımı için yardıma mı ihtiyacınız var? Satış Ekibiyle Görüşün' : 'Need help using the demo? Contact Sales on WhatsApp'}
                 </button>
+                <div className="text-center p-3 mt-4 border border-blue-100 dark:border-blue-900/30 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+                   <p className="text-xs text-blue-800 dark:text-blue-300 font-medium">
+                     {language === 'tr' 
+                       ? 'ÖNEMLİ: Bu demo sürümü sadece arayüz ve kullanıcı deneyimi (UX) testidir. Canlı veriler, ödeme altyapıları ve SMS/WhatsApp bildirimleri KESİNLİKLE KAPALIDIR.'
+                       : 'IMPORTANT: This demo is strictly for UX evaluation. Live data synchronization, payment processing, and SMS/WhatsApp notifications are STRICTLY DISABLED.'}
+                   </p>
+                </div>
                 <button 
                   onClick={handleCopyLink}
-                  className="w-full bg-white dark:bg-slate-800 text-slate-800 dark:text-white border border-gray-200 dark:border-slate-700 px-6 py-4 rounded-xl font-bold hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors text-lg text-center"
+                  className="w-full mt-2 bg-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors text-sm text-center underline"
                 >
                   {t.marketing.demo.btn_copy_link}
                 </button>
