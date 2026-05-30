@@ -125,7 +125,22 @@ const BookingPage: React.FC = () => {
 
   const handleWebsiteServiceSelect = (service: Service) => {
     setSelectedService(service);
-    setStep(2); // Go to staff select
+    if (selectedStaff) {
+       setStep(3);
+    } else {
+       setStep(2);
+    }
+  };
+
+  const handleWebsiteStaffSelect = (staff: Staff | null, isAny: boolean = false) => {
+    if (isAny) {
+      setSelectedStaff(null);
+      // We can't preselect 'any', but we can just jump to step 1
+      setStep(1);
+    } else if (staff) {
+      setSelectedStaff(staff);
+      setStep(1);
+    }
   };
 
   const handleWidgetServiceSelect = (service: Service) => {
@@ -294,7 +309,7 @@ const BookingPage: React.FC = () => {
       <>
       {step > 0 && renderStepper()}
 
-      <div className={`transition-colors duration-300 ${step > 0 ? 'bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-6 md:p-8' : ''}`}>
+      <div className={`transition-colors duration-300 ${step > 0 ? 'bg-white dark:bg-slate-800 rounded-3xl shadow-lg border border-gray-100 dark:border-slate-700 p-6 md:p-8 lg:p-10 mx-auto max-w-5xl' : ''}`}>
         
         {/* Step 0: Marketing Website */}
         {step === 0 && (
@@ -305,10 +320,15 @@ const BookingPage: React.FC = () => {
             servicesList={servicesList}
             onStartBooking={onStartBooking}
             onServiceSelect={handleWebsiteServiceSelect}
+            onStaffSelect={handleWebsiteStaffSelect}
             language={language}
           />
         )}
 
+        {/* Steps 1-4 with left/right column structure */}
+        {step > 0 && step < 5 && (
+          <div className="grid lg:grid-cols-3 gap-8 md:gap-12 relative">
+            <div className="lg:col-span-2">
         {/* Step 1: Service Selection */}
         {step === 1 && (
           <div className="space-y-6">
@@ -618,6 +638,70 @@ const BookingPage: React.FC = () => {
                 </button>
               </div>
             </form>
+          </div>
+        )}
+            </div>
+
+            {/* Desktop Appointment Summary Right Column */}
+            <div className="hidden lg:block lg:col-span-1 border-l border-gray-100 dark:border-slate-700/50 pl-8 md:pl-12">
+               <div className="sticky top-24 bg-slate-50 dark:bg-slate-800/80 rounded-3xl p-8 border border-gray-100 dark:border-slate-700 shadow-sm">
+                  <h3 className="font-bold text-xl text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+                     <svg className="w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+                     {language === 'tr' ? 'Randevu Özeti' : 'Booking Summary'}
+                  </h3>
+                  
+                  <div className="space-y-5">
+                     <div>
+                        <div className="text-xs uppercase tracking-wider text-gray-500 font-bold mb-1">{language === 'tr' ? 'Hizmet' : 'Service'}</div>
+                        {selectedService ? (
+                           <div className="font-bold text-gray-900 dark:text-white flex justify-between items-center text-lg">
+                              <span>{language === 'tr' ? selectedService.name_tr : selectedService.name}</span>
+                              <span className="text-accent">{selectedService.price} ₺</span>
+                           </div>
+                        ) : (
+                           <div className="text-sm text-gray-400 dark:text-gray-500 italic">{language === 'tr' ? 'Seçilmedi' : 'Not selected'}</div>
+                        )}
+                     </div>
+                     
+                     <div className="h-px w-full bg-gray-200 dark:bg-slate-700"></div>
+
+                     <div>
+                        <div className="text-xs uppercase tracking-wider text-gray-500 font-bold mb-1">{language === 'tr' ? 'Uzman' : 'Staff'}</div>
+                        {selectedStaff ? (
+                           <div className="font-medium text-gray-900 dark:text-white text-base">
+                              {selectedStaff.name}
+                           </div>
+                        ) : (
+                           <div className="text-sm text-gray-400 dark:text-gray-500 italic">{language === 'tr' ? 'Seçilmedi' : 'Not selected'}</div>
+                        )}
+                     </div>
+
+                     <div className="h-px w-full bg-gray-200 dark:bg-slate-700"></div>
+
+                     <div>
+                        <div className="text-xs uppercase tracking-wider text-gray-500 font-bold mb-1">{language === 'tr' ? 'Tarih & Saat' : 'Date & Time'}</div>
+                        {selectedTime && selectedDate ? (
+                           <div className="font-medium text-gray-900 dark:text-white text-base">
+                              {selectedDate} <span className="font-bold text-accent mx-2">•</span> {selectedTime}
+                           </div>
+                        ) : (
+                           <div className="text-sm text-gray-400 dark:text-gray-500 italic">{language === 'tr' ? 'Seçilmedi' : 'Not selected'}</div>
+                        )}
+                     </div>
+                  </div>
+                  
+                  <div className="mt-8 p-4 bg-blue-50 dark:bg-slate-700/50 rounded-2xl flex items-start gap-3">
+                     <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-slate-600 flex items-center justify-center shrink-0 text-accent">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                     </div>
+                     <p className="text-xs text-blue-900 dark:text-blue-100 font-medium leading-relaxed">
+                        {language === 'tr' 
+                           ? 'Randevu bilgilerinizi tamamladıktan sonra uzmanınız ve saatiniz kesinleşecektir.' 
+                           : 'Your appointment will be confirmed once you complete your details.'}
+                     </p>
+                  </div>
+               </div>
+            </div>
           </div>
         )}
 

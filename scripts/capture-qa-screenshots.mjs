@@ -204,12 +204,47 @@ async function captureScreenshots() {
          throw new Error("no 'AI Stil Asistanı' CTA is visible on storefront");
       }
 
+      if (pageText.includes('Super Admin Önizleme Modu')) {
+         throw new Error("public /book shows Super Admin preview banner");
+      }
+      
+      const visibleBrokenImagesCount = await page.evaluate(() => {
+          return Array.from(document.images).filter(img => img.naturalWidth === 0 && img.style.display !== 'none').length;
+      });
+      if (visibleBrokenImagesCount > 0) {
+          throw new Error("broken image icons appear");
+      }
+      
+      const lowerText = pageText.toLowerCase();
+      if (lowerText.includes('mock') || lowerText.includes('demo') || lowerText.includes('not live') || lowerText.includes('sandbox')) {
+          throw new Error("customer-facing mock/demo/not-live text appears");
+      }
+      
       // 1. Initial Storefront
       const sfName = `customer-book-storefront-${viewportName}.png`;
       await page.screenshot({ path: path.join(OUT_DIR, viewportName, sfName), fullPage: true });
       reportItems.push({ group: 'Customer Interaction', name: 'Book Storefront', path: '/book', viewport: viewportName, file: `${viewportName}/${sfName}`, hash: 'none' });
 
-      // Click to start
+      // Take section screenshots
+      const sections = ['hero', 'services', 'ai-assistant', 'staff', 'contact'];
+      for (const sectionId of sections) {
+         try {
+             const locator = page.locator(`section#${sectionId}`);
+             if (await locator.count() > 0) {
+                 await locator.scrollIntoViewIfNeeded();
+                 await delay(500); // UI settle
+                 const secName = `customer-book-section-${sectionId}-${viewportName}.png`;
+                 await locator.screenshot({ path: path.join(OUT_DIR, viewportName, secName) });
+                 reportItems.push({ group: 'Customer Interaction', name: `Book Section ${sectionId}`, path: '/book', viewport: viewportName, file: `${viewportName}/${secName}`, hash: 'none' });
+             }
+         } catch (e) {
+             console.log(`Skipping section ${sectionId} capture: ${e.message}`);
+         }
+      }
+
+      // Scroll back up and Click to start
+      await page.evaluate(() => window.scrollTo(0, 0));
+      await delay(500);
       const bookBtn = await page.$('button:text-is("Randevu Al"), button:has-text("Randevu"), button:has-text("Book Now")');
       if (bookBtn) {
           await bookBtn.click();
