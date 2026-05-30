@@ -359,6 +359,11 @@ async function captureScreenshots() {
         pageText.includes("Working Hours") ||
         pageText.includes("Çalışma Saatleri");
       if (!hasMap) throw new Error("no map/location visual appears");
+      
+      const headersCount = await page.evaluate(() => document.querySelectorAll('header').length);
+      if (headersCount > 1) {
+         throw new Error("duplicate headers appear");
+      }
 
       // 1. Initial Storefront
       const sfName = `customer-book-storefront-${viewportName}.png`;
@@ -381,6 +386,11 @@ async function captureScreenshots() {
         if ((await heroSlide.count()) > 0) {
           await heroSlide.click({ position: { x: 10, y: 10 } }); // Clicking hero opens lightbox
           await delay(800);
+          
+          // Test Prev/Next in Lightbox
+          await page.keyboard.press("ArrowRight");
+          await delay(300);
+          
           const lightboxName = `customer-book-lightbox-${viewportName}.png`;
           await page.screenshot({
             path: path.join(OUT_DIR, viewportName, lightboxName),
@@ -434,6 +444,45 @@ async function captureScreenshots() {
         } catch (e) {
           console.log(`Skipping section ${sectionId} capture: ${e.message}`);
         }
+      }
+
+      // AI Modal Test
+      try {
+        const aiCtaBtn = await page.locator("button:has-text('🪄')").first();
+        if ((await aiCtaBtn.count()) > 0) {
+          await aiCtaBtn.click();
+          await delay(1000);
+          
+          const currentUrl = page.url();
+          if (currentUrl.includes('/ai-visualizer')) {
+             throw new Error("AI CTA opens a disconnected platform page/header");
+          }
+          const pageText = await page.evaluate(() => document.body.innerText);
+          if (!pageText.includes("Randevu öncesi AI")) {
+             throw new Error("AI CTA does not open proper modal");
+          }
+          
+          // Screenshot Modal
+          const modalName = `customer-book-ai-modal-${viewportName}.png`;
+          await page.screenshot({ path: path.join(OUT_DIR, viewportName, modalName) });
+          reportItems.push({
+            group: "Customer Interaction",
+            name: "AI Modal",
+            path: "/book",
+            viewport: viewportName,
+            file: `${viewportName}/${modalName}`,
+            hash: "none"
+          });
+          
+          // Close Modal via top right X or Escape
+          await page.locator('button:has(svg):right-of(h3)').first().click().catch(async () => {
+             await page.mouse.click(10, 10);
+          });
+          await delay(1000);
+        }
+      } catch (e) {
+          console.log(`AI Modal test error: ${e.message}`);
+          throw e; // rethrow to fail QA script
       }
 
       // Scroll back up and test service preselection

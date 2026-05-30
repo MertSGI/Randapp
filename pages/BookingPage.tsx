@@ -355,24 +355,6 @@ const BookingPage: React.FC = () => {
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">{t.booking.steps[1] || 'Hizmet Seçin'}</h2>
               <button onClick={() => setStep(0)} className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white underline transition-colors duration-300">{language === 'tr' ? 'Geri Dön' : 'Go Back'}</button>
             </div>
-
-            {/* AI Assistant CTA */}
-            <div className="bg-gradient-to-r from-violet-50 to-amber-50 dark:from-violet-900/10 dark:to-amber-900/10 border border-violet-100 dark:border-violet-500/20 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
-                <div>
-                   <h3 className="font-bold text-violet-900 dark:text-violet-300 flex items-center gap-2">
-                       <span className="text-xl">🪄</span> {language === 'tr' ? 'Karar veremediniz mi?' : 'Not sure what to book?'}
-                   </h3>
-                   <p className="text-sm text-violet-700/80 dark:text-violet-400/80 mt-1">
-                       {language === 'tr' ? 'Fotoğrafınızı yükleyin, AI Stil Asistanı size en uygun işlemi önersin.' : 'Upload your photo and let the AI Style Assistant recommend the best service for you.'}
-                   </p>
-                </div>
-                <button 
-                  onClick={() => window.location.href = '#/ai-visualizer'}
-                  className="shrink-0 whitespace-nowrap bg-violet-600 hover:bg-violet-700 text-white font-bold py-2 px-5 rounded-xl text-sm transition-colors shadow-md shadow-violet-500/20"
-                >
-                  {language === 'tr' ? 'AI Asistan ile fikir al' : 'Get AI Ideas'}
-                </button>
-            </div>
             
             {servicesList.length === 0 ? (
               <div className="text-center py-12">
