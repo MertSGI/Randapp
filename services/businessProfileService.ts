@@ -110,7 +110,9 @@ export const businessProfileService = {
       whatsapp_number: '+905551234567',
       instagram_url: 'https://instagram.com/sandboxtenant',
       opening_hours_summary: 'Pzt-Cmt: 09:00 - 20:00, Pzr: Kapalı',
-      cover_image_url: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&q=80&w=1200&h=400',
+      cover_images: [
+         'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&q=80&w=1200&h=400'
+      ],
       gallery_images: [
          'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=600&h=400&q=80',
          'https://images.unsplash.com/photo-1595476108010-b4d1f10d5e43?auto=format&fit=crop&w=600&h=400&q=80'

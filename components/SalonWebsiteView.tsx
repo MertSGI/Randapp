@@ -129,10 +129,10 @@ const SalonWebsiteView: React.FC<SalonWebsiteViewProps> = ({
 
          {/* Desktop Nav */}
          <div className="hidden md:flex items-center gap-6 font-medium text-sm text-gray-600 dark:text-gray-300">
-             <a href="#services" className="hover:text-accent transition-colors">{language === 'tr' ? 'Hizmetler' : 'Services'}</a>
-             <a href="#staff" className="hover:text-accent transition-colors">{language === 'tr' ? 'Uzmanlar' : 'Staff'}</a>
-             <a href="#gallery" className="hover:text-accent transition-colors">{language === 'tr' ? 'Galeri' : 'Gallery'}</a>
-             <a href="#contact" className="hover:text-accent transition-colors">{language === 'tr' ? 'Konum' : 'Location'}</a>
+             <button onClick={() => { document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-accent transition-colors">{language === 'tr' ? 'Hizmetler' : 'Services'}</button>
+             <button onClick={() => { document.getElementById('staff')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-accent transition-colors">{language === 'tr' ? 'Uzmanlar' : 'Staff'}</button>
+             <button onClick={() => { document.getElementById('gallery')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-accent transition-colors">{language === 'tr' ? 'Galeri' : 'Gallery'}</button>
+             <button onClick={() => { document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-accent transition-colors">{language === 'tr' ? 'Konum' : 'Location'}</button>
              <button onClick={() => setIsAIOpen(true)} className="text-violet-600 dark:text-violet-400 hover:text-violet-800 transition-colors flex items-center gap-1 font-bold">
                 <span className="text-lg">🪄</span> {language === 'tr' ? 'AI Stil Asistanı' : 'AI Style'}
              </button>
@@ -258,10 +258,10 @@ const SalonWebsiteView: React.FC<SalonWebsiteViewProps> = ({
                   <div className="w-px h-8 bg-gray-200 dark:bg-slate-700 shrink-0" />
                </>
             )}
-            <a href="#contact" className="flex-1 flex items-center justify-center gap-2 py-3 px-4 hover:bg-gray-50 dark:hover:bg-slate-700/50 rounded-xl transition-colors font-bold text-gray-900 dark:text-white">
+            <button onClick={() => { document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }); }} className="flex-1 flex items-center justify-center gap-2 py-3 px-4 hover:bg-gray-50 dark:hover:bg-slate-700/50 rounded-xl transition-colors font-bold text-gray-900 dark:text-white">
                <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                {language === 'tr' ? 'Konum' : 'Location'}
-            </a>
+            </button>
          </div>
       </div>
 
@@ -409,12 +409,12 @@ const SalonWebsiteView: React.FC<SalonWebsiteViewProps> = ({
             </section>
           )}
 
-          {/* 6. Instagram Showcase */}
-          <section id="instagram" className="scroll-mt-24">
+          {/* 6. Gallery / Instagram Showcase */}
+          <section id="gallery" className="scroll-mt-24">
                <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
                  <div>
                    <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-2">{language === 'tr' ? 'Instagram\'dan Kareler' : 'Instagram Showcase'}</h2>
-                   <p className="text-gray-500 max-w-2xl">{language === 'tr' ? 'Instagram hesabınızı bağladığınızda son paylaşımlarınız burada görünür. Şimdiki görseller stüdyo ambiyansımızı yansıtmaktadır.' : 'When you connect your Instagram account, your latest posts will appear here.'}</p>
+                   <p className="text-gray-500 max-w-2xl">{language === 'tr' ? 'Bizi Instagram\'da takip ederek en güncel tasarımlarımızı ve stüdyo ambiyansımızı keşfedin.' : 'Follow us on Instagram to discover our latest styles and studio ambiance.'}</p>
                  </div>
                  {businessProfile?.instagram_url && (
                     <a href={businessProfile.instagram_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 bg-pink-50 text-pink-600 dark:bg-pink-900/30 dark:text-pink-400 font-bold rounded-xl hover:bg-pink-100 dark:hover:bg-pink-900/50 transition-colors shrink-0">
@@ -425,9 +425,9 @@ const SalonWebsiteView: React.FC<SalonWebsiteViewProps> = ({
                </div>
                
                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {/* Using cover images as local placeholders if available, else static styled boxes */}
-                  {coverImages.length > 0 ? (
-                      coverImages.slice(0, 4).map((img, i) => (
+                  {/* Using gallery images if available */}
+                  {(businessProfile?.gallery_images && businessProfile.gallery_images.length > 0) ? (
+                      businessProfile.gallery_images.slice(0, 4).map((img, i) => (
                         <div key={i} className="aspect-square rounded-3xl overflow-hidden group bg-slate-100 dark:bg-slate-800 relative group/img">
                            <div className="absolute inset-0 bg-gradient-to-br from-slate-200 to-slate-100 dark:from-slate-800 dark:to-slate-700 flex items-center justify-center">
                               <svg className="w-8 h-8 text-slate-300 dark:text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
@@ -548,10 +548,10 @@ const SalonWebsiteView: React.FC<SalonWebsiteViewProps> = ({
                <div>
                   <h4 className="font-bold text-white mb-4 uppercase tracking-wider text-sm">{language === 'tr' ? 'Hızlı Erişim' : 'Quick Links'}</h4>
                   <ul className="space-y-3 font-medium text-slate-400">
-                     <li><a href="#services" className="hover:text-accent transition-colors">{language === 'tr' ? 'Hizmetler' : 'Services'}</a></li>
-                     <li><a href="#staff" className="hover:text-accent transition-colors">{language === 'tr' ? 'Uzmanlar' : 'Staff'}</a></li>
+                     <li><button onClick={() => { document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-accent transition-colors">{language === 'tr' ? 'Hizmetler' : 'Services'}</button></li>
+                     <li><button onClick={() => { document.getElementById('staff')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-accent transition-colors">{language === 'tr' ? 'Uzmanlar' : 'Staff'}</button></li>
                      <li><button onClick={() => setIsAIOpen(true)} className="hover:text-violet-400 transition-colors flex items-center gap-1.5"><span className="text-lg">🪄</span> {language === 'tr' ? 'AI Stil Asistanı' : 'AI Style'}</button></li>
-                     <li><a href="#contact" className="hover:text-accent transition-colors">{language === 'tr' ? 'Konum' : 'Location'}</a></li>
+                     <li><button onClick={() => { document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-accent transition-colors">{language === 'tr' ? 'Konum' : 'Location'}</button></li>
                   </ul>
                </div>
                <div>

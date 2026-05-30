@@ -319,7 +319,7 @@ const BookingPage: React.FC = () => {
   };
 
   return (
-    <div className={step === 0 ? "w-full min-h-screen" : "max-w-3xl mx-auto pt-6 md:pt-10 pb-12 px-4"}>
+    <div className="w-full min-h-screen">
       {isAuthorizedPreview && location.pathname.includes('super-admin') && (
          <div className="fixed bottom-4 right-4 z-[9999] bg-slate-900 border border-slate-700 text-white px-3 py-1.5 rounded-full text-[10px] font-bold shadow-lg pointer-events-none opacity-50 uppercase tracking-widest leading-none">
             {currentUser?.role === 'super_admin' ? 'Super Admin Preview' : 'Preview'}
