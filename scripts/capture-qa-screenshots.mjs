@@ -347,6 +347,17 @@ async function captureScreenshots() {
         throw new Error("customer-facing mock/demo/not-live text appears");
       }
 
+      const konumBtn = await page.locator("a:has-text('Konum'), a:has-text('Location')").first();
+      if ((await konumBtn.count()) > 0) {
+        await konumBtn.click().catch(() => {});
+        await delay(500);
+      }
+      
+      const currentUrlKonum = page.url();
+      if (currentUrlKonum.includes('/contact')) {
+         throw new Error("Konum navigates to marketing contact instead of within-page section");
+      }
+      
       const hasInstagram =
         pageText.includes("Instagram'dan Kareler") ||
         pageText.includes("Instagram Showcase");

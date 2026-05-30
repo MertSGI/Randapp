@@ -116,6 +116,17 @@ const BookingPage: React.FC = () => {
     }
   }, [tenant, staffList, selectedService]);
 
+  useEffect(() => {
+    if (step > 0 && step < 5) {
+      setTimeout(() => {
+        const bookingSection = document.getElementById('booking-section');
+        if (bookingSection) {
+          bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 50);
+    }
+  }, [step]);
+
   const onStartBooking = () => {
     setSelectedService(null);
     setSelectedStaff(null);
@@ -326,28 +337,24 @@ const BookingPage: React.FC = () => {
          </div>
       ) : (
       <>
-      {step > 0 && renderStepper()}
-
-      <div className={`transition-colors duration-300 ${step > 0 ? 'bg-white dark:bg-slate-800 rounded-3xl shadow-lg border border-gray-100 dark:border-slate-700 p-6 md:p-8 lg:p-10 mx-auto max-w-5xl' : ''}`}>
-        
-        {/* Step 0: Marketing Website */}
-        {step === 0 && (
-          <SalonWebsiteView 
-            tenant={tenant}
-            businessProfile={businessProfile}
-            staffList={staffList}
-            servicesList={servicesList}
-            onStartBooking={onStartBooking}
-            onServiceSelect={handleWebsiteServiceSelect}
-            onStaffSelect={handleWebsiteStaffSelect}
-            language={language}
-          />
-        )}
-
-        {/* Steps 1-4 with left/right column structure */}
-        {step > 0 && step < 5 && (
-          <div className="grid lg:grid-cols-3 gap-8 md:gap-12 relative">
-            <div className="lg:col-span-2">
+        <SalonWebsiteView 
+          tenant={tenant}
+          businessProfile={businessProfile}
+          staffList={staffList}
+          servicesList={servicesList}
+          onStartBooking={onStartBooking}
+          onServiceSelect={handleWebsiteServiceSelect}
+          onStaffSelect={handleWebsiteStaffSelect}
+          language={language}
+          isBookingOpen={step > 0}
+          bookingComponent={
+            step > 0 ? (
+              <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-xl shadow-blue-900/5 border border-gray-100 dark:border-slate-700/50 p-6 md:p-8 lg:p-10 mx-auto w-full mb-12">
+                {renderStepper()}
+                {/* Steps 1-4 with left/right column structure */}
+                {step < 5 && (
+                  <div className="grid lg:grid-cols-3 gap-8 md:gap-12 relative mt-8">
+                    <div className="lg:col-span-2">
         {/* Step 1: Service Selection */}
         {step === 1 && (
           <div className="space-y-6">
@@ -786,10 +793,13 @@ const BookingPage: React.FC = () => {
         )}
 
       </div>
-      </>
-      )}
-    </div>
-  );
+      ) : null
+    }
+    />
+    </>
+    )}
+  </div>
+);
 };
 
 export default BookingPage;
