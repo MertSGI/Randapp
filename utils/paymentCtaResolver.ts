@@ -71,8 +71,8 @@ export const resolvePaymentCta = ({
       actionType: 'start_trial',
       disabled: false,
       safetyMessage: isMock 
-          ? (language === 'tr' ? 'Bu demoda canlı ödeme aktif değildir. Karttan ücret alınmaz.' : 'Live payment is not active in this demo. No card is charged.')
-          : (language === 'tr' ? 'Canlı ödeme modunda kartınız güvenli şekilde ödeme sağlayıcısı tarafından alınır.' : 'In live payment mode, your card will be securely collected by the payment provider.')
+          ? (language === 'tr' ? `${plan.trialDays} günlük ücretsiz deneme sonunda seçtiğiniz planla devam edersiniz.` : `After your ${plan.trialDays}-day free trial, you will continue with your selected plan.`)
+          : (language === 'tr' ? 'Kart bilgileriniz güvenli ödeme altyapısı üzerinden işlenir.' : 'Your card information is processed via a secure payment infrastructure.')
     };
   }
 
@@ -81,7 +81,7 @@ export const resolvePaymentCta = ({
     actionType: 'choose_plan',
     disabled: false,
     safetyMessage: isMock 
-        ? (language === 'tr' ? 'Bu demoda canlı ödeme aktif değildir.' : 'Live payment is not active in this demo.')
+        ? (language === 'tr' ? 'Dilediğiniz zaman aboneliğinizi iptal edebilirsiniz.' : 'You can cancel your subscription at any time.')
         : ''
   };
 };

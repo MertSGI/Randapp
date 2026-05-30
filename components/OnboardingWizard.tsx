@@ -356,10 +356,6 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                         />
                      </div>
                   </div>
-                  <details className="mt-3">
-                     <summary className="text-xs text-gray-500 cursor-pointer user-select-none hover:text-accent">Dış bağlantı (URL) kullan</summary>
-                     <input type="text" value={setupLogoUrl} onChange={e => setSetupLogoUrl(e.target.value)} placeholder="https://..." className="mt-2 w-full text-xs rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-2 border" />
-                  </details>
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">Ana Renk (Primary Color)</label>

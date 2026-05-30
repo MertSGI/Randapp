@@ -18,6 +18,7 @@ import BusinessProfileTab from '../components/BusinessProfileTab';
 import CustomerMemoryTab from '../components/CustomerMemoryTab';
 import ReferralTab from '../components/ReferralTab';
 import AdminSettingsTab from '../components/AdminSettingsTab';
+import { ImageUpload } from '../components/ImageUpload';
 
 const AdminPage: React.FC = () => {
   const navigate = useNavigate();
@@ -538,8 +539,7 @@ const AdminPage: React.FC = () => {
                   <input required placeholder="Master Designer" type="text" value={newStaffTitle} onChange={e => setNewStaffTitle(e.target.value)} className="mt-1 w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white shadow-sm border p-2 transition-colors duration-300"/>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">{t.admin.image_url_label}</label>
-                  <input type="text" placeholder="https://..." value={newStaffImage} onChange={e => setNewStaffImage(e.target.value)} className="mt-1 w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white shadow-sm border p-2 transition-colors duration-300"/>
+                  <ImageUpload label={t.admin.image_url_label} value={newStaffImage} onChange={setNewStaffImage} />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">{t.admin.google_calendar_email}</label>
@@ -649,8 +649,7 @@ const AdminPage: React.FC = () => {
                   <input required type="number" min="5" step="5" value={newServiceDuration} onChange={e => setNewServiceDuration(Number(e.target.value))} className="mt-1 w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white shadow-sm border p-2 transition-colors duration-300"/>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">{t.admin.image_url}</label>
-                  <input type="text" placeholder="https://..." value={newServiceImage} onChange={e => setNewServiceImage(e.target.value)} className="mt-1 w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white shadow-sm border p-2 transition-colors duration-300"/>
+                  <ImageUpload label={t.admin.image_url} value={newServiceImage} onChange={setNewServiceImage} />
                 </div>
                 <div className="flex items-center">
                   <input id="service-active" type="checkbox" checked={newServiceActive} onChange={e => setNewServiceActive(e.target.checked)} className="h-4 w-4 text-accent focus:ring-accent border-gray-300 rounded"/>

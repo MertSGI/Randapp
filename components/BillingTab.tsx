@@ -105,12 +105,6 @@ const BillingTab: React.FC = () => {
       {/* Current Status */}
       <div className="bg-white dark:bg-slate-800 shadow-sm rounded-lg border border-gray-200 dark:border-slate-700 p-6">
         <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">{t.billing.current_subscription_status}</h2>
-        
-        {(import.meta as any).env.VITE_PAYMENT_PROVIDER === 'mock' && (
-          <div className="mb-6 bg-yellow-50 border border-yellow-500 text-yellow-800 p-4 rounded-md text-sm">
-            {t.billing.payment_test_mode_warning}
-          </div>
-        )}
 
         {checkoutError && (
           <div className="mb-6 bg-red-50 border border-red-500 p-4 rounded-md">

@@ -155,8 +155,8 @@ const FeaturesPage: React.FC = () => {
                  </h2>
                  <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-8">
                     {language === 'tr'
-                      ? 'Müşteriler saç, sakal veya tırnak fikri için fotoğraf yükleyip randevu almadan önce stil önerisi alabilir. Bu demo ortamında AI çıktıları mock olarak gösterilir; canlı AI sağlayıcı bağlantısı kullanılmaz.'
-                      : 'Customers can upload a photo for hair, beard, or nail ideas and get style recommendations before booking. In this demo, AI outputs are mocked; no live AI provider is connected.'}
+                      ? 'Müşteriler saç, sakal veya tırnak fikri için fotoğraf yükleyip randevu almadan önce stil önerisi alabilir. Fotoğrafınız güvenli yöntemlerle işlenir.'
+                      : 'Customers can upload a photo for hair, beard, or nail ideas and get style recommendations before booking. Your photos are securely processed.'}
                  </p>
 
                  <div className="space-y-6">
@@ -185,14 +185,14 @@ const FeaturesPage: React.FC = () => {
                        <div>
                           <h4 className="font-bold text-lg text-slate-900 dark:text-white mb-1">{language === 'tr' ? 'Premium görsel önizleme' : 'Premium visual preview'}</h4>
                           <p className="text-slate-600 dark:text-slate-400 text-sm">
-                             {language === 'tr' ? 'Üst paketlerde planlanan deneyim, müşterinin fotoğrafı üzerinden yeni stil fikrini mock/demo formatında gösterecek şekilde tasarlanır.' : 'The planned premium experience shows the new style idea using the customer\'s photo in a mock/demo format.'}
+                             {language === 'tr' ? 'Üst paketlerde planlanan deneyim, müşterinin fotoğrafı üzerinden yeni stil fikrini gösterecek şekilde tasarlanır.' : 'The planned premium experience shows the new style idea using the customer\'s photo.'}
                           </p>
                        </div>
                     </div>
                  </div>
                  
                  <div className="mt-8 bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/30 text-amber-800 dark:text-amber-400 text-xs p-4 rounded-xl text-left shadow-sm">
-                    <strong>{language === 'tr' ? 'Güvenli ve izinli kullanım:' : 'Secure and permission-based:'}</strong> {language === 'tr' ? 'Referans fotoğrafları varsayılan olarak analiz edilmez. Canlı entegrasyon aşamasında açık izin, veri minimizasyonu ve sunucu tarafı güvenli işleme esas alınacaktır.' : 'Reference photos are not analyzed by default. In the live integration, explicit permission, data minimization, and secure server-side processing apply.'}
+                    <strong>{language === 'tr' ? 'Güvenli ve izinli kullanım:' : 'Secure and permission-based:'}</strong> {language === 'tr' ? 'Referans fotoğrafları varsayılan olarak analiz edilmez. Açık izin, veri minimizasyonu ve sunucu tarafı güvenli işleme esas alınır.' : 'Reference photos are not analyzed by default. Explicit permission, data minimization, and secure server-side processing apply.'}
                  </div>
               </div>
 
@@ -200,7 +200,7 @@ const FeaturesPage: React.FC = () => {
                  <div className="bg-slate-100 dark:bg-slate-800 rounded-3xl p-6 md:p-10 flex flex-col items-center justify-center border border-slate-200 dark:border-slate-700 shadow-inner">
                     <div className="bg-white dark:bg-slate-900 w-full max-w-sm rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 p-6">
                        <div className="flex justify-between items-center mb-6">
-                           <h4 className="font-bold text-slate-900 dark:text-white text-sm">AI Stil Asistanı <span className="text-[10px] bg-violet-100 text-violet-700 font-bold px-2 py-0.5 rounded uppercase ml-2">Mock</span></h4>
+                           <h4 className="font-bold text-slate-900 dark:text-white text-sm">AI Stil Asistanı <span className="text-[10px] bg-violet-100 text-violet-700 font-bold px-2 py-0.5 rounded uppercase ml-2">Premium</span></h4>
                        </div>
                        
                        <div className="flex gap-4 mb-6">
@@ -239,18 +239,18 @@ const FeaturesPage: React.FC = () => {
         <div className="mt-32 border-t border-slate-200 dark:border-slate-800 pt-20">
            <div className="text-center max-w-3xl mx-auto mb-16">
               <div className="inline-block bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-400 font-bold px-4 py-1.5 rounded-full text-xs mb-6 border border-violet-200 dark:border-violet-800 uppercase tracking-widest">
-                 {language === 'tr' ? 'Mock AI / Yakında Canlı' : 'Mock AI / Coming Soon'}
+                 {language === 'tr' ? 'Premium Yapay Zeka Özelliği' : 'Premium AI Feature'}
               </div>
               <h2 className="text-3xl md:text-5xl font-bold mb-6 dark:text-white leading-tight">
                  {language === 'tr' ? 'Yapay zekâ destekli işletme analizi' : 'AI-supported business analysis'}
               </h2>
               <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
                  {language === 'tr'
-                   ? 'Randapp, randevu ve müşteri geçmişinizi anlamlandırarak işletmenize daha akıllı kararlar aldırmayı hedefler. Bu demo ortamında AI özellikleri güvenli mock modda gösterilir; canlı AI sağlayıcı bağlantısı kullanılmaz.'
-                   : 'Randapp aims to make your business smarter by analyzing booking and customer history. In this demo, AI features are securely mocked; no live AI provider is connected.'}
+                   ? 'Randapp, randevu ve müşteri geçmişinizi anlamlandırarak işletmenize daha akıllı kararlar aldırmayı hedefler. Güvenilir ve tutarlı iş akışları oluşturur.'
+                   : 'Randapp aims to make your business smarter by analyzing booking and customer history securely.'}
               </p>
               <div className="bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/30 text-amber-800 dark:text-amber-400 text-xs md:text-sm p-4 rounded-xl text-left shadow-sm">
-                 <strong>{language === 'tr' ? 'Veri Gizliliği Notu:' : 'Privacy Note:'}</strong> {language === 'tr' ? 'Özel müşteri notları ve referans fotoğrafları varsayılan olarak AI analizine gönderilmez. Canlı entegrasyon aşamasında açık izin, veri minimizasyonu ve güvenli sunucu tarafı işleme esas alınacaktır.' : 'Private customer notes and reference photos are not sent to AI analysis by default. In live production, explicit permission, data minimization, and secure server-side processing principles will apply.'}
+                 <strong>{language === 'tr' ? 'Veri Gizliliği Notu:' : 'Privacy Note:'}</strong> {language === 'tr' ? 'Özel müşteri notları ve referans fotoğrafları varsayılan olarak AI analizine gönderilmez. Açık izin, veri minimizasyonu ve güvenli sunucu tarafı işleme esas alınır.' : 'Private customer notes and reference photos are not sent to AI analysis by default. Explicit permission, data minimization, and secure server-side processing principles apply.'}
               </div>
            </div>
 

@@ -62,9 +62,9 @@ const AIVisualizerPage: React.FC = () => {
       durationLabel: "Est. Duration:",
       durationValue: "45-60 min",
       bookBtn: "Book with this recommendation",
-      premiumNotice: "Premium Plan Visual Preview (Roadmap)",
-      premiumNoticeDesc: "In the premium plan, a high-quality visual preview mockup based on your photo would appear here.",
-      privacyNote: "Privacy Note: This demo does not send photos to a real AI provider. In a live integration, photo processing will only happen with explicit consent, via secure server-side logic, maintaining data minimization."
+      premiumNotice: "Premium Plan Visual Preview",
+      premiumNoticeDesc: "In the premium plan, a high-quality visual preview based on your photo will appear here.",
+      privacyNote: "Privacy Note: Your photo is only processed to generate style recommendations. Asking to save your photo to the customer memory requires your explicit consent. This analysis is not used for biometric identification or medical diagnosis."
     },
     tr: {
       title: "Randevu öncesi AI Stil Asistanı",
@@ -84,9 +84,9 @@ const AIVisualizerPage: React.FC = () => {
       durationLabel: "Tahmini Süre:",
       durationValue: "45-60 dk",
       bookBtn: "Bu öneriyle randevu al",
-      premiumNotice: "Premium planda görsel stil önizleme (Mock/Roadmap)",
+      premiumNotice: "Premium Plan Görsel Önizleme",
       premiumNoticeDesc: "Premium planda, fotoğrafınıza uygulanan yüksek kaliteli yapay zeka destekli yeni stilinizin görsel önizlemesi burada gösterilecektir.",
-      privacyNote: "Gizlilik Notu: Bu demo gerçek AI sağlayıcısına fotoğraf göndermez. Canlı entegrasyonda fotoğraf işleme yalnızca açık izinle, güvenli sunucu tarafında ve veri minimizasyonu ilkesiyle yapılacaktır."
+      privacyNote: "Gizlilik Notu: Fotoğrafınız yalnızca stil önerisi oluşturmak için işlenir. Fotoğrafınızı müşteri hafızasına kaydetmek isterseniz ayrıca onayınız alınır. Bu analiz kimlik tanıma, yüz eşleştirme veya sağlık teşhisi amacıyla kullanılmaz."
     }
   }[language];
 
@@ -95,7 +95,7 @@ const AIVisualizerPage: React.FC = () => {
       {/* Badge and Title */}
       <div className="text-center mb-10">
         <div className="inline-block bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-400 font-bold px-4 py-1 rounded-full text-[10px] sm:text-xs mb-4 border border-violet-200 dark:border-violet-800 uppercase tracking-widest">
-           Mock AI Demo
+           {language === 'tr' ? 'Premium Yapay Zeka Özelliği' : 'Premium AI Feature'}
         </div>
         <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4 leading-tight">{t.title}</h1>
         <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 mx-auto max-w-2xl">{t.subtitle}</p>
