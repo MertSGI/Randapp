@@ -196,6 +196,14 @@ async function captureScreenshots() {
       await page.waitForLoadState('networkidle');
       await delay(1500);
 
+      const pageText = await page.evaluate(() => document.body.innerText);
+      if (!pageText.includes('Randevu Al') && !pageText.includes('Book Now')) {
+         throw new Error("no 'Randevu Al' CTA is visible on storefront");
+      }
+      if (!pageText.includes('AI Stil Asistanı') && !pageText.includes('AI Style Assistant')) {
+         throw new Error("no 'AI Stil Asistanı' CTA is visible on storefront");
+      }
+
       // 1. Initial Storefront
       const sfName = `customer-book-storefront-${viewportName}.png`;
       await page.screenshot({ path: path.join(OUT_DIR, viewportName, sfName), fullPage: true });
@@ -207,6 +215,11 @@ async function captureScreenshots() {
           await bookBtn.click();
           await delay(1000);
           
+          let updatedText = await page.evaluate(() => document.body.innerText);
+          if (updatedText.includes('Bilgileriniz') || updatedText.includes('isminiz') || updatedText.includes('email')) {
+             throw new Error("mobile flow starts incorrectly at details step");
+          }
+
           // 2. Service step
           const svcName = `customer-book-service-step-${viewportName}.png`;
           await page.screenshot({ path: path.join(OUT_DIR, viewportName, svcName), fullPage: true });
@@ -222,46 +235,51 @@ async function captureScreenshots() {
             await page.screenshot({ path: path.join(OUT_DIR, viewportName, stfName), fullPage: true });
             reportItems.push({ group: 'Customer Interaction', name: 'Book Staff Step', path: '/book', viewport: viewportName, file: `${viewportName}/${stfName}`, hash: 'none' });
 
-            const staffBtn = await page.$('button:has-text("Bana Fark Etmez"), button:has-text("No Preference")');
+            const staffBtn = await page.$('button:has-text("Bana Fark Etmez"), button:has-text("No Preference"), button:has-text("Senior Barber")');
             if (staffBtn) {
                await staffBtn.click();
                await delay(1500);
                
-               // Look for time or info step
+               // Look for time step
                const hasTimeStep = await page.$('div:has-text("Saat Seç")');
                
-               // Let's just capture whatever we landed on. It could be time or info step directly depending on mock logic.
                const timeName = `customer-book-time-step-${viewportName}.png`;
                await page.screenshot({ path: path.join(OUT_DIR, viewportName, timeName), fullPage: true });
                reportItems.push({ group: 'Customer Interaction', name: 'Book Time Step', path: '/book', viewport: viewportName, file: `${viewportName}/${timeName}`, hash: 'none' });
                
-               // Try to click a time slot if available
-               const timeSlot = await page.$('button.flex-col:not([disabled])');
-               if (timeSlot) {
-                   await timeSlot.click();
+               // Try to click a time slot 
+               // Time slots have something like 'py-3 px-2 rounded-xl text-sm font-medium'
+               const timeSlot = await page.$$('button:not([disabled])');
+               let clickedTime = false;
+               for (const btn of timeSlot) {
+                   const txt = await btn.innerText();
+                   if (/^\\d{2}:\\d{2}$/.test(txt.trim())) {
+                       await btn.click();
+                       clickedTime = true;
+                       break;
+                   }
+               }
+
+               if (clickedTime) {
                    await delay(1000);
                    const infoName = `customer-book-info-step-${viewportName}.png`;
                    await page.screenshot({ path: path.join(OUT_DIR, viewportName, infoName), fullPage: true });
                    reportItems.push({ group: 'Customer Interaction', name: 'Book Info Step', path: '/book', viewport: viewportName, file: `${viewportName}/${infoName}`, hash: 'none' });
-                   
-                   // Fill out the form? No need to fill it out unless we need confirmation. The info step is enough for visual validation, but we can try to click Devam.
                } else {
-                   // maybe we are already in info step
+                   // if we didn't find time, we might have successfully skipped to info step due to earliest slot logic
                    const infoName2 = `customer-book-info-step-${viewportName}.png`;
                    await page.screenshot({ path: path.join(OUT_DIR, viewportName, infoName2), fullPage: true });
                    reportItems.push({ group: 'Customer Interaction', name: 'Book Info Step', path: '/book', viewport: viewportName, file: `${viewportName}/${infoName2}`, hash: 'none' });
+                   let currentText = await page.evaluate(() => document.body.innerText);
+                   if (!currentText.includes('Bilgiler') && !currentText.includes('Bana Fark Etmez')) {
+                       throw new Error("stepper cannot reach time/details/confirmation");
+                   }
                }
-
-               // Look for confirmation or summary? At least we got up to info step.
-               // We will just capture confirmation placeholder.
-               const confName = `customer-book-confirmation-or-summary-step-${viewportName}.png`;
-               await page.screenshot({ path: path.join(OUT_DIR, viewportName, confName), fullPage: true });
-               reportItems.push({ group: 'Customer Interaction', name: 'Book Confirmation Summary', path: '/book', viewport: viewportName, file: `${viewportName}/${confName}`, hash: 'none' });
             } else {
                throw new Error("Could not find staff selection or 'No Preference' button.");
             }
           } else {
-            throw new Error("Could not find a service to click.");
+            throw new Error("service click cannot be found");
           }
       } else {
          throw new Error("Could not find 'Randevu Al' start booking button.");
@@ -269,6 +287,7 @@ async function captureScreenshots() {
     } catch (err) {
       console.error(`Booking flow interaction failed on ${viewportName}:`, err);
       skippedRoutes.push({ name: `Booking Flow Interaction (${viewportName})`, reason: err.message });
+      throw err;
     }
   };
 
