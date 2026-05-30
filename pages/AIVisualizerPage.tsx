@@ -1,129 +1,125 @@
 import React, { useState, useRef } from 'react';
-import * as GeminiService from '../services/geminiService';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTenant } from '../contexts/TenantContext';
-import { planService } from '../services/planService';
-import ReactMarkdown from 'react-markdown';
 
 const AIVisualizerPage: React.FC = () => {
   const { language } = useLanguage();
   const { tenant } = useTenant();
-  const [prompt, setPrompt] = useState<string>('');
+  
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [serviceGoal, setServiceGoal] = useState<string>('Saç');
+  const [styleGoal, setStyleGoal] = useState<string>('Modern');
   
   const [isGenerating, setIsGenerating] = useState(false);
-  const [analysisResult, setAnalysisResult] = useState<string | null>(null);
-  const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+  const [showResult, setShowResult] = useState(false);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const planId = tenant?.planId || 'professional';
-  const plan = planService.getPlan(planId);
-  const aiEnabled = plan?.aiRecommendationsEnabled ?? false;
-  const visualizationEnabled = plan?.aiVisualizationEnabled ?? false;
-
-  if (!aiEnabled) {
-    return (
-      <div className="max-w-4xl mx-auto py-16 px-4 text-center">
-        <h1 className="text-3xl font-bold dark:text-white mb-4">
-          {language === 'tr' ? 'Bu AI özelliği mevcut paketinizde bulunmuyor.' : 'This AI feature is not included in your current plan.'}
-        </h1>
-        <p className="text-gray-500">
-          {language === 'tr' ? 'Özelliği kullanmak için üst pakete geçin.' : 'Upgrade your plan to unlock this feature.'}
-        </p>
-      </div>
-    );
-  }
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     const reader = new FileReader();
     reader.onload = (event) => {
       if (event.target?.result) {
         setUploadedImage(event.target.result as string);
-        setAnalysisResult(null); 
-        setGeneratedImage(null);
+        setShowResult(false);
       }
     };
     reader.readAsDataURL(file);
   };
 
-  const checkQuotaExceeded = () => {
-    const quota = plan?.aiMonthlyQuota || 0;
-    // Mock quota check logic
-    const currentUsage = parseInt(localStorage.getItem('mock_ai_usage') || '0', 10);
-    if (quota > 0 && currentUsage >= quota) {
-      alert(language === 'tr' ? "Aylık AI kullanım kotanıza ulaştınız." : "Your monthly AI quota has been reached.");
-      return true;
-    }
-    localStorage.setItem('mock_ai_usage', (currentUsage + 1).toString());
-    return false;
+  const handleDemoPhoto = () => {
+    // A safe grey placeholder or a generated placeholder pattern
+    setUploadedImage('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"><rect width="400" height="400" fill="%23e2e8f0"/><text x="50%" y="50%" font-family="sans-serif" font-size="20" fill="%2364748b" text-anchor="middle" dominant-baseline="middle">Örnek Fotoğraf</text></svg>');
+    setShowResult(false);
   };
 
-  const handleConsultation = async () => {
-    if (checkQuotaExceeded()) return;
-
+  const handleConsultation = () => {
     setIsGenerating(true);
-    // Simulate reading super admin rules
-    const settingsStr = localStorage.getItem('randapp_ai_settings');
-    const aiConfig = settingsStr ? JSON.parse(settingsStr) : { enableAiVisualization: true };
-
-    const result = await GeminiService.generateFullConsultation(prompt, uploadedImage || undefined, language);
-    
-    if (result) {
-        setAnalysisResult(result.text);
-        if (visualizationEnabled && aiConfig.enableAiVisualization && result.image) {
-            setGeneratedImage(result.image);
-        }
-    } else {
-        setAnalysisResult(language === 'tr' ? "Tavsiye oluşturulamadı. Lütfen tekrar deneyin." : "Could not generate recommendation.");
-    }
-    setIsGenerating(false);
+    // Simulate generation
+    setTimeout(() => {
+      setIsGenerating(false);
+      setShowResult(true);
+    }, 1500);
   };
 
   const t = {
     en: {
-      title: "AI Style Recommendation",
-      subtitle: "Describe what you want, and optionally upload a photo. Our AI model will generate personalized style suggestions just for you.",
-      uploadTitle: "1. Upload Your Photo (Optional)",
-      uploadDesc: "Your photo is used to generate personalized recommendations. Please do not upload images containing sensitive personal information.",
-      uploadBtn: "Choose Photo",
-      promptLabel: "2. What kind of style or color do you want?",
-      promptPlaceholder: "e.g., Short messy fringe...",
+      title: "Pre-Booking AI Style Assistant",
+      subtitle: "Visualize your hair, beard, or nail ideas and easily choose which service to book.",
+      uploadTitle: "1. Upload Photo (Optional)",
+      uploadDesc: "Your photo is securely used for style matching.",
+      uploadBtn: "Upload Photo",
+      demoBtn: "Use Demo Photo",
+      serviceGoalObj: "2. What is your goal?",
+      styleGoalObj: "3. Preferred Style",
       generateBtn: "Get Recommendation",
-      generating: "Analyzing & Designing...",
-      resultsTitle: "Your Personal Recommendation",
-      premiumVisualizationNotice: "Premium AI visualization generates high-quality style previews based on your selections."
+      generating: "Analyzing...",
+      resultsTitle: "Your Style Recommendation",
+      recommendationDesc: `Based on your selections (${serviceGoal} - ${styleGoal}), we recommend a modern touch that fits your facial structure. For a long-lasting effect, a restorative care addition is suitable.`,
+      suggestedService: "Suggested Service:",
+      serviceName: `${serviceGoal} Styling & Care`,
+      durationLabel: "Est. Duration:",
+      durationValue: "45-60 min",
+      bookBtn: "Book with this recommendation",
+      premiumNotice: "Premium Plan Visual Preview (Roadmap)",
+      premiumNoticeDesc: "In the premium plan, a high-quality visual preview mockup based on your photo would appear here.",
+      privacyNote: "Privacy Note: This demo does not send photos to a real AI provider. In a live integration, photo processing will only happen with explicit consent, via secure server-side logic, maintaining data minimization."
     },
     tr: {
-      title: "Yapay Zeka Destekli Tavsiye",
-      subtitle: "İstediğiniz stili anlatın, isterseniz fotoğraf yükleyin. Yapay zeka sizin yüz hatlarınıza uygun, kişiselleştirilmiş öneriler sunsun.",
-      uploadTitle: "1. Fotoğrafınızı Yükleyin (Opsiyonel)",
-      uploadDesc: "Fotoğrafınız size özel öneriler oluşturmak için kullanılır. Lütfen hassas kişisel bilgi içeren görseller yüklemeyin.",
+      title: "Randevu öncesi AI Stil Asistanı",
+      subtitle: "Saç, sakal veya tırnak fikrinizi görselleştirin; hangi hizmete randevu almanız gerektiğini daha kolay seçin.",
+      uploadTitle: "1. Fotoğraf Yükle (Opsiyonel)",
+      uploadDesc: "Fotoğrafınız stil eşleştirmesi için güvenle kullanılır.",
       uploadBtn: "Fotoğraf Seç",
-      promptLabel: "2. Nasıl bir stil veya renk istersiniz?",
-      promptPlaceholder: "örn., Yanlar kısa üstler dağınık...",
+      demoBtn: "Demo Fotoğraf Kullan",
+      serviceGoalObj: "2. Hedefiniz Nedir?",
+      styleGoalObj: "3. Tercih Edilen Stil",
       generateBtn: "Tavsiye Al",
-      generating: "Analiz Ediliyor & Tasarlanıyor...",
-      resultsTitle: "Kişisel Tavsiyeniz",
-      premiumVisualizationNotice: "Premium yapay zeka yüksek kaliteli stil önizlemeleri oluşturur."
+      generating: "Analiz Ediliyor...",
+      resultsTitle: "Stil Öneriniz",
+      recommendationDesc: `Seçimlerinize (${serviceGoal} - ${styleGoal}) dayanarak yüz hatlarınıza uyum sağlayacak modern bir dokunuş öneriyoruz. Uzun süreli kalıcılık için onarıcı bakım eklentisi de uygundur.`,
+      suggestedService: "Önerilen Hizmet:",
+      serviceName: `${serviceGoal} Şekillendirme ve Bakım`,
+      durationLabel: "Tahmini Süre:",
+      durationValue: "45-60 dk",
+      bookBtn: "Bu öneriyle randevu al",
+      premiumNotice: "Premium planda görsel stil önizleme (Mock/Roadmap)",
+      premiumNoticeDesc: "Premium planda, fotoğrafınıza uygulanan yüksek kaliteli yapay zeka destekli yeni stilinizin görsel önizlemesi burada gösterilecektir.",
+      privacyNote: "Gizlilik Notu: Bu demo gerçek AI sağlayıcısına fotoğraf göndermez. Canlı entegrasyonda fotoğraf işleme yalnızca açık izinle, güvenli sunucu tarafında ve veri minimizasyonu ilkesiyle yapılacaktır."
     }
   }[language];
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
-      <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-6 md:p-8 transition-colors duration-300">
-        <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-2">{t.title}</h1>
-        <p className="text-gray-500 dark:text-gray-400 mb-8">{t.subtitle}</p>
+      {/* Badge and Title */}
+      <div className="text-center mb-10">
+        <div className="inline-block bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-400 font-bold px-4 py-1 rounded-full text-[10px] sm:text-xs mb-4 border border-violet-200 dark:border-violet-800 uppercase tracking-widest">
+           Mock AI Demo
+        </div>
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4 leading-tight">{t.title}</h1>
+        <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 mx-auto max-w-2xl">{t.subtitle}</p>
+      </div>
 
+      <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200 dark:border-slate-700 p-6 md:p-8 transition-colors duration-300">
+        
         <div className="space-y-8">
+            {/* Upload Section */}
             <div className="bg-slate-50 dark:bg-slate-700/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-600">
-              <h3 className="font-bold text-gray-900 dark:text-white mb-2">{t.uploadTitle}</h3>
-              <p className="text-xs text-gray-500 mb-4">{t.uploadDesc}</p>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2">
+                 <div>
+                    <h3 className="font-bold text-gray-900 dark:text-white text-lg">{t.uploadTitle}</h3>
+                    <p className="text-xs text-gray-500">{t.uploadDesc}</p>
+                 </div>
+                 <button 
+                  onClick={handleDemoPhoto}
+                  className="text-sm bg-slate-200 dark:bg-slate-600 hover:bg-slate-300 dark:hover:bg-slate-500 text-slate-700 dark:text-slate-200 px-4 py-2 rounded-lg font-medium transition-colors"
+                 >
+                   {t.demoBtn}
+                 </button>
+              </div>
               
-              <div className="flex flex-col sm:flex-row items-center gap-4">
+              <div className="flex flex-col sm:flex-row items-center gap-6">
                 <input 
                   type="file" 
                   accept="image/*" 
@@ -133,11 +129,11 @@ const AIVisualizerPage: React.FC = () => {
                 />
                 
                 {uploadedImage ? (
-                  <div className="w-32 h-32 rounded-xl overflow-hidden shrink-0 border-2 border-accent">
+                  <div className="w-32 h-32 rounded-2xl overflow-hidden shrink-0 border-2 border-violet-500 shadow-md">
                     <img src={uploadedImage} alt="Uploaded" className="w-full h-full object-cover" />
                   </div>
                 ) : (
-                  <div className="w-32 h-32 rounded-xl bg-slate-200 dark:bg-slate-600 flex items-center justify-center shrink-0">
+                  <div className="w-32 h-32 rounded-2xl bg-slate-200 dark:bg-slate-600 flex items-center justify-center shrink-0 border-2 border-dashed border-slate-300 dark:border-slate-500">
                     <svg className="w-10 h-10 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
@@ -146,54 +142,107 @@ const AIVisualizerPage: React.FC = () => {
                 
                 <button 
                   onClick={() => fileInputRef.current?.click()}
-                  className="px-6 py-3 rounded-xl font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+                  className="px-6 py-3 rounded-xl font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors shadow-sm"
                 >
                   {uploadedImage ? (language === 'tr' ? 'Değiştir' : 'Change') : t.uploadBtn}
                 </button>
               </div>
             </div>
 
-            <div className="space-y-4">
-              <label className="block text-sm font-bold text-gray-900 dark:text-white">{t.promptLabel}</label>
-              <textarea
-                className="w-full rounded-xl border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 dark:text-white shadow-sm focus:border-accent focus:ring-accent p-4 border"
-                rows={3}
-                placeholder={t.promptPlaceholder}
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+               {/* Categories */}
+               <div>
+                  <label className="block text-sm font-bold text-gray-900 dark:text-white mb-2">{t.serviceGoalObj}</label>
+                  <div className="flex gap-2">
+                     {['Saç', 'Sakal', 'Tırnak'].map(goal => (
+                        <button 
+                          key={goal}
+                          onClick={() => setServiceGoal(goal)}
+                          className={`flex-1 py-2.5 rounded-lg border text-sm font-medium transition-colors ${serviceGoal === goal ? 'bg-violet-100 border-violet-500 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300 dark:border-violet-500' : 'bg-white border-slate-200 text-slate-600 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+                        >
+                           {language==='en' ? (goal==='Saç'?'Hair':goal==='Sakal'?'Beard':'Nails') : goal}
+                        </button>
+                     ))}
+                  </div>
+               </div>
 
-              <button
-                onClick={handleConsultation}
-                disabled={isGenerating || (!uploadedImage && !prompt)}
-                className="w-full py-4 mt-4 rounded-xl font-bold text-white bg-accent hover:bg-blue-600 shadow-lg shadow-accent/20 disabled:opacity-50 disabled:shadow-none transition-all"
-              >
-                {isGenerating ? t.generating : t.generateBtn}
-              </button>
+               <div>
+                  <label className="block text-sm font-bold text-gray-900 dark:text-white mb-2">{t.styleGoalObj}</label>
+                  <select 
+                     className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 rounded-lg px-4 py-2.5 focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none"
+                     value={styleGoal}
+                     onChange={(e) => setStyleGoal(e.target.value)}
+                  >
+                     <option value="Doğal">{language === 'tr' ? 'Doğal' : 'Natural'}</option>
+                     <option value="Modern">{language === 'tr' ? 'Modern' : 'Modern'}</option>
+                     <option value="Cesur">{language === 'tr' ? 'Cesur' : 'Bold'}</option>
+                     <option value="Bakımlı">{language === 'tr' ? 'Bakımlı' : 'Groomed'}</option>
+                     <option value="Özel Gün">{language === 'tr' ? 'Özel Gün' : 'Special Occasion'}</option>
+                  </select>
+               </div>
             </div>
+
+            <button
+               onClick={handleConsultation}
+               disabled={isGenerating}
+               className="w-full py-4 rounded-xl font-bold text-white bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-700 hover:to-violet-700 shadow-lg shadow-violet-500/20 disabled:opacity-70 disabled:shadow-none transition-all"
+            >
+               {isGenerating ? t.generating : t.generateBtn}
+            </button>
             
-            {(analysisResult || generatedImage) && (
-               <div className="mt-8 pt-8 border-t border-gray-200 dark:border-slate-700">
-                  <h3 className="font-bold text-xl text-gray-900 dark:text-white mb-6">{t.resultsTitle}</h3>
+            {showResult && (
+               <div className="mt-10 pt-8 border-t border-slate-200 dark:border-slate-700 animate-slideUpFade">
+                  <h3 className="font-bold text-2xl text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+                     <span className="text-2xl">✨</span> {t.resultsTitle}
+                  </h3>
+                  
                   <div className="flex flex-col md:flex-row gap-8">
-                     {visualizationEnabled ? (
-                         generatedImage && (
-                             <div className="w-full md:w-1/2">
-                                 <div className="rounded-2xl overflow-hidden border border-gray-200 dark:border-slate-700 shadow-sm relative pt-[100%]">
-                                     <img src={generatedImage} className="absolute inset-0 w-full h-full object-cover" alt="Preview"/>
-                                 </div>
-                                 <p className="mt-2 text-xs text-gray-400 italic text-center px-4">{t.premiumVisualizationNotice}</p>
-                             </div>
-                         )
-                     ) : null}
-                     {analysisResult && (
-                         <div className={`w-full ${(visualizationEnabled && generatedImage) ? 'md:w-1/2' : ''} prose prose-slate dark:prose-invert text-sm`}>
-                             <ReactMarkdown>{analysisResult}</ReactMarkdown>
+                     {/* Recommendation Details */}
+                     <div className="w-full md:w-1/2 flex flex-col justify-between">
+                         <div>
+                           <p className="text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+                              {t.recommendationDesc}
+                           </p>
+
+                           <div className="bg-blue-50 dark:bg-slate-700/50 rounded-xl p-4 border border-blue-100 dark:border-slate-600 mb-6">
+                              <div className="flex justify-between items-center mb-2">
+                                 <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{t.suggestedService}</span>
+                                 <span className="text-xs text-blue-600 dark:text-blue-400 font-bold bg-blue-100 dark:bg-blue-900/40 px-2 py-0.5 rounded">{t.durationValue}</span>
+                              </div>
+                              <div className="font-bold text-lg text-blue-900 dark:text-white">
+                                 {t.serviceName}
+                              </div>
+                           </div>
                          </div>
-                     )}
+                         
+                         <button className="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-xl py-3.5 hover:bg-slate-800 dark:hover:bg-gray-100 transition-colors shadow-md">
+                           {t.bookBtn}
+                         </button>
+                     </div>
+
+                     {/* Premium Preview Mock */}
+                     <div className="w-full md:w-1/2">
+                         <div className="rounded-2xl bg-gradient-to-br from-violet-100 to-amber-50 dark:from-violet-900/20 dark:to-amber-900/10 border border-violet-200 dark:border-violet-800/30 relative flex flex-col items-center justify-center p-8 text-center h-full min-h-[250px]">
+                             <div className="w-16 h-16 bg-white dark:bg-slate-800 rounded-full shadow-sm flex items-center justify-center text-2xl mb-4 border border-violet-100 dark:border-slate-700">
+                                🪄
+                             </div>
+                             <h4 className="font-bold text-violet-900 dark:text-violet-300 mb-2">{t.premiumNotice}</h4>
+                             <p className="text-xs text-violet-700/70 dark:text-violet-400/70 leading-relaxed">
+                                {t.premiumNoticeDesc}
+                             </p>
+                             <div className="absolute top-3 right-3 flex gap-1">
+                                <div className="w-2 h-2 rounded-full bg-violet-400/50"></div>
+                                <div className="w-2 h-2 rounded-full bg-amber-400/50"></div>
+                             </div>
+                         </div>
+                     </div>
                   </div>
                </div>
             )}
+            
+            <div className="mt-8 bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/30 text-amber-800 dark:text-amber-400 text-xs p-4 rounded-xl shadow-sm text-center">
+               {t.privacyNote}
+            </div>
         </div>
       </div>
     </div>

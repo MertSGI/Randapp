@@ -69,8 +69,8 @@ const SalonBookingLayout: React.FC = () => {
                     to="/ai-visualizer" 
                     className={`${location.pathname === '/ai-visualizer' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700'} px-1 pt-1 border-b-2 text-sm font-medium flex items-center gap-1`}
                   >
-                    <span>✨</span>
-                    {language === 'tr' ? 'Yapay Zeka ile Tavsiye' : 'AI Inspiration'}
+                    <span>🪄</span>
+                    {language === 'tr' ? 'AI Stil Asistanı' : 'AI Style Assistant'}
                   </Link>
                 )}
               </div>

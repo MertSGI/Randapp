@@ -143,6 +143,98 @@ const FeaturesPage: React.FC = () => {
            </div>
         </div>
 
+        {/* Customer-Facing AI Visualizer Section */}
+        <div className="mt-32 border-t border-slate-200 dark:border-slate-800 pt-20">
+           <div className="flex flex-col lg:flex-row gap-12 items-center max-w-6xl mx-auto">
+              <div className="w-full lg:w-1/2">
+                 <div className="inline-block bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-400 font-bold px-4 py-1.5 rounded-full text-xs mb-6 border border-violet-200 dark:border-violet-800 uppercase tracking-widest">
+                    {language === 'tr' ? 'Premium / Yakında Canlı' : 'Premium / Coming Soon'}
+                 </div>
+                 <h2 className="text-3xl md:text-5xl font-bold mb-6 dark:text-white leading-tight">
+                    {language === 'tr' ? 'Randevu öncesi AI Stil Asistanı' : 'Pre-booking AI Style Assistant'}
+                 </h2>
+                 <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-8">
+                    {language === 'tr'
+                      ? 'Müşteriler saç, sakal veya tırnak fikri için fotoğraf yükleyip randevu almadan önce stil önerisi alabilir. Bu demo ortamında AI çıktıları mock olarak gösterilir; canlı AI sağlayıcı bağlantısı kullanılmaz.'
+                      : 'Customers can upload a photo for hair, beard, or nail ideas and get style recommendations before booking. In this demo, AI outputs are mocked; no live AI provider is connected.'}
+                 </p>
+
+                 <div className="space-y-6">
+                    <div className="flex gap-4">
+                       <div className="w-12 h-12 bg-violet-100 dark:bg-violet-900/30 text-violet-600 rounded-xl flex items-center justify-center shrink-0 text-xl font-bold shadow-sm">1</div>
+                       <div>
+                          <h4 className="font-bold text-lg text-slate-900 dark:text-white mb-1">{language === 'tr' ? 'Fotoğrafla stil önerisi' : 'Style recommendations with photos'}</h4>
+                          <p className="text-slate-600 dark:text-slate-400 text-sm">
+                             {language === 'tr' ? 'Müşteri kendi saç, sakal veya tırnak fotoğrafını yükleyerek hangi hizmetin daha uygun olabileceğine dair görsel ilham ve öneri alabilir.' : 'The customer can upload their own hair, beard, or nail photo to get visual inspiration and recommendations on what service to book.'}
+                          </p>
+                       </div>
+                    </div>
+                    
+                    <div className="flex gap-4">
+                       <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 text-amber-600 rounded-xl flex items-center justify-center shrink-0 text-xl font-bold shadow-sm">2</div>
+                       <div>
+                          <h4 className="font-bold text-lg text-slate-900 dark:text-white mb-1">{language === 'tr' ? 'Randevuya dönüşen öneriler' : 'Recommendations generating bookings'}</h4>
+                          <p className="text-slate-600 dark:text-slate-400 text-sm">
+                             {language === 'tr' ? 'AI Asistan öneriyi doğrudan uygun hizmet ve randevu akışına bağlayarak müşterinin karar verme sürecini hızlandırır.' : 'The AI Assistant connects the recommendation directly to the matching service and booking flow, speeding up customer decision making.'}
+                          </p>
+                       </div>
+                    </div>
+
+                    <div className="flex gap-4">
+                       <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 text-blue-600 rounded-xl flex items-center justify-center shrink-0 text-xl font-bold shadow-sm">3</div>
+                       <div>
+                          <h4 className="font-bold text-lg text-slate-900 dark:text-white mb-1">{language === 'tr' ? 'Premium görsel önizleme' : 'Premium visual preview'}</h4>
+                          <p className="text-slate-600 dark:text-slate-400 text-sm">
+                             {language === 'tr' ? 'Üst paketlerde planlanan deneyim, müşterinin fotoğrafı üzerinden yeni stil fikrini mock/demo formatında gösterecek şekilde tasarlanır.' : 'The planned premium experience shows the new style idea using the customer\'s photo in a mock/demo format.'}
+                          </p>
+                       </div>
+                    </div>
+                 </div>
+                 
+                 <div className="mt-8 bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/30 text-amber-800 dark:text-amber-400 text-xs p-4 rounded-xl text-left shadow-sm">
+                    <strong>{language === 'tr' ? 'Güvenli ve izinli kullanım:' : 'Secure and permission-based:'}</strong> {language === 'tr' ? 'Referans fotoğrafları varsayılan olarak analiz edilmez. Canlı entegrasyon aşamasında açık izin, veri minimizasyonu ve sunucu tarafı güvenli işleme esas alınacaktır.' : 'Reference photos are not analyzed by default. In the live integration, explicit permission, data minimization, and secure server-side processing apply.'}
+                 </div>
+              </div>
+
+              <div className="w-full lg:w-1/2">
+                 <div className="bg-slate-100 dark:bg-slate-800 rounded-3xl p-6 md:p-10 flex flex-col items-center justify-center border border-slate-200 dark:border-slate-700 shadow-inner">
+                    <div className="bg-white dark:bg-slate-900 w-full max-w-sm rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 p-6">
+                       <div className="flex justify-between items-center mb-6">
+                           <h4 className="font-bold text-slate-900 dark:text-white text-sm">AI Stil Asistanı <span className="text-[10px] bg-violet-100 text-violet-700 font-bold px-2 py-0.5 rounded uppercase ml-2">Mock</span></h4>
+                       </div>
+                       
+                       <div className="flex gap-4 mb-6">
+                           <div className="w-16 h-16 bg-slate-200 dark:bg-slate-800 rounded-xl shrink-0 flex items-center justify-center border border-dashed border-slate-300 dark:border-slate-600">
+                               <span className="text-slate-400 text-xl">+</span>
+                           </div>
+                           <div className="flex-1">
+                               <div className="h-3 w-1/2 bg-slate-200 dark:bg-slate-700 rounded mb-2"></div>
+                               <div className="h-2 w-3/4 bg-slate-100 dark:bg-slate-800 rounded mb-1"></div>
+                               <div className="h-2 w-2/3 bg-slate-100 dark:bg-slate-800 rounded"></div>
+                           </div>
+                       </div>
+                       
+                       <div className="flex gap-2 mb-6">
+                           <div className="flex-1 h-8 bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-800/30 rounded text-center text-xs font-bold text-violet-700 dark:text-violet-300 leading-8">Saç</div>
+                           <div className="flex-1 h-8 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-center text-xs text-slate-500 dark:text-slate-400 leading-8">Sakal</div>
+                           <div className="flex-1 h-8 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-center text-xs text-slate-500 dark:text-slate-400 leading-8">Tırnak</div>
+                       </div>
+                       
+                       <div className="bg-gradient-to-tr from-blue-50 to-violet-50 dark:from-blue-900/10 dark:to-violet-900/10 rounded-xl p-4 border border-blue-100 dark:border-violet-500/20 mb-6 relative overflow-hidden">
+                          <div className="h-2 w-full bg-blue-200/50 dark:bg-blue-800/30 rounded mb-2"></div>
+                          <div className="h-2 w-5/6 bg-blue-200/50 dark:bg-blue-800/30 rounded mb-2"></div>
+                          <div className="h-2 w-2/3 bg-blue-200/50 dark:bg-blue-800/30 rounded"></div>
+                       </div>
+                       
+                       <div className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-xl py-3 text-center text-sm shadow-md">
+                          Bu stiline uygun randevu al
+                       </div>
+                    </div>
+                 </div>
+              </div>
+           </div>
+        </div>
+
         {/* New AI Section */}
         <div className="mt-32 border-t border-slate-200 dark:border-slate-800 pt-20">
            <div className="text-center max-w-3xl mx-auto mb-16">
