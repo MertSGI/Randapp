@@ -56,6 +56,7 @@ const BookingPage: React.FC = () => {
   const [staffAvailability, setStaffAvailability] = useState<Record<string, {date: string, time: string}>>({});
   const [saveProfile, setSaveProfile] = useState(false);
   const [hasSavedProfile, setHasSavedProfile] = useState(false);
+  const [isAnyStaffPreselected, setIsAnyStaffPreselected] = useState(false);
 
   const timeSlots = generateTimeSlots();
   
@@ -118,6 +119,7 @@ const BookingPage: React.FC = () => {
   const onStartBooking = () => {
     setSelectedService(null);
     setSelectedStaff(null);
+    setIsAnyStaffPreselected(false);
     setSelectedDate(new Date().toISOString().split('T')[0]);
     setSelectedTime('');
     setStep(1); // Go to service select
@@ -135,17 +137,34 @@ const BookingPage: React.FC = () => {
   const handleWebsiteStaffSelect = (staff: Staff | null, isAny: boolean = false) => {
     if (isAny) {
       setSelectedStaff(null);
-      // We can't preselect 'any', but we can just jump to step 1
+      setIsAnyStaffPreselected(true);
       setStep(1);
     } else if (staff) {
       setSelectedStaff(staff);
+      setIsAnyStaffPreselected(false);
       setStep(1);
     }
   };
 
-  const handleWidgetServiceSelect = (service: Service) => {
+  const handleWidgetServiceSelect = async (service: Service) => {
     setSelectedService(service);
-    setStep(2);
+    if (isAnyStaffPreselected && tenant) {
+       // Auto-calculate earliest staff since they picked Any
+       const earliest = await availabilityService.getEarliestAvailableStaff(tenant.id, service.id);
+       if (earliest) {
+          const earliestStaff = staffList.find(s => s.id === earliest.staffId) || staffList[0];
+          setSelectedStaff(earliestStaff);
+          setSelectedDate(earliest.date);
+          setSelectedTime(earliest.time);
+          setStep(4);
+          return;
+       }
+    }
+    if (selectedStaff) {
+      setStep(3);
+    } else {
+      setStep(2);
+    }
   };
 
   const handleStaffSelect = async (staff: Staff, isAny: boolean = false) => {
@@ -291,8 +310,8 @@ const BookingPage: React.FC = () => {
   return (
     <div className={step === 0 ? "w-full min-h-screen" : "max-w-3xl mx-auto pt-6 md:pt-10 pb-12 px-4"}>
       {isAuthorizedPreview && (
-         <div className={`mb-6 p-3 ${currentUser?.role === 'super_admin' ? 'bg-purple-100 text-purple-800 border-purple-200' : 'bg-blue-100 text-blue-800 border-blue-200'} border rounded-lg text-sm text-center font-medium shadow-sm`}>
-            {currentUser?.role === 'super_admin' ? 'Super Admin Önizleme Modu: Bu sayfa müşterilere açık değildir.' : 'Önizleme Modu: Bu sayfa henüz müşterilere açık değildir.'}
+         <div className="fixed bottom-4 right-4 z-[9999] bg-slate-900 border border-slate-700 text-white px-3 py-1.5 rounded-full text-[10px] font-bold shadow-lg pointer-events-none opacity-50 uppercase tracking-widest leading-none">
+            {currentUser?.role === 'super_admin' ? 'Super Admin Preview' : 'Preview'}
          </div>
       )}
       {isCheckingSub ? (

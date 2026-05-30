@@ -204,8 +204,15 @@ async function captureScreenshots() {
          throw new Error("no 'AI Stil Asistanı' CTA is visible on storefront");
       }
 
-      if (pageText.includes('Super Admin Önizleme Modu')) {
+      if (pageText.includes('Super Admin Önizleme Modu') || pageText.includes('Super Admin Preview')) {
          throw new Error("public /book shows Super Admin preview banner");
+      }
+
+      const duplicateHeaderCount = await page.evaluate(() => {
+          return document.querySelectorAll('header, nav').length;
+      });
+      if (duplicateHeaderCount > 1) {
+          throw new Error("duplicate header appears on public /book (" + duplicateHeaderCount + " found)");
       }
       
       const visibleBrokenImagesCount = await page.evaluate(() => {
@@ -224,6 +231,25 @@ async function captureScreenshots() {
       const sfName = `customer-book-storefront-${viewportName}.png`;
       await page.screenshot({ path: path.join(OUT_DIR, viewportName, sfName), fullPage: true });
       reportItems.push({ group: 'Customer Interaction', name: 'Book Storefront', path: '/book', viewport: viewportName, file: `${viewportName}/${sfName}`, hash: 'none' });
+
+      // Action: Open Lightbox
+      try {
+          const heroSlide = page.locator('section#hero img').first();
+          if (await heroSlide.count() > 0) {
+              await heroSlide.click({ position: { x: 10, y: 10 } }); // Clicking hero opens lightbox
+              await delay(800);
+              const lightboxName = `customer-book-lightbox-${viewportName}.png`;
+              await page.screenshot({ path: path.join(OUT_DIR, viewportName, lightboxName) });
+              reportItems.push({ group: 'Customer Interaction', name: 'Lightbox Open', path: '/book', viewport: viewportName, file: `${viewportName}/${lightboxName}`, hash: 'none' });
+              
+              // Close lightbox
+              await page.keyboard.press('Escape');
+              await delay(500);
+          }
+      } catch(e) {
+          console.log(`Could not capture lightbox: ${e.message}`);
+          throw new Error("gallery lightbox cannot open");
+      }
 
       // Take section screenshots
       const sections = ['hero', 'services', 'ai-assistant', 'staff', 'contact'];

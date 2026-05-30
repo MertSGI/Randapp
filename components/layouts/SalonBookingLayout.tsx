@@ -42,6 +42,17 @@ const SalonBookingLayout: React.FC = () => {
   const plan = planService.getPlan(planId);
   const aiEnabled = plan?.aiRecommendationsEnabled ?? false;
 
+  const isBookRoute = location.pathname === '/book' || location.pathname === `/${tenant?.slug}`;
+
+  // If it's the book route, let the page handle its own full layout
+  if (isBookRoute) {
+    return (
+      <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-slate-900 transition-colors duration-300">
+        <Outlet />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-slate-900 transition-colors duration-300">
       <nav className="bg-white dark:bg-slate-800 shadow-sm sticky top-0 z-40 transition-colors duration-300">
