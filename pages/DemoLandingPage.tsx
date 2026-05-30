@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useDialog } from '../contexts/DialogContext';
@@ -11,6 +11,21 @@ const DemoLandingPage: React.FC = () => {
   const { alert: showAlert } = useDialog();
   const t = translations[language];
 
+  const [phraseIndex, setPhraseIndex] = useState(0);
+  const phrases = language === 'tr' 
+    ? ['Kuaför salonunuz', 'Berber işletmeniz', 'Güzellik merkeziniz', 'Nail studio’nuz', 'Kliniğiniz', 'Randevulu işletmeniz']
+    : ['Your hair salon', 'Your barbershop', 'Your beauty center', 'Your nail studio', 'Your clinic', 'Your booking business'];
+
+  useEffect(() => {
+    if (!phrases || phrases.length === 0) return;
+    const interval = setInterval(() => {
+      setPhraseIndex((prev) => (prev + 1) % phrases.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [phrases.length]);
+
+  const currentPhrase = phrases[phraseIndex] || '';
+
   const [salonName, setSalonName] = useState(language === 'tr' ? 'Örnek Salon' : 'Sample Salon');
   const [logoUrl, setLogoUrl] = useState('');
   const [coverUrl, setCoverUrl] = useState('');
@@ -21,21 +36,27 @@ const DemoLandingPage: React.FC = () => {
   const [address, setAddress] = useState('');
   const [shortDesc, setShortDesc] = useState('');
   
-  const [service1Name, setService1Name] = useState(language === 'tr' ? 'Saç Kesimi' : 'Haircut');
-  const [service1Price, setService1Price] = useState('500');
-  const [service2Name, setService2Name] = useState(language === 'tr' ? 'Saç Boyama' : 'Coloring');
-  const [service2Price, setService2Price] = useState('1200');
-  const [service3Name, setService3Name] = useState(language === 'tr' ? 'Manikür' : 'Manicure');
-  const [service3Price, setService3Price] = useState('300');
-  const [service4Name, setService4Name] = useState(language === 'tr' ? 'Sakal Tıraşı' : 'Beard Trim');
-  const [service4Price, setService4Price] = useState('200');
+  const [services, setServices] = useState([
+    { id: 1, name: language === 'tr' ? 'Saç Kesimi' : 'Haircut', price: '500' },
+    { id: 2, name: language === 'tr' ? 'Saç Boyama' : 'Coloring', price: '1200' },
+  ]);
   
-  const [staff1Name, setStaff1Name] = useState(language === 'tr' ? 'Ayşe Yılmaz' : 'Jane Smith');
-  const [staff1Title, setStaff1Title] = useState(language === 'tr' ? 'Saç Uzmanı' : 'Hair Stylist');
-  const [staff2Name, setStaff2Name] = useState(language === 'tr' ? 'Mehmet Kaya' : 'John Doe');
-  const [staff2Title, setStaff2Title] = useState(language === 'tr' ? 'Berber' : 'Barber');
-  const [staff3Name, setStaff3Name] = useState(language === 'tr' ? 'Elif Demir' : 'Emma Rose');
-  const [staff3Title, setStaff3Title] = useState('Nail Artist');
+  const [staff, setStaff] = useState([
+    { id: 1, name: language === 'tr' ? 'Ayşe Yılmaz' : 'Jane Smith', title: language === 'tr' ? 'Saç Uzmanı' : 'Hair Stylist' },
+    { id: 2, name: language === 'tr' ? 'Mehmet Kaya' : 'John Doe', title: language === 'tr' ? 'Berber' : 'Barber' },
+  ]);
+
+  const handleAddService = () => setServices([...services, { id: Date.now(), name: '', price: '' }]);
+  const handleUpdateService = (id: number, field: string, value: string) => {
+    setServices(services.map(s => s.id === id ? { ...s, [field]: value } : s));
+  };
+  const handleRemoveService = (id: number) => setServices(services.filter(s => s.id !== id));
+
+  const handleAddStaff = () => setStaff([...staff, { id: Date.now(), name: '', title: '' }]);
+  const handleUpdateStaff = (id: number, field: string, value: string) => {
+    setStaff(staff.map(s => s.id === id ? { ...s, [field]: value } : s));
+  };
+  const handleRemoveStaff = (id: number) => setStaff(staff.filter(s => s.id !== id));
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -53,8 +74,13 @@ const DemoLandingPage: React.FC = () => {
         
         {/* Hero Section */}
         <div className="text-center mb-12 md:mb-16">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white mb-6 leading-tight max-w-4xl mx-auto">
-            {language === 'tr' ? 'İşletmenizin Randapp’te nasıl görüneceğini saniyeler içinde görün' : 'See how your business will look on Randapp in seconds'}
+          <div className="mb-4 min-h-[3.5rem] sm:min-h-[1.3em] relative inline-flex w-full justify-center align-bottom px-2 flex-col">
+            <span key={currentPhrase} className="animate-slideUpFade text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-violet-600 dark:from-blue-400 dark:to-violet-400 font-extrabold text-3xl sm:text-5xl md:text-[56px] leading-tight tracking-tight">
+                {currentPhrase}
+            </span>
+          </div>
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold text-slate-900 dark:text-white mb-6 leading-[1.15] max-w-4xl mx-auto">
+            {language === 'tr' ? 'Randapp’te nasıl görünecek, saniyeler içinde görün.' : 'See how it will look on Randapp in seconds.'}
           </h1>
           <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto mb-10 leading-relaxed px-2">
             {language === 'tr' 
@@ -77,7 +103,7 @@ const DemoLandingPage: React.FC = () => {
           </div>
         </div>
 
-        <div id="preview-generator" className="flex flex-col lg:flex-row gap-8 md:gap-12 mt-8 md:mt-16 items-start">
+        <div id="preview-generator" className="flex flex-col-reverse lg:flex-row gap-8 md:gap-12 mt-8 md:mt-16 items-start">
           
           {/* Form Cards Panel */}
           <div className="w-full lg:w-3/5 space-y-6">
@@ -144,34 +170,25 @@ const DemoLandingPage: React.FC = () => {
                  {language === 'tr' ? 'Öne Çıkan Hizmetler' : 'Featured Services'}
               </h2>
               <div className="space-y-4">
-                <div className="grid grid-cols-3 gap-3">
-                   <input type="text" value={service1Name} onChange={e => setService1Name(e.target.value)} className="col-span-2 rounded-lg border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 border font-medium text-sm text-slate-900 dark:text-white" />
-                   <div className="relative">
-                      <span className="absolute left-3 top-2.5 text-gray-400 text-sm">₺</span>
-                      <input type="number" value={service1Price} onChange={e => setService1Price(e.target.value)} className="w-full rounded-lg border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 pl-7 border text-sm" />
-                   </div>
-                </div>
-                <div className="grid grid-cols-3 gap-3">
-                   <input type="text" value={service2Name} onChange={e => setService2Name(e.target.value)} className="col-span-2 rounded-lg border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 border font-medium text-sm text-slate-900 dark:text-white" />
-                   <div className="relative">
-                      <span className="absolute left-3 top-2.5 text-gray-400 text-sm">₺</span>
-                      <input type="number" value={service2Price} onChange={e => setService2Price(e.target.value)} className="w-full rounded-lg border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 pl-7 border text-sm" />
-                   </div>
-                </div>
-                <div className="grid grid-cols-3 gap-3">
-                   <input type="text" value={service3Name} onChange={e => setService3Name(e.target.value)} className="col-span-2 rounded-lg border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 border font-medium text-sm text-slate-900 dark:text-white" />
-                   <div className="relative">
-                      <span className="absolute left-3 top-2.5 text-gray-400 text-sm">₺</span>
-                      <input type="number" value={service3Price} onChange={e => setService3Price(e.target.value)} className="w-full rounded-lg border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 pl-7 border text-sm" />
-                   </div>
-                </div>
-                <div className="grid grid-cols-3 gap-3">
-                   <input type="text" value={service4Name} onChange={e => setService4Name(e.target.value)} className="col-span-2 rounded-lg border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 border font-medium text-sm text-slate-900 dark:text-white" />
-                   <div className="relative">
-                      <span className="absolute left-3 top-2.5 text-gray-400 text-sm">₺</span>
-                      <input type="number" value={service4Price} onChange={e => setService4Price(e.target.value)} className="w-full rounded-lg border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 pl-7 border text-sm" />
-                   </div>
-                </div>
+                {services.map((service, index) => (
+                  <div key={service.id} className="grid grid-cols-[1fr_100px_auto] gap-3 items-center">
+                    <input type="text" value={service.name} onChange={e => handleUpdateService(service.id, 'name', e.target.value)} placeholder={language === 'tr' ? 'Hizmet Adı' : 'Service Name'} className="rounded-lg border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 border font-medium text-sm text-slate-900 dark:text-white w-full" />
+                    <div className="relative">
+                       <span className="absolute left-3 top-2.5 text-gray-400 text-sm">₺</span>
+                       <input type="number" value={service.price} onChange={e => handleUpdateService(service.id, 'price', e.target.value)} placeholder="0" className="w-full rounded-lg border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 pl-7 border text-sm" />
+                    </div>
+                    {services.length > 1 && (
+                      <button onClick={() => handleRemoveService(service.id)} className="p-2 text-slate-400 hover:text-red-500 transition-colors">
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                      </button>
+                    )}
+                  </div>
+                ))}
+                
+                <button onClick={handleAddService} className="mt-4 flex items-center gap-2 text-sm font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors py-2">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+                  {language === 'tr' ? 'Hizmet Ekle' : 'Add Service'}
+                </button>
               </div>
               <p className="text-xs text-slate-500 mt-4">{language === 'tr' ? 'Tüm hizmetlerinizi kurulumdan sonra admin panelinden ekleyebilirsiniz.' : 'You can add all your services from the admin panel after setup.'}</p>
             </div>
@@ -183,18 +200,22 @@ const DemoLandingPage: React.FC = () => {
                  {language === 'tr' ? 'Uzmanlar' : 'Staff Members'}
               </h2>
               <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-3">
-                   <input type="text" value={staff1Name} onChange={e => setStaff1Name(e.target.value)} className="rounded-lg border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 border font-medium text-sm text-slate-900 dark:text-white" />
-                   <input type="text" value={staff1Title} onChange={e => setStaff1Title(e.target.value)} className="rounded-lg border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 border text-sm" />
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                   <input type="text" value={staff2Name} onChange={e => setStaff2Name(e.target.value)} className="rounded-lg border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 border font-medium text-sm text-slate-900 dark:text-white" />
-                   <input type="text" value={staff2Title} onChange={e => setStaff2Title(e.target.value)} className="rounded-lg border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 border text-sm" />
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                   <input type="text" value={staff3Name} onChange={e => setStaff3Name(e.target.value)} className="rounded-lg border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 border font-medium text-sm text-slate-900 dark:text-white" />
-                   <input type="text" value={staff3Title} onChange={e => setStaff3Title(e.target.value)} className="rounded-lg border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 border text-sm" />
-                </div>
+                {staff.map((member, index) => (
+                  <div key={member.id} className="grid grid-cols-[1fr_1fr_auto] gap-3 items-center">
+                    <input type="text" value={member.name} onChange={e => handleUpdateStaff(member.id, 'name', e.target.value)} placeholder={language === 'tr' ? 'Uzman Adı' : 'Staff Name'} className="rounded-lg border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 border font-medium text-sm text-slate-900 dark:text-white w-full" />
+                    <input type="text" value={member.title} onChange={e => handleUpdateStaff(member.id, 'title', e.target.value)} placeholder={language === 'tr' ? 'Unvanı' : 'Role'} className="rounded-lg border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 border text-sm w-full" />
+                    {staff.length > 1 && (
+                      <button onClick={() => handleRemoveStaff(member.id)} className="p-2 text-slate-400 hover:text-red-500 transition-colors">
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                      </button>
+                    )}
+                  </div>
+                ))}
+
+                <button onClick={handleAddStaff} className="mt-4 flex items-center gap-2 text-sm font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors py-2">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+                  {language === 'tr' ? 'Uzman Ekle' : 'Add Staff'}
+                </button>
               </div>
             </div>
 
@@ -274,65 +295,51 @@ const DemoLandingPage: React.FC = () => {
                 </div>
 
                 {/* Services */}
-                <div className="px-4 mt-6">
-                  <h3 className="font-bold text-slate-800 dark:text-slate-200 mb-3 text-[14px]">
-                     {language === 'tr' ? 'Popüler Hizmetler' : 'Popular Services'}
-                  </h3>
-                  <div className="flex flex-col gap-2">
-                    <div className="bg-white dark:bg-slate-800 p-3.5 flex justify-between items-center rounded-[14px] border border-slate-100 dark:border-slate-700 shadow-sm">
-                       <span className="text-[13px] font-medium text-slate-700 dark:text-slate-200">{service1Name || '-'}</span>
-                       <span className="font-bold text-[14px]" style={{ color: primaryColor }}>₺{service1Price || '0'}</span>
-                    </div>
-                    <div className="bg-white dark:bg-slate-800 p-3.5 flex justify-between items-center rounded-[14px] border border-slate-100 dark:border-slate-700 shadow-sm">
-                       <span className="text-[13px] font-medium text-slate-700 dark:text-slate-200">{service2Name || '-'}</span>
-                       <span className="font-bold text-[14px]" style={{ color: primaryColor }}>₺{service2Price || '0'}</span>
-                    </div>
-                    <div className="bg-white dark:bg-slate-800 p-3.5 flex justify-between items-center rounded-[14px] border border-slate-100 dark:border-slate-700 shadow-sm">
-                       <span className="text-[13px] font-medium text-slate-700 dark:text-slate-200">{service3Name || '-'}</span>
-                       <span className="font-bold text-[14px]" style={{ color: primaryColor }}>₺{service3Price || '0'}</span>
-                    </div>
-                    <div className="bg-white dark:bg-slate-800 p-3.5 flex justify-between items-center rounded-[14px] border border-slate-100 dark:border-slate-700 shadow-sm">
-                       <span className="text-[13px] font-medium text-slate-700 dark:text-slate-200">{service4Name || '-'}</span>
-                       <span className="font-bold text-[14px]" style={{ color: primaryColor }}>₺{service4Price || '0'}</span>
+                {services.some(s => s.name) && (
+                  <div className="px-4 mt-6">
+                    <h3 className="font-bold text-slate-800 dark:text-slate-200 mb-3 text-[14px]">
+                       {language === 'tr' ? 'Popüler Hizmetler' : 'Popular Services'}
+                    </h3>
+                    <div className="flex flex-col gap-2">
+                      {services.filter(s => s.name).map((service) => (
+                         <div key={service.id} className="bg-white dark:bg-slate-800 p-3.5 flex justify-between items-center rounded-[14px] border border-slate-100 dark:border-slate-700 shadow-sm">
+                            <span className="text-[13px] font-medium text-slate-700 dark:text-slate-200">{service.name}</span>
+                            <span className="font-bold text-[14px]" style={{ color: primaryColor }}>₺{service.price || '0'}</span>
+                         </div>
+                      ))}
                     </div>
                   </div>
-                </div>
+                )}
 
                 {/* Staff */}
-                <div className="px-4 mt-6 overflow-hidden">
-                  <h3 className="font-bold text-slate-800 dark:text-slate-200 mb-3 text-[14px]">{language === 'tr' ? 'Ekibimiz' : 'Our Team'}</h3>
-                  <div className="flex gap-3 overflow-x-auto pb-4 hide-scrollbar">
-                     <div className="bg-white dark:bg-slate-800 p-3 rounded-[14px] min-w-[110px] shrink-0 border border-slate-100 dark:border-slate-700 flex flex-col items-center text-center shadow-sm">
-                        <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(staff1Name || 'A')}&background=random`} alt="Staff" className="w-12 h-12 rounded-full mb-2" />
-                        <span className="text-[12px] font-bold text-slate-800 dark:text-slate-100 truncate w-full">{staff1Name || '-'}</span>
-                        <span className="text-[10px] text-slate-400 truncate w-full">{staff1Title || '-'}</span>
-                     </div>
-                     <div className="bg-white dark:bg-slate-800 p-3 rounded-[14px] min-w-[110px] shrink-0 border border-slate-100 dark:border-slate-700 flex flex-col items-center text-center shadow-sm">
-                        <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(staff2Name || 'B')}&background=random`} alt="Staff" className="w-12 h-12 rounded-full mb-2" />
-                        <span className="text-[12px] font-bold text-slate-800 dark:text-slate-100 truncate w-full">{staff2Name || '-'}</span>
-                        <span className="text-[10px] text-slate-400 truncate w-full">{staff2Title || '-'}</span>
-                     </div>
-                     <div className="bg-white dark:bg-slate-800 p-3 rounded-[14px] min-w-[110px] shrink-0 border border-slate-100 dark:border-slate-700 flex flex-col items-center text-center shadow-sm">
-                        <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(staff3Name || 'C')}&background=random`} alt="Staff" className="w-12 h-12 rounded-full mb-2" />
-                        <span className="text-[12px] font-bold text-slate-800 dark:text-slate-100 truncate w-full">{staff3Name || '-'}</span>
-                        <span className="text-[10px] text-slate-400 truncate w-full">{staff3Title || '-'}</span>
-                     </div>
+                {staff.some(s => s.name) && (
+                  <div className="px-4 mt-6 overflow-hidden">
+                    <h3 className="font-bold text-slate-800 dark:text-slate-200 mb-3 text-[14px]">{language === 'tr' ? 'Ekibimiz' : 'Our Team'}</h3>
+                    <div className="flex gap-3 overflow-x-auto pb-4 hide-scrollbar">
+                       {staff.filter(s => s.name).map((member) => (
+                         <div key={member.id} className="bg-white dark:bg-slate-800 p-3 rounded-[14px] min-w-[110px] shrink-0 border border-slate-100 dark:border-slate-700 flex flex-col items-center text-center shadow-sm">
+                            <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=random`} alt="Staff" className="w-12 h-12 rounded-full mb-2" />
+                            <span className="text-[12px] font-bold text-slate-800 dark:text-slate-100 truncate w-full">{member.name}</span>
+                            <span className="text-[10px] text-slate-400 truncate w-full">{member.title || '-'}</span>
+                         </div>
+                       ))}
+                    </div>
                   </div>
-                </div>
+                )}
 
               </div>
             </div>
 
-             {/* Action Row Under Preview */}
-             <div className="mt-6 flex flex-col gap-3 max-w-[380px] mx-auto">
+             {/* Action Row Under Preview (Sticky on Mobile) */}
+             <div className="fixed sm:static bottom-0 left-0 right-0 z-50 bg-white dark:bg-slate-900 sm:bg-transparent sm:dark:bg-transparent p-4 sm:p-0 border-t border-slate-200 dark:border-slate-800 sm:border-none shadow-[0_-4px_20px_rgba(0,0,0,0.05)] sm:shadow-none mt-0 sm:mt-6 flex flex-col gap-3 sm:max-w-[380px] sm:mx-auto">
                 <button 
                   onClick={handleContinue}
-                  className="w-full text-white px-6 py-4 rounded-xl font-bold shadow-lg shadow-blue-500/20 hover:bg-blue-700 transition-colors text-lg"
+                  className="w-full text-white px-6 py-3.5 sm:py-4 rounded-xl font-bold shadow-lg shadow-blue-500/20 hover:bg-blue-700 transition-colors text-base sm:text-lg"
                   style={{ backgroundColor: '#2563EB' }}
                 >
                   {language === 'tr' ? '7 Gün Ücretsiz Dene' : 'Start 7-Day Free Trial'}
                 </button>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-3 hidden sm:grid">
                    <button 
                      onClick={handleContinue}
                      className="w-full bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-gray-200 dark:border-slate-700 font-bold px-4 py-3 rounded-xl hover:border-gray-300 dark:hover:border-slate-600 transition-colors shadow-sm"
@@ -346,7 +353,7 @@ const DemoLandingPage: React.FC = () => {
                      {language === 'tr' ? 'Link Kopyala' : 'Copy Link'}
                    </button>
                 </div>
-                <p className="text-xs text-center text-slate-500 px-4 mt-2 leading-relaxed">
+                <p className="text-xs text-center text-slate-500 px-4 mt-1 sm:mt-2 leading-relaxed hidden sm:block">
                    {language === 'tr' ? 'Bu bilgiler kurulum adımında kullanılacaktır.' : 'These details will be used during setup.'}
                 </p>
              </div>
@@ -354,6 +361,8 @@ const DemoLandingPage: React.FC = () => {
 
         </div>
       </div>
+      {/* Mobile Safe Space for Fixed Bottom Bar */}
+      <div className="h-24 sm:h-0 block"></div>
     </div>
   );
 };
