@@ -1,31 +1,26 @@
 # Final Pilot Readiness Checklist
 
-This document details the critical path requirements for moving the Randapp project from Phase 0 to Phase 1 (Pilot Readiness).
+When moving from Sandbox to Production for the Pilot release, ensure the following steps are audited precisely:
 
-## Core Architecture Integrity
-- [x] **No Live Backend/Secrets:** Ensure no live Supabase keys, production Stripe/iyzico keys, or undocumented APIs exist.
-- [x] **Mock-Safe Service Layer:** Services fallback to `localStorage` gracefully when `VITE_DATA_MODE=mock`.
-- [x] **Separation of Concerns:** Contexts manage state, Services mock DB, Components manage UI.
+## 1. Secrets & Architecture
+- [ ] Ensure `.env` contains NO Iyzico secret keys.
+- [ ] Ensure `.env` contains NO Supabase Service Role Key.
+- [ ] Enable `VITE_PAYMENT_PROVIDER=production` natively.
+- [ ] Push Iyzico API Key and Secret Key securely to Edge Function (`supabase secrets set IYZICO_API_KEY="..."`).
 
-## SaaS Flow & Provisioning
-- [x] **Subscription Flow:** Onboarding triggers Trial/Purchase appropriately.
-- [x] **Tenant Setup Configuration:** "Public Display Name", "Slug", Services, Staff, Brand Colors configurable via Admin.
-- [x] **Slug Verification:** `slugUtils.ts` handles clean URL creation.
-- [x] **Provisioning Gate:** Tenant site is available publicly (`is_public_profile_enabled = true`) only when setup is complete and plan is active.
+## 2. Infrastructure Testing
+- [ ] Execute an End-to-End Test transaction using a real (but small amount) card in production environment.
+- [ ] Verify `payment-webhook` Edge function receives webhook.
+- [ ] Verify `payment-webhook` verifies signature properly.
+- [ ] Verify Supabase `subscriptions` table shifts status to `active`.
+- [ ] Verify RLS logic restricts visibility of Payments and Subscriptions strictly to the Tenant.
 
-## Abuse Prevention & KYB
-- [x] **Verification Structure:** Mock models exist for Business Identity, Contact, and Risk Level.
-- [x] **Super Admin Queue:** System conceptually supports a Super Admin approval/rejection pipeline for flagged content.
-- [x] **Prohibited Business Policy:** Explicit definition of allowed vs. prohibited services documented.
+## 3. UI
+- [ ] The customer-facing UI hides 'Mock' warnings, error flags, or test card info.
+- [ ] Edge functions have clean error catching for failures, providing generic feedback to the client rather than exposing deep internal traces.
 
-## UI/UX & Formatting
-- [x] **Embedded Booking:** Booking flow must sit within the salon site shell without breaking or redirecting.
-- [x] **Navigation Fixes:** Anchor links (`#contact`, `#services`) scroll smoothly and do not break the HashRouter framework.
-- [x] **Customer UI Cleanliness:** No "not-live", "mock mode", or internal system error banners displayed to the end booking user.
-- [x] **Responsive Compliance:** Tested across devices according to `RESPONSIVE_QA_MATRIX.md`.
+## 4. Rollback Plan
+- [ ] In the event of a catastrophic payment failure system, provide a quick script or process to switch back to `VITE_PAYMENT_PROVIDER=sandbox` or display a 'Maintenance' banner without exposing developer logs to customers.
 
-## Next Steps (Post-Pilot)
-1. Substitute the LocalStorage mock layer with an authenticated Supabase backend.
-2. Replace local Cloudflare Turnstile/reCAPTCHA mocks with strict implementations.
-3. Integrate real payment gateway credentials for checkout.
-4. Establish actual automated DNS generation (e.g., Cloudflare API) for tenant subdomain/custom-domain mappings.
+## 5. Audit Logging
+- [ ] Ensure any status changes made by `payment-webhook` log an entry in the `AuditLog` table.

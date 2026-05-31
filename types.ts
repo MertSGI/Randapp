@@ -151,24 +151,58 @@ export interface Subscription {
   id: string;
   tenantId: string;
   planId: string;
+  provider?: string;
+  providerSubscriptionReferenceCode?: string;
+  providerCustomerReferenceCode?: string;
   status: 'trialing' | 'active' | 'past_due' | 'cancelled' | 'expired' | 'payment_failed' | 'pending';
+  trialStartsAt?: string;
+  trialEndsAt?: string;
   currentPeriodStart: string;
   currentPeriodEnd: string;
-  trialEnd?: string;
   cancelAtPeriodEnd?: boolean;
-  paymentProviderCustomerId?: string;
-  paymentProviderSubscriptionId?: string;
+  cancelledAt?: string;
+  pastDueAt?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Payment {
   id: string;
   tenantId: string;
   subscriptionId: string;
+  provider: string;
+  providerPaymentId: string;
+  providerToken?: string;
   amount: number;
   currency: string;
   status: 'succeeded' | 'pending' | 'failed';
+  paidAt?: string;
+  failedAt?: string;
+  failureReason?: string;
+  rawEventId?: string;
+  createdAt: string;
+}
+
+export interface PaymentEvent {
+  id: string;
   provider: string;
-  providerPaymentId: string;
+  eventType: string;
+  providerEventId?: string;
+  tenantId?: string;
+  subscriptionId?: string;
+  status: string;
+  rawPayload: any;
+  processedAt?: string;
+  processingError?: string;
+  createdAt: string;
+}
+
+export interface AuditLog {
+  tenantId: string;
+  actorType: 'system' | 'admin' | 'user' | 'webhook';
+  actorId: string;
+  action: string;
+  metadata?: any;
   createdAt: string;
 }
 

@@ -26,9 +26,9 @@ export interface PricingPlan {
   isActive: boolean;
   isRecommended: boolean;
   trialDays: number;
-  providerProductReferenceCode?: string;
-  providerPlanReferenceCodeMonthly?: string;
-  providerPlanReferenceCodeAnnual?: string;
+  iyzicoProductReferenceCode?: string;
+  iyzicoPlanReferenceCodeMonthly?: string;
+  iyzicoPlanReferenceCodeAnnual?: string;
 }
 
 export type BillingPeriod = 'monthly' | 'annual';
@@ -59,7 +59,10 @@ export const DEFAULT_PLANS: Record<string, PricingPlan> = {
     referralEligible: false,
     isActive: true,
     isRecommended: false,
-    trialDays: 7
+    trialDays: 7,
+    iyzicoProductReferenceCode: 'test_product_1',
+    iyzicoPlanReferenceCodeMonthly: 'test_plan_monthly_1',
+    iyzicoPlanReferenceCodeAnnual: 'test_plan_annual_1'
   },
   professional: {
     id: 'professional',
@@ -86,7 +89,10 @@ export const DEFAULT_PLANS: Record<string, PricingPlan> = {
     referralEligible: true,
     isActive: true,
     isRecommended: true,
-    trialDays: 7
+    trialDays: 7,
+    iyzicoProductReferenceCode: 'test_product_2',
+    iyzicoPlanReferenceCodeMonthly: 'test_plan_monthly_2',
+    iyzicoPlanReferenceCodeAnnual: 'test_plan_annual_2'
   },
   premium: {
     id: 'premium',
@@ -113,7 +119,10 @@ export const DEFAULT_PLANS: Record<string, PricingPlan> = {
     referralEligible: true,
     isActive: true,
     isRecommended: false,
-    trialDays: 7
+    trialDays: 7,
+    iyzicoProductReferenceCode: 'test_product_3',
+    iyzicoPlanReferenceCodeMonthly: 'test_plan_monthly_3',
+    iyzicoPlanReferenceCodeAnnual: 'test_plan_annual_3'
   }
 };
 

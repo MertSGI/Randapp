@@ -137,6 +137,41 @@ async function captureScreenshots() {
       if (route.path === "/book" && pageText.includes("Hesap Askıda")) {
         failedAssertion = "Booking page shows suspended state";
       }
+      
+      if (group === "Marketing") {
+        const lowerPageText = pageText.toLowerCase();
+        if (
+          lowerPageText.includes("10.000+") || 
+          lowerPageText.includes("1000+") || 
+          lowerPageText.includes("0+") ||
+          lowerPageText.includes("sahte") ||
+          lowerPageText.includes("fake") ||
+          lowerPageText.includes("lorem")
+        ) {
+          failedAssertion = "marketing page shows fake stats or placeholder text";
+        }
+        
+        if (lowerPageText.includes("mock") || lowerPageText.includes("not-live") || lowerPageText.includes("sandbox")) {
+          failedAssertion = "marketing page shows mock/sandbox/not-live text";
+        }
+        
+        if (
+          lowerPageText.includes("ayşe") && 
+          lowerPageText.includes("harika") && 
+          lowerPageText.includes("yorum")
+        ) {
+          failedAssertion = "marketing page includes fake testimonials without disclaimers";
+        }
+
+        if (viewportName === "mobile") {
+          const hasHorizontalScroll = await page.evaluate(() => {
+            return document.documentElement.scrollWidth > document.documentElement.clientWidth;
+          });
+          if (hasHorizontalScroll) {
+             failedAssertion = "mobile homepage has horizontal scroll";
+          }
+        }
+      }
 
       if (failedAssertion) {
         throw new Error(`Assertion failed: ${failedAssertion}`);
