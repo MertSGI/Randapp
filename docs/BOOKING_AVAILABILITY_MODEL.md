@@ -1,7 +1,7 @@
 # Booking Availability Model
 
 ## Scope
-Defines how Randapp calculates when a customer can book an appointment. 
+Defines how LARİ calculates when a customer can book an appointment. 
 
 ## Current Implementation (MVP / Phase 1)
 - **Static Days/Hours**: The system assumes standard operational hours (e.g., typically configured in the mock database or admin settings).

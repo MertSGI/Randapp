@@ -192,8 +192,8 @@ const SuperAdminPlansPage: React.FC = () => {
                                      <input 
                                         type="text" 
                                         placeholder="e.g. prd_1234..."
-                                        value={plan.providerProductReferenceCode || ''} 
-                                        onChange={e => handleUpdate(plan.id, { providerProductReferenceCode: e.target.value })}
+                                        value={plan.iyzicoProductReferenceCode || ''} 
+                                        onChange={e => handleUpdate(plan.id, { iyzicoProductReferenceCode: e.target.value })}
                                         className="w-full border-gray-300 dark:border-slate-600 rounded-md p-2 text-sm bg-gray-50 dark:bg-slate-700 dark:text-white"
                                      />
                                  </div>
@@ -202,8 +202,8 @@ const SuperAdminPlansPage: React.FC = () => {
                                      <input 
                                         type="text" 
                                         placeholder="e.g. 1a2b3c4d-..."
-                                        value={plan.providerPlanReferenceCodeMonthly || ''} 
-                                        onChange={e => handleUpdate(plan.id, { providerPlanReferenceCodeMonthly: e.target.value })}
+                                        value={plan.iyzicoPlanReferenceCodeMonthly || ''} 
+                                        onChange={e => handleUpdate(plan.id, { iyzicoPlanReferenceCodeMonthly: e.target.value })}
                                         className="w-full border-gray-300 dark:border-slate-600 rounded-md p-2 text-sm bg-gray-50 dark:bg-slate-700 dark:text-white"
                                      />
                                  </div>
@@ -212,8 +212,8 @@ const SuperAdminPlansPage: React.FC = () => {
                                      <input 
                                         type="text" 
                                         placeholder="e.g. 5e6f7g8h-..."
-                                        value={plan.providerPlanReferenceCodeAnnual || ''} 
-                                        onChange={e => handleUpdate(plan.id, { providerPlanReferenceCodeAnnual: e.target.value })}
+                                        value={plan.iyzicoPlanReferenceCodeAnnual || ''} 
+                                        onChange={e => handleUpdate(plan.id, { iyzicoPlanReferenceCodeAnnual: e.target.value })}
                                         className="w-full border-gray-300 dark:border-slate-600 rounded-md p-2 text-sm bg-gray-50 dark:bg-slate-700 dark:text-white"
                                      />
                                  </div>

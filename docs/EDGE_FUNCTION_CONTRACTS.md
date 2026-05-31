@@ -1,6 +1,6 @@
 # Edge Function Contracts
 
-The following documents the planned Supabase Edge Functions for Randapp production. 
+The following documents the planned Supabase Edge Functions for LARİ production. 
 All functions are isolated and securely hold secrets like `GEMINI_API_KEY` and `IYZICO_API_KEY`.
 
 ## 1. create-checkout-session

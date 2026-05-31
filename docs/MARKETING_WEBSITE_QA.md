@@ -1,4 +1,4 @@
-# Randapp Marketing Website QA Guide
+# LARİ Marketing Website QA Guide
 
 ## Overview
 This document outlines the testing requirements for the public-facing Randapp marketing site.

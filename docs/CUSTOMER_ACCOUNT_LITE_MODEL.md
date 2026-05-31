@@ -3,7 +3,7 @@
 A frictionless approach to customer account creation during the booking flow.
 
 ## Goal
-To reduce friction and increase booking conversion, Randapp does NOT require password creation or explicit account registration before booking. 
+To reduce friction and increase booking conversion, LARİ does NOT require password creation or explicit account registration before booking. 
 
 ## Flow
 1. Guest booking is the default. 

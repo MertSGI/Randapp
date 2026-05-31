@@ -1,7 +1,7 @@
 # Site Routing and Domain Model
 
 ## 1. MVP Routing Strategy (Current)
-Currently, Randapp manages multiple tenants strictly through path-based routing in the MVP application.
+Currently, LARİ manages multiple tenants strictly through path-based routing in the MVP application.
 - **Tenant Links:** `/#/book?tenantId=[id]`
 - **Super Admin Previews:** `/#/super-admin/tenant-preview/[id]`
 - **Admin Previews:** `/#/admin/site-preview`

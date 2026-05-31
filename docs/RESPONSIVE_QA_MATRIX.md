@@ -1,6 +1,6 @@
 # Responsive QA Matrix
 
-Every feature of Randapp must be tested against this matrix to ensure a flawless experience across all devices.
+Every feature of LARİ must be tested against this matrix to ensure a flawless experience across all devices.
 
 ## Device Breakpoints
 - **Mobile:** 390px width (e.g., iPhone 12/13/14 Pro)

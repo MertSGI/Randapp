@@ -1,6 +1,6 @@
 # Payment Provider Decision
 
-This document compares payment providers for handling recurring subscriptions in Randapp.
+This document compares payment providers for handling recurring subscriptions in LARİ.
 
 ## Providers Evaluated
 

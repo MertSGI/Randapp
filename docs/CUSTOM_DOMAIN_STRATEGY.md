@@ -1,7 +1,7 @@
 # Custom Domain Strategy
 
 ## Default Behavior
-All newly onboarded tenants automatically get a Randapp subdomain (e.g., `https://[salons-slug].randapp.com` or via router isolation in MVP). 
+All newly onboarded tenants automatically get a LARİ subdomain (e.g., `https://[salons-slug].randapp.com` or via router isolation in MVP). 
 
 ## Annual Packages & Custom Domains
 Certain premium tiers (e.g., Professional or Premium on an *Annual* billing cycle) may include eligibility for a custom `.com` domain (e.g., `www.gorgeous-salon.com`).

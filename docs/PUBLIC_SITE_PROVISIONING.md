@@ -1,6 +1,6 @@
 # Public Site Provisioning Architecture
 
-This document describes the intended architecture for generating and managing public-facing salon websites on the Randapp platform.
+This document describes the intended architecture for generating and managing public-facing salon websites on the LARİ platform.
 
 ## 1. Flow Overview
 

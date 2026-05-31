@@ -1,6 +1,6 @@
 # Supabase RLS and Security Model
 
-This document outlines the planned Row Level Security (RLS) policies and security model for the Randapp production database.
+This document outlines the planned Row Level Security (RLS) policies and security model for the LARİ production database.
 
 ## Principles
 1. **Tenant Isolation**: By default, no tenant can read or write data belonging to another tenant (`tenant_id` scopes).

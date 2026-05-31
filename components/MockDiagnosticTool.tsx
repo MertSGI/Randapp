@@ -122,7 +122,7 @@ export const MockDiagnosticTool: React.FC = () => {
   if (!isVisible) return null;
 
   const handleResetAllMockData = async () => {
-    const confirmed = await showConfirm({ message: 'Emin misiniz? \n\nSadece Randapp mock verileri temizlenecek ve ilk durumlarına dönecektir (Tema ve dil tercihleriniz korunur).' });
+    const confirmed = await showConfirm({ message: 'Emin misiniz? \n\nSadece LARİ mock verileri temizlenecek ve ilk durumlarına dönecektir (Tema ve dil tercihleriniz korunur).' });
     if (confirmed) {
       // Clean only Randapp mock keys
       const keysToRemove: string[] = [];

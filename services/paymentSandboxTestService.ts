@@ -32,9 +32,9 @@ export const paymentSandboxTestService = {
      if (!plan) return { valid: false, message: 'Plan not found' };
 
      const missing: string[] = [];
-     if (!plan.providerProductReferenceCode) missing.push('providerProductReferenceCode');
-     if (!plan.providerPlanReferenceCodeMonthly) missing.push('providerPlanReferenceCodeMonthly');
-     if (!plan.providerPlanReferenceCodeAnnual) missing.push('providerPlanReferenceCodeAnnual');
+     if (!plan.iyzicoProductReferenceCode) missing.push('iyzicoProductReferenceCode');
+     if (!plan.iyzicoPlanReferenceCodeMonthly) missing.push('iyzicoPlanReferenceCodeMonthly');
+     if (!plan.iyzicoPlanReferenceCodeAnnual) missing.push('iyzicoPlanReferenceCodeAnnual');
 
      if (missing.length > 0) {
          return { valid: false, message: 'Missing reference codes', missing };

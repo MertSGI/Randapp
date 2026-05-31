@@ -1,7 +1,7 @@
 # Referral System Plan
 
 ## Overview
-Randapp includes a simple referral program to encourage existing salon owners (tenants) to invite other businesses. 
+LARİ includes a simple referral program to encourage existing salon owners (tenants) to invite other businesses. 
 
 ## Data Model
 

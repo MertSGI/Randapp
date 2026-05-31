@@ -1,6 +1,6 @@
 # AI Assistant Configuration
 
-This document outlines the architecture, data flows, and security guidelines for AI capabilities (Gemini) within the Randapp platform (Phase 3).
+This document outlines the architecture, data flows, and security guidelines for AI capabilities (Gemini) within the LARİ platform (Phase 3).
 
 ## Current Architecture (Phase 3 Mock-Safe)
 - Gemini SDK (`@google/genai`) is completely removed from the frontend client bundle for security.

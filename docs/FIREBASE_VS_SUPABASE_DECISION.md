@@ -1,7 +1,7 @@
 # Firebase vs Supabase Decision
 
 ## Recommendation
-**Keep Supabase as the primary backend for Randapp.**
+**Keep Supabase as the primary backend for LARİ.**
 
 ## Reasons
 1. **Existing Architecture**: The current schema, migrations (SQL), and Row Level Security (RLS) policies are already developed for Supabase.

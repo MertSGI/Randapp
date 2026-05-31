@@ -112,7 +112,6 @@ const PricingPage: React.FC = () => {
                      <span className="text-accent font-bold mt-0.5">✓</span>
                      <span className="text-xs md:text-sm pb-1 w-full flex justify-between items-center gap-1">
                          <span>{language === 'tr' ? 'Özel domain desteği' : 'Custom domain support'}</span>
-                         <FeatureBadge status="backend_required" language={language} className="scale-90 origin-right" />
                      </span>
                   </li>
                 )}
@@ -130,39 +129,21 @@ const PricingPage: React.FC = () => {
                      <span className="text-accent font-bold mt-0.5">✓</span>
                      <span className="text-xs md:text-sm pb-1 w-full flex justify-between items-center gap-1">
                          <span>{t.marketing.pricing.ai_visualization}</span>
-                         <FeatureBadge status="roadmap" language={language} className="scale-90 origin-right" />
                      </span>
                   </li>
                 )}
             </ul>
             <div className="space-y-3 mt-auto pt-6 border-t border-gray-100 dark:border-slate-700">
-               {ctaConfig.safetyMessage && (
-                 <p className="text-[10px] md:text-xs text-yellow-600 dark:text-yellow-500 mb-3 bg-yellow-50 dark:bg-yellow-900/20 p-2 rounded text-center">{ctaConfig.safetyMessage}</p>
-               )}
                {ctaConfig.actionType === 'talk_to_sales' ? (
                  <a href={`https://wa.me/905555555555?text=${encodeURIComponent(t.marketing.pricing.sales_wa_text.replace('{planName}', plan.name).replace('{period}', billingPeriod === 'annual' ? t.marketing.pricing.annual : t.marketing.pricing.monthly))}`} target="_blank" rel="noreferrer" className={`block w-full text-center font-bold py-3.5 md:py-4 rounded-xl transition bg-gray-100 dark:bg-slate-700 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-slate-600 text-sm md:text-base`}>
                    {ctaConfig.label}
                  </a>
                ) : (
-                 <button 
-                   onClick={async (e) => {
-                     e.preventDefault();
-                     const isMock = (import.meta as any).env.VITE_PAYMENT_PROVIDER === 'mock' || !(import.meta as any).env.VITE_PAYMENT_PROVIDER;
-                     if (!isMock) {
-                         const testValidation = (await import('../services/paymentSandboxTestService')).paymentSandboxTestService.validatePlanReferenceCodes(plan.id);
-                         if (!testValidation.valid) {
-                             showAlert(language === 'tr' ? 'Bu paket için ödeme sağlayıcı referans kodları eksik.' : 'This plan is missing payment provider reference codes.');
-                             return;
-                         }
-                     }
-                     const alertMsg = language === 'tr' 
-                       ? 'Ödeme altyapısı şu anda test aşamasındadır. Canlı ödeme akışı yakında aktif edilecektir.' 
-                       : 'Payment integration is currently in testing mode. Live checkout will be available soon.';
-                     showAlert(alertMsg);
-                   }}
+                 <Link 
+                   to="/demo"
                    className={`block w-full text-center font-bold py-3.5 md:py-4 rounded-xl transition shadow-md ${isRecommended ? 'bg-accent text-white hover:bg-blue-600 hover:shadow-lg' : 'bg-gray-100 dark:bg-slate-700 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-slate-600'} text-sm md:text-base`}>
                    {ctaConfig.label}
-                 </button>
+                 </Link>
                )}
             </div>
           </div>

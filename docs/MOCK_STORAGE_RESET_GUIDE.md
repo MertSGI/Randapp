@@ -1,4 +1,4 @@
-# Randapp Mock Storage Reset Guide & Diagnostics
+# LARİ Mock Storage Reset Guide & Diagnostics
 
 This guide documents the layout, keys, and manual cleanup steps for Randapp's storage management inside client-side mock modes.
 

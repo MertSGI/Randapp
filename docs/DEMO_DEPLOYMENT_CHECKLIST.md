@@ -1,6 +1,6 @@
 # Demo Deployment Checklist
 
-This document outlines the steps required to deploy the mock-mode demo of Randapp on platforms like Netlify or Vercel for sales outreach purposes.
+This document outlines the steps required to deploy the mock-mode demo of LARİ on platforms like Netlify or Vercel for sales outreach purposes.
 
 ## 1. Environment Requirements
 

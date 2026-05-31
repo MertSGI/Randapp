@@ -1,6 +1,6 @@
 # Supabase Deployment Guide
 
-This guide outlines the steps to deploy the backend services for Randapp using Supabase CLI. 
+This guide outlines the steps to deploy the backend services for LARİ using Supabase CLI. 
 This is required before integrating real payment processing using iyzico sandbox.
 
 ## Prerequisites

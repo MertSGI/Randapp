@@ -60,7 +60,7 @@ serve(async (req) => {
       throw new Error(`Invalid planId: ${planId}`);
     }
 
-    const conversationId = `randapp_${tenantId}_${Date.now()}`;
+    const conversationId = `lari_${tenantId}_${Date.now()}`;
 
     console.log(`[iyzico-sandbox] Creating checkout session for tenant: ${tenantId}, plan: ${plan.name}`);
 

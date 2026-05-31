@@ -1,7 +1,7 @@
 # Iyzico Integration Runbook
 
 ## Overview
-This runbook covers the integration of Iyzico subscription and payment APIs with Randapp. The architecture relies on Supabase Edge Functions to ensure that all sensitive credentials (like Iyzico API Keys and Supabase Service Role keys) remain absolutely hidden from the browser. The frontend never touches these keys.
+This runbook covers the integration of Iyzico subscription and payment APIs with LARİ. The architecture relies on Supabase Edge Functions to ensure that all sensitive credentials (like Iyzico API Keys and Supabase Service Role keys) remain absolutely hidden from the browser. The frontend never touches these keys.
 
 ## Architecture
 1. **Frontend**: Collects the user intent to subscribe or checkout (using mock UI or a safe redirect).

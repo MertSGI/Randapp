@@ -1,6 +1,6 @@
 # Button Action Audit
 
-This document tracks all buttons and actions across the Randapp platform to ensure everything is hooked up or clearly marked as a placeholder.
+This document tracks all buttons and actions across the LARİ platform to ensure everything is hooked up or clearly marked as a placeholder.
 
 ## Rules
 - Every button must do what it promises (navigate, open external tab, save, etc.).

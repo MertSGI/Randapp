@@ -33,4 +33,4 @@ The UI explicitly notes: *"Bu gelir tahmini, uygulama üzerinden oluşturulan (v
 The Super Admin aggregates data across *all* tenants.
 - **Platform Health:** Total salons vs. Active vs. Suspended.
 - **Financial Baseline:** Expected MRR based on active subscriptions * current plan rates.
-- **Tenant Efficacy:** Shows exactly how many appointments and estimated revenue a specific salon generated this month. This is critical for proving value and reducing churn (e.g., "Randapp helped you process 45,000 TL in bookings this month").
+- **Tenant Efficacy:** Shows exactly how many appointments and estimated revenue a specific salon generated this month. This is critical for proving value and reducing churn (e.g., "LARİ helped you process 45,000 TL in bookings this month").

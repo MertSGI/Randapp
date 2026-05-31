@@ -1,4 +1,4 @@
-# Randapp Pilot Acceptance Checklist
+# LARİ Pilot Acceptance Checklist
 
 This checklist confirms that the application is ready for the end-to-end Pilot Demo.
 

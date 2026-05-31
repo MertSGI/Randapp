@@ -14,7 +14,7 @@
 - **Privacy Copy:** The UI explicitly states: "Your photo is only used for temporary processing to generate recommendations. Please do not upload images containing sensitive personal information."
 
 ## Payments, Trial Billing & Card Data
-- **No Direct Card Handling:** All credit card data is securely collected directly by the payment provider (Iyzico). Randapp web application NEVER touches, stores, or processes PANs, CVVs, or full card numbers.
+- **No Direct Card Handling:** All credit card data is securely collected directly by the payment provider (Iyzico). LARİ web application NEVER touches, stores, or processes PANs, CVVs, or full card numbers.
 - **Frontend Secrecy:** Iyzico secrets and API keys are strictly forbidden on the frontend bundle and only live in Supabase secrets mapping to `.env`.
 - **Checkout Integrity:** In production environments, payment amounts and Trial modes are cross-verified by Edge Functions referencing server-side plan definitions to prevent tampering.
 

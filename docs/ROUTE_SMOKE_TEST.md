@@ -6,7 +6,7 @@ The application uses multiple distinct layouts depending on the user context and
 - Preview/Local: `VITE_ROUTER_MODE=hash` (using `/#/...`)
 - Production: `VITE_ROUTER_MODE=browser` (using standard URLs like `/admin`)
 
-## 1. Marketing / Public Randapp Site
+## 1. Marketing / Public LARİ Site
 
 **Expected Layout:** `MarketingLayout`
 **Expected Nav:** Randapp Logo, Özellikler, Fiyatlar, Demo Oluştur, İletişim, Giriş Yap, Abonelik Talep Et (CTA). NO tenant booking/admin links.

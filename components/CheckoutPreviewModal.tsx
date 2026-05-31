@@ -52,38 +52,16 @@ export const CheckoutPreviewModal: React.FC<CheckoutPreviewModalProps> = ({ isOp
               </p>
            </div>
 
-           {/* Card Form Placeholders */}
-           <div className="space-y-4 mb-6">
-              <div>
-                 <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">{language === 'tr' ? 'Kart Üzerindeki İsim' : 'Name on Card'}</label>
-                 <input disabled placeholder={language === 'tr' ? 'Ad Soyad' : 'Full Name'} className="w-full h-10 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-500" />
-              </div>
-              <div>
-                 <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">{language === 'tr' ? 'Kart Numarası' : 'Card Number'}</label>
-                 <input disabled placeholder="**** **** **** ****" className="w-full h-10 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-500" />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                 <div>
-                    <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">{language === 'tr' ? 'Son Kullanma' : 'Expiry'}</label>
-                    <input disabled placeholder="AA / YY" className="w-full h-10 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-500" />
-                 </div>
-                 <div>
-                    <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">CVC</label>
-                    <input disabled placeholder="***" className="w-full h-10 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-500" />
-                 </div>
-              </div>
-           </div>
-
            {/* Consent */}
            <div className="flex items-start gap-3 mb-6">
               <input type="checkbox" checked readOnly className="mt-1 shrink-0 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
               <p className="text-xs text-slate-600 dark:text-slate-400">
-                 {language === 'tr' ? 'KVKK Aydınlatma Metni, Kullanım Şartları ve Mesafeli Satış/Abonelik koşullarını okudum ve kabul ediyorum. Kart bilgilerimin güvenli ödeme altyapısı üzerinden işlenmesine onay veriyorum.' : 'I have read and agree to the KVKK Privacy Policy, Terms of Use, and Distance Selling / Subscription Agreements. I agree that my card information will be processed via a secure payment infrastructure.'}
+                 {language === 'tr' ? 'KVKK Aydınlatma Metni, Kullanım Şartları ve Mesafeli Satış/Abonelik koşullarını okudum ve kabul ediyorum. Güvenli ödeme altyapısına yönlendirileceksiniz.' : 'I have read and agree to the KVKK Privacy Policy, Terms of Use, and Distance Selling Agreements. You will be redirected to secure checkout.'}
               </p>
            </div>
 
            <button onClick={onClose} className="w-full bg-slate-900 dark:bg-blue-600 text-white font-bold py-3.5 rounded-xl hover:opacity-90 transition-opacity">
-              {language === 'tr' ? 'Aboneliği Başlat' : 'Start Subscription'}
+              {language === 'tr' ? 'Güvenli Ödemeye Devam Et' : 'Proceed to Secure Checkout'}
            </button>
         </div>
       </div>

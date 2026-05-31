@@ -52,7 +52,7 @@ const ReferralTab: React.FC = () => {
             }}
             className="bg-accent hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md shadow transition"
           >
-             {t.admin.referrals_add_btn || '+ Add Campaign (Mock)'}
+             {t.admin.referrals_add_btn || '+ Add Campaign'}
           </button>
         </div>
       </div>

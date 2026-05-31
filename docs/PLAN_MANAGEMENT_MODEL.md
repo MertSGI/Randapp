@@ -1,7 +1,7 @@
 # Plan Management Model
 
 ## Overview
-Randapp pricing and subscription plans are centrally managed by the Super Admin, moving away from fully hardcoded client-side limits. Plans have dynamic pricing, limits, and feature toggles, along with rules for Monthly and Annual billing periods.
+LARİ pricing and subscription plans are centrally managed by the Super Admin, moving away from fully hardcoded client-side limits. Plans have dynamic pricing, limits, and feature toggles, along with rules for Monthly and Annual billing periods.
 
 ## Data Structures
 

@@ -1,6 +1,6 @@
 # Data Mode and Service Boundaries
 
-Randapp is designed with an explicit abstraction layer separating mock data behavior (local testing MVP) and the production Edge-Function/Supabase backend.
+LARİ is designed with an explicit abstraction layer separating mock data behavior (local testing MVP) and the production Edge-Function/Supabase backend.
 
 ## Environment Resolution
 The data layer boundary is defined by `VITE_DATA_MODE`:

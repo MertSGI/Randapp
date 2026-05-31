@@ -1,6 +1,6 @@
 # Media Upload & Storage Plan
 
-Randapp's media storage is driven by tenant-level isolation and strict access models, primarily mapping to Supabase Storage Buckets.
+LARİ's media storage is driven by tenant-level isolation and strict access models, primarily mapping to Supabase Storage Buckets.
 
 ## Supabase Storage Buckets
 1. **tenant-public-media**

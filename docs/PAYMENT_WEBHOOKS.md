@@ -1,7 +1,7 @@
 # Payment Webhooks Integration Code
 
 ## Edge Function: `payment-webhook`
-The Iyzico webhooks push state changes asynchronously to Randapp.
+The Iyzico webhooks push state changes asynchronously to LARİ.
 Path: `/supabase/functions/payment-webhook/index.ts`
 
 ### Requirements

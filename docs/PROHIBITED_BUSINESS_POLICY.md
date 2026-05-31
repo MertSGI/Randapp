@@ -1,6 +1,6 @@
 # Prohibited Business Policy
 
-At Randapp, we are committed to maintaining a safe, compliant, and trustworthy platform. All tenants creating a public booking website must adhere to this policy.
+At LARİ, we are committed to maintaining a safe, compliant, and trustworthy platform. All tenants creating a public booking website must adhere to this policy.
 
 ## 1. Strictly Prohibited Services
 The following services are strictly prohibited from using Randapp:

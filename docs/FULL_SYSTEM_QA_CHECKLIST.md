@@ -1,4 +1,4 @@
-# Randapp Full System QA Checklist
+# LARİ Full System QA Checklist
 
 ## Feature Status: Current MVP vs Sandbox vs Roadmap
 **Current MVP/Mock Demo:**

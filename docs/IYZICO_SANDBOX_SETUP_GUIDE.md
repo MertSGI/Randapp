@@ -1,6 +1,6 @@
 # iyzico Sandbox Setup Guide
 
-This guide walks you through setting up an iyzico Sandbox merchant account, obtaining credentials, and configuring Randapp.
+This guide walks you through setting up an iyzico Sandbox merchant account, obtaining credentials, and configuring LARİ.
 
 ## Step 1: Create iyzico Sandbox Account
 1. Go to the [iyzico sandbox registration page](https://sandbox-merchant.iyzipay.com).

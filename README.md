@@ -1,4 +1,4 @@
-# 💈 Randapp - Akıllı Randevu ve Yapay Zeka SaaS Platformu
+# 💈 LARİ - Akıllı Randevu ve Yapay Zeka SaaS Platformu
 
 Bu proje, bir kuaför, güzellik salonu veya herhangi bir randevulu sistem için geliştirilmiş, Google Gemini yapay zeka altyapısına hazır, modern, duyarlı (responsive) ve karanlık/aydınlık (dark/light) mod destekli bir SPA (Tek Sayfalı Web Uygulaması) projesidir. Proje Multi-Tenant (SaaS) yapısında tasarlanmış olup, tek bir kod tabanıyla birden fazla işletmeye hizmet verebilir.
 

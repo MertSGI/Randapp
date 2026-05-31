@@ -27,7 +27,7 @@ const MarketingHomePage: React.FC = () => {
       {/* 1. Hero Section */}
       <section className="text-center px-4 max-w-5xl mx-auto">
         <div className="inline-block bg-violet-50 dark:bg-violet-900/30 text-violet-700 dark:text-violet-400 font-bold px-5 py-2 rounded-full text-xs md:text-sm mb-8 border border-violet-100 dark:border-violet-800">
-          {language === 'tr' ? 'Randapp ile İşletmenizi Dijitalleştirin' : 'Digitize Your Business with Randapp'}
+          {language === 'tr' ? 'LARI ile İşletmenizi Dijitalleştirin' : 'Digitize Your Business with LARİ'}
         </div>
         
         <div className="mb-4 min-h-[3.5rem] sm:min-h-[1.3em] relative inline-flex w-full justify-center align-bottom px-2 flex-col">
@@ -40,20 +40,20 @@ const MarketingHomePage: React.FC = () => {
           {language === 'tr' ? 'İşletmenize web sitesi, online randevu ve AI destekli müşteri deneyimi kazandırın.' : 'Give your business a website, online booking, and AI-powered customer experience.'}
         </h1>
         <p className="mt-6 text-lg md:text-xl text-slate-600 dark:text-slate-300 mx-auto leading-relaxed max-w-3xl">
-          {language === 'tr' ? 'Randapp; kuaförler, güzellik salonları, klinikler ve randevulu işletmeler için dijital vitrin, online randevu, müşteri hafızası, AI stil asistanı ve kampanya yönetimini tek panelde birleştirir.' : 'Randapp unifies your digital storefront, online booking, customer memory, AI style assistant, and campaign management in one dashboard.'}
+          {language === 'tr' ? 'LARİ; kuaförler, güzellik salonları, klinikler ve randevulu işletmeler için dijital vitrin, online randevu, müşteri hafızası, AI stil asistanı ve kampanya yönetimini tek panelde birleştirir.' : 'LARİ unifies your digital storefront, online booking, customer memory, AI style assistant, and campaign management in one dashboard.'}
         </p>
         
         <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
-          <Link to="/demo" className="bg-blue-600 text-white px-8 py-4 rounded-xl font-bold shadow-lg shadow-blue-500/30 hover:bg-blue-700 transition transform hover:-translate-y-1 block w-full sm:w-auto text-center md:min-w-[200px]">
-            {language === 'tr' ? 'Demoyu Aç' : 'Open Demo'}
+          <Link to="/pricing" className="bg-blue-600 text-white px-8 py-4 rounded-xl font-bold shadow-lg shadow-blue-500/30 hover:bg-blue-700 transition transform hover:-translate-y-1 block w-full sm:w-auto text-center md:min-w-[200px]">
+            {language === 'tr' ? '7 Gün Ücretsiz Başla' : 'Start 7-Day Free Trial'}
           </Link>
           <Link to="/demo" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white px-8 py-4 rounded-xl font-bold shadow-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition block w-full sm:w-auto text-center md:min-w-[200px]">
-             {language === 'tr' ? 'Kendi İşletmeni Önizle' : 'Preview Your Business'}
+             {language === 'tr' ? 'Canlı Örneği Gör' : 'View Live Demo'}
           </Link>
         </div>
         <div className="mt-4 text-center">
             <Link to="/pricing" className="text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 font-medium text-sm transition-colors border-b border-transparent hover:border-slate-400">
-               {language === 'tr' ? 'Paketleri Gör' : 'View Plans'}
+               {language === 'tr' ? 'Paketleri Gör' : 'View Plans & Pricing'}
             </Link>
         </div>
 
@@ -74,31 +74,36 @@ const MarketingHomePage: React.FC = () => {
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">{language === 'tr' ? 'Randevular neden kaçıyor?' : 'Why are bookings lost?'}</h2>
             <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">{language === 'tr' ? 'Geleneksel iletişim yöntemleri ve dağınık sistemler müşterilerinizi kaybetmenize neden olur.' : 'Traditional communication and scattered systems cause you to lose customers.'}</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
-              <div className="text-2xl mb-4">💬</div>
-              <h3 className="text-lg font-bold mb-2 text-slate-900 dark:text-white">{language === 'tr' ? 'Mesajlar dağınık kalıyor' : 'Scattered messages'}</h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{language === 'tr' ? 'Instagram, WhatsApp ve telefon trafiği içinde müşterilerin soruları ve randevu talepleri gözden kaçabiliyor.' : 'Questions and booking requests get lost in social media and phone traffic.'}</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 transition-all hover:shadow-md">
+              <div className="text-3xl mb-4">💬</div>
+              <h3 className="text-lg font-bold mb-2 text-slate-900 dark:text-white">{language === 'tr' ? 'Müşteri mesaj atıyor, cevap gecikiyor' : 'Delayed responses to customer messages'}</h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{language === 'tr' ? 'Fiyat bilgisinden hizmet içeriğine, mesaj trafiğinde kaybolan potansiyel müşteriler.' : 'Potential customers lost in message traffic due to pricing or service inquiries.'}</p>
             </div>
-            <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
-              <div className="text-2xl mb-4">🤷</div>
-              <h3 className="text-lg font-bold mb-2 text-slate-900 dark:text-white">{language === 'tr' ? 'Müşteri karar veremiyor' : 'Indecisive customers'}</h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{language === 'tr' ? 'Hangi hizmeti seçeceğini bilmeyen müşteri, randevuyu tamamlamadan iletişimden çıkabiliyor.' : 'Customers who do not know what they want often drop off before completing the booking.'}</p>
+            <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 transition-all hover:shadow-md">
+              <div className="text-3xl mb-4">🕐</div>
+              <h3 className="text-lg font-bold mb-2 text-slate-900 dark:text-white">{language === 'tr' ? 'Uygun saat bulmak gereksiz uzuyor' : 'Finding suitable times takes too long'}</h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{language === 'tr' ? 'Müşteri ve işletme arasında müsaitlik pazarlığı yaparken harcanan gereksiz saatler.' : 'Unnecessary hours spent negotiating availability between customer and business.'}</p>
             </div>
-            <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
-              <div className="text-2xl mb-4">🕒</div>
-              <h3 className="text-lg font-bold mb-2 text-slate-900 dark:text-white">{language === 'tr' ? 'Boş saatler dolmuyor' : 'Empty slots'}</h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{language === 'tr' ? 'Müsait saatler müşteri tarafından görünür olmadığında en uygun zamanı kendileri seçemiyor.' : 'When available hours are not visible, customers cannot self-serve the best time.'}</p>
+            <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 transition-all hover:shadow-md">
+              <div className="text-3xl mb-4">📋</div>
+              <h3 className="text-lg font-bold mb-2 text-slate-900 dark:text-white">{language === 'tr' ? 'Hizmet/fiyat bilgisi dağınık kalıyor' : 'Service & pricing information is scattered'}</h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{language === 'tr' ? 'Instagram öne çıkanlar, PDF dosyaları veya sadece akılda kalan profesyonellikten uzak ücret listeleri.' : 'Unprofessional price lists scattered across Instagram highlights or PDF files.'}</p>
             </div>
-            <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
-              <div className="text-2xl mb-4">🧠</div>
-              <h3 className="text-lg font-bold mb-2 text-slate-900 dark:text-white">{language === 'tr' ? 'Müşteri hafızası kayboluyor' : 'Customer memory is lost'}</h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{language === 'tr' ? 'Tercihler, notlar ve önceki ziyaretler tutulmadığında, kişiselleştirilmiş hizmet vermek zorlaşıyor.' : 'Without tracking preferences and past visits, it becomes hard to provide personalized service.'}</p>
+            <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 transition-all hover:shadow-md">
+              <div className="text-3xl mb-4">👤</div>
+              <h3 className="text-lg font-bold mb-2 text-slate-900 dark:text-white">{language === 'tr' ? 'Müşteri geçmişi ve tercihleri unutuluyor' : 'Customer history & preferences are forgotten'}</h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{language === 'tr' ? 'Kağıt defterde tutulan notlar veya akılda kalan bilgilerle kişisel bir müşteri deneyimi yaratmak çok zor.' : 'It is too hard to create a personalized customer experience with notes kept on paper.'}</p>
             </div>
-            <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
-              <div className="text-2xl mb-4">🌐</div>
-              <h3 className="text-lg font-bold mb-2 text-slate-900 dark:text-white">{language === 'tr' ? 'Profesyonel web sitesi eksik' : 'Lack of professional website'}</h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{language === 'tr' ? 'Sadece sosyal medyaya bağlı kalındığında hizmetler, fiyatlar, uzmanlar ve randevu akışı profesyonel görünmüyor.' : 'Relying solely on social media makes it hard to present a professional front with clear services, pricing, and staff.'}</p>
+            <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 transition-all hover:shadow-md">
+              <div className="text-3xl mb-4">📱</div>
+              <h3 className="text-lg font-bold mb-2 text-slate-900 dark:text-white">{language === 'tr' ? 'Instagram\'dan gelen ilgi randevuya dönüşmüyor' : 'Instagram interest doesn\'t convert to bookings'}</h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{language === 'tr' ? 'Profilinizi inceleyen ilgilenen misafirleriniz, randevu alabilecekleri bir platform olmadığı için vazgeçiyor.' : 'Interested guests exploring your profile bounce because there is no platform to quickly book.'}</p>
+            </div>
+            <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 transition-all hover:shadow-md">
+              <div className="text-3xl mb-4">📊</div>
+              <h3 className="text-lg font-bold mb-2 text-slate-900 dark:text-white">{language === 'tr' ? 'İşletme sahibi gün sonunda tabloyu net göremiyor' : 'Business owner lacks clear end-of-day visibility'}</h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{language === 'tr' ? 'Günün sonunda kazançları, iptalleri ve müşteri dönüşlerini analiz etmeden ilerleyen bir işletme.' : 'Going forward blindly without properly analyzing revenue, cancellations, and customer return rates.'}</p>
             </div>
           </div>
         </div>
@@ -107,7 +112,7 @@ const MarketingHomePage: React.FC = () => {
       {/* 3. Solution Section */}
       <section className="px-4 py-8 max-w-6xl mx-auto">
         <div className="text-center mb-16">
-           <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">{language === 'tr' ? 'Randapp bu akışı tek platformda toplar' : 'Randapp unifies this flow'}</h2>
+           <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">{language === 'tr' ? 'LARİ bu akışı tek platformda toplar' : 'LARİ unifies this flow'}</h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col items-center text-center">
@@ -143,14 +148,14 @@ const MarketingHomePage: React.FC = () => {
                <thead>
                   <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
                      <th className="p-4 md:p-6 font-bold text-slate-900 dark:text-white"></th>
-                     <th className="p-4 md:p-6 font-bold text-slate-500 dark:text-slate-400 text-center w-1/4">{language === 'tr' ? 'Sadece Sosyal Medya' : 'Social Media Only'}</th>
-                     <th className="p-4 md:p-6 font-bold text-slate-500 dark:text-slate-400 text-center w-1/4">{language === 'tr' ? 'Basit Randevu Linki' : 'Basic Booking Link'}</th>
-                     <th className="p-4 md:p-6 font-bold text-blue-600 dark:text-blue-400 text-center w-1/4 bg-blue-50/50 dark:bg-blue-900/10 rounded-t-xl">Randapp</th>
+                     <th className="p-4 md:p-6 font-bold text-slate-500 dark:text-slate-400 text-center w-1/4 whitespace-nowrap">{language === 'tr' ? 'Sosyal Medya' : 'Social Media'}</th>
+                     <th className="p-4 md:p-6 font-bold text-slate-500 dark:text-slate-400 text-center w-1/4 whitespace-nowrap">{language === 'tr' ? 'Randevu Linki' : 'Booking Link'}</th>
+                     <th className="p-4 md:p-6 font-bold text-blue-600 dark:text-blue-400 text-center w-1/4 bg-blue-50/50 dark:bg-blue-900/10 rounded-t-xl text-lg">LARİ</th>
                   </tr>
                </thead>
                <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50">
                   <tr>
-                     <td className="p-4 md:p-6 font-medium text-slate-900 dark:text-white">{language === 'tr' ? 'Mini Web Sitesi' : 'Mini Website'}</td>
+                     <td className="p-4 md:p-6 font-medium text-slate-900 dark:text-white whitespace-nowrap">{language === 'tr' ? 'Mini Web Sitesi' : 'Mini Website'}</td>
                      <td className="p-4 md:p-6 text-center text-slate-300 dark:text-slate-600">-</td>
                      <td className="p-4 md:p-6 text-center text-slate-300 dark:text-slate-600">-</td>
                      <td className="p-4 md:p-6 text-center text-green-500 bg-blue-50/50 dark:bg-blue-900/10 font-bold">✓</td>
@@ -192,7 +197,7 @@ const MarketingHomePage: React.FC = () => {
                      <td className="p-4 md:p-6 text-center text-green-500 bg-blue-50/50 dark:bg-blue-900/10 font-bold">✓</td>
                   </tr>
                   <tr>
-                     <td className="p-4 md:p-6 font-medium text-slate-900 dark:text-white border-b-0">{language === 'tr' ? 'Gelecekte Mobil Keşif Kanalı' : 'Future Mobile Discovery Channel'}</td>
+                     <td className="p-4 md:p-6 font-medium text-slate-900 dark:text-white whitespace-nowrap border-b-0">{language === 'tr' ? 'Mobil Keşif Kanalı' : 'Mobile Discovery Channel'}</td>
                      <td className="p-4 md:p-6 text-center text-slate-300 dark:text-slate-600 border-b-0">-</td>
                      <td className="p-4 md:p-6 text-center text-slate-300 dark:text-slate-600 border-b-0">-</td>
                      <td className="p-4 md:p-6 text-center text-green-500 bg-blue-50/50 dark:bg-blue-900/10 font-bold border-b-0 rounded-b-xl">✓</td>
@@ -202,55 +207,84 @@ const MarketingHomePage: React.FC = () => {
          </div>
       </section>
 
+      {/* Brand Explanation */}
+      <section className="max-w-4xl mx-auto px-4 py-8 text-center bg-transparent border-t border-slate-200 dark:border-slate-800">
+        <p className="text-slate-500 text-sm md:text-base mb-2">
+          {language === 'tr' ? 'Lari; Link, AI, Randevu ve İşletme kelimelerinden gelir.' : 'LARİ stands for Link, AI, Booking (Randevu) and Business (İşletme).'}
+        </p>
+        <p className="text-slate-600 dark:text-slate-400 text-sm md:text-base font-medium">
+          {language === 'tr' ? 'İşletmenize paylaşılabilir bir dijital vitrin, online randevu akışı, AI destekli müşteri deneyimi ve yönetim paneli sunar.' : 'It provides your business with a shareable digital storefront, booking flow, AI-powered customer experience, and an administration panel.'}
+        </p>
+      </section>
+
       {/* 5. Product Surface Previews/Proof */}
       <section className="bg-slate-50 dark:bg-slate-800/30 border-y border-slate-200 dark:border-slate-800 py-16 px-4">
          <div className="max-w-6xl mx-auto">
             <h2 className="text-2xl md:text-3xl font-bold text-center mb-12 dark:text-white">{language === 'tr' ? 'Sistemi Keşfedin (Örnek Görünümler)' : 'Explore the System (Sample Views)'}</h2>
-            <div className="grid md:grid-cols-2 gap-8">
-               <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 flex flex-col gap-4">
-                  <div className="h-48 bg-slate-100 dark:bg-slate-900 rounded-xl w-full border border-slate-200 dark:border-slate-700 flex items-center justify-center overflow-hidden relative">
-                     <div className="absolute inset-x-4 top-4 h-8 bg-white dark:bg-slate-800 rounded shadow-sm flex items-center px-4 z-20">
-                        <div className="w-4 h-4 rounded-full bg-slate-200 dark:bg-slate-700 mr-2"></div>
-                        <div className="h-2 w-16 bg-slate-200 dark:bg-slate-700 rounded"></div>
-                        <div className="ml-auto w-12 h-4 bg-blue-100 dark:bg-blue-900/30 rounded"></div>
-                     </div>
-                     <div className="w-full flex-1 mt-14 grid grid-cols-2 gap-3 px-4 pb-4">
-                        <div className="bg-white dark:bg-slate-800 rounded shadow-sm h-full flex flex-col p-3">
-                           <div className="h-8 w-8 bg-blue-50 dark:bg-blue-900/20 rounded mb-2"></div>
-                           <div className="h-2 w-full bg-slate-200 dark:bg-slate-700 rounded mb-1.5"></div>
-                           <div className="h-2 w-1/2 bg-slate-200 dark:bg-slate-700 rounded"></div>
-                        </div>
-                        <div className="bg-white dark:bg-slate-800 rounded shadow-sm h-full flex flex-col p-3 border-l-2 border-violet-500">
-                           <div className="flex items-center gap-2 mb-2">
-                              <div className="w-6 h-6 rounded bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center text-[10px]">AI</div>
-                              <div className="h-2 w-12 bg-slate-200 dark:bg-slate-700 rounded"></div>
-                           </div>
-                           <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-700 rounded mb-1"></div>
-                           <div className="h-1.5 w-3/4 bg-slate-100 dark:bg-slate-700 rounded"></div>
-                        </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+               <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 flex flex-col gap-4 shadow-sm hover:shadow-md transition">
+                  <div className="h-40 bg-slate-50 dark:bg-slate-900 rounded-xl w-full border border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center overflow-hidden relative">
+                     <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 mb-2 mt-4 flex border border-blue-200 dark:border-blue-800/50 border-dashed items-center justify-center text-blue-500 font-bold text-xs uppercase">Logo</div>
+                     <div className="h-2 w-16 bg-slate-300 dark:bg-slate-600 rounded mb-4"></div>
+                     <div className="grid grid-cols-2 gap-2 w-full px-4 mb-2">
+                         <div className="h-10 bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700 rounded-md"></div>
+                         <div className="h-10 bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700 rounded-md"></div>
                      </div>
                   </div>
                   <div>
-                     <h4 className="font-bold text-lg dark:text-white">{language === 'tr' ? 'Halka Açık Web Sitesi' : 'Public Business Website'}</h4>
-                     <p className="text-sm text-slate-500">{language === 'tr' ? 'Tamamen size ait bir subdomain altında, profesyonel web siteniz hazır.' : 'Your professional website is ready under your own custom subdomain.'}</p>
+                     <h4 className="font-bold text-base dark:text-white">{language === 'tr' ? 'İşletme Web Sitesi' : 'Business Website'}</h4>
+                     <p className="text-xs text-slate-500 leading-relaxed mt-1">{language === 'tr' ? 'İşletmenize özel tasarlanmış profesyonel görünüm, servis kartları, galeri ve lokasyon gösterimi.' : 'A professionally designed look specific to your business, service cards, gallery, and location map.'}</p>
                   </div>
                </div>
                
-               <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 flex flex-col gap-4">
-                  <div className="h-48 bg-slate-100 dark:bg-slate-900 flex justify-center p-4 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden relative">
-                     <div className="w-[140px] bg-white dark:bg-slate-800 rounded-[1.5rem] shadow-xl border-4 border-slate-800 dark:border-slate-950 p-3 flex flex-col h-full shrink-0 relative z-10 translate-y-2">
-                        <div className="h-2 w-12 bg-slate-200 dark:bg-slate-600 rounded mx-auto mb-4"></div>
-                        <div className="flex-1 rounded-xl bg-slate-50 dark:bg-slate-700 p-2 border border-slate-100 dark:border-slate-600 mb-2">
-                           <div className="h-2 w-full bg-slate-200 dark:bg-slate-600 rounded mb-1.5"></div>
-                           <div className="h-2 w-3/4 bg-slate-200 dark:bg-slate-600 rounded"></div>
+               <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 flex flex-col gap-4 shadow-sm hover:shadow-md transition">
+                  <div className="h-40 bg-slate-50 dark:bg-slate-900 flex justify-center pt-6 p-4 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden relative">
+                     <div className="w-[130px] bg-white dark:bg-slate-800 rounded-t-[1.25rem] shadow-lg border-2 border-slate-200 dark:border-slate-700 p-2.5 flex flex-col h-full shrink-0 relative z-10">
+                        <div className="h-1.5 w-8 bg-slate-200 dark:bg-slate-600 rounded mx-auto mb-3"></div>
+                        <div className="h-3 w-16 bg-slate-800 dark:bg-slate-200 rounded mb-2"></div>
+                        <div className="flex-1 rounded-lg bg-slate-50 dark:bg-slate-900/50 p-2 border border-slate-100 dark:border-slate-700/50 mb-2 flex flex-col justify-center">
+                            <div className="h-1.5 w-1/2 bg-blue-500 rounded mb-1"></div>
+                            <div className="h-1.5 w-3/4 bg-slate-200 dark:bg-slate-700 rounded"></div>
                         </div>
-                        <div className="h-7 w-full bg-blue-600 rounded-lg shrink-0"></div>
+                        <div className="h-5 w-full bg-blue-600 rounded-md shrink-0"></div>
                      </div>
-                     <div className="absolute right-8 top-12 w-32 h-32 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-full blur-2xl"></div>
                   </div>
                   <div>
-                     <h4 className="font-bold text-lg dark:text-white">{language === 'tr' ? 'Gömülü Randevu Akışı' : 'Embedded Booking Flow'}</h4>
-                     <p className="text-sm text-slate-500">{language === 'tr' ? 'Web sitenizden hiç ayrılmadan akıcı bir şekilde randevu oluşturma deneyimi.' : 'A fluid booking experience directly embedded without leaving your site.'}</p>
+                     <h4 className="font-bold text-base dark:text-white">{language === 'tr' ? 'Gömülü Randevu Akışı' : 'Embedded Booking Flow'}</h4>
+                     <p className="text-xs text-slate-500 leading-relaxed mt-1">{language === 'tr' ? 'Müşterilerin hizmet, uzman seçimi, takvim müsaitliği ve müşteri bilgisi girişini zahmetsizce yaptığı akış.' : 'An effortless flow for customers to pick services, staff, check calendar availability, and confirm.'}</p>
+                  </div>
+               </div>
+
+               <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 flex flex-col gap-4 shadow-sm hover:shadow-md transition">
+                  <div className="h-40 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden relative flex p-2">
+                     <div className="w-1/4 h-full bg-slate-100 dark:bg-slate-800 rounded flex flex-col gap-2 p-2">
+                        <div className="h-2 w-full bg-slate-200 dark:bg-slate-700 rounded"></div>
+                        <div className="h-2 w-full bg-slate-200 dark:bg-slate-700 rounded"></div>
+                        <div className="h-2 w-1/2 bg-slate-200 dark:bg-slate-700 rounded"></div>
+                     </div>
+                     <div className="w-3/4 h-full p-2 flex flex-col gap-2">
+                        <div className="h-6 w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-md shadow-sm"></div>
+                        <div className="flex-1 w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-md shadow-sm p-2 flex flex-col gap-1.5">
+                           <div className="w-full flex justify-between items-center"><div className="w-8 h-2 bg-slate-200 dark:bg-slate-700 rounded"></div><div className="w-6 h-2 bg-slate-200 dark:bg-slate-700 rounded"></div></div>
+                           <div className="w-full flex justify-between items-center"><div className="w-10 h-2 bg-slate-200 dark:bg-slate-700 rounded"></div><div className="w-4 h-2 bg-slate-200 dark:bg-slate-700 rounded"></div></div>
+                        </div>
+                     </div>
+                  </div>
+                  <div>
+                     <h4 className="font-bold text-base dark:text-white">{language === 'tr' ? 'Salon Sahibi Paneli' : 'Salon Owner Panel'}</h4>
+                     <p className="text-xs text-slate-500 leading-relaxed mt-1">{language === 'tr' ? 'Günlük randevularınızı, hızlı işlemleri, personel durumlarını ve müşteri notlarınızı görebileceğiniz kontrol merkezi.' : 'Control center to see daily appointments, quick actions, staff schedules, and customer notes.'}</p>
+                  </div>
+               </div>
+
+               <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 flex flex-col gap-4 shadow-sm hover:shadow-md transition">
+                  <div className="h-40 bg-gradient-to-tr from-violet-50 to-indigo-50 dark:from-violet-900/10 dark:to-indigo-900/10 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden relative flex flex-col p-4 items-center justify-center">
+                     <div className="w-12 h-12 rounded-2xl bg-white dark:bg-slate-800 shadow-md border border-slate-100 dark:border-slate-700 flex items-center justify-center text-xl mb-3">✨</div>
+                     <div className="h-2 w-3/4 bg-violet-200 dark:bg-violet-800/50 rounded mb-1.5"></div>
+                     <div className="h-2 w-1/2 bg-violet-200 dark:bg-violet-800/50 rounded"></div>
+                  </div>
+                  <div>
+                     <h4 className="font-bold text-base dark:text-white">{language === 'tr' ? 'AI Stil Asistanı' : 'AI Style Assistant'}</h4>
+                     <p className="text-xs text-slate-500 leading-relaxed mt-1">{language === 'tr' ? 'Müşterilerinizin hedeflerini anlayıp onlara en uygun hizmeti önermek için akıllı randevu yolculuğunu başlatan asistan.' : 'Starts a smart journey by understanding your customers goals and suggesting the best services.'}</p>
                   </div>
                </div>
             </div>
@@ -353,14 +387,17 @@ const MarketingHomePage: React.FC = () => {
             <span className="px-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-sm font-medium text-slate-700 dark:text-slate-300 shadow-sm flex items-center gap-2">
                <span className="text-pink-500">✅</span> Instagram Gösterimi
             </span>
-            <span className="px-4 py-2.5 bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/50 rounded-full text-sm font-medium text-slate-500 flex items-center gap-2">
-               <span>⏳</span> Google Takvim (Planlanan)
+             <span className="px-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-sm font-medium text-slate-700 dark:text-slate-300 shadow-sm flex items-center gap-2">
+               <span className="text-blue-500">✅</span> Güvenli Online Ödeme
             </span>
-            <span className="px-4 py-2.5 bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/50 rounded-full text-sm font-medium text-slate-500 flex items-center gap-2">
-               <span>⏳</span> Ödeme / Checkout (Planlanan)
+            <span className="px-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-sm font-medium text-slate-700 dark:text-slate-300 shadow-sm flex items-center gap-2">
+               <span className="text-amber-500">✅</span> Google Takvim Bağlantısı
             </span>
-            <span className="px-4 py-2.5 bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/50 rounded-full text-sm font-medium text-slate-500 flex items-center gap-2">
-               <span>🚀</span> Mobil Uygulama (Yol Haritası)
+            <span className="px-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-sm font-medium text-slate-700 dark:text-slate-300 shadow-sm flex items-center gap-2">
+               <span className="text-indigo-500">✅</span> Müşteri Hafızası
+            </span>
+            <span className="px-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-sm font-medium text-slate-700 dark:text-slate-300 shadow-sm flex items-center gap-2">
+               <span className="text-violet-500">✅</span> AI Stil Asistanı
             </span>
          </div>
       </section>
@@ -378,14 +415,14 @@ const MarketingHomePage: React.FC = () => {
       <section className="bg-blue-600 py-16 md:py-24 px-6 text-center rounded-[2.5rem] mx-4 md:max-w-6xl md:mx-auto mb-16 shadow-[0_20px_50px_-12px_rgba(37,99,235,0.4)] relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
         <div className="relative z-10">
-           <h2 className="text-3xl md:text-5xl font-extrabold text-white mb-6 tracking-tight">{language === 'tr' ? 'Randapp ile İşletmenizi Büyütün' : 'Grow your business with Randapp'}</h2>
+           <h2 className="text-3xl md:text-5xl font-extrabold text-white mb-6 tracking-tight">{language === 'tr' ? 'LARİ ile İşletmenizi Büyütün' : 'Grow your business with LARİ'}</h2>
            <p className="text-blue-100 text-lg md:text-xl mb-10 max-w-2xl mx-auto font-medium">{language === 'tr' ? 'Teknik bilgi veya kurulum deneyimi gerekmez. 7 gün ücretsiz deneyin ve kendi işletme vitrininizi hemen oluşturun.' : 'No technical skills required. Try free for 7 days, start taking bookings immediately.'}</p>
            <div className="flex flex-col sm:flex-row justify-center gap-4 max-w-xl mx-auto">
-              <Link to="/demo" className="inline-block w-full sm:w-1/2 bg-white text-blue-600 px-8 py-4 rounded-xl font-bold shadow-xl hover:bg-gray-50 transition transform hover:-translate-y-1 text-center text-lg">
-                {language === 'tr' ? 'Demoyu Aç' : 'Open Demo'}
+              <Link to="/pricing" className="inline-block w-full sm:w-1/2 bg-white text-blue-600 px-8 py-4 rounded-xl font-bold shadow-xl hover:bg-gray-50 transition transform hover:-translate-y-1 text-center text-lg">
+                {language === 'tr' ? '7 Gün Ücretsiz Başla' : 'Start 7-Day Free Trial'}
               </Link>
               <Link to="/pricing" className="inline-block w-full sm:w-1/2 bg-blue-700/80 backdrop-blur-sm border border-blue-400/50 text-white px-8 py-4 rounded-xl font-bold shadow-lg hover:bg-blue-800 transition transform hover:-translate-y-1 text-center text-lg">
-                {language === 'tr' ? 'Paketleri Gör' : 'View Plans'}
+                {language === 'tr' ? 'Paketi Seç' : 'Choose a Plan'}
               </Link>
            </div>
            <p className="mt-8 text-blue-200 text-sm opacity-80">{language === 'tr' ? 'Kredi kartı bilgileri istenmeden denemeye başlayabilirsiniz.' : 'Start trying right away, no credit card required upfront.'}</p>

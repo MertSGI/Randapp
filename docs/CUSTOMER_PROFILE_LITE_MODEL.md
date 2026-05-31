@@ -1,7 +1,7 @@
 # Customer Account Lite & Customer Profile Lite Model
 
 ## Philosophy
-Randapp supports a distinct separation between customer-side booking preferences and salon-owner-side service memory.
+LARİ supports a distinct separation between customer-side booking preferences and salon-owner-side service memory.
 
 1. **Customer Account Lite (Customer Side)**
    - Formally a purely local persistence model ("Save my info on this device").

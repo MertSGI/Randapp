@@ -1,6 +1,6 @@
 # Payment Integration Runbook
 
-This runbook is an execution checklist for integrating and testing the real iyzico sandbox environment with Randapp.
+This runbook is an execution checklist for integrating and testing the real iyzico sandbox environment with LARİ.
 
 ## Phase 1: Pre-requisites & Environment
 - [ ] Read `SUPABASE_DEPLOYMENT_GUIDE.md` and `IYZICO_SANDBOX_SETUP_GUIDE.md`.

@@ -2,7 +2,7 @@
 
 The application follows a strict separation of concerns regarding user experience, split into four distinct layers (layouts) to ensure clean navigation and prevent context-mixing.
 
-## 1. Marketing / Public Randapp Site (`MarketingLayout`)
+## 1. Marketing / Public LARİ Site (`MarketingLayout`)
 - **Target Audience:** Salon owners seeking a SaaS solution.
 - **Goal:** Act as a conversion-focused landing site emphasizing that Randapp provides a "Mini Website + Online Booking + AI Advisor" instead of just a raw booking widget.
 - **Routes:** `/`, `/features`, `/pricing`, `/demo`, `/contact`, `/login`.

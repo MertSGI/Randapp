@@ -1,6 +1,6 @@
 # Vertical Market Expansion Model
 
-Randapp is currently focused and marketed as a premium SaaS for Salons, Barbershops, and Beauty Centers. However, the core platform architecture is built generically to afford horizontal/vertical scaling into other appointment-based domains.
+LARİ is currently focused and marketed as a premium SaaS for Salons, Barbershops, and Beauty Centers. However, the core platform architecture is built generically to afford horizontal/vertical scaling into other appointment-based domains.
 
 ## 1. Terminology Constraints
 When building generic backend features, the terminology must remain neutral:

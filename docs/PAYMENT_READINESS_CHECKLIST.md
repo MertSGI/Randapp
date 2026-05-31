@@ -1,6 +1,6 @@
 # Payment Readiness Checklist
 
-This document tracks the readiness state of the Randapp platform for processing real production payments.
+This document tracks the readiness state of the LARİ platform for processing real production payments.
 
 **Current State: Sandbox Deployment Handoff (Phase 10)**
 *Production payment flows and live Iyzico connections are **DISABLED**, but dynamic CTAs and diagnostic harnesses are ready. Environment templates, guides, and runbooks are set up for final deployment.*

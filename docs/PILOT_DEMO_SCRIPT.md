@@ -1,4 +1,4 @@
-# Randapp Pilot Demo Script & Presentation Guide
+# LARİ Pilot Demo Script & Presentation Guide
 
 This document outlines the ideal flow for demonstrating Randapp to business owners during the pilot phase.
 **Ensure you are in development `VITE_DATA_MODE=mock` to safely demonstrate functionality without affecting production databases.**
