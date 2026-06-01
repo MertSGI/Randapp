@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "timestamp": "2026-06-01T08:34:19.800Z",
+    "timestamp": "2026-06-01T08:59:43.193Z",
     "baseUrl": "http://localhost:4040",
     "viewports": "Mobile(390), Desktop(1440)",
     "roles": [
@@ -35,12 +35,17 @@
       "path": "/#/book",
       "pass": true,
       "note": "Found expected text"
+    },
+    {
+      "path": "/#/super-admin/go-live",
+      "pass": false,
+      "note": "Missing typical terms"
     }
   ],
   "flowMatrix": [
     {
       "flow": "Registration → tenant shell created → checkout handoff",
-      "pass": false,
+      "pass": true,
       "evidence": "Checkout handoff invoked. Current URL: http://localhost:4040/#/login",
       "risk": "None"
     },

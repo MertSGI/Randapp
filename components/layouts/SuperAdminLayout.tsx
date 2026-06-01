@@ -37,6 +37,7 @@ const SuperAdminLayout: React.FC = () => {
     { label: 'AI Ayarları', path: '/super-admin/ai-settings' },
     { label: 'Planlar & Fiyatlar', path: '/super-admin/plans' },
     { label: 'Referans Kampanyaları', path: '/super-admin/referrals' },
+    { label: 'Sandbox ve Yayın Hazırlığı', path: '/super-admin/go-live' },
   ];
 
   return (

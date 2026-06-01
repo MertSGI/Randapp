@@ -31,6 +31,7 @@ import SuperAdminAISettingsPage from './pages/super-admin/SuperAdminAISettingsPa
 import SuperAdminPlansPage from './pages/super-admin/SuperAdminPlansPage';
 import SuperAdminReferralsPage from './pages/super-admin/SuperAdminReferralsPage';
 import SuperAdminTenantPreviewPage from './pages/super-admin/SuperAdminTenantPreviewPage';
+import SuperAdminGoLivePage from './pages/super-admin/SuperAdminGoLivePage';
 import SitePreviewPage from './pages/admin/SitePreviewPage';
 
 import CustomerLoginPage from './pages/customer/CustomerLoginPage';
@@ -116,6 +117,7 @@ const AppFlowSwitcher: React.FC = () => {
         <Route path="/super-admin/ai-settings" element={<SuperAdminAISettingsPage />} />
         <Route path="/super-admin/plans" element={<SuperAdminPlansPage />} />
         <Route path="/super-admin/referrals" element={<SuperAdminReferralsPage />} />
+        <Route path="/super-admin/go-live" element={<SuperAdminGoLivePage />} />
       </Route>
       <Route path="/super-admin/tenant-preview/:tenantId" element={
         <ProtectedRoute allowedRoles={['super_admin']}>

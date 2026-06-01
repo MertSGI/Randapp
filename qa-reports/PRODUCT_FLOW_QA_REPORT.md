@@ -2,7 +2,7 @@
 # Product Flow QA Report
 
 ## Run Metadata
-- Timestamp: 2026-06-01T08:34:19.800Z
+- Timestamp: 2026-06-01T08:59:43.193Z
 - Viewports: Mobile(390), Desktop(1440)
 - Roles: guest, admin, superadmin
 - Status: **PASS**
@@ -13,9 +13,10 @@
 - [x] `/#/pricing` - Found expected text
 - [x] `/#/register?planId=professional` - Found expected text
 - [x] `/#/book` - Found expected text
+- [ ] `/#/super-admin/go-live` - Missing typical terms
 
 ## Flow Matrix
-- **Registration → tenant shell created → checkout handoff**: FAIL
+- **Registration → tenant shell created → checkout handoff**: PASS
   - Evidence: Checkout handoff invoked. Current URL: http://localhost:4040/#/login
   - Risk: None
 - **admin setup -> site preview consistency**: PASS
