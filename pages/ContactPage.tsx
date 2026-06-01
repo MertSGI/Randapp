@@ -59,8 +59,8 @@ const ContactPage: React.FC = () => {
                <a href={`https://wa.me/${directWaNum}`} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 w-full bg-[#25D366] text-white px-6 md:px-8 py-3.5 rounded-xl font-bold hover:bg-green-600 transition mb-3 md:mb-4 text-sm md:text-base shadow-sm">
                   {t.marketing.contact.btn_wa}
                </a>
-               <a href="mailto:iletisim@randapp.com" className="flex items-center justify-center gap-2 w-full bg-gray-100 dark:bg-slate-700 text-gray-800 dark:text-white px-6 md:px-8 py-3.5 rounded-xl font-bold hover:bg-gray-200 dark:hover:bg-slate-600 transition text-sm md:text-base">
-                  iletisim@randapp.com
+               <a href="mailto:iletisim@lari.com" className="flex items-center justify-center gap-2 w-full bg-gray-100 dark:bg-slate-700 text-gray-800 dark:text-white px-6 md:px-8 py-3.5 rounded-xl font-bold hover:bg-gray-200 dark:hover:bg-slate-600 transition text-sm md:text-base">
+                  iletisim@lari.com
                </a>
             </div>
 

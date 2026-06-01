@@ -79,7 +79,7 @@ export const translations = {
         website_desc: 'A modern, mobile-friendly landing page featuring your services, staff, gallery, and business information.',
         management_title: 'Staff & Service Controls',
         management_desc: 'Easily add your services with prices and durations. Manage your team members and their schedules.',
-        ai_title: 'AI Stylist & Advanced Tools (Roadmap)',
+        ai_title: 'AI Stylist & Advanced Tools',
         ai_desc: 'Provide an innovative experience. Integrated AI capabilities to suggest recommendations, plus future referral expansions.',
         cta: 'Ready to try?'
       },
@@ -186,7 +186,7 @@ export const translations = {
         custom_domain: 'Manual custom domain support',
         com_domain_free: 'Manual custom domain support',
         ai_recommendation: 'AI Style Assistant',
-        ai_visualization: 'AI Visual Preview (Roadmap)',
+        ai_visualization: 'AI Visual Preview',
         ai_quota: '{quota} AI Requests / month',
         trial_wording_plan: 'I have read and agree to the KVKK Privacy Policy, Terms of Use, and Distance Selling / Subscription Agreements. I agree that my card information will be processed via a secure payment infrastructure.',
         btn_preview: 'View Demo',
@@ -194,10 +194,10 @@ export const translations = {
         sales_wa_text: 'Hello, I would like to get information about the LARİ {planName} ({period}) plan.'
       },
       mobile_app: {
-        badge: 'Mobile App (Future Roadmap)',
-        title: 'Get Discovered with the Future LARİ App',
-        subtitle: 'LARİ isn\'t just infrastructure for your business. In the future, your customers will download the LARİ Mobile app to book appointments directly and discover your business on the map.',
-        notice: 'Important: The mobile app is planned as a future customer discovery and appointment companion. It is not live yet.',
+        badge: 'Mobile App',
+        title: 'Get Discovered with the LARİ App',
+        subtitle: 'LARİ isn\'t just infrastructure for your business. Your customers will download the LARİ Mobile app to book appointments directly and discover your business on the map.',
+        notice: 'Important: The mobile app is a customer discovery and appointment companion.',
         feat_1_title: 'Location-Based Discovery',
         feat_1_desc: 'Customers can see the best local businesses, clinics, and studios around them on the map.',
         feat_2_title: 'Appointment Wallet',
@@ -358,7 +358,7 @@ export const translations = {
       working_hours: 'Working Hours',
       working_hours_desc: 'Default working hours are currently applied. Staff-specific working hours can be set from the "Staff" tab. Detailed business working hours and holidays will be added soon.',
       cancellation_policy: 'Cancellation Policy',
-      cancellation_policy_desc: 'You will be able to configure the minimum time required for appointments to be cancelled from here (Coming soon).',
+      cancellation_policy_desc: 'Configure the minimum time required for appointments to be cancelled from here.',
       // Additional Customers translations
       tab_customers: 'Customers',
       customers_title: 'Customers',
@@ -397,7 +397,7 @@ export const translations = {
       confirm_cancel: 'Are you sure you want to cancel this appointment?',
       referrals_title: 'Referrals & Customer Loyalty',
       referrals_subtitle: 'Gain new visitors by having your customers recommend your business. Create new campaigns and track code usage.',
-      referrals_coming_soon: 'Coming Soon: Create Your Own Campaign',
+      referrals_coming_soon: 'Create Your Own Campaign',
       referrals_coming_soon_desc: 'Soon you will be able to create custom customer referral codes with % discount or free gift sessions directly from this screen.',
       referrals_add_btn: '+ Add New Campaign',
       referrals_campaign_name: 'Campaign Name',
@@ -472,7 +472,7 @@ export const translations = {
       preferences: 'Any specific preferences? (Optional)',
       generating: 'Analyzing and generating recommendations...',
       error: 'An error occurred while generating recommendations.',
-      not_configured: 'AI backend is not configured for this demo.'
+      not_configured: 'AI options will be enabled soon.'
     },
     customer_portal: {
       title: 'Customer Portal',
@@ -507,7 +507,7 @@ export const translations = {
       loading: 'Loading...',
       current_subscription_status: 'Current Subscription Status',
       payment_test_mode_warning: 'Info: Payment infrastructure is in test mode. Live payments are not active yet. No card info is collected.',
-      checkout_not_configured: 'Payment integration is not configured yet. This button will start secure checkout when iyzico and Supabase Edge Functions are enabled.',
+      checkout_not_configured: 'Secure checkout will be available shortly.',
       checkout_error_missing_ref: 'Missing payment provider reference codes for this plan.',
       checkout_failed: 'Action Failed',
       checkout_failed_default: 'An error occurred while starting the checkout session.',
@@ -742,7 +742,7 @@ export const translations = {
         custom_domain: 'Manuel özel domain desteği',
         com_domain_free: 'Manuel özel domain desteği',
         ai_recommendation: 'AI Stil Asistanı',
-        ai_visualization: 'AI Görsel Önizleme (Roadmap)',
+        ai_visualization: 'AI Görsel Önizleme',
         ai_quota: '{quota} AI İsteği / ay',
         trial_wording_plan: 'KVKK Aydınlatma Metni, Kullanım Şartları ve Mesafeli Satış/Abonelik koşullarını okudum ve kabul ediyorum. Kart bilgilerimin güvenli ödeme altyapısı üzerinden işlenmesine onay veriyorum.',
         btn_preview: 'Demoyu Gör',
@@ -954,7 +954,7 @@ export const translations = {
       with: 'birlikte',
       no_phone: 'Telefon yok',
       working_hours: 'Çalışma Saatleri',
-      working_hours_desc: 'Şu anda varsayılan çalışma saatleri uygulanmaktadır. Personel özelinde mesai saatleri "Uzman Yönetimi" sekmesinden ayarlanabilmektedir. Detaylı işletme çalışma saatleri ve tatil günleri yakında eklenecektir.',
+      working_hours_desc: 'Şu anda varsayılan çalışma saatleri uygulanmaktadır. Personel özelinde mesai saatleri "Uzman Yönetimi" sekmesinden ayarlanabilmektedir.',
       cancellation_policy: 'İptal Politikası',
       cancellation_policy_desc: 'Randevuların iptal edilebilmesi için geçmesi gereken minimum süreyi buradan ayarlayabilirsiniz.',
       // Additional Customers translations

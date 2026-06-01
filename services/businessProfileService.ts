@@ -102,7 +102,7 @@ export const businessProfileService = {
       id: 'mock-prof-1',
       tenant_id: tenantId,
       short_description: 'Şehrin en iyi saç tasarım stüdyosu.',
-      about_text: 'Yılların verdiği tecrübe ve alanında uzman kadromuzla, size en iyi hizmeti sunmak için buradayız. Randapp teknolojisi ile güzelliğinize değer katıyoruz.',
+      about_text: 'Yılların verdiği tecrübe ve alanında uzman kadromuzla, size en iyi hizmeti sunmak için buradayız. LARİ teknolojisi ile güzelliğinize değer katıyoruz.',
       business_category: 'Hair Salon',
       address: 'Örnek Mah. Güzellik Sok. No: 12',
       city: 'İstanbul',

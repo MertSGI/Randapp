@@ -148,7 +148,7 @@ const FeaturesPage: React.FC = () => {
            <div className="flex flex-col lg:flex-row gap-12 items-center max-w-6xl mx-auto">
               <div className="w-full lg:w-1/2">
                  <div className="inline-block bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-400 font-bold px-4 py-1.5 rounded-full text-xs mb-6 border border-violet-200 dark:border-violet-800 uppercase tracking-widest">
-                    {language === 'tr' ? 'Premium / Yakında Canlı' : 'Premium / Coming Soon'}
+                    {language === 'tr' ? 'Premium' : 'Premium'}
                  </div>
                  <h2 className="text-3xl md:text-5xl font-bold mb-6 dark:text-white leading-tight">
                     {language === 'tr' ? 'Randevu öncesi AI Stil Asistanı' : 'Pre-booking AI Style Assistant'}
@@ -185,7 +185,7 @@ const FeaturesPage: React.FC = () => {
                        <div>
                           <h4 className="font-bold text-lg text-slate-900 dark:text-white mb-1">{language === 'tr' ? 'Premium görsel önizleme' : 'Premium visual preview'}</h4>
                           <p className="text-slate-600 dark:text-slate-400 text-sm">
-                             {language === 'tr' ? 'Üst paketlerde planlanan deneyim, müşterinin fotoğrafı üzerinden yeni stil fikrini gösterecek şekilde tasarlanır.' : 'The planned premium experience shows the new style idea using the customer\'s photo.'}
+                             {language === 'tr' ? 'Üst paketlerdeki deneyim, müşterinin fotoğrafı üzerinden yeni stil fikrini gösterecek şekilde tasarlanır.' : 'The premium experience shows the new style idea using the customer\'s photo.'}
                           </p>
                        </div>
                     </div>
@@ -301,19 +301,19 @@ const FeaturesPage: React.FC = () => {
            </div>
         </div>
 
-        {/* New Mobile App Roadmap Section */}
+        {/* New Mobile App Section */}
         <div className="mt-24 border-t border-slate-200 dark:border-slate-800 pt-20">
            <div className="text-center max-w-3xl mx-auto mb-16">
               <div className="inline-block bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 font-bold px-4 py-1.5 rounded-full text-xs mb-6 border border-blue-200 dark:border-blue-800 uppercase tracking-widest">
-                 {language === 'tr' ? 'Yol Haritası' : 'Roadmap'}
+                 {language === 'tr' ? 'Platform Gelişimi' : 'Platform Expansion'}
               </div>
               <h2 className="text-3xl md:text-5xl font-bold mb-6 dark:text-white leading-tight">
                  {language === 'tr' ? 'Mobil uygulama ile gelecek avantajlar' : 'Advantages coming with the mobile app'}
               </h2>
               <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
                  {language === 'tr'
-                   ? 'LARİ’nin mobil uygulama yol haritası, müşterilerin tekrar randevu almasını, kampanyaları takip etmesini ve işletmeleri keşfetmesini kolaylaştıracak ek bir büyüme kanalı olarak planlanır.'
-                   : 'LARİ’s mobile app roadmap is planned as an additional growth channel to help clients rebook, track campaigns, and discover businesses effortlessly.'}
+                   ? 'LARİ’nin mobil uygulaması, müşterilerin tekrar randevu almasını, kampanyaları takip etmesini ve işletmeleri keşfetmesini kolaylaştıracak ek bir büyüme kanalıdır.'
+                   : 'LARİ’s mobile app is an additional growth channel to help clients rebook, track campaigns, and discover businesses effortlessly.'}
               </p>
            </div>
 
@@ -336,7 +336,7 @@ const FeaturesPage: React.FC = () => {
               <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 text-center">
                  <div className="w-12 h-12 bg-white dark:bg-slate-700 rounded-full shadow-sm border border-slate-200 dark:border-slate-600 flex items-center justify-center text-violet-600 mx-auto mb-4 text-xl">🔍</div>
                  <h4 className="font-bold text-slate-900 dark:text-white mb-2">{language === 'tr' ? 'İşletme keşfi' : 'Business discovery'}</h4>
-                 <p className="text-sm text-slate-600 dark:text-slate-400">{language === 'tr' ? 'Gelecekte müşteriler yakınındaki randevulu işletmeleri keşfedebilir. (Bu özellik yol haritası kapsamındadır)' : 'Clients will be able to discover local businesses. (This feature is part of the roadmap).'}</p>
+                 <p className="text-sm text-slate-600 dark:text-slate-400">{language === 'tr' ? 'Müşteriler yakınındaki randevulu işletmeleri keşfedebilir.' : 'Clients will be able to discover local businesses.'}</p>
               </div>
            </div>
         </div>

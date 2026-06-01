@@ -137,10 +137,10 @@ export const getFeatureStatusBadge = (status: FeatureStatus, language: 'en' | 't
   const badges = {
     live_in_mock: { en: 'Interactive Preview', tr: 'İnteraktif Önizleme', color: 'bg-yellow-100 text-yellow-800 border-yellow-200' },
     pilot_ready: { en: 'In Preview', tr: 'Önizlemede', color: 'bg-green-100 text-green-800 border-green-200' },
-    sandbox_ready: { en: 'Coming Soon', tr: 'Yakında', color: 'bg-blue-100 text-blue-800 border-blue-200' },
-    backend_required: { en: 'Coming Soon', tr: 'Yakında', color: 'bg-purple-100 text-purple-800 border-purple-200' },
-    ai_backend_required: { en: 'Advanced AI (Coming Soon)', tr: 'Gelişmiş AI (Yakında)', color: 'bg-purple-100 text-purple-800 border-purple-200' },
-    roadmap: { en: 'Future Update', tr: 'Gelecek Güncelleme', color: 'bg-indigo-100 text-indigo-800 border-indigo-200' },
+    sandbox_ready: { en: 'Early Access', tr: 'Erken Erişim', color: 'bg-blue-100 text-blue-800 border-blue-200' },
+    backend_required: { en: 'Early Access', tr: 'Erken Erişim', color: 'bg-purple-100 text-purple-800 border-purple-200' },
+    ai_backend_required: { en: 'Advanced AI', tr: 'Gelişmiş AI', color: 'bg-purple-100 text-purple-800 border-purple-200' },
+    roadmap: { en: 'Expansion', tr: 'Platform Genişlemesi', color: 'bg-indigo-100 text-indigo-800 border-indigo-200' },
     production_ready: { en: 'Live', tr: 'Yayında', color: 'bg-emerald-100 text-emerald-800 border-emerald-200' }
   };
   

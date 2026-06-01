@@ -766,8 +766,8 @@ const MarketingHomePage: React.FC = () => {
               <h3 className="font-bold text-lg md:text-xl mb-2 text-indigo-300 flex items-center gap-2">
                 <span>📊</span>{" "}
                 {language === "tr"
-                  ? "İşletme İçin: AI İçgörüleri (Planlanan)"
-                  : "For Businesses: AI Insights (Planned)"}
+                  ? "İşletme İçin: AI İçgörüleri"
+                  : "For Businesses: AI Insights"}
               </h3>
               <p className="text-sm md:text-base text-indigo-100/70 leading-relaxed">
                 {language === "tr"
@@ -870,7 +870,7 @@ const MarketingHomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* 8. Integrations Roadmap */}
+      {/* 8. Integrations */}
       <section className="px-4 py-8 md:py-12 max-w-4xl mx-auto text-center border-t border-slate-200 dark:border-slate-800">
         <h2 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white mb-8">
           {language === "tr"

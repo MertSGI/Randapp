@@ -576,7 +576,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
               <div className="bg-blue-50 dark:bg-blue-900/20 border border-gray-200 dark:border-slate-700 rounded-lg p-6 mb-6">
                 <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">Randevu Sayfanız:</h4>
                 <div className="flex flex-col sm:flex-row gap-4 items-center">
-                  <input type="text" readOnly value={`randapp.com/${(import.meta as any).env.VITE_ROUTER_MODE === 'hash' ? '#/' : ''}${tenant?.slug || 'benimsalonum'}`} className="w-full bg-white dark:bg-slate-800 border-gray-300 dark:border-slate-600 p-3 rounded border text-gray-700 dark:text-gray-300 font-mono text-sm" />
+                  <input type="text" readOnly value={`lari.com/${(import.meta as any).env.VITE_ROUTER_MODE === 'hash' ? '#/' : ''}${tenant?.slug || 'benimsalonum'}`} className="w-full bg-white dark:bg-slate-800 border-gray-300 dark:border-slate-600 p-3 rounded border text-gray-700 dark:text-gray-300 font-mono text-sm" />
                   <div className="flex gap-2 w-full sm:w-auto">
                     <button onClick={() => {
                       navigator.clipboard.writeText(`${window.location.origin}/${(import.meta as any).env.VITE_ROUTER_MODE === 'hash' ? '#/' : ''}${tenant?.slug || 'benimsalonum'}`);
