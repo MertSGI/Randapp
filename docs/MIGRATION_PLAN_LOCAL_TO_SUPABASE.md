@@ -7,12 +7,10 @@ This plan addresses a clean backend switch from the LocalStorage and Mock Servic
 - Execute all SQL instructions located in `supabase/migrations/*`.
 - Verify the schema through Supabase Dashboard, ensuring the tables matching the mock interfaces exist and RLS policies are enabled.
 
-## Phase 2: Supabase Client Injection
-- Replace the mock delay wrappers used in `services/*.ts` with live `@supabase/supabase-js` API calls.
-- **Example Mapping**:
-  - `localStorage.getItem('lari_registered_tenants')` -> `supabase.from('tenants').select('*')`
-  - `localStorage.getItem('lari_active_owner_session')` -> Supabase Auth (`supabase.auth.getSession()`)
-  - Admin configuration -> `supabase.from('business_profiles').update(...)`
+## Phase 2: Supabase Client Injection & Data Source Adapters
+- Implement `dataSourceConfig.ts` with a `VITE_LARI_DATA_SOURCE` flag.
+- Replace direct `localStorage.getItem` or raw fetch wrappers in services with clean `Repository` abstractions (e.g., `localBusinessProfileRepository`, `supabaseBusinessProfileRepository`).
+- Currently the default continues to be local, but Supabase implementations provide a smooth migration route testing real DB connectivity using standard interface contracts.
 
 ## Phase 3: Auth & Tenant Binding
 - Redirect `/register` to perform `supabase.auth.signUp()`.

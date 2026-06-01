@@ -1,95 +1,15 @@
 import { SalonBusinessProfile } from '../types';
+import { getBusinessProfileRepository } from './repositories';
 
 export const businessProfileService = {
   async getBusinessProfile(tenantId: string): Promise<SalonBusinessProfile | null> {
-    const dataMode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
-
-    if (dataMode !== 'mock') {
-       try {
-          const supabaseUrl = (import.meta as any).env.VITE_SUPABASE_URL;
-          const supabaseKey = (import.meta as any).env.VITE_SUPABASE_ANON_KEY;
-          
-          if (!supabaseUrl || !supabaseKey) return null;
-          
-          const res = await fetch(`${supabaseUrl}/rest/v1/tenant_business_profiles?tenant_id=eq.${tenantId}&select=*`, {
-            headers: {
-              'apikey': supabaseKey,
-              'Authorization': `Bearer ${localStorage.getItem('sb-access-token') || supabaseKey}` // Ideally use actual auth session
-            }
-          });
-          
-          if (!res.ok) return null;
-          const data = await res.json();
-          return data[0] || null;
-       } catch (err) {
-         console.error('Error fetching business profile:', err);
-         return null;
-       }
-    }
-
-    // Mock Mode
-    const localData = localStorage.getItem(`mock_business_profile_${tenantId}`);
-    if (localData) {
-      return JSON.parse(localData);
-    }
-
-    return this.getMockProfile(tenantId);
+    const repo = getBusinessProfileRepository();
+    return repo.getProfile(tenantId);
   },
 
   async updateBusinessProfile(tenantId: string, profileData: Partial<SalonBusinessProfile>): Promise<SalonBusinessProfile | null> {
-    const dataMode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
-
-    if (dataMode !== 'mock') {
-       try {
-          const supabaseUrl = (import.meta as any).env.VITE_SUPABASE_URL;
-          const supabaseKey = (import.meta as any).env.VITE_SUPABASE_ANON_KEY;
-          if (!supabaseUrl || !supabaseKey) throw new Error("Missing credentials");
-
-          const token = localStorage.getItem('sb-access-token'); // Replace with robust context token if available
-          
-          // Check if exists
-          const existing = await this.getBusinessProfile(tenantId);
-          
-          let res;
-          if (existing) {
-             // Update
-             res = await fetch(`${supabaseUrl}/rest/v1/tenant_business_profiles?tenant_id=eq.${tenantId}`, {
-               method: 'PATCH',
-               headers: {
-                 'apikey': supabaseKey,
-                 'Authorization': `Bearer ${token}`,
-                 'Content-Type': 'application/json',
-                 'Prefer': 'return=representation'
-               },
-               body: JSON.stringify({ ...profileData, updated_at: new Date().toISOString() })
-             });
-          } else {
-             // Insert
-             res = await fetch(`${supabaseUrl}/rest/v1/tenant_business_profiles`, {
-               method: 'POST',
-               headers: {
-                 'apikey': supabaseKey,
-                 'Authorization': `Bearer ${token}`,
-                 'Content-Type': 'application/json',
-                 'Prefer': 'return=representation'
-               },
-               body: JSON.stringify({ ...profileData, tenant_id: tenantId })
-             });
-          }
-          if (!res.ok) throw new Error("Failed to save business profile");
-          const data = await res.json();
-          return data[0];
-       } catch(err) {
-         console.error("Error updating business profile:", err);
-         throw err;
-       }
-    }
-
-    // Mock mode
-    const existing = await this.getBusinessProfile(tenantId) || this.getMockProfile(tenantId);
-    const updated = { ...existing, ...profileData, tenant_id: tenantId, updated_at: new Date().toISOString() } as SalonBusinessProfile;
-    localStorage.setItem(`mock_business_profile_${tenantId}`, JSON.stringify(updated));
-    return updated;
+    const repo = getBusinessProfileRepository();
+    return repo.updateProfile(tenantId, profileData);
   },
 
   async getPublicBusinessProfile(tenantId: string): Promise<SalonBusinessProfile | null> {
@@ -98,6 +18,7 @@ export const businessProfileService = {
   },
 
   getMockProfile(tenantId: string): SalonBusinessProfile {
+    // Left for backwards compatibility if needed elsewhere
     return {
       id: 'mock-prof-1',
       tenant_id: tenantId,
@@ -123,3 +44,4 @@ export const businessProfileService = {
     };
   }
 };
+
