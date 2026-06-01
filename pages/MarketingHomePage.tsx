@@ -51,18 +51,17 @@ const MarketingHomePage: React.FC = () => {
                 : "Digitize Your Business with LARİ"}
             </div>
 
-            <div className="hidden md:block mb-4 text-base md:text-lg font-semibold text-slate-500 dark:text-slate-400">
-              {language === "tr"
-                ? "Kuaförler, güzellik salonları, klinikler ve randevulu işletmeler için"
-                : "For barbers, beauty clinics, nail studios, and service businesses"}
-            </div>
-            
-            <div className="block md:hidden mb-4 text-sm font-semibold text-slate-500 dark:text-slate-400 mx-auto text-center">
-              {language === "tr" ? (
-                <>Kuaförler, güzellik salonları, klinikler<br/>ve randevulu işletmeler için</>
-              ) : (
-                <>For barbers, salons, clinics,<br/>and service businesses</>
-              )}
+            <div className="flex justify-center lg:justify-start items-center gap-1.5 mb-5 md:mb-6 text-[17px] md:text-xl font-bold tracking-tight text-slate-500 dark:text-slate-400">
+              {language === "en" && <span>For</span>}
+              <div className="relative overflow-hidden h-[1.4em] w-[170px] sm:w-[220px]">
+                  <span
+                    key={currentPhrase}
+                    className="absolute inset-0 animate-slideUpFade text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-violet-600 dark:from-blue-400 dark:to-violet-400 flex items-center justify-center lg:justify-start"
+                  >
+                    {currentPhrase}
+                  </span>
+              </div>
+              {language === "tr" && <span>için</span>}
             </div>
 
             {/* Desktop Headline */}
@@ -115,18 +114,14 @@ const MarketingHomePage: React.FC = () => {
               </Link>
             </div>
             
-            <div className="mt-5 flex flex-row flex-wrap justify-center lg:justify-start gap-3 w-full max-w-[320px] sm:max-w-none mx-auto lg:mx-0">
-              <Link
-                to="/pricing"
-                className="flex items-center justify-center px-4 md:px-5 py-2 md:py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-medium text-[13px] md:text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition w-full sm:w-auto"
-              >
-                {language === "tr" ? "Paketleri İncele" : "View Plans"}
+            <div className="mt-4 flex items-center justify-center lg:justify-start gap-3 w-full text-[13px] md:text-sm font-medium text-slate-500 dark:text-slate-400">
+              <span>{language === "tr" ? "Önce keşfetmek ister misiniz?" : "Want to explore first?"}</span>
+              <Link to="/pricing" className="text-blue-600 dark:text-blue-400 hover:underline">
+                {language === "tr" ? "Paketleri karşılaştır" : "Compare plans"}
               </Link>
-              <Link
-                to="/demo"
-                className="flex items-center justify-center px-4 md:px-5 py-2 md:py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-medium text-[13px] md:text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition w-full sm:w-auto"
-              >
-                {language === "tr" ? "Kendi İşletmeni Önizle" : "Preview Your Business"}
+              <span>·</span>
+              <Link to="/demo" className="text-blue-600 dark:text-blue-400 hover:underline">
+                {language === "tr" ? "İşletmeni önizle" : "Preview your business"}
               </Link>
             </div>
 
@@ -974,10 +969,10 @@ const MarketingHomePage: React.FC = () => {
               {language === "tr" ? "Paketi Seç" : "Choose a Plan"}
             </Link>
           </div>
-          <p className="mt-8 text-blue-200 text-sm opacity-80">
+          <p className="mt-8 text-blue-200 text-sm opacity-90 max-w-lg mx-auto text-center">
             {language === "tr"
-              ? "Kredi kartı bilgileri istenmeden denemeye başlayabilirsiniz."
-              : "Start trying right away, no credit card required upfront."}
+              ? "14 gün boyunca ödeme alınmaz; denemeyi başlatmak için güvenli kart doğrulaması gerekir."
+              : "14 days free trial; secure card verification required to start."}
           </p>
         </div>
       </section>

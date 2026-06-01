@@ -83,6 +83,42 @@ const DemoLandingPage: React.FC = () => {
     { id: 2, name: language === 'tr' ? 'Mehmet Kaya' : 'John Doe', title: language === 'tr' ? 'Berber' : 'Barber' },
   ]);
 
+  useEffect(() => {
+    const saved = localStorage.getItem('lari_business_preview_context');
+    if (saved) {
+      try {
+        const data = JSON.parse(saved);
+        if (data.salonName) setSalonName(data.salonName);
+        if (data.category) setCategory(data.category);
+        if (data.shortDesc) setShortDesc(data.shortDesc);
+        if (data.whatsappNumber) setWhatsappNumber(data.whatsappNumber);
+        if (data.instagram) setInstagram(data.instagram);
+        if (data.address) setAddress(data.address);
+        if (data.city) setCity(data.city);
+        if (data.district) setDistrict(data.district);
+        if (data.primaryColor) setPrimaryColor(data.primaryColor);
+        if (data.services) setServices(data.services);
+        if (data.staff) setStaff(data.staff);
+      } catch (e) {}
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('lari_business_preview_context', JSON.stringify({
+      salonName,
+      category,
+      shortDesc,
+      whatsappNumber,
+      instagram,
+      address,
+      city,
+      district,
+      primaryColor,
+      services,
+      staff
+    }));
+  }, [salonName, category, shortDesc, whatsappNumber, instagram, address, city, district, primaryColor, services, staff]);
+
   const handleAddService = () => setServices([...services, { id: Date.now(), name: '', price: '' }]);
   const handleUpdateService = (id: number, field: string, value: string) => {
     setServices(services.map(s => s.id === id ? { ...s, [field]: value } : s));
