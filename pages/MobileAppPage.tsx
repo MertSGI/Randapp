@@ -50,7 +50,6 @@ const MobileAppPage: React.FC = () => {
                  <Smartphone className="w-4 h-4 md:w-5 md:h-5" />
                  {content.badge}
                </span>
-               <FeatureBadge status="roadmap" language={language} className="px-2 py-1 md:px-3 md:py-1 scale-90 md:scale-100" />
             </div>
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-5 md:mb-6 max-w-4xl mx-auto leading-tight">
               {content.title}
