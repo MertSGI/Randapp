@@ -4,6 +4,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useTenant } from '../../contexts/TenantContext';
 import { planService } from '../../services/planService';
+import { entitlementService } from '../../services/entitlementService';
 
 const ThemeToggle = () => {
   const { theme, toggleTheme } = useTheme();
@@ -38,9 +39,9 @@ const SalonBookingLayout: React.FC = () => {
   const businessName = branding.businessName || 'Salon';
   const logoInitial = businessName.charAt(0).toUpperCase();
 
-  const planId = tenant?.planId || 'professional'; // Default to professional for mock
-  const plan = planService.getPlan(planId);
-  const aiEnabled = plan?.aiRecommendationsEnabled ?? false;
+  const planId = tenant?.planId || 'baslangic';
+  const aiEnabled = entitlementService.canUseFeature(planId, 'ai_style_assistant_basic') || entitlementService.canUseFeature(planId, 'ai_style_assistant_full');
+
 
   const isBookRoute = location.pathname === '/book' || location.pathname === `/${tenant?.slug}`;
 

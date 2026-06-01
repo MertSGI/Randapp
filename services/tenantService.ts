@@ -73,6 +73,19 @@ export const tenantService = {
     const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
     if (mode === 'mock') {
        const activeTenantId = localStorage.getItem('lari_active_tenant_id');
+       if (activeTenantId === 'tenant_pilot_demo') {
+           return {
+                id: 'tenant_pilot_demo',
+                slug: 'tenant_pilot_demo',
+                name: 'Lumina Güzellik & Kuaför',
+                status: 'active',
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                verificationStatus: 'approved',
+                publicSiteStatus: 'published',
+                businessRiskStatus: 'normal',
+           } as Tenant;
+       }
        if (activeTenantId) {
           const registeredArr = JSON.parse(localStorage.getItem('lari_registered_tenants') || '[]');
           const tenantRecord = registeredArr.find((t: any) => t.id === activeTenantId);

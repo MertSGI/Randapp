@@ -4,6 +4,7 @@ import { translations } from '../utils/translations';
 import { useTenant } from '../contexts/TenantContext';
 import { useDialog } from '../contexts/DialogContext';
 import { referralService } from '../services/referralService';
+import { entitlementService } from '../services/entitlementService';
 import { ReferralCampaign } from '../types';
 
 const ReferralTab: React.FC = () => {
@@ -13,11 +14,39 @@ const ReferralTab: React.FC = () => {
   const { alert: showAlert, confirm: showConfirm } = useDialog();
   const [campaigns, setCampaigns] = useState<ReferralCampaign[]>([]);
 
+  const planId = tenant?.planId || 'baslangic';
+  const hasAccess = entitlementService.canUseFeature(planId, 'campaigns_referrals');
+
   useEffect(() => {
     if (tenant) {
       setCampaigns(referralService.getCampaigns(tenant.id));
     }
   }, [tenant]);
+
+  if (!hasAccess) {
+    return (
+      <div className="space-y-8">
+        <div className="bg-white dark:bg-slate-800 shadow-sm rounded-lg border border-gray-200 dark:border-slate-700 p-12 text-center">
+          <div className="w-16 h-16 bg-gray-100 dark:bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+            {language === 'tr' ? 'Bu özellik mevcut paketinizde yer almıyor' : 'Feature not included in your current plan'}
+          </h2>
+          <p className="text-gray-500 mb-6 max-w-md mx-auto">
+            {language === 'tr' 
+              ? 'Kampanya ve referans yönetimi özelliği Profesyonel ve üstü paketlerde kullanılabilir. İşletmeniz için yeni müşteriler kazanmak üzere paketinizi yükseltin.'
+              : 'Campaign and referral management is available in Professional plan and above. Upgrade your plan to win new customers.'}
+          </p>
+          <a href="#/admin/billing" className="bg-accent hover:bg-blue-600 text-white font-bold py-2.5 px-6 rounded-md shadow transition inline-block">
+            {language === 'tr' ? 'Paketleri İncele' : 'View Plans'}
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">

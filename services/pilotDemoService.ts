@@ -185,6 +185,8 @@ export const pilotDemoService = {
            email: PILOT_USER.email,
            planId: 'professional',
            status: 'active',
+           publicSiteStatus: 'published',
+           verificationStatus: 'approved',
            created_at: new Date().toISOString()
        });
        localStorage.setItem('lari_registered_tenants', JSON.stringify(regArr));

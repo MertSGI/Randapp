@@ -2,7 +2,7 @@ import { supabase } from './supabaseClient';
 import { dataProvider } from './dataProvider';
 import { planService, PricingPlan } from './planService';
 
-export type SubscriptionStatus = 'trialing' | 'active' | 'past_due' | 'cancelled' | 'expired' | 'none';
+export type SubscriptionStatus = 'pending_checkout' | 'trialing' | 'active' | 'past_due' | 'cancelled' | 'expired' | 'none';
 
 export interface TenantSubscription {
   tenantId: string;
@@ -110,23 +110,31 @@ export const subscriptionService = {
   },
 
   async canAddStaff(tenantId: string): Promise<boolean> {
+    const { entitlementService } = await import('./entitlementService');
     const plan = await this.getPlanForTenant(tenantId);
     const usage = await this.getTenantUsage(tenantId);
     if (!plan) return false;
-    return usage.staffCount < plan.maxStaff;
+    const max = entitlementService.getLimit(plan.id, 'maxStaff');
+    if (max === -1) return true; // unlimited
+    return usage.staffCount < max;
   },
 
   async canAddService(tenantId: string): Promise<boolean> {
+    const { entitlementService } = await import('./entitlementService');
     const plan = await this.getPlanForTenant(tenantId);
     const usage = await this.getTenantUsage(tenantId);
     if (!plan) return false;
-    return usage.serviceCount < plan.maxServices;
+    const max = entitlementService.getLimit(plan.id, 'maxServices');
+    if (max === -1) return true;
+    return usage.serviceCount < max;
   },
 
   async canCreateAppointment(tenantId: string): Promise<boolean> {
     const plan = await this.getPlanForTenant(tenantId);
     const usage = await this.getTenantUsage(tenantId);
     if (!plan) return false;
+    // Monthly appointments count is not explicitly limited in the new packages, but keeping existing logic if needed
+    // The previous packages had maxMonthlyAppointments. New ones have it unlimited except maybe basic.
     return usage.monthlyAppointmentsCount < plan.maxMonthlyAppointments;
   },
 

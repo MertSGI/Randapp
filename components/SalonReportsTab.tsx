@@ -1,6 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { Appointment, Service, Staff } from '../types';
 import { reportingService } from '../services/reportingService';
+import { useTenant } from '../contexts/TenantContext';
+import { entitlementService } from '../services/entitlementService';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface SalonReportsTabProps {
   appointments: Appointment[];
@@ -10,10 +13,40 @@ interface SalonReportsTabProps {
 
 const SalonReportsTab: React.FC<SalonReportsTabProps> = ({ appointments, services, staff }) => {
   const [dateRange, setDateRange] = useState<'this_month' | 'last_month' | 'last_30_days'>('this_month');
+  const { tenant } = useTenant();
+  const { language } = useLanguage();
+
+  const planId = tenant?.planId || 'baslangic';
+  const hasAccess = entitlementService.canUseFeature(planId, 'reports_basic') || entitlementService.canUseFeature(planId, 'reports_advanced');
 
   const metrics = useMemo(() => {
     return reportingService.getReportMetrics(appointments, services, dateRange);
   }, [appointments, services, dateRange]);
+
+  if (!hasAccess) {
+    return (
+      <div className="space-y-8">
+        <div className="bg-white dark:bg-slate-800 shadow-sm rounded-lg border border-gray-200 dark:border-slate-700 p-12 text-center">
+          <div className="w-16 h-16 bg-gray-100 dark:bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+          </div>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+            {language === 'tr' ? 'Raporlar özelliği mevcut paketinizde yer almıyor' : 'Reports are not included in your current plan'}
+          </h2>
+          <p className="text-gray-500 mb-6 max-w-md mx-auto">
+            {language === 'tr' 
+              ? 'Raporlama ve istatistik özellikleri Standart ve üstü paketlerde kullanılabilir.'
+              : 'Reporting and statistical features are available in the Standard plan and above.'}
+          </p>
+          <a href="#/admin/billing" className="bg-accent hover:bg-blue-600 text-white font-bold py-2.5 px-6 rounded-md shadow transition inline-block">
+            {language === 'tr' ? 'Paketleri İncele' : 'View Plans'}
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">

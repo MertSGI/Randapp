@@ -4,6 +4,7 @@ import { adminCustomerService } from '../services/adminCustomerService';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTenant } from '../contexts/TenantContext';
 import { useDialog } from '../contexts/DialogContext';
+import { entitlementService } from '../services/entitlementService';
 
 interface CustomerMemoryTabProps {
   appointments: Appointment[];
@@ -33,7 +34,11 @@ const CustomerMemoryTab: React.FC<CustomerMemoryTabProps> = ({ appointments, sta
     careNotes: ''
   });
 
+  const planId = tenant?.planId || 'baslangic';
+  const hasAccess = entitlementService.canUseFeature(planId, 'customer_memory_lite') || entitlementService.canUseFeature(planId, 'customer_memory_full');
+
   useEffect(() => {
+    if (!hasAccess) return;
     const loadCustomers = async () => {
       if (tenant) {
         const loaded = await adminCustomerService.getCustomers(tenant.id, appointments);
@@ -50,7 +55,7 @@ const CustomerMemoryTab: React.FC<CustomerMemoryTabProps> = ({ appointments, sta
       }
     };
     loadCustomers();
-  }, [tenant, appointments, targetAppointmentId, onClearTarget]);
+  }, [tenant, appointments, targetAppointmentId, onClearTarget, hasAccess]);
 
   const handleSelectCustomer = (customer: CustomerProfile) => {
     setSelectedCustomer(customer);
@@ -107,6 +112,11 @@ const CustomerMemoryTab: React.FC<CustomerMemoryTabProps> = ({ appointments, sta
     const file = e.target.files?.[0];
     if (!file || !tenant || !selectedCustomer) return;
     
+    if (!entitlementService.canUseFeature(planId, 'customer_memory_full')) {
+       alert(language === 'tr' ? 'Fotoğraf yükleme özelliği Full CRM paketlerinde mevcuttur.' : 'Photo upload is available in Full CRM plans.');
+       return;
+    }
+
     // File size guard (3MB)
     if (file.size > 3 * 1024 * 1024) {
       alert(language === 'tr' ? 'Dosya boyutu 3MB\'dan küçük olmalıdır.' : 'File size must be less than 3MB.');
@@ -142,6 +152,31 @@ const CustomerMemoryTab: React.FC<CustomerMemoryTabProps> = ({ appointments, sta
       setSelectedCustomer({...updatedCust});
     }
   };
+
+  if (!hasAccess) {
+    return (
+      <div className="space-y-8">
+        <div className="bg-white dark:bg-slate-800 shadow-sm rounded-lg border border-gray-200 dark:border-slate-700 p-12 text-center">
+          <div className="w-16 h-16 bg-gray-100 dark:bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          </div>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+            {language === 'tr' ? 'Bu özellik mevcut paketinizde yer almıyor' : 'Feature not included in your current plan'}
+          </h2>
+          <p className="text-gray-500 mb-6 max-w-md mx-auto">
+            {language === 'tr' 
+              ? 'Müşteri Hafızası ve CRM özellikleri Standart ve üstü paketlerde kullanılabilir.'
+              : 'Customer memory and CRM are available in the Standard plan and above.'}
+          </p>
+          <a href="#/admin/billing" className="bg-accent hover:bg-blue-600 text-white font-bold py-2.5 px-6 rounded-md shadow transition inline-block">
+            {language === 'tr' ? 'Paketleri İncele' : 'View Plans'}
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   if (!selectedCustomer) {
     return (

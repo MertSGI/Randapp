@@ -35,17 +35,17 @@ export interface PricingPlan {
 export type BillingPeriod = 'monthly' | 'annual';
 
 export const DEFAULT_PLANS: Record<string, PricingPlan> = {
-  starter: {
-    id: 'starter',
-    name: 'Starter',
-    monthlyPrice: 2490,
-    annualPrice: 2490 * 12 * 0.8, // 20% discount
+  baslangic: {
+    id: 'baslangic',
+    name: 'Başlangıç',
+    monthlyPrice: 1490,
+    annualPrice: 1490 * 12 * 0.8, // 20% discount
     annualDiscountPercent: 20,
-    setupFee: 7500,
+    setupFee: 0,
     currency: 'TRY',
-    maxStaff: 3,
+    maxStaff: 1,
     maxServices: 10,
-    maxMonthlyAppointments: 500,
+    maxMonthlyAppointments: 9999, // Essentially unlimited for solo
     customDomainEnabled: false,
     includedSubdomain: true,
     customComDomainIncluded: false,
@@ -54,64 +54,94 @@ export const DEFAULT_PLANS: Record<string, PricingPlan> = {
     aiMonthlyQuota: 0,
     campaignsEnabled: false,
     advancedReportsEnabled: false,
-    whatsappAutomationEnabled: true,
+    whatsappAutomationEnabled: false,
     googleCalendarEnabled: true,
     supportLevel: 'standard',
     referralEligible: false,
     isActive: true,
     isRecommended: false,
     trialDays: TRIAL_CONFIG.trialDayCount,
-    iyzicoProductReferenceCode: 'test_product_1',
-    iyzicoPlanReferenceCodeMonthly: 'test_plan_monthly_1',
-    iyzicoPlanReferenceCodeAnnual: 'test_plan_annual_1'
+    iyzicoProductReferenceCode: 'prod_baslangic',
+    iyzicoPlanReferenceCodeMonthly: 'plan_baslangic_monthly',
+    iyzicoPlanReferenceCodeAnnual: 'plan_baslangic_annual'
+  },
+  standart: {
+    id: 'standart',
+    name: 'Standart',
+    monthlyPrice: 2490,
+    annualPrice: 2490 * 12 * 0.8, // 20% discount
+    annualDiscountPercent: 20,
+    setupFee: 0,
+    currency: 'TRY',
+    maxStaff: 3,
+    maxServices: 25,
+    maxMonthlyAppointments: 9999,
+    customDomainEnabled: false,
+    includedSubdomain: true,
+    customComDomainIncluded: false,
+    aiRecommendationsEnabled: true, // basic
+    aiVisualizationEnabled: false,
+    aiMonthlyQuota: 100,
+    campaignsEnabled: false, // As per doc
+    advancedReportsEnabled: false,
+    whatsappAutomationEnabled: false,
+    googleCalendarEnabled: true,
+    supportLevel: 'standard',
+    referralEligible: false,
+    isActive: true,
+    isRecommended: false,
+    trialDays: TRIAL_CONFIG.trialDayCount,
+    iyzicoProductReferenceCode: 'prod_standart',
+    iyzicoPlanReferenceCodeMonthly: 'plan_standart_monthly',
+    iyzicoPlanReferenceCodeAnnual: 'plan_standart_annual'
   },
   professional: {
     id: 'professional',
-    name: 'Professional',
-    monthlyPrice: 4990,
-    annualPrice: 4990 * 12 * 0.8, // 20% discount
+    name: 'Profesyonel',
+    monthlyPrice: 3490,
+    annualPrice: 3490 * 12 * 0.8,
     annualDiscountPercent: 20,
-    setupFee: 10000,
+    setupFee: 0,
     currency: 'TRY',
-    maxStaff: 10,
-    maxServices: 30,
-    maxMonthlyAppointments: 2000,
-    customDomainEnabled: true,
+    maxStaff: 8,
+    maxServices: 60,
+    maxMonthlyAppointments: 99999,
+    customDomainEnabled: false,
     includedSubdomain: true,
-    customComDomainIncluded: true,
-    aiRecommendationsEnabled: true,
-    aiVisualizationEnabled: false,
-    aiMonthlyQuota: 50,
+    customComDomainIncluded: false,
+    aiRecommendationsEnabled: true, // full
+    aiVisualizationEnabled: true,
+    aiMonthlyQuota: 500,
     campaignsEnabled: true,
     advancedReportsEnabled: true,
-    whatsappAutomationEnabled: true,
+    whatsappAutomationEnabled: false,
     googleCalendarEnabled: true,
     supportLevel: 'priority',
     referralEligible: true,
     isActive: true,
     isRecommended: true,
     trialDays: TRIAL_CONFIG.trialDayCount,
-    iyzicoProductReferenceCode: 'test_product_2',
-    iyzicoPlanReferenceCodeMonthly: 'test_plan_monthly_2',
-    iyzicoPlanReferenceCodeAnnual: 'test_plan_annual_2'
+    iyzicoProductReferenceCode: 'prod_professional',
+    iyzicoPlanReferenceCodeMonthly: 'plan_professional_monthly',
+    iyzicoPlanReferenceCodeAnnual: 'plan_professional_annual'
   },
   premium: {
     id: 'premium',
     name: 'Premium',
-    monthlyPrice: 9990,
-    annualPrice: 9990 * 12 * 0.8, // 20% discount
+    monthlyPrice: 4990,
+    annualPrice: 4990 * 12 * 0.8,
     annualDiscountPercent: 20,
-    setupFee: 15000,
+    setupFee: 0,
     currency: 'TRY',
-    maxStaff: 999, // Unlimited
-    maxServices: 999, // Unlimited
-    maxMonthlyAppointments: 99999, // Unlimited
-    customDomainEnabled: true,
+    maxStaff: 20, // max 20
+    maxServices: 200,
+    maxMonthlyAppointments: 99999,
+    customDomainEnabled: true, // manual add-on
     includedSubdomain: true,
-    customComDomainIncluded: true,
+    customComDomainIncluded: false,
     aiRecommendationsEnabled: true,
     aiVisualizationEnabled: true,
-    aiMonthlyQuota: 500,
+    aiMonthlyQuota: 2000,
     campaignsEnabled: true,
     advancedReportsEnabled: true,
     whatsappAutomationEnabled: true,
@@ -121,9 +151,39 @@ export const DEFAULT_PLANS: Record<string, PricingPlan> = {
     isActive: true,
     isRecommended: false,
     trialDays: TRIAL_CONFIG.trialDayCount,
-    iyzicoProductReferenceCode: 'test_product_3',
-    iyzicoPlanReferenceCodeMonthly: 'test_plan_monthly_3',
-    iyzicoPlanReferenceCodeAnnual: 'test_plan_annual_3'
+    iyzicoProductReferenceCode: 'prod_premium',
+    iyzicoPlanReferenceCodeMonthly: 'plan_premium_monthly',
+    iyzicoPlanReferenceCodeAnnual: 'plan_premium_annual'
+  },
+  kurumsal: {
+    id: 'kurumsal',
+    name: 'Kurumsal',
+    monthlyPrice: 0, // Custom pricing flag
+    annualPrice: 0,
+    annualDiscountPercent: 0,
+    setupFee: 0,
+    currency: 'TRY',
+    maxStaff: 999,
+    maxServices: 999,
+    maxMonthlyAppointments: 999999,
+    customDomainEnabled: true,
+    includedSubdomain: true,
+    customComDomainIncluded: true,
+    aiRecommendationsEnabled: true,
+    aiVisualizationEnabled: true,
+    aiMonthlyQuota: 9999,
+    campaignsEnabled: true,
+    advancedReportsEnabled: true,
+    whatsappAutomationEnabled: true,
+    googleCalendarEnabled: true,
+    supportLevel: 'dedicated',
+    referralEligible: true,
+    isActive: true,
+    isRecommended: false,
+    trialDays: 0,
+    iyzicoProductReferenceCode: 'prod_kurumsal',
+    iyzicoPlanReferenceCodeMonthly: 'plan_kurumsal_monthly',
+    iyzicoPlanReferenceCodeAnnual: 'plan_kurumsal_annual'
   }
 };
 

@@ -22,7 +22,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   refreshData,
   onNavigateToTab
 }) => {
-  const { tenant, refreshTenant } = useTenant();
+  const { tenant, refreshTenant, branding } = useTenant();
   
   // States based on previous setup
   const [setupSalonName, setSetupSalonName] = useState(tenant?.name || '');
@@ -697,7 +697,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                         const verifiedResult = businessVerificationService.submitForReview(tenant.id, {
                            officialBusinessName: tenant.name,
                            publicDisplayName: branding?.businessName || tenant.name,
-                           category: businessProfile?.business_category || ''
+                           category: ''
                         });
                         
                         if (!verifiedResult.success) {

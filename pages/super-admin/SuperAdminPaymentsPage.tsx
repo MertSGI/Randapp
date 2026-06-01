@@ -7,7 +7,7 @@ const SuperAdminPaymentsPage: React.FC = () => {
 
   useEffect(() => {
     const load = async () => {
-      const data = await superAdminService.getDashboardStats();
+      const data = await superAdminService.getDashboardData();
       setTenants(data.tenants || []);
     };
     load();
