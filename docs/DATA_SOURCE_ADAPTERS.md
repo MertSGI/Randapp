@@ -21,7 +21,7 @@ The `dataSourceConfig` inspects environment variables and returns the necessary 
 
 ## Cutover Plan
 1. **First Milestone**: `BusinessProfileService` uses the factory.
-2. **Second Milestone**: Tenants and Services.
+2. **Second Milestone**: `CatalogRepository` (Services, Staff, and Availability mappings) uses the factory safely. [COMPLETED]
 3. **Third Milestone**: Customer Memory, Appointments & Security verification bounds.
 
 ## QA Validation

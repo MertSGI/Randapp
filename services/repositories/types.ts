@@ -1,4 +1,4 @@
-import { Tenant as GlobalTenant, SalonBusinessProfile } from '../../types';
+import { Tenant as GlobalTenant, SalonBusinessProfile, Service, Staff, TimeSlot } from '../../types';
 
 export interface Tenant extends GlobalTenant {
   official_business_name?: string;
@@ -32,13 +32,25 @@ export interface BusinessProfileRepository {
 }
 
 export interface CatalogRepository {
-  listServices(tenantId: string): Promise<any[]>;
-  createService(tenantId: string, input: any): Promise<any>;
-  updateService(id: string, patch: any): Promise<void>;
-  listStaff(tenantId: string): Promise<any[]>;
-  createStaff(tenantId: string, input: any): Promise<any>;
-  updateStaff(id: string, patch: any): Promise<void>;
-  listAvailabilityRules(tenantId: string): Promise<any[]>;
+  listServices(tenantId: string, options?: { activeOnly?: boolean }): Promise<Service[]>;
+  getServiceById(serviceId: string): Promise<Service | null>;
+  createService(tenantId: string, input: Omit<Service, 'id' | 'tenantId'>): Promise<Service>;
+  updateService(serviceId: string, patch: Partial<Service>): Promise<Service | null>;
+  deleteOrDeactivateService(serviceId: string): Promise<boolean>;
+  
+  listStaff(tenantId: string, options?: { activeOnly?: boolean }): Promise<Staff[]>;
+  getStaffById(staffId: string): Promise<Staff | null>;
+  createStaff(tenantId: string, input: Omit<Staff, 'id' | 'tenantId'>): Promise<Staff>;
+  updateStaff(staffId: string, patch: Partial<Staff>): Promise<Staff | null>;
+  deleteOrDeactivateStaff(staffId: string): Promise<boolean>;
+  
+  assignServiceToStaff(staffId: string, serviceId: string): Promise<void>;
+  removeServiceFromStaff(staffId: string, serviceId: string): Promise<void>;
+  listStaffForService(tenantId: string, serviceId: string): Promise<Staff[]>;
+  
+  listAvailabilityRules(tenantId: string, staffId?: string): Promise<any[]>;
+  updateAvailabilityRule(ruleId: string, patch: any): Promise<void>;
+  createAvailabilityRule(tenantId: string, input: any): Promise<any>;
 }
 
 export interface BookingRepository {

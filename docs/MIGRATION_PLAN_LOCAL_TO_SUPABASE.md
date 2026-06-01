@@ -9,7 +9,9 @@ This plan addresses a clean backend switch from the LocalStorage and Mock Servic
 
 ## Phase 2: Supabase Client Injection & Data Source Adapters
 - Implement `dataSourceConfig.ts` with a `VITE_LARI_DATA_SOURCE` flag.
-- Replace direct `localStorage.getItem` or raw fetch wrappers in services with clean `Repository` abstractions (e.g., `localBusinessProfileRepository`, `supabaseBusinessProfileRepository`).
+- Replace direct `localStorage.getItem` or raw fetch wrappers in services with clean `Repository` abstractions (e.g., `localBusinessProfileRepository`, `supabaseBusinessProfileRepository`, `CatalogRepository`).
+- [Completed] BusinessProfileRepository is integrated.
+- [Completed] CatalogRepository (Services, Staff, Availability mapping) is integrated.
 - Currently the default continues to be local, but Supabase implementations provide a smooth migration route testing real DB connectivity using standard interface contracts.
 
 ## Phase 3: Auth & Tenant Binding
