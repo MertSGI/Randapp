@@ -158,6 +158,48 @@ const SuperAdminGoLivePage: React.FC = () => {
             </li>
           </ul>
         </div>
+
+        <div className="mt-4 bg-emerald-50 dark:bg-emerald-950/20 p-5 rounded-lg border border-emerald-200 dark:border-emerald-900/50">
+          <h3 className="font-bold text-emerald-900 dark:text-emerald-500 mb-3 flex items-center">
+             <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+             </svg>
+             Sandbox Koşusu Kanıtları (Post-Run Checklist)
+          </h3>
+          <p className="text-sm text-emerald-800 dark:text-emerald-400 mb-3 opacity-90">
+             Koşuyu tamamladıktan sonra <span className="font-semibold">docs/SANDBOX_RUN_EVIDENCE_TEMPLATE.md</span> şablonunu kullanarak kanıt raporunuzu oluşturun.
+          </p>
+          <ul className="space-y-1.5 text-sm text-emerald-900 dark:text-emerald-300">
+             <li className="flex items-center gap-2 px-1">
+                <div className="w-3 h-3 rounded-sm border border-emerald-500 bg-emerald-100 dark:bg-emerald-800 shrink-0"></div>
+                <span>Checkout aşaması ekran görüntüsü alındı (Screenshot captured)</span>
+             </li>
+             <li className="flex items-center gap-2 px-1">
+                <div className="w-3 h-3 rounded-sm border border-emerald-500 bg-emerald-100 dark:bg-emerald-800 shrink-0"></div>
+                <span>Uygulamaya başarıyla dönüldü (Callback returned)</span>
+             </li>
+             <li className="flex items-center gap-2 px-1">
+                <div className="w-3 h-3 rounded-sm border border-emerald-500 bg-emerald-100 dark:bg-emerald-800 shrink-0"></div>
+                <span>Supabase Logs: Webhook doğrulandı (Webhook verified)</span>
+             </li>
+             <li className="flex items-center gap-2 px-1">
+                <div className="w-3 h-3 rounded-sm border border-emerald-500 bg-emerald-100 dark:bg-emerald-800 shrink-0"></div>
+                <span>Admin paneli abonelik durumu güncellendi (Billing updated)</span>
+             </li>
+             <li className="flex items-center gap-2 px-1">
+                <div className="w-3 h-3 rounded-sm border border-emerald-500 bg-emerald-100 dark:bg-emerald-800 shrink-0"></div>
+                <span>Super Admin paneli ödemeler ve abonelikler güncellendi (Super Admin updated)</span>
+             </li>
+             <li className="flex items-center gap-2 px-1">
+                <div className="w-3 h-3 rounded-sm border border-emerald-500 bg-emerald-100 dark:bg-emerald-800 shrink-0"></div>
+                <span>Tekrarlanan ve iptal edilen akışlar test edildi (Negative tests)</span>
+             </li>
+             <li className="flex items-center gap-2 px-1">
+                <div className="w-3 h-3 rounded-sm border border-emerald-500 bg-emerald-100 dark:bg-emerald-800 shrink-0"></div>
+                <span>Kanıt raporu kaydedildi (Evidence report completed)</span>
+             </li>
+          </ul>
+        </div>
       </div>
 
       {report.blockers.length > 0 && (
