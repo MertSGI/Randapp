@@ -101,20 +101,26 @@ const MarketingHomePage: React.FC = () => {
                   : "Start 7-Day Free Trial"}
               </Link>
               <Link
-                to="/demo"
+                to="/pilot"
                 className="bg-white dark:bg-slate-800 text-slate-800 dark:text-white px-6 py-3.5 md:px-8 md:py-4 rounded-xl font-bold shadow-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition block w-full sm:w-auto text-center md:min-w-[200px] text-[15px] md:text-base cursor-pointer"
               >
                 {language === "tr"
-                  ? "Kendi İşletmeni Önizle"
-                  : "Preview Your Business"}
+                  ? "Canlı Örneği İncele"
+                  : "View Live Example"}
               </Link>
             </div>
-            <div className="mt-4 text-center lg:text-left">
+            <div className="mt-4 text-center lg:text-left flex flex-wrap gap-4 justify-center lg:justify-start">
               <Link
                 to="/pricing"
                 className="text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 font-medium text-[13px] md:text-sm transition-colors border-b border-transparent hover:border-slate-400 inline-block px-4 py-2 lg:px-0"
               >
                 {language === "tr" ? "Paketleri Gör" : "View Plans & Pricing"}
+              </Link>
+              <Link
+                to="/demo"
+                className="text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 font-medium text-[13px] md:text-sm transition-colors border-b border-transparent hover:border-slate-400 inline-block px-4 py-2 lg:px-0"
+              >
+                {language === "tr" ? "Kendi İşletmeni Önizle" : "Preview Your Business"}
               </Link>
             </div>
 

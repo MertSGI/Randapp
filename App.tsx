@@ -17,6 +17,7 @@ import RegistrationPage from './pages/RegistrationPage';
 import BookingPage from './pages/BookingPage';
 import AdminPage from './pages/AdminPage';
 import LoginPage from './pages/LoginPage';
+import PilotDemoEntryPage from './pages/PilotDemoEntryPage';
 import AIVisualizerPage from './pages/AIVisualizerPage';
 import DemoLandingPage from './pages/DemoLandingPage';
 import SuperAdminDashboard from './pages/SuperAdminDashboard';
@@ -73,6 +74,7 @@ const AppFlowSwitcher: React.FC = () => {
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/register" element={<RegistrationPage />} />
         <Route path="/demo" element={<DemoLandingPage />} />
+        <Route path="/pilot" element={<PilotDemoEntryPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/login" element={<LoginPage />} />
       </Route>
