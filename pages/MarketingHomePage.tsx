@@ -26,44 +26,133 @@ const MarketingHomePage: React.FC = () => {
     <div className="flex flex-col space-y-16 md:space-y-24 py-8 md:py-12">
       {/* 1. Hero Section */}
       <section className="text-center px-4 max-w-5xl mx-auto">
-        <div className="inline-block bg-violet-50 dark:bg-violet-900/30 text-violet-700 dark:text-violet-400 font-bold px-5 py-2 rounded-full text-xs md:text-sm mb-8 border border-violet-100 dark:border-violet-800">
+        <div className="inline-block bg-violet-50 dark:bg-violet-900/30 text-violet-700 dark:text-violet-400 font-bold px-4 py-1.5 md:px-5 md:py-2 rounded-full text-xs md:text-sm mb-6 md:mb-8 border border-violet-100 dark:border-violet-800">
           {language === 'tr' ? 'LARI ile İşletmenizi Dijitalleştirin' : 'Digitize Your Business with LARİ'}
         </div>
         
-        <div className="mb-4 min-h-[3.5rem] sm:min-h-[1.3em] relative inline-flex w-full justify-center align-bottom px-2 flex-col">
-            <span key={currentPhrase} className="animate-slideUpFade text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-violet-600 dark:from-blue-400 dark:to-violet-400 font-extrabold text-3xl sm:text-5xl md:text-[56px] leading-tight tracking-tight">
+        <div className="mb-3 md:mb-4 min-h-[3rem] sm:min-h-[1.3em] relative inline-flex w-full justify-center align-bottom px-2 flex-col">
+            <span key={currentPhrase} className="animate-slideUpFade text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-violet-600 dark:from-blue-400 dark:to-violet-400 font-extrabold text-[28px] sm:text-5xl md:text-[56px] leading-[1.1] tracking-tight">
                 {currentPhrase}
             </span>
         </div>
         
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-6 leading-[1.15]">
+        {/* Desktop Headline */}
+        <h1 className="hidden md:block text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-6 leading-[1.15]">
           {language === 'tr' ? 'İşletmenize web sitesi, online randevu ve AI destekli müşteri deneyimi kazandırın.' : 'Give your business a website, online booking, and AI-powered customer experience.'}
         </h1>
-        <p className="mt-6 text-lg md:text-xl text-slate-600 dark:text-slate-300 mx-auto leading-relaxed max-w-3xl">
+        {/* Mobile Headline */}
+        <h1 className="block md:hidden text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-3 leading-tight px-2">
+          {language === 'tr' ? 'Web siteniz, randevularınız ve AI asistanınız tek yerde.' : 'Your website, bookings, and AI assistant in one place.'}
+        </h1>
+        
+        {/* Desktop Subtext */}
+        <p className="hidden md:block mt-6 text-lg md:text-xl text-slate-600 dark:text-slate-300 mx-auto leading-relaxed max-w-3xl">
           {language === 'tr' ? 'LARİ; kuaförler, güzellik salonları, klinikler ve randevulu işletmeler için dijital vitrin, online randevu, müşteri hafızası, AI stil asistanı ve kampanya yönetimini tek panelde birleştirir.' : 'LARİ unifies your digital storefront, online booking, customer memory, AI style assistant, and campaign management in one dashboard.'}
         </p>
+        {/* Mobile Subtext */}
+        <p className="block md:hidden mt-2 text-[15px] text-slate-600 dark:text-slate-300 mx-auto leading-snug max-w-[320px] px-1">
+          {language === 'tr' ? 'LARİ; işletmenize paylaşılabilir bir dijital vitrin, online randevu akışı ve yönetim paneli sunar.' : 'LARİ offers your business a shareable digital storefront, online booking flow, and management panel.'}
+        </p>
         
-        <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
-          <Link to="/pricing" className="bg-blue-600 text-white px-8 py-4 rounded-xl font-bold shadow-lg shadow-blue-500/30 hover:bg-blue-700 transition transform hover:-translate-y-1 block w-full sm:w-auto text-center md:min-w-[200px]">
+        {/* Mobile Product Visual Preview */}
+        <div className="block md:hidden mt-7 mb-7 mx-auto max-w-[340px] px-3">
+            <div className="bg-slate-50 dark:bg-slate-900/60 rounded-[32px] p-3.5 border-[6px] border-slate-200/60 dark:border-slate-800 shadow-2xl relative overflow-hidden ring-1 ring-slate-900/5 dark:ring-white/10">
+               {/* Browser Notch / Top Bar */}
+               <div className="h-1.5 w-14 bg-slate-300 dark:bg-slate-700/80 rounded-full mx-auto mb-4"></div>
+               
+               {/* Mini business website card */}
+               <div className="bg-white dark:bg-slate-800 rounded-2xl p-3 mb-3 shadow-sm border border-slate-100 dark:border-slate-700 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-100 to-blue-50 dark:from-violet-900/40 dark:to-blue-900/30 flex items-center justify-center text-violet-600 dark:text-violet-400 font-extrabold shadow-inner text-sm border border-violet-100 dark:border-violet-800/50">✦</div>
+                  <div className="flex-1 text-left">
+                     <div className="h-3 w-24 bg-slate-800 dark:bg-slate-200 rounded-full mb-2"></div>
+                     <div className="flex gap-1.5">
+                        <div className="h-1.5 w-1.5 rounded-full bg-violet-400 dark:bg-violet-500"></div>
+                        <div className="h-1.5 w-1.5 rounded-full bg-violet-400 dark:bg-violet-500"></div>
+                        <div className="h-1.5 w-1.5 rounded-full bg-violet-400 dark:bg-violet-500"></div>
+                        <div className="h-1.5 w-8 rounded-full bg-slate-200 dark:bg-slate-700 ml-1"></div>
+                     </div>
+                  </div>
+               </div>
+               
+               {/* Booking card */}
+               <div className="bg-white dark:bg-slate-800 rounded-2xl p-3.5 mb-3 shadow-sm border border-slate-100 dark:border-slate-700 text-left">
+                  <div className="text-[11px] font-bold text-slate-800 dark:text-slate-300 tracking-wide mb-2.5 flex items-center gap-1.5">
+                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                    {language === 'tr' ? 'Bugün Uygun Saatler' : 'Available Today'}
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                     <div className="h-9 bg-blue-500 rounded-lg flex items-center justify-center text-[13px] font-bold text-white shadow-sm shadow-blue-500/20">14:00</div>
+                     <div className="h-9 bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100 rounded-lg flex items-center justify-center text-[13px] font-semibold text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">15:30</div>
+                     <div className="h-9 border border-dashed border-slate-200 dark:border-slate-700 rounded-lg flex items-center justify-center text-[13px] font-semibold text-slate-400 dark:text-slate-500">16:45</div>
+                  </div>
+               </div>
+               
+               {/* AI assistant card */}
+               <div className="bg-gradient-to-r from-violet-50/80 to-indigo-50/80 dark:from-violet-900/20 dark:to-indigo-900/20 rounded-2xl p-3 mb-3 shadow-sm border border-violet-100/60 dark:border-violet-800/20 flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center text-sm shrink-0 border border-slate-100 dark:border-slate-700">✨</div>
+                  <div className="flex-1 text-left pt-0.5">
+                     <div className="text-[11px] font-bold text-violet-800 dark:text-violet-300 mb-1.5">{language === 'tr' ? 'AI Stil Önerisi' : 'AI Style Suggestion'}</div>
+                     <div className="space-y-1.5">
+                        <div className="h-1.5 w-full bg-violet-200/80 dark:bg-violet-800/40 rounded-full"></div>
+                        <div className="h-1.5 w-2/3 bg-violet-200/80 dark:bg-violet-800/40 rounded-full"></div>
+                     </div>
+                  </div>
+               </div>
+               
+               {/* Owner panel chip */}
+               <div className="bg-slate-900 dark:bg-slate-950 rounded-[18px] p-3 flex items-center gap-3 shadow-xl shadow-slate-900/10 border border-slate-800 relative overflow-hidden">
+                  <div className="absolute right-0 top-0 w-16 h-16 bg-blue-500/10 blur-xl rounded-full"></div>
+                  <div className="w-10 h-10 rounded-xl bg-green-500/10 text-green-400 flex items-center justify-center text-lg border border-green-500/20 shadow-inner">👤</div>
+                  <div className="flex-1 text-left relative z-10">
+                     <div className="text-[10px] text-slate-400 font-medium tracking-wide mb-1 uppercase">{language === 'tr' ? 'Lari Panel' : 'Lari Admin'}</div>
+                     <div className="text-[13px] font-bold text-white flex items-center justify-between">
+                         {language === 'tr' ? 'Bugünkü randevular' : 'Today\'s bookings'}
+                         <span className="bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">4</span>
+                     </div>
+                  </div>
+               </div>
+            </div>
+        </div>
+        
+        <div className="mt-2 md:mt-10 flex flex-col sm:flex-row justify-center gap-3 md:gap-4 w-full max-w-[320px] sm:max-w-none mx-auto sm:px-0">
+          <Link to="/pricing" className="bg-blue-600 text-white px-6 py-3.5 md:px-8 md:py-4 rounded-xl font-bold shadow-lg shadow-blue-500/30 hover:bg-blue-700 transition transform hover:-translate-y-1 block w-full sm:w-auto text-center md:min-w-[200px] text-[15px] md:text-base cursor-pointer">
             {language === 'tr' ? '7 Gün Ücretsiz Başla' : 'Start 7-Day Free Trial'}
           </Link>
-          <Link to="/demo" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white px-8 py-4 rounded-xl font-bold shadow-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition block w-full sm:w-auto text-center md:min-w-[200px]">
-             {language === 'tr' ? 'Canlı Örneği Gör' : 'View Live Demo'}
+          <Link to="/demo" className="bg-white dark:bg-slate-800 text-slate-800 dark:text-white px-6 py-3.5 md:px-8 md:py-4 rounded-xl font-bold shadow-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition block w-full sm:w-auto text-center md:min-w-[200px] text-[15px] md:text-base cursor-pointer">
+             {language === 'tr' ? 'Kendi İşletmeni Önizle' : 'Preview Your Business'}
           </Link>
         </div>
         <div className="mt-4 text-center">
-            <Link to="/pricing" className="text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 font-medium text-sm transition-colors border-b border-transparent hover:border-slate-400">
+            <Link to="/pricing" className="text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 font-medium text-[13px] md:text-sm transition-colors border-b border-transparent hover:border-slate-400 inline-block px-4 py-2">
                {language === 'tr' ? 'Paketleri Gör' : 'View Plans & Pricing'}
             </Link>
         </div>
 
-        {/* Trust Chips */}
-        <div className="mt-8 flex flex-wrap justify-center gap-4 sm:gap-6 text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-400">
+        {/* Desktop Trust Chips */}
+        <div className="hidden md:flex mt-8 flex-wrap justify-center gap-6 text-sm font-medium text-slate-600 dark:text-slate-400">
            <div className="flex items-center gap-1.5"><span className="text-blue-500">✓</span> {language === 'tr' ? 'Mini web sitesi dahil' : 'Mini website included'}</div>
            <div className="flex items-center gap-1.5"><span className="text-violet-500">✓</span> {language === 'tr' ? 'AI Stil Asistanı' : 'AI Style Assistant'}</div>
            <div className="flex items-center gap-1.5"><span className="text-indigo-500">✓</span> {language === 'tr' ? 'Müşteri Hafızası' : 'Customer Memory'}</div>
            <div className="flex items-center gap-1.5"><span className="text-green-500">✓</span> {language === 'tr' ? '7 gün ücretsiz deneme' : '7 day free trial'}</div>
-           <div className="flex items-center gap-1.5 hidden sm:flex"><span className="text-slate-500">✓</span> {language === 'tr' ? 'KVKK odaklı yapı' : 'Privacy focused'}</div>
+           <div className="flex items-center gap-1.5"><span className="text-slate-500">✓</span> {language === 'tr' ? 'KVKK odaklı yapı' : 'Privacy focused'}</div>
+        </div>
+        
+        {/* Mobile Trust Chips (Horizontal Scroll or Dense 2-col) */}
+        <div className="md:hidden mt-8 mb-4 border-t border-slate-100 dark:border-slate-800/60 pt-6">
+           <div className="grid grid-cols-2 gap-x-2 gap-y-3 px-2 text-[12px] font-medium text-slate-600 dark:text-slate-400">
+              <div className="flex items-center justify-start gap-1.5 bg-slate-50 dark:bg-slate-900 px-3 py-2 rounded-lg border border-slate-100 dark:border-slate-800">
+                  <span className="text-blue-500 text-sm">✓</span> <span>{language === 'tr' ? 'Mini web sitesi' : 'Mini website'}</span>
+              </div>
+              <div className="flex items-center justify-start gap-1.5 bg-slate-50 dark:bg-slate-900 px-3 py-2 rounded-lg border border-slate-100 dark:border-slate-800">
+                  <span className="text-green-500 text-sm">✓</span> <span>{language === 'tr' ? 'Online randevu' : 'Online booking'}</span>
+              </div>
+              <div className="flex items-center justify-start gap-1.5 bg-slate-50 dark:bg-slate-900 px-3 py-2 rounded-lg border border-slate-100 dark:border-slate-800">
+                  <span className="text-violet-500 text-sm">✓</span> <span>{language === 'tr' ? 'AI Stil Asistanı' : 'AI Assistant'}</span>
+              </div>
+              <div className="flex items-center justify-start gap-1.5 bg-slate-50 dark:bg-slate-900 px-3 py-2 rounded-lg border border-slate-100 dark:border-slate-800">
+                  <span className="text-indigo-500 text-sm">✓</span> <span>{language === 'tr' ? 'Müşteri hafızası' : 'CRM / Memory'}</span>
+              </div>
+           </div>
         </div>
       </section>
 
