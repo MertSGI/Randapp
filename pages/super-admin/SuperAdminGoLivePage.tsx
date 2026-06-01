@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { goLiveReadinessService, ReadinessReport, ReadinessCheck } from '../../services/goLiveReadinessService';
 import { paymentRunModeService, RunModeStatus, PaymentRunMode } from '../../services/paymentRunModeService';
 import { customerPilotReadinessService } from '../../services/customerPilotReadinessService';
+import { notificationTemplateService } from '../../services/notificationTemplateService';
 
 const StatusBadge = ({ status }: { status: string }) => {
   switch (status) {
@@ -184,18 +185,24 @@ const SuperAdminGoLivePage: React.FC = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="space-y-4">
-            <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200">Kayıtlı Bildirim Şablonları ({customerPilotReadinessService.getNotificationTemplates().length})</h3>
+            <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200">Kayıtlı Bildirim Şablonları ({notificationTemplateService.getTemplates().length})</h3>
             <div className="space-y-3 max-h-[350px] overflow-y-auto pr-2">
-              {customerPilotReadinessService.getNotificationTemplates().map(tpl => (
+              {notificationTemplateService.getTemplates().map(tpl => (
                 <div key={tpl.id} className="p-3 bg-slate-50 dark:bg-slate-900/40 rounded-lg border border-slate-100 dark:border-slate-800 text-xs">
                   <div className="flex justify-between items-center mb-1">
-                    <span className="font-bold text-slate-700 dark:text-slate-300">{tpl.name}</span>
-                    <span className="px-1.5 py-0.5 rounded text-[10px] bg-indigo-100 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-300 font-mono">
-                      {tpl.recipient === 'merchant' ? 'Salon Sahibine' : 'Müşteriye'}
-                    </span>
+                    <span className="font-bold text-slate-700 dark:text-slate-300">{tpl.title}</span>
+                    <div className="flex gap-1.5 items-center">
+                      <span className="px-1.5 py-0.5 rounded text-[10px] bg-sky-100 dark:bg-sky-950 text-sky-800 dark:text-sky-300 font-mono uppercase">
+                        {tpl.channel}
+                      </span>
+                      <span className="px-1.5 py-0.5 rounded text-[10px] bg-indigo-100 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-300 font-mono">
+                        {tpl.audience === 'business_owner' ? 'Salon Sahibine' : tpl.audience === 'customer' ? 'Müşteriye' : 'Admin'}
+                      </span>
+                    </div>
                   </div>
-                  <div className="text-slate-650 dark:text-slate-400 font-medium mb-1"><span className="opacity-75">Konu:</span> {tpl.subject_tr}</div>
-                  <div className="text-slate-500 dark:text-slate-400 italic bg-white dark:bg-slate-900 p-2 rounded border border-slate-150 dark:border-slate-850 font-mono whitespace-pre-wrap">{tpl.body_tr}</div>
+                  {tpl.subject && <div className="text-slate-650 dark:text-slate-400 font-medium mb-1"><span className="opacity-75">Konu:</span> {tpl.subject}</div>}
+                  <div className="text-slate-500 dark:text-slate-400 italic bg-white dark:bg-slate-900 p-2 rounded border border-slate-150 dark:border-slate-850 font-mono whitespace-pre-wrap">{tpl.body}</div>
+                  <div className="mt-2 text-[10px] text-slate-400 dark:text-slate-500">Değişkenler: {tpl.variables.length > 0 ? tpl.variables.join(', ') : 'Yok'}</div>
                 </div>
               ))}
             </div>

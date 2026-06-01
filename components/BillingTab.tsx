@@ -148,6 +148,10 @@ const BillingTab: React.FC = () => {
             <p className="text-yellow-700 text-sm mt-1 mb-3">
               {language === 'tr' ? '14 günlük denemeyi başlatmak için güvenli ödeme adımını tamamlayın.' : 'Complete secure checkout to start your 14-day free trial.'}
             </p>
+            <div className="bg-yellow-100/50 p-3 rounded text-xs text-yellow-800 mb-3 font-mono">
+              <span className="font-bold border-b border-yellow-800/20 mb-1 inline-block pb-0.5">Sistem Bildirimi (checkout_pending)</span><br />
+              Denemenizi başlatmak için güvenli ödeme doğrulama adımını tamamlayın. Kart bilgileriniz LARİ tarafından alınmaz.
+            </div>
             <button 
                 onClick={handleBillingPortal}
                 className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-md font-medium text-sm transition-colors"
@@ -160,7 +164,11 @@ const BillingTab: React.FC = () => {
         {subscription?.status === 'trialing' && subscription?.trialEnd && (
           <div className="mb-6 bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-md">
             <h3 className="text-blue-800 font-medium">{t.billing.trialing_title}</h3>
-            <p className="text-blue-700 text-sm mt-1">{t.billing.trialing_desc?.replace('{date}', new Date(subscription.trialEnd).toLocaleDateString(language === 'en' ? 'en-US' : 'tr-TR'))}</p>
+            <p className="text-blue-700 text-sm mt-1 mb-2">{t.billing.trialing_desc?.replace('{date}', new Date(subscription.trialEnd).toLocaleDateString(language === 'en' ? 'en-US' : 'tr-TR'))}</p>
+            <div className="bg-blue-100/50 p-3 rounded text-xs text-blue-800 font-mono">
+              <span className="font-bold border-b border-blue-800/20 mb-1 inline-block pb-0.5">Gelen E-posta Önizlemesi (trial_started)</span><br />
+              14 günlük ücretsiz denemeniz başladı. Deneme süresi boyunca ödeme alınmaz. 14 gün içinde iptal etmezseniz seçtiğiniz plan otomatik olarak başlar.
+            </div>
           </div>
         )}
 

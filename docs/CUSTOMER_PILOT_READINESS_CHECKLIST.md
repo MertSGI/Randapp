@@ -27,6 +27,7 @@ This document is for internal team and Super Admin review only. It outlines the 
 ---
 
 ## 3. Communication Readiness
+(See `docs/NOTIFICATION_READINESS.md` for template schemas and constraints)
 - [ ] **SMTP Email Provider Setup**: Marked as `pending` or configured via real transactional email SMTP providers (e.g., AWS SES or SendGrid).
 - [ ] **WhatsApp Business Setup**: Meta Cloud API or partner integration marked as pending/configured.
 - [ ] **Trial Start Message**: Merchant receives confirmation template clarifying trial duration.

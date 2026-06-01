@@ -114,10 +114,6 @@ const AdminSettingsTab: React.FC = () => {
           <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">İletişim ve Müşteri Verisi</h3>
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-               <input type="checkbox" id="whatsappEnabled" name="whatsappEnabled" checked={formData.whatsappEnabled} onChange={handleChange} className="w-4 h-4 text-indigo-600 rounded border-gray-300" />
-               <label htmlFor="whatsappEnabled" className="text-sm font-medium text-gray-700 dark:text-gray-300">WhatsApp İletişim Butonunu Gizle/Göster</label>
-            </div>
-            <div className="flex items-center gap-3">
                <input type="checkbox" id="customerMemoryEnabled" name="customerMemoryEnabled" checked={formData.customerMemoryEnabled} onChange={handleChange} className="w-4 h-4 text-indigo-600 rounded border-gray-300" />
                <label htmlFor="customerMemoryEnabled" className="text-sm font-medium text-gray-700 dark:text-gray-300">Müşteri Hafızası (Notlar ve Fotoğraflar) Aktif</label>
             </div>
@@ -128,6 +124,32 @@ const AdminSettingsTab: React.FC = () => {
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Pazarlama İzni Metni</label>
               <textarea name="marketingConsentText" value={formData.marketingConsentText} onChange={handleChange} rows={2} className="w-full p-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-lg text-sm dark:text-white" />
+            </div>
+          </div>
+        </div>
+
+        {/* Bildirimler ve İletişim */}
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Bildirimler ve İletişim</h3>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">Randevu bildirimleri, işletme iletişim bilgileriniz ve aktif iletişim kanallarınız üzerinden hazırlanır.</p>
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+               <input type="checkbox" id="appointmentConfirmationEnabled" name="appointmentConfirmationEnabled" defaultChecked className="w-4 h-4 text-indigo-600 rounded border-gray-300" />
+               <label htmlFor="appointmentConfirmationEnabled" className="text-sm font-medium text-gray-700 dark:text-gray-300">Randevu Onay Bildirimleri (Müşteriye)</label>
+            </div>
+            <div className="flex items-center gap-3">
+               <input type="checkbox" id="appointmentReminderEnabled" name="appointmentReminderEnabled" defaultChecked className="w-4 h-4 text-indigo-600 rounded border-gray-300" />
+               <label htmlFor="appointmentReminderEnabled" className="text-sm font-medium text-gray-700 dark:text-gray-300">Randevu Hatırlatıcı (1 Gün Önce)</label>
+            </div>
+            <div className="flex items-center gap-3">
+               <input type="checkbox" id="whatsappEnabled" name="whatsappEnabled" checked={formData.whatsappEnabled} onChange={handleChange} className="w-4 h-4 text-indigo-600 rounded border-gray-300" />
+               <label htmlFor="whatsappEnabled" className="text-sm font-medium text-gray-700 dark:text-gray-300">WhatsApp İletişim / Randevu Linklerini Göster</label>
+            </div>
+            <div className="pt-2 border-t border-gray-100 dark:border-slate-700">
+               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Şablon Önizleme (Örnek Randevu Onayı)</label>
+               <div className="p-3 bg-gray-50 dark:bg-slate-900 rounded-lg text-[13px] text-gray-600 dark:text-gray-400 font-mono">
+                 "Randevunuz oluşturuldu. İşletme, hizmet ve saat bilgilerinizi aşağıda görebilirsiniz: {formData.businessName || 'İşletme'} - Saç Kesimi - 12 Kasım 14:00."
+               </div>
             </div>
           </div>
         </div>

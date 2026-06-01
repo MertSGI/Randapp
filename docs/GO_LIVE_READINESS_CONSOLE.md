@@ -18,6 +18,9 @@ The dashboard specifically verifies:
 ### 3. Plan Reference Readiness
 LARİ plans (`Starter`, `Professional`, `Premium`) need corresponding references mapped to the Iyzico Sandbox environment to successfully negotiate checkout sessions through edge functions. The console asserts whether these mappings are defined in the environment.
 
+### 4. Pilot Notification Previews
+The console displays the complete set of notification templates (email, WhatsApp, in-app) loaded directly from the `NotificationTemplateService`. It verifies that the required copy for trial states and sandbox limitations are present.
+
 ## What it DOES NOT do
 - **It does not collect or store credentials in the browser.** There are no input fields. Real keys and secrets must be set through Supabase secrets / backend deployment process only. The Super Admin Console only visualizes readiness status and setup instructions.
 - **It does not expose real API keys.** It only checks for variable presence or shows placeholders.
