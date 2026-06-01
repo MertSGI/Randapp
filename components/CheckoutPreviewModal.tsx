@@ -5,10 +5,11 @@ import { PricingPlan } from '../services/planService';
 interface CheckoutPreviewModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onConfirm?: () => void;
   plan: PricingPlan | null;
 }
 
-export const CheckoutPreviewModal: React.FC<CheckoutPreviewModalProps> = ({ isOpen, onClose, plan }) => {
+export const CheckoutPreviewModal: React.FC<CheckoutPreviewModalProps> = ({ isOpen, onClose, onConfirm, plan }) => {
   const { language } = useLanguage();
 
   if (!isOpen || !plan) return null;
@@ -60,7 +61,7 @@ export const CheckoutPreviewModal: React.FC<CheckoutPreviewModalProps> = ({ isOp
               </p>
            </div>
 
-           <button onClick={onClose} className="w-full bg-slate-900 dark:bg-blue-600 text-white font-bold py-3.5 rounded-xl hover:opacity-90 transition-opacity">
+           <button onClick={onConfirm || onClose} className="w-full bg-slate-900 dark:bg-blue-600 text-white font-bold py-3.5 rounded-xl hover:opacity-90 transition-opacity">
               {language === 'tr' ? 'Güvenli Ödemeye Devam Et' : 'Proceed to Secure Checkout'}
            </button>
         </div>

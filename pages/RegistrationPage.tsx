@@ -4,6 +4,7 @@ import { planService } from '../services/planService';
 import { useLanguage } from '../contexts/LanguageContext';
 import { translations } from '../utils/translations';
 import { tenantRegistrationService, RegistrationData } from '../services/tenantRegistrationService';
+import { subscriptionService } from '../services/subscriptionService';
 import { FeatureBadge } from '../components/FeatureBadge';
 import { CheckoutPreviewModal } from '../components/CheckoutPreviewModal';
 
@@ -49,6 +50,38 @@ export default function RegistrationPage() {
     }));
   };
 
+  const [registeredTenantId, setRegisteredTenantId] = useState<string | null>(null);
+
+  const handleCheckoutHandoff = async () => {
+    if (!registeredTenantId || !plan) return;
+    setLoading(true);
+    setError('');
+    
+    try {
+      const checkoutUrl = await subscriptionService.startCheckout(registeredTenantId, plan.id, {
+         name: formData.ownerName,
+         surname: formData.ownerSurname,
+         email: formData.ownerEmail,
+         phone: formData.ownerPhone,
+         city: formData.city,
+         billingPeriod: formData.billingPeriod
+      });
+      
+      if (checkoutUrl) {
+         window.location.href = checkoutUrl;
+      } else {
+         // Fallback or mock mode
+         window.location.href = '/#/admin?tab=kurulum&registration=success';
+      }
+    } catch (err: any) {
+      console.error(err);
+      setError(language === 'tr' ? 'Ödeme sayfası hazırlanamadı. Lütfen tekrar deneyin.' : 'Unable to prepare checkout page. Please try again.');
+      setShowCheckoutPreview(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.acceptTerms) {
@@ -68,6 +101,7 @@ export default function RegistrationPage() {
         // Registration successful
         // Depending on local vs prod mode, we would redirect to a real checkout init or admin
         // For now, render checkout preview (handoff)
+        setRegisteredTenantId(result.tenantId || null);
         setShowCheckoutPreview(true);
       } else {
         setError(result.error || 'Registration failed');
@@ -216,9 +250,8 @@ export default function RegistrationPage() {
       </div>
       <CheckoutPreviewModal 
          isOpen={showCheckoutPreview} 
-         onClose={() => {
-            window.location.href = '/login?registration=success';
-         }} 
+         onClose={() => setShowCheckoutPreview(false)}
+         onConfirm={handleCheckoutHandoff}
          plan={plan} 
       />
     </div>

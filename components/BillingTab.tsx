@@ -17,10 +17,24 @@ const BillingTab: React.FC = () => {
   const [plans, setPlans] = useState<PricingPlan[]>([]);
   const [loading, setLoading] = useState(true);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  const [checkoutMessage, setCheckoutMessage] = useState<string | null>(null);
   
   const [previewPlan, setPreviewPlan] = useState<PricingPlan | null>(null);
 
   useEffect(() => {
+    // Check for callback parameters from payment provider
+    const urlParams = new URLSearchParams(window.location.hash.split('?')[1] || '');
+    if (urlParams.get('checkout') === 'cancelled') {
+        setCheckoutError(translations[language || 'tr']?.billing?.checkout_cancelled_msg || 'Güvenli ödeme işlemi iptal edildi.');
+        // Clean URL after displaying
+        window.history.replaceState(null, '', window.location.pathname + window.location.search + '#/admin?tab=abonelik');
+    }
+    if (urlParams.get('checkout') === 'success') {
+        setCheckoutMessage(translations[language || 'tr']?.billing?.checkout_success_msg || 'Ödeme başarıyla tamamlandı. Aboneliğiniz güncellendi.');
+        // Clean URL after displaying
+        window.history.replaceState(null, '', window.location.pathname + window.location.search + '#/admin?tab=abonelik');
+    }
+    
     if (tenant) {
       loadBillingData();
     }
@@ -93,6 +107,13 @@ const BillingTab: React.FC = () => {
           <div className="mb-6 bg-red-50 border border-red-500 p-4 rounded-md">
             <h3 className="text-red-900 font-bold">{t.billing.checkout_failed}</h3>
             <p className="text-red-800 text-sm mt-1">{checkoutError}</p>
+          </div>
+        )}
+
+        {checkoutMessage && (
+          <div className="mb-6 bg-green-50 border border-green-500 p-4 rounded-md">
+            <h3 className="text-green-900 font-bold">{t.billing.checkout_success || 'Başarılı'}</h3>
+            <p className="text-green-800 text-sm mt-1">{checkoutMessage}</p>
           </div>
         )}
 

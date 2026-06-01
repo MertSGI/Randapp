@@ -45,7 +45,7 @@ serve(async (req) => {
       });
     }
 
-    const { tenantId, planId, successUrl, cancelUrl } = body;
+    const { tenantId, planId, successUrl, cancelUrl, customer, billingCycle } = body;
 
     // Assert sandbox config is present (does not expose values)
     iyzicoClient.assertIyzicoSandboxConfig();
@@ -69,7 +69,25 @@ serve(async (req) => {
       paymentPlanReferenceCode: plan.iyzicoPricingPlanReferenceCode,
       customer: {
         id: tenantId,
-        // email, name, etc. from authenticated user data if needed
+        name: customer?.name || "LARI",
+        surname: customer?.surname || "User",
+        email: customer?.email || "sandbox@lari.com",
+        gsmNumber: customer?.phone || "+905555555555",
+        identityNumber: "11111111111", // sandbox required format
+        billingAddress: {
+           contactName: `${customer?.name || 'LARI'} ${customer?.surname || 'User'}`,
+           city: customer?.city || "Istanbul",
+           country: "Turkey",
+           address: "Sandbox Address",
+           zipCode: "34000"
+        },
+        shippingAddress: {
+           contactName: `${customer?.name || 'LARI'} ${customer?.surname || 'User'}`,
+           city: customer?.city || "Istanbul",
+           country: "Turkey",
+           address: "Sandbox Address",
+           zipCode: "34000"
+        }
       },
       callbackUrl: successUrl,
       conversationId: conversationId

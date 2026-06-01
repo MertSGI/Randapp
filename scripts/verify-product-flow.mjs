@@ -146,16 +146,32 @@ async function run() {
       await page.waitForTimeout(2000);
       
       // The checkout preview should appear
-      const previewText = await page.evaluate(() => document.body.innerText);
-      const isModalVisible = previewText.includes('Preview') || previewText.includes('Önizleme') || previewText.includes('Checkout');
+      let previewText = await page.evaluate(() => document.body.innerText);
+      let isModalVisible = previewText.includes('Preview') || previewText.includes('Önizleme') || previewText.includes('Checkout');
       
-      // Assume success if modal opens without breaking
-      report.flowMatrix.push({
-        flow: 'Registration → tenant shell created → checkout handoff',
-        pass: isModalVisible,
-        evidence: 'Checkout handoff modal displayed after valid registration.',
-        risk: 'None'
-      });
+      if (isModalVisible) {
+         // Click Proceed to Checkout in Modal
+         await page.click('button:has-text("Ödemeye Devam Et")');
+         await page.waitForTimeout(2000);
+         
+         // Assert fallback or edge function response
+         const currentUrl = page.url();
+         const isHandoffSuccessful = currentUrl.includes('checkout') || currentUrl.includes('admin') || currentUrl.includes('payment');
+         
+         report.flowMatrix.push({
+            flow: 'Registration → tenant shell created → checkout handoff',
+            pass: isHandoffSuccessful,
+            evidence: `Checkout handoff invoked. Current URL: ${currentUrl}`,
+            risk: 'None'
+         });
+      } else {
+         report.flowMatrix.push({
+            flow: 'Registration → tenant shell created → checkout handoff',
+            pass: false,
+            evidence: 'Checkout preview modal did not appear or was bypassed unexpectedly.',
+            risk: 'High failure'
+         });
+      }
       
     } catch (err) {
       report.flowMatrix.push({

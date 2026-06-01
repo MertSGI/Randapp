@@ -136,7 +136,7 @@ export const subscriptionService = {
     return Boolean(plan[featureKey]);
   },
 
-  async startCheckout(tenantId: string, planId: string): Promise<string> {
+  async startCheckout(tenantId: string, planId: string, customer?: any): Promise<string> {
     const paymentProvider = (import.meta as any).env.VITE_PAYMENT_PROVIDER || 'mock';
     
     if (paymentProvider !== 'mock') {
@@ -146,9 +146,10 @@ export const subscriptionService = {
           body: {
             tenantId,
             planId,
-            billingCycle: 'monthly', // default
-            successUrl: `${window.location.origin}/admin?tab=kurulum`,
-            cancelUrl: `${window.location.origin}/admin?tab=abonelik`
+            billingCycle: customer?.billingPeriod || 'monthly', // default
+            successUrl: `${window.location.origin}/#/admin?tab=kurulum&checkout=success`,
+            cancelUrl: `${window.location.origin}/#/admin?tab=abonelik&checkout=cancelled`,
+            customer
           }
         });
 
@@ -228,12 +229,9 @@ export const subscriptionService = {
             paymentProvider: 'mock'
         };
         localStorage.setItem(`mock_subscription_${tenantId}`, JSON.stringify(mockSub));
-        alert("Mock deneme başlatıldı. Karttan ücret alınmadı.");
-        window.location.reload();
-        return '';
+        return ''; // Signals fallback UI flow
     } else {
-        alert("Mock Live Payment Checkout Redirect (In an actual flow, this would redirect to Iyzico).");
-        return `https://mock-checkout-url.com/pay/${planId}?tenant=${tenantId}`;
+        return ''; // In true demo flow we might use a mock url, but let's just trigger the fallback
     }
   },
 

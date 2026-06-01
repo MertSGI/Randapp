@@ -61,7 +61,46 @@ serve(async (req) => {
     }
 
     // Scaffold for syncing subscription state from payment provider to DB
-    // e.g., mapping provider status to active/past_due/canceled
+    const supabaseAdmin = createClient(supabaseUrl, supabaseKey);
+
+    // Fetch subscription logic from provider (mocked for sandbox logic here)
+    const mockProviderStatus = 'active'; // this would be awaited from iyzicoClient.getSubscriptionDetail(...)
+    
+    let dbStatus = 'active';
+    switch(mockProviderStatus) {
+      case 'active': dbStatus = 'active'; break;
+      case 'trialing': dbStatus = 'trialing'; break;
+      case 'pending': dbStatus = 'pending'; break;
+      case 'failed':
+      case 'past_due': dbStatus = 'past_due'; break;
+      case 'canceled':
+      case 'cancelled': dbStatus = 'cancelled'; break;
+      case 'expired': dbStatus = 'expired'; break;
+      case 'suspended': dbStatus = 'suspended'; break;
+      case 'pending_checkout': dbStatus = 'pending_checkout'; break;
+      default: dbStatus = 'suspended'; break;
+    }
+
+    const { error: subError } = await supabaseAdmin.from('subscriptions')
+        .update({ status: dbStatus, updated_at: new Date().toISOString() })
+        .eq('tenant_id', tenantId);
+        
+    await supabaseAdmin.from('audit_logs').insert({
+       tenant_id: tenantId,
+       action: 'subscription_sync',
+       details: { providerStatus: mockProviderStatus, mappedStatus: dbStatus },
+       created_at: new Date().toISOString()
+    });
+
+    if (dbStatus === 'active' || dbStatus === 'trialing') {
+       await supabaseAdmin.from('tenants').update({ status: 'active' }).eq('id', tenantId);
+    } else {
+       await supabaseAdmin.from('tenants').update({ status: 'suspended' }).eq('id', tenantId);
+    }
+
+    if (subError) {
+       console.error("Subscription Sync Update failed: ", subError.message);
+    }
 
     return new Response(JSON.stringify({
       mode: 'sandbox',

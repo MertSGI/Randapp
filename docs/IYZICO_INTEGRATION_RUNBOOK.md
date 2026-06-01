@@ -41,6 +41,6 @@ The self-service registration flow now explicitly hands off users to the Iyzico 
 1. User completes `/register`.
 2. A temporary local database context is assembled.
 3. `subscriptionService.startCheckout(tenantId, planId)` is invoked (or a mock preview is shown).
-4. If in production, `create-checkout-session` Edge Function initializes a session via payload (owner email, business name, plan config).
-5. Frontend launches redirect to returned Iyzico PayPage URL.
-6. Upon webhook success, user returns to `/admin?tab=kurulum`.
+4. If in production, `create-checkout-session` Edge Function initializes a session via payload (owner email, business name, plan config, customer parameters like identityNumber and addresses required by iyzico sandbox).
+5. Frontend launches redirect to returned Iyzico PayPage URL or falls back safely in mock mode.
+6. Upon webhook success, user returns to `/#/admin?tab=kurulum&checkout=success` which is parsed by `BillingTab` for success banners.
