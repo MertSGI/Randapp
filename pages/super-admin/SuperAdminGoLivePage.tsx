@@ -124,6 +124,40 @@ const SuperAdminGoLivePage: React.FC = () => {
               </a>
            )}
         </div>
+
+        <div className="mt-6 bg-amber-50 dark:bg-amber-950/20 p-5 rounded-lg border border-amber-200 dark:border-amber-900/50">
+          <h3 className="font-bold text-amber-900 dark:text-amber-500 mb-3 flex items-center">
+            <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            </svg>
+            İlk Sandbox Ödeme Koşusu (Sandbox Runbook)
+          </h3>
+          <p className="text-sm text-amber-800 dark:text-amber-400 mb-4 opacity-90">
+            Real Sandbox transaction aşamasına geçmeden önce aşağıdaki adımları Supabase CLI üzerinden uyguladığınızdan emin olun. <span className="font-semibold underline">docs/FIRST_IYZICO_SANDBOX_RUN.md</span> referans alın.
+          </p>
+          <ul className="space-y-2 text-sm text-amber-900 dark:text-amber-300">
+            <li className="flex items-center gap-2">
+               <div className="w-3 h-3 rounded-full bg-amber-200 dark:bg-amber-800 shrink-0"></div>
+               <span>Edge Functions (create-checkout-session, payment-webhook, subscription-sync) deploy edildi.</span>
+            </li>
+            <li className="flex items-center gap-2">
+               <div className="w-3 h-3 rounded-full bg-amber-200 dark:bg-amber-800 shrink-0"></div>
+               <span>IYZICO_API_KEY ve IYZICO_S*CRET_KEY Supabase secrets olarak eklendi.</span>
+            </li>
+            <li className="flex items-center gap-2">
+               <div className="w-3 h-3 rounded-full bg-amber-200 dark:bg-amber-800 shrink-0"></div>
+               <span>Iyzico Sandbox ürün ve 14-günlük deneme planları oluşturulup referans kodları eşlendi.</span>
+            </li>
+            <li className="flex items-center gap-2">
+               <div className="w-3 h-3 rounded-full bg-amber-200 dark:bg-amber-800 shrink-0"></div>
+               <span>Edge Function Callback URL, ortam değişkenlerine eklendi.</span>
+            </li>
+            <li className="flex items-center gap-2">
+               <div className="w-3 h-3 rounded-full bg-amber-200 dark:bg-amber-800 shrink-0"></div>
+               <span>Buradan Sandbox Live modu aktifleştirildi.</span>
+            </li>
+          </ul>
+        </div>
       </div>
 
       {report.blockers.length > 0 && (
