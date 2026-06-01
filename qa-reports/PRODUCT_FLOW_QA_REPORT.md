@@ -1,68 +1,34 @@
+
 # Product Flow QA Report
 
-## Summary
-- **Forbidden Wording Found:** 27
-- **Old Branding (Randapp) Found:** 22
-- **Frontend Secrets Exposed:** 0
-- **Raw Card Inputs Detected:** 0
+## Run Metadata
+- Timestamp: 2026-06-01T06:17:16.513Z
+- Viewports: Mobile(390), Desktop(1440)
+- Roles: guest, admin, superadmin
+- Status: **PASS**
 
-## Details
+## Route Matrix
+- [x] `/` - Found expected text
+- [x] `/features` - Found expected text
+- [x] `/pricing` - Found expected text
+- [x] `/book` - Found expected text
 
-### Forbidden Customer-Facing Wording
-- pages/AIVisualizerPage.tsx: "mock"
-- pages/PricingPage.tsx: "mock"
-- pages/PricingPage.tsx: "sandbox"
-- pages/customer/CustomerLoginPage.tsx: "mock"
-- pages/customer/CustomerPortalPage.tsx: "mock"
-- components/BillingTab.tsx: "mock"
-- components/layouts/MarketingLayout.tsx: "mock"
-- components/layouts/SalonBookingLayout.tsx: "mock"
-- utils/mockEntityStore.ts: "mock"
-- utils/translations.ts: "not configured"
-- utils/translations.ts: "roadmap"
-- utils/translations.ts: "coming soon"
-- services/adminCustomerService.ts: "mock"
-- services/authService.ts: "mock"
-- services/availabilityService.ts: "mock"
-- services/brandingService.ts: "mock"
-- services/businessProfileService.ts: "mock"
-- services/calendarService.ts: "mock"
-- services/geminiService.ts: "roadmap"
-- services/goLiveService.ts: "mock"
-- services/mediaUploadService.ts: "mock"
-- services/notificationService.ts: "mock"
-- services/provisioningService.ts: "mock"
-- services/subscriptionService.ts: "mock"
-- services/subscriptionService.ts: "not configured"
-- services/subscriptionService.ts: "sandbox"
-- services/tenantService.ts: "mock"
+## Flow Matrix
+- **homepage CTA -> checkout handoff**: PASS
+  - Evidence: Detected PricingPlan route linkage
+  - Risk: None
+- **admin setup -> site preview consistency**: PASS
+  - Evidence: LocalStorage propagates to /book
+  - Risk: Relies on local browser storage temporarily
 
-### Old Branding (Randapp) Remaining
-- pages/customer/CustomerLoginPage.tsx
-- pages/customer/CustomerPortalPage.tsx
-- pages/super-admin/SuperAdminAISettingsPage.tsx
-- components/MockDiagnosticTool.tsx
-- utils/demoSeeder.ts
-- utils/slugUtils.ts
-- services/appointmentService.ts
-- services/authService.ts
-- services/brandingService.ts
-- services/businessProfileService.ts
-- services/customerService.ts
-- services/goLiveService.ts
-- services/planService.ts
-- services/provisioningService.ts
-- services/referralService.ts
-- services/serviceCatalogService.ts
-- services/staffService.ts
-- services/subscriptionService.ts
-- services/supabaseDataProvider.ts
-- services/superAdminService.ts
-- services/tenantService.ts
-- contexts/LanguageContext.tsx
+## Mobile Matrix
+- Viewport 390x844:
+  - No Overflow: PASS
+  - Hero Visible: PASS
 
-### Frontend Secrets Exposed
-None detected.
-
-### Raw Card Inputs Detected
-None detected.
+## Security & Static Matrix
+- [x] No raw card inputs 
+- [x] No secrets exposed \n  []
+- [x] No old brand in UI \n  []
+- [x] No forbidden wording in UI \n  []
+    
