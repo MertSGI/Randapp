@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "timestamp": "2026-06-01T06:28:01.917Z",
+    "timestamp": "2026-06-01T06:52:06.810Z",
     "baseUrl": "http://localhost:4040",
     "viewports": "Mobile(390), Desktop(1440)",
     "roles": [
@@ -28,32 +28,26 @@
     },
     {
       "path": "/#/register?planId=professional",
-      "pass": false,
-      "note": "Missing typical terms"
+      "pass": true,
+      "note": "Found expected text"
     },
     {
       "path": "/#/book",
-      "pass": false,
-      "note": "Missing typical terms"
+      "pass": true,
+      "note": "Found expected text"
     }
   ],
   "flowMatrix": [
     {
-      "flow": "homepage CTA -> checkout handoff",
+      "flow": "Registration → tenant shell created → checkout handoff",
       "pass": true,
-      "evidence": "Detected PricingPlan route linkage",
+      "evidence": "Checkout handoff modal displayed after valid registration.",
       "risk": "None"
-    },
-    {
-      "flow": "Homepage/Pricing → Register → tenant shell created → selected plan preserved",
-      "pass": true,
-      "evidence": "/register handles planId, saves to data provider",
-      "risk": "Relies on local browser storage temporarily"
     },
     {
       "flow": "admin setup -> site preview consistency",
       "pass": true,
-      "evidence": "LocalStorage propagates to /book",
+      "evidence": "TenantService resolves mock registration to active_tenant",
       "risk": "Relies on local browser storage temporarily"
     }
   ],

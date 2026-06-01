@@ -77,9 +77,14 @@ export const tenantRegistrationService = {
       };
       
       // Save for login simulation (mock store)
+      localStorage.setItem('lari_active_owner_session', JSON.stringify(authPayload));
+      localStorage.setItem('lari_active_tenant_id', tenantId);
+      localStorage.setItem('lari_selected_plan', data.planId);
+      localStorage.setItem('lari_registration_context', JSON.stringify(data));
+      // Fallback
       localStorage.setItem('randapp_mock_user', JSON.stringify(authPayload));
       
-      const registered = JSON.parse(localStorage.getItem('randapp_registered_tenants') || '[]');
+      const registered = JSON.parse(localStorage.getItem('lari_registered_tenants') || localStorage.getItem('randapp_registered_tenants') || '[]');
       registered.push({
          id: tenantId,
          businessName: data.businessDisplayName,
@@ -88,6 +93,7 @@ export const tenantRegistrationService = {
          planId: data.planId,
          billingPeriod: data.billingPeriod
       });
+      localStorage.setItem('lari_registered_tenants', JSON.stringify(registered));
       localStorage.setItem('randapp_registered_tenants', JSON.stringify(registered));
       
       await dataProvider.set(`randapp:${tenantId}:provisioning_status`, 'setup_in_progress');

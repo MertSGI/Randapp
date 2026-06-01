@@ -32,3 +32,15 @@ These placeholders ensure the customer-facing UI doesn't break, while preparing 
 
 ## Going to Production
 When ready to go live, replace the Sandbox URLs with Production URLs and swap the API/Secret Keys on the edge.
+
+## Post-Registration Checkout Handoff
+
+The self-service registration flow now explicitly hands off users to the Iyzico initialization phase.
+
+**Flow:**
+1. User completes `/register`.
+2. A temporary local database context is assembled.
+3. `subscriptionService.startCheckout(tenantId, planId)` is invoked (or a mock preview is shown).
+4. If in production, `create-checkout-session` Edge Function initializes a session via payload (owner email, business name, plan config).
+5. Frontend launches redirect to returned Iyzico PayPage URL.
+6. Upon webhook success, user returns to `/admin?tab=kurulum`.

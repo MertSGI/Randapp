@@ -5,6 +5,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { translations } from '../utils/translations';
 import { tenantRegistrationService, RegistrationData } from '../services/tenantRegistrationService';
 import { FeatureBadge } from '../components/FeatureBadge';
+import { CheckoutPreviewModal } from '../components/CheckoutPreviewModal';
 
 export default function RegistrationPage() {
   const { language } = useLanguage();
@@ -16,9 +17,10 @@ export default function RegistrationPage() {
   const selectedPlanId = queryParams.get('planId') || 'professional';
   const billingPeriod = queryParams.get('billingPeriod') || 'monthly';
   
-  const plan = planService.getPlanById(selectedPlanId);
+  const plan = planService.getPlan(selectedPlanId);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showCheckoutPreview, setShowCheckoutPreview] = useState(false);
   
   const [formData, setFormData] = useState<RegistrationData>({
     ownerName: '',
@@ -65,8 +67,8 @@ export default function RegistrationPage() {
       if (result.success) {
         // Registration successful
         // Depending on local vs prod mode, we would redirect to a real checkout init or admin
-        // For now, reload into admin to trigger AuthProvider session recovery
-        window.location.href = '/login?registration=success';
+        // For now, render checkout preview (handoff)
+        setShowCheckoutPreview(true);
       } else {
         setError(result.error || 'Registration failed');
       }
@@ -212,6 +214,13 @@ export default function RegistrationPage() {
            </div>
         </div>
       </div>
+      <CheckoutPreviewModal 
+         isOpen={showCheckoutPreview} 
+         onClose={() => {
+            window.location.href = '/login?registration=success';
+         }} 
+         plan={plan} 
+      />
     </div>
   );
 }

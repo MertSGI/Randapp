@@ -68,6 +68,27 @@ export const tenantService = {
 
   async getCurrentTenant(): Promise<Tenant | null> {
     const hostname = window.location.hostname;
+    
+    // In mock/pilot mode, allow lari_active_tenant_id to override the resolved host
+    const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
+    if (mode === 'mock') {
+       const activeTenantId = localStorage.getItem('lari_active_tenant_id');
+       if (activeTenantId) {
+          const registeredArr = JSON.parse(localStorage.getItem('lari_registered_tenants') || '[]');
+          const tenantRecord = registeredArr.find((t: any) => t.id === activeTenantId);
+          if (tenantRecord) {
+             return {
+                id: tenantRecord.id,
+                slug: tenantRecord.id, // simplified slug
+                name: tenantRecord.businessName,
+                status: 'active',
+                createdAt: tenantRecord.created_at || new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+             };
+          }
+       }
+    }
+    
     return this.resolveTenantFromHost(hostname);
   },
 

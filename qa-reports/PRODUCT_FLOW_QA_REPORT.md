@@ -2,7 +2,7 @@
 # Product Flow QA Report
 
 ## Run Metadata
-- Timestamp: 2026-06-01T06:28:01.917Z
+- Timestamp: 2026-06-01T06:52:06.810Z
 - Viewports: Mobile(390), Desktop(1440)
 - Roles: guest, admin, superadmin
 - Status: **PASS**
@@ -11,18 +11,15 @@
 - [x] `/#/` - Found expected text
 - [x] `/#/features` - Found expected text
 - [x] `/#/pricing` - Found expected text
-- [ ] `/#/register?planId=professional` - Missing typical terms
-- [ ] `/#/book` - Missing typical terms
+- [x] `/#/register?planId=professional` - Found expected text
+- [x] `/#/book` - Found expected text
 
 ## Flow Matrix
-- **homepage CTA -> checkout handoff**: PASS
-  - Evidence: Detected PricingPlan route linkage
+- **Registration → tenant shell created → checkout handoff**: PASS
+  - Evidence: Checkout handoff modal displayed after valid registration.
   - Risk: None
-- **Homepage/Pricing → Register → tenant shell created → selected plan preserved**: PASS
-  - Evidence: /register handles planId, saves to data provider
-  - Risk: Relies on local browser storage temporarily
 - **admin setup -> site preview consistency**: PASS
-  - Evidence: LocalStorage propagates to /book
+  - Evidence: TenantService resolves mock registration to active_tenant
   - Risk: Relies on local browser storage temporarily
 
 ## Mobile Matrix

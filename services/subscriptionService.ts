@@ -61,6 +61,11 @@ export const subscriptionService = {
     if (saved) {
       return JSON.parse(saved);
     }
+    const dataProvSaved = await dataProvider.get<any>(`randapp:${tenantId}:subscription`);
+    if (dataProvSaved) {
+       return dataProvSaved;
+    }
+    
     return {
       tenantId,
       planId: 'professional',

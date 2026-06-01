@@ -107,7 +107,7 @@ export const superAdminService = {
           }
         ];
         
-      const localTenantsRaw = localStorage.getItem('randapp_registered_tenants');
+      const localTenantsRaw = localStorage.getItem('lari_registered_tenants') || localStorage.getItem('randapp_registered_tenants');
       const localTenants = localTenantsRaw ? JSON.parse(localTenantsRaw) : [];
       
       const dynamicTenants = localTenants.map((rt: any) => ({
