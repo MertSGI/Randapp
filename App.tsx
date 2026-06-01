@@ -12,6 +12,7 @@ import MarketingHomePage from './pages/MarketingHomePage';
 import FeaturesPage from './pages/FeaturesPage';
 import PricingPage from './pages/PricingPage';
 import ContactPage from './pages/ContactPage';
+import RegistrationPage from './pages/RegistrationPage';
 
 import BookingPage from './pages/BookingPage';
 import AdminPage from './pages/AdminPage';
@@ -69,6 +70,7 @@ const AppFlowSwitcher: React.FC = () => {
         <Route path="/features" element={<FeaturesPage />} />
         <Route path="/mobile-app" element={<MobileAppPage />} />
         <Route path="/pricing" element={<PricingPage />} />
+        <Route path="/register" element={<RegistrationPage />} />
         <Route path="/demo" element={<DemoLandingPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/login" element={<LoginPage />} />

@@ -107,19 +107,40 @@ export const superAdminService = {
           }
         ];
         
+      const localTenantsRaw = localStorage.getItem('randapp_registered_tenants');
+      const localTenants = localTenantsRaw ? JSON.parse(localTenantsRaw) : [];
+      
+      const dynamicTenants = localTenants.map((rt: any) => ({
+        tenant: {
+          id: rt.id,
+          businessName: rt.businessName,
+          ownerEmail: rt.ownerEmail,
+          domain: `${rt.id}.lari.com`,
+          created_at: rt.created_at
+        },
+        subscriptionStatus: 'trialing',
+        planId: rt.planId || 'professional',
+        setupStatus: 'setup_in_progress',
+        monthlyAppointments: 0,
+        estimatedRevenue: 0,
+        hasProfile: true
+      }));
+
+      const allTenants = [...tenants, ...dynamicTenants];
+
       return {
         stats: {
-          totalSalons: 15,
-          activeSalons: 10,
-          trialSalons: 3,
+          totalSalons: 15 + dynamicTenants.length,
+          activeSalons: 10 + dynamicTenants.length,
+          trialSalons: 3 + dynamicTenants.length,
           pastDueSalons: 1,
           suspendedSalons: 1,
           monthlyRecurringRevenue: 18500,
           setupFees: 4500,
-          awaitingSetup: tenants.filter(t => t.setupStatus !== 'live').length,
+          awaitingSetup: allTenants.filter(t => t.setupStatus !== 'live').length,
           liveSalons: 10
         },
-        tenants
+        tenants: allTenants
       };
     }
 

@@ -93,7 +93,7 @@ const MarketingHomePage: React.FC = () => {
 
             <div className="mt-8 md:mt-10 flex flex-col sm:flex-row justify-center lg:justify-start gap-3 md:gap-4 w-full max-w-[320px] sm:max-w-none mx-auto lg:mx-0 sm:px-0">
               <Link
-                to="/pricing"
+                to="/register?planId=professional"
                 className="bg-blue-600 text-white px-6 py-3.5 md:px-8 md:py-4 rounded-xl font-bold shadow-lg shadow-blue-500/30 hover:bg-blue-700 transition transform hover:-translate-y-1 block w-full sm:w-auto text-center md:min-w-[200px] text-[15px] md:text-base cursor-pointer"
               >
                 {language === "tr"

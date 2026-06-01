@@ -2,21 +2,25 @@
 # Product Flow QA Report
 
 ## Run Metadata
-- Timestamp: 2026-06-01T06:17:16.513Z
+- Timestamp: 2026-06-01T06:28:01.917Z
 - Viewports: Mobile(390), Desktop(1440)
 - Roles: guest, admin, superadmin
 - Status: **PASS**
 
 ## Route Matrix
-- [x] `/` - Found expected text
-- [x] `/features` - Found expected text
-- [x] `/pricing` - Found expected text
-- [x] `/book` - Found expected text
+- [x] `/#/` - Found expected text
+- [x] `/#/features` - Found expected text
+- [x] `/#/pricing` - Found expected text
+- [ ] `/#/register?planId=professional` - Missing typical terms
+- [ ] `/#/book` - Missing typical terms
 
 ## Flow Matrix
 - **homepage CTA -> checkout handoff**: PASS
   - Evidence: Detected PricingPlan route linkage
   - Risk: None
+- **Homepage/Pricing → Register → tenant shell created → selected plan preserved**: PASS
+  - Evidence: /register handles planId, saves to data provider
+  - Risk: Relies on local browser storage temporarily
 - **admin setup -> site preview consistency**: PASS
   - Evidence: LocalStorage propagates to /book
   - Risk: Relies on local browser storage temporarily

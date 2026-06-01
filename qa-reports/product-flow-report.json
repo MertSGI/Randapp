@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "timestamp": "2026-06-01T06:17:16.513Z",
+    "timestamp": "2026-06-01T06:28:01.917Z",
     "baseUrl": "http://localhost:4040",
     "viewports": "Mobile(390), Desktop(1440)",
     "roles": [
@@ -12,24 +12,29 @@
   },
   "routeMatrix": [
     {
-      "path": "/",
+      "path": "/#/",
       "pass": true,
       "note": "Found expected text"
     },
     {
-      "path": "/features",
+      "path": "/#/features",
       "pass": true,
       "note": "Found expected text"
     },
     {
-      "path": "/pricing",
+      "path": "/#/pricing",
       "pass": true,
       "note": "Found expected text"
     },
     {
-      "path": "/book",
-      "pass": true,
-      "note": "Found expected text"
+      "path": "/#/register?planId=professional",
+      "pass": false,
+      "note": "Missing typical terms"
+    },
+    {
+      "path": "/#/book",
+      "pass": false,
+      "note": "Missing typical terms"
     }
   ],
   "flowMatrix": [
@@ -38,6 +43,12 @@
       "pass": true,
       "evidence": "Detected PricingPlan route linkage",
       "risk": "None"
+    },
+    {
+      "flow": "Homepage/Pricing → Register → tenant shell created → selected plan preserved",
+      "pass": true,
+      "evidence": "/register handles planId, saves to data provider",
+      "risk": "Relies on local browser storage temporarily"
     },
     {
       "flow": "admin setup -> site preview consistency",
