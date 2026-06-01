@@ -51,17 +51,17 @@ const MarketingHomePage: React.FC = () => {
                 : "Digitize Your Business with LARİ"}
             </div>
 
-            <div className="flex justify-center lg:justify-start items-center gap-1.5 mb-5 md:mb-6 text-[17px] md:text-xl font-bold tracking-tight text-slate-500 dark:text-slate-400">
+            <div className="flex justify-center lg:justify-start items-center gap-2 mb-5 md:mb-6 text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-slate-700 dark:text-slate-300">
               {language === "en" && <span>For</span>}
-              <div className="relative overflow-hidden h-[1.4em] w-[170px] sm:w-[220px]">
+              <div className="relative overflow-hidden h-[1.4em] w-[220px] sm:w-[280px] md:w-[340px] shrink-0">
                   <span
                     key={currentPhrase}
-                    className="absolute inset-0 animate-slideUpFade text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-violet-600 dark:from-blue-400 dark:to-violet-400 flex items-center justify-center lg:justify-start"
+                    className="absolute inset-0 animate-slideUpFade text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-violet-600 dark:from-blue-400 dark:to-violet-400 flex items-center justify-center lg:justify-start whitespace-nowrap"
                   >
                     {currentPhrase}
                   </span>
               </div>
-              {language === "tr" && <span>için</span>}
+              {language === "tr" && <span className="whitespace-nowrap">için</span>}
             </div>
 
             {/* Desktop Headline */}
@@ -114,15 +114,19 @@ const MarketingHomePage: React.FC = () => {
               </Link>
             </div>
             
-            <div className="mt-4 flex items-center justify-center lg:justify-start gap-3 w-full text-[13px] md:text-sm font-medium text-slate-500 dark:text-slate-400">
-              <span>{language === "tr" ? "Önce keşfetmek ister misiniz?" : "Want to explore first?"}</span>
-              <Link to="/pricing" className="text-blue-600 dark:text-blue-400 hover:underline">
-                {language === "tr" ? "Paketleri karşılaştır" : "Compare plans"}
-              </Link>
-              <span>·</span>
-              <Link to="/demo" className="text-blue-600 dark:text-blue-400 hover:underline">
-                {language === "tr" ? "İşletmeni önizle" : "Preview your business"}
-              </Link>
+            <div className="mt-6 flex flex-wrap items-center justify-center lg:justify-start gap-y-2 gap-x-4 text-[13px] md:text-sm font-semibold text-slate-500 dark:text-slate-400">
+              <span className="opacity-75">{language === "tr" ? "Önce keşfetmek ister misiniz?" : "Want to explore first?"}</span>
+              <div className="flex items-center gap-3">
+                <Link to="/pricing" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors flex items-center gap-0.5 group">
+                  <span>{language === "tr" ? "Paketleri karşılaştır" : "Compare plans"}</span>
+                  <span className="transform group-hover:translate-x-0.5 transition-transform">→</span>
+                </Link>
+                <span className="text-slate-300 dark:text-slate-700">|</span>
+                <Link to="/demo" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors flex items-center gap-0.5 group">
+                  <span>{language === "tr" ? "İşletmeni önizle" : "Preview your business"}</span>
+                  <span className="transform group-hover:translate-x-0.5 transition-transform">→</span>
+                </Link>
+              </div>
             </div>
 
             {/* Desktop Trust Chips */}
