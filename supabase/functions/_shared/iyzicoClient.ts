@@ -17,6 +17,56 @@ export const iyzicoClient = {
     }
     return config;
   },
+
+  hmacSha256Hex: async (message: string, secret: string) => {
+    const encoder = new TextEncoder();
+    const keyData = encoder.encode(secret);
+    const messageData = encoder.encode(message);
+
+    const cryptoKey = await crypto.subtle.importKey(
+      "raw",
+      keyData,
+      { name: "HMAC", hash: "SHA-256" },
+      false,
+      ["sign"]
+    );
+
+    const signature = await crypto.subtle.sign("HMAC", cryptoKey, messageData);
+    const hashArray = Array.from(new Uint8Array(signature));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashHex;
+  },
+
+  safeTimingEqual: (a: string, b: string) => {
+    if (a.length !== b.length) return false;
+    let result = 0;
+    for (let i = 0; i < a.length; i++) {
+      result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+    }
+    return result === 0;
+  },
+
+  buildSubscriptionWebhookSignaturePayload: (payload: any, secretKey: string) => {
+    return [
+      secretKey,
+      payload.merchantId || '',
+      payload.eventType || '',
+      payload.subscriptionReferenceCode || '',
+      payload.orderReferenceCode || '',
+      payload.customerReferenceCode || ''
+    ].join('');
+  },
+
+  buildHppWebhookSignaturePayload: (payload: any, secretKey: string) => {
+    return [
+      secretKey,
+      payload.iyziEventType || '',
+      payload.iyziPaymentId || '',
+      payload.token || '',
+      payload.paymentConversationId || '',
+      payload.status || ''
+    ].join('');
+  },
   
   // Placeholder for real iyzico subscription checkout form initialization
   createSubscriptionCheckoutSession: async (params: {
@@ -68,21 +118,42 @@ export const iyzicoClient = {
     }
   },
 
-  verifyIyzicoWebhookSignature: (rawBody: string, headers: Headers) => {
-    const signature = headers.get('x-iyzico-signature');
+  verifyIyzicoSignatureV3: async (reqHeaders: Headers, payload: any) => {
+    const signature = reqHeaders.get('x-iyz-signature-v3');
     const verifyMode = Deno.env.get('IYZICO_WEBHOOK_VERIFY_MODE');
     
-    if (verifyMode === 'sandbox_bypass') {
-      console.warn("[SECURITY] iyzico signature verification is BYPASSED for sandbox testing. Do not use in production!");
+    // Explicit internal backdoor for sandbox tests where we can't spoof headers exactly yet
+    if (!signature && verifyMode === 'sandbox_bypass') {
+      console.warn("[SECURITY] iyzico signature verification BYPASSED due to sandbox_bypass flag. Do not use in production!");
       return true;
     }
 
-    // TODO: Implement actual PKI / HMAC signature validation according to iyzico docs using Deno crypto
-    // const secretKey = iyzicoClient.getIyzicoConfig().secretKey;
-    // ... cryptography ...
-    console.log("No valid signature generated. Faking verification purely for Edge Function scaffold.");
+    if (!signature) {
+      console.error("[SECURITY] Missing x-iyz-signature-v3 header.");
+      return false;
+    }
+
+    const secretKey = iyzicoClient.getIyzicoConfig().secretKey || '';
+    if (!secretKey) {
+      console.error("[SECURITY] Cannot verify signature: IYZICO_SECRET_KEY missing from environment.");
+      return false;
+    }
+
+    // Determine event format
+    let message = '';
+    if (payload.iyziEventType || payload.token) {
+      message = iyzicoClient.buildHppWebhookSignaturePayload(payload, secretKey);
+    } else {
+      message = iyzicoClient.buildSubscriptionWebhookSignaturePayload(payload, secretKey);
+    }
+
+    const expectedSignature = await iyzicoClient.hmacSha256Hex(message, secretKey);
     
-    return true; // Mock true for skeleton
+    const isValid = iyzicoClient.safeTimingEqual(expectedSignature, signature);
+    if (!isValid) {
+      console.error(`[SECURITY] Webhook signature verification failed. Computed: ${expectedSignature}, Received: ${signature}`);
+    }
+    return isValid;
   },
 
   mapIyzicoWebhookToInternalStatus: (payload: any) => {

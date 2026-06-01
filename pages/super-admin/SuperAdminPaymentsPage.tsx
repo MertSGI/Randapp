@@ -24,6 +24,19 @@ const SuperAdminPaymentsPage: React.FC = () => {
           Ödeme Sandbox Testi
         </Link>
       </div>
+
+      {/* Internal Security Diagnostics */}
+      <div className="bg-slate-900 rounded-xl p-4 mb-6 text-sm text-slate-300 font-mono border border-slate-700">
+        <div className="flex items-center text-green-400 mb-2">
+          <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+          <span className="font-bold">Iyzico Webhook Signature Validation: ACTIVE</span>
+        </div>
+        <p>• HMAC SHA-256 validation enabled for subscription events (X-IYZ-SIGNATURE-V3).</p>
+        <p>• Idempotency tracking active via provider event tokens.</p>
+        <p>• Missing signatures rejected (except when sandbox bypass is enabled internally).</p>
+      </div>
       
       <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden">
         {tenants.length === 0 ? (

@@ -55,19 +55,22 @@ serve(async (req) => {
     }
 
     // Verify signature using shared client
-    const isValidSignature = iyzicoClient.verifyIyzicoWebhookSignature(rawBody, req.headers);
+    const payload = JSON.parse(rawBody);
+    const isValidSignature = await iyzicoClient.verifyIyzicoSignatureV3(req.headers, payload);
     if (!isValidSignature) {
-      throw new Error('Invalid webhook signature');
+      console.log(`[SECURITY] Rejecting webhook from IP/Request due to invalid signature.`);
+      return new Response(JSON.stringify({ error: 'Unauthorized: Invalid signature' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 401,
+      });
     }
 
-    // Parse verified payload
-    const payload = JSON.parse(rawBody);
-    console.log(`[iyzico-webhook] Received webhook payload:`, payload);
+    console.log(`[iyzico-webhook] Received verified webhook payload:`, payload);
 
     // Map provider event to internal status
     const mappedStatus = iyzicoClient.mapIyzicoWebhookToInternalStatus(payload);
     
-    // Init Supabase admin client using Edge Function injected environment secrets
+    // Init Supabase admin client
     const supabaseUrl = Deno.env.get('SUPABASE_URL');
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 
@@ -79,11 +82,36 @@ serve(async (req) => {
         received: true
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200, // Safe diagnostic true
+        status: 200, 
       });
     }
 
     const supabaseAdmin = createClient(supabaseUrl, supabaseKey);
+
+    // Idempotency check: construct unique event key
+    const providerEventId = payload.iyziPaymentId || payload.token || `${payload.eventType}_${payload.subscriptionReferenceCode || payload.orderReferenceCode || payload.conversationId}`;
+    
+    const { data: existingEvent } = await supabaseAdmin
+        .from('audit_logs')
+        .select('id')
+        .eq('action', 'payment_webhook')
+        .eq('details->>providerEventId', providerEventId)
+        .maybeSingle();
+
+    if (existingEvent) {
+       console.log(`[iyzico-webhook] Duplicate webhook event detected: ${providerEventId}. Returning 200 early.`);
+       return new Response(JSON.stringify({ received: true, status: mappedStatus, duplicate: true }), {
+         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+         status: 200,
+       });
+    }
+    
+    // Log the raw event for idempotency & auditing
+    await supabaseAdmin.from('audit_logs').insert({
+       tenant_id: payload.customerReferenceCode || 'unknown',
+       action: 'payment_webhook',
+       details: { providerEventId, ...payload }
+    });
 
     const subscriptionReferenceCode = payload.referenceCode || payload.subscriptionReferenceCode;
     const conversationId = payload.conversationId; // We used this for linking maybe?

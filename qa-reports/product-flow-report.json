@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "timestamp": "2026-06-01T07:01:09.320Z",
+    "timestamp": "2026-06-01T08:04:28.585Z",
     "baseUrl": "http://localhost:4040",
     "viewports": "Mobile(390), Desktop(1440)",
     "roles": [
@@ -41,7 +41,7 @@
     {
       "flow": "Registration → tenant shell created → checkout handoff",
       "pass": false,
-      "evidence": "Checkout handoff invoked. Current URL: http://localhost:4040/login?registration=success",
+      "evidence": "Checkout handoff invoked. Current URL: http://localhost:4040/#/login",
       "risk": "None"
     },
     {
