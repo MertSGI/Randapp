@@ -39,6 +39,15 @@ All templates adhere to production copy rules. They DO NOT mention sandbox, test
 - Reacts to Postgres Database triggers (e.g., `on insert to appointments`)
 - Dispatches transactional emails via API.
 
+## Notification Template Integration Hooks (Service Hooks)
+
+The templates defined here are already integrated seamlessly into core business flows. We have added safe logging-only hooks inside `appointmentService.ts`:
+
+- **Appointment Creation:** `createAppointment` safely logs the hook for the `appointment_confirmation` template.
+- **Appointment Cancellation:** `updateAppointmentStatus` safely logs the hook for the `booking_cancelled` template when an appointment goes into cancellation states.
+
+These hook abstractions allow easy migration towards Event Bridge, Supabase DB Triggers, or standard Pub/Sub outboxing without breaking client-side UI threads.
+
 ## QA Rules Checked
 - No exposed secrets (like `SENDGRID_API_KEY`) in frontend files.
 - No "no-card" trial claims.

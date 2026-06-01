@@ -22,7 +22,12 @@ The `dataSourceConfig` inspects environment variables and returns the necessary 
 ## Cutover Plan
 1. **First Milestone**: `BusinessProfileService` uses the factory.
 2. **Second Milestone**: `CatalogRepository` (Services, Staff, and Availability mappings) uses the factory safely. [COMPLETED]
-3. **Third Milestone**: Customer Memory, Appointments & Security verification bounds.
+3. **Third Milestone (Current)**: `BookingRepository` (Appointments, Customers, Memory) mapped to factory safe adapters. [COMPLETED]
+
+### Completed Repositories so far:
+- **BusinessProfileRepository**: manages tenant identity.
+- **CatalogRepository**: manages services/staff associations.
+- **BookingRepository**: manages appointments, parses customer profiles on-the-fly to isolate memory tracking logic structurally safely.
 
 ## QA Validation
 Using `npm run qa:data-source-adapters`, we guarantee that:

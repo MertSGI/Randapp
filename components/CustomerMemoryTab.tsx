@@ -34,19 +34,22 @@ const CustomerMemoryTab: React.FC<CustomerMemoryTabProps> = ({ appointments, sta
   });
 
   useEffect(() => {
-    if (tenant) {
-      const loaded = adminCustomerService.getCustomers(tenant.id, appointments);
-      setCustomers(loaded);
-
-      // Handle deep link from appointment
-      if (targetAppointmentId && onClearTarget) {
-        const matchingCustomer = loaded.find(c => c.appointmentIds?.includes(targetAppointmentId));
-        if (matchingCustomer) {
-          handleSelectCustomer(matchingCustomer);
+    const loadCustomers = async () => {
+      if (tenant) {
+        const loaded = await adminCustomerService.getCustomers(tenant.id, appointments);
+        setCustomers(loaded);
+  
+        // Handle deep link from appointment
+        if (targetAppointmentId && onClearTarget) {
+          const matchingCustomer = loaded.find(c => c.appointmentIds?.includes(targetAppointmentId));
+          if (matchingCustomer) {
+            handleSelectCustomer(matchingCustomer);
+          }
+          onClearTarget();
         }
-        onClearTarget();
       }
-    }
+    };
+    loadCustomers();
   }, [tenant, appointments, targetAppointmentId, onClearTarget]);
 
   const handleSelectCustomer = (customer: CustomerProfile) => {
@@ -60,26 +63,26 @@ const CustomerMemoryTab: React.FC<CustomerMemoryTabProps> = ({ appointments, sta
     setEditingPrefs(false);
   };
 
-  const handleSavePrefs = () => {
+  const handleSavePrefs = async () => {
     if (!tenant || !selectedCustomer) return;
-    const updated = adminCustomerService.updateCustomer(tenant.id, selectedCustomer.id, prefForm);
+    const updated = await adminCustomerService.updateCustomer(tenant.id, selectedCustomer.id, prefForm);
     if (updated) {
       setSelectedCustomer(updated);
       setEditingPrefs(false);
       
-      const loaded = adminCustomerService.getCustomers(tenant.id, appointments);
+      const loaded = await adminCustomerService.getCustomers(tenant.id, appointments);
       setCustomers(loaded);
     }
   };
 
-  const handleAddNote = (e: React.FormEvent) => {
+  const handleAddNote = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!tenant || !selectedCustomer || !newNote.trim()) return;
     
-    adminCustomerService.addNote(tenant.id, selectedCustomer.id, newNote);
+    await adminCustomerService.addNote(tenant.id, selectedCustomer.id, newNote);
     setNewNote('');
     
-    const loaded = adminCustomerService.getCustomers(tenant.id, appointments);
+    const loaded = await adminCustomerService.getCustomers(tenant.id, appointments);
     setCustomers(loaded);
     const updatedCust = loaded.find(c => c.id === selectedCustomer.id);
     if(updatedCust) setSelectedCustomer(updatedCust);
@@ -90,9 +93,9 @@ const CustomerMemoryTab: React.FC<CustomerMemoryTabProps> = ({ appointments, sta
     const confirmed = await showConfirm({ message: (t.admin as any).confirm_delete_note || 'Notu silmek istediğinize emin misiniz?' });
     if (!confirmed) return;
     
-    adminCustomerService.deleteNote(tenant.id, selectedCustomer.id, noteId);
+    await adminCustomerService.deleteNote(tenant.id, selectedCustomer.id, noteId);
     
-    const loaded = adminCustomerService.getCustomers(tenant.id, appointments);
+    const loaded = await adminCustomerService.getCustomers(tenant.id, appointments);
     setCustomers([...loaded]);
     const updatedCust = loaded.find(c => c.id === selectedCustomer.id);
     if(updatedCust) {
@@ -112,11 +115,11 @@ const CustomerMemoryTab: React.FC<CustomerMemoryTabProps> = ({ appointments, sta
     }
 
     const reader = new FileReader();
-    reader.onload = (event) => {
+    reader.onload = async (event) => {
       const base64 = event.target?.result as string;
-      adminCustomerService.addPhoto(tenant.id, selectedCustomer.id, base64);
+      await adminCustomerService.addPhoto(tenant.id, selectedCustomer.id, base64);
       
-      const loaded = adminCustomerService.getCustomers(tenant.id, appointments);
+      const loaded = await adminCustomerService.getCustomers(tenant.id, appointments);
       setCustomers(loaded);
       const updatedCust = loaded.find(c => c.id === selectedCustomer.id);
       if(updatedCust) setSelectedCustomer(updatedCust);
@@ -130,9 +133,9 @@ const CustomerMemoryTab: React.FC<CustomerMemoryTabProps> = ({ appointments, sta
     const confirmed = await showConfirm({ message: 'Fotoğrafı silmek istediğinize emin misiniz?' });
     if (!confirmed) return;
 
-    adminCustomerService.deletePhoto(tenant.id, selectedCustomer.id, photoId);
+    await adminCustomerService.deletePhoto(tenant.id, selectedCustomer.id, photoId);
     
-    const loaded = adminCustomerService.getCustomers(tenant.id, appointments);
+    const loaded = await adminCustomerService.getCustomers(tenant.id, appointments);
     setCustomers([...loaded]);
     const updatedCust = loaded.find(c => c.id === selectedCustomer.id);
     if(updatedCust) {

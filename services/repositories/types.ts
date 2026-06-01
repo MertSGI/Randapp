@@ -1,4 +1,4 @@
-import { Tenant as GlobalTenant, SalonBusinessProfile, Service, Staff, TimeSlot } from '../../types';
+import { Tenant as GlobalTenant, SalonBusinessProfile, Service, Staff, Appointment, TimeSlot } from '../../types';
 
 export interface Tenant extends GlobalTenant {
   official_business_name?: string;
@@ -54,11 +54,20 @@ export interface CatalogRepository {
 }
 
 export interface BookingRepository {
-  listAppointments(tenantId: string): Promise<any[]>;
-  createAppointment(input: any): Promise<any>;
-  updateAppointment(id: string, patch: any): Promise<void>;
+  listAppointments(tenantId: string, filter?: { date?: string, upcomingOnly?: boolean }): Promise<Appointment[]>;
+  getAppointmentById(appointmentId: string): Promise<Appointment | null>;
+  createAppointment(tenantId: string, input: Omit<Appointment, 'id' | 'createdAt' | 'tenantId'>): Promise<Appointment>;
+  updateAppointment(appointmentId: string, patch: Partial<Appointment>): Promise<Appointment | null>;
+  cancelAppointment(appointmentId: string, reason?: string, cancelledBy?: 'customer' | 'salon' | 'system'): Promise<boolean>;
+  
   listCustomers(tenantId: string): Promise<any[]>;
+  getCustomerById(customerId: string): Promise<any | null>;
+  findCustomerByPhoneOrEmail(tenantId: string, phone?: string, email?: string): Promise<any | null>;
+  createOrUpdateCustomer(tenantId: string, input: any): Promise<any>;
+  
   getCustomerMemory(customerId: string): Promise<any>;
+  updateCustomerMemory(customerId: string, patch: any): Promise<void>;
+  addCustomerNote(customerId: string, text: string, author: string): Promise<void>;
 }
 
 export interface SubscriptionRepository {
