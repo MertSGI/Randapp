@@ -137,11 +137,45 @@ export const subscriptionService = {
   },
 
   async startCheckout(tenantId: string, planId: string, customer?: any): Promise<string> {
-    const paymentProvider = (import.meta as any).env.VITE_PAYMENT_PROVIDER || 'mock';
+    const { paymentRunModeService } = await import('./paymentRunModeService');
+    const runModeStatus = paymentRunModeService.getStatus();
     
-    if (paymentProvider !== 'mock') {
+    if (runModeStatus.mode === 'local_dry_run') {
+        const simUrl = paymentRunModeService.simulateCheckoutHandoff(tenantId, planId, '');
+        
+        // Before returning the URL, let's also seed the mock state appropriately if no UI action is taken
+        const plan = planService.getPlan(planId);
+        if (plan) {
+            const mockSub: TenantSubscription = {
+                tenantId,
+                planId,
+                status: 'trialing',
+                trialStart: new Date().toISOString(),
+                trialEnd: plan.trialDays ? new Date(new Date().setDate(new Date().getDate() + plan.trialDays)).toISOString() : new Date().toISOString(),
+                currentPeriodStart: new Date().toISOString(),
+                currentPeriodEnd: new Date(new Date().setMonth(new Date().getMonth() + 1)).toISOString(),
+                cancelAtPeriodEnd: false,
+                paymentProvider: 'local_dry_run'
+            };
+            localStorage.setItem(`mock_subscription_${tenantId}`, JSON.stringify(mockSub));
+            await dataProvider.set(`randapp:${tenantId}:subscription`, mockSub);
+        }
+        
+        return simUrl;
+    }
+
+    if (runModeStatus.mode === 'sandbox_live' || runModeStatus.mode === 'production_live') {
+      if (runModeStatus.mode === 'sandbox_live' && !runModeStatus.canRunCheckout) {
+          throw {
+              isSafeStructure: true,
+              message: 'Sistem sandbox testine hazır değil (eksik yapılandırmalar var). Lütfen Super Admin panelini kontrol edin.',
+              errorCode: 'SANDBOX_NOT_CONFIGURED',
+              raw: { blockers: runModeStatus.missingBlockers }
+          };
+      }
+
       try {
-        console.log(`[${paymentProvider} Mode] Calling POST /functions/v1/create-checkout-session`);
+        console.log(`[${runModeStatus.mode}] Calling POST /functions/v1/create-checkout-session`);
         const { data, error } = await supabase.functions.invoke('create-checkout-session', {
           body: {
             tenantId,
@@ -211,28 +245,8 @@ export const subscriptionService = {
         };
       }
     }
-
-    // Mock Mode
-    console.log(`[Mock Mode] Starting checkout/trial for ${tenantId} -> ${planId}`);
-    const plan = planService.getPlan(planId);
     
-    if (plan && plan.trialDays && plan.trialDays > 0) {
-        const mockSub: TenantSubscription = {
-            tenantId,
-            planId,
-            status: 'trialing',
-            trialStart: new Date().toISOString(),
-            trialEnd: new Date(new Date().setDate(new Date().getDate() + plan.trialDays)).toISOString(),
-            currentPeriodStart: new Date().toISOString(),
-            currentPeriodEnd: new Date(new Date().setMonth(new Date().getMonth() + 1)).toISOString(),
-            cancelAtPeriodEnd: false,
-            paymentProvider: 'mock'
-        };
-        localStorage.setItem(`mock_subscription_${tenantId}`, JSON.stringify(mockSub));
-        return ''; // Signals fallback UI flow
-    } else {
-        return ''; // In true demo flow we might use a mock url, but let's just trigger the fallback
-    }
+    return '';
   },
 
   async openBillingPortal(tenantId: string): Promise<void> {

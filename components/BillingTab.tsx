@@ -26,12 +26,14 @@ const BillingTab: React.FC = () => {
     const urlParams = new URLSearchParams(window.location.hash.split('?')[1] || '');
     if (urlParams.get('checkout') === 'cancelled') {
         setCheckoutError(translations[language || 'tr']?.billing?.checkout_cancelled_msg || 'Güvenli ödeme işlemi iptal edildi.');
-        // Clean URL after displaying
         window.history.replaceState(null, '', window.location.pathname + window.location.search + '#/admin?tab=abonelik');
     }
     if (urlParams.get('checkout') === 'success') {
         setCheckoutMessage(translations[language || 'tr']?.billing?.checkout_success_msg || 'Ödeme başarıyla tamamlandı. Aboneliğiniz güncellendi.');
-        // Clean URL after displaying
+        window.history.replaceState(null, '', window.location.pathname + window.location.search + '#/admin?tab=abonelik');
+    }
+    if (urlParams.get('checkout_simulate') === 'true') {
+        setCheckoutMessage('QA Dry Run: Ödeme başarıyla simüle edildi. (Iyzico bağlantısı yapılmadı)');
         window.history.replaceState(null, '', window.location.pathname + window.location.search + '#/admin?tab=abonelik');
     }
     

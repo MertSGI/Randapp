@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { goLiveReadinessService, ReadinessReport, ReadinessCheck } from '../../services/goLiveReadinessService';
+import { paymentRunModeService, RunModeStatus, PaymentRunMode } from '../../services/paymentRunModeService';
 
 const StatusBadge = ({ status }: { status: string }) => {
   switch (status) {
@@ -16,12 +17,21 @@ const StatusBadge = ({ status }: { status: string }) => {
 
 const SuperAdminGoLivePage: React.FC = () => {
   const [report, setReport] = useState<ReadinessReport | null>(null);
+  const [runModeStatus, setRunModeStatus] = useState<RunModeStatus | null>(null);
 
   useEffect(() => {
-    goLiveReadinessService.getReport().then(setReport);
+    goLiveReadinessService.getReport().then(r => {
+      setReport(r);
+      setRunModeStatus(paymentRunModeService.getStatus(r.blockers.length));
+    });
   }, []);
 
-  if (!report) {
+  const handleSetMode = (mode: PaymentRunMode) => {
+    paymentRunModeService.setInternalDiagnosticsMode(mode);
+    setRunModeStatus(paymentRunModeService.getStatus(report?.blockers.length || 0));
+  };
+
+  if (!report || !runModeStatus) {
     return <div className="p-8 text-center dark:text-white">Yükleniyor...</div>;
   }
 
@@ -35,6 +45,64 @@ const SuperAdminGoLivePage: React.FC = () => {
         <div className="text-right">
           <div className="text-sm font-bold text-slate-300">Last Checked</div>
           <div className="text-xs text-slate-500">{new Date(report.lastChecked).toLocaleString()}</div>
+        </div>
+      </div>
+
+      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Payment Run Mode</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+           {['local_dry_run', 'sandbox_live', 'production_live'].map(mode => {
+              const isActive = runModeStatus.mode === mode;
+              return (
+                 <button 
+                  key={mode} 
+                  onClick={() => handleSetMode(mode as PaymentRunMode)}
+                  className={`p-4 rounded-xl text-left border-2 transition-all ${
+                     isActive 
+                     ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 dark:border-indigo-500' 
+                     : 'border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-slate-600'
+                  }`}
+                 >
+                   <div className="flex items-center justify-between mb-2">
+                     <span className={`font-bold ${isActive ? 'text-indigo-900 dark:text-indigo-300' : 'text-slate-700 dark:text-slate-300'}`}>
+                       {mode === 'local_dry_run' ? 'QA Dry Run' : mode === 'sandbox_live' ? 'Sandbox Live' : 'Production Live'}
+                     </span>
+                     {isActive && <span className="bg-indigo-600 w-2.5 h-2.5 rounded-full animate-pulse"></span>}
+                   </div>
+                   <p className="text-xs text-slate-500 dark:text-slate-400">
+                      {mode === 'local_dry_run' && 'Local simülasyon. Iyzico bağlantısı yok.'}
+                      {mode === 'sandbox_live' && 'Gerçek test. Supabase + Iyzico Sandbox.'}
+                      {mode === 'production_live' && 'Gerçek para. Tamamlanan testler sonrası canlı ortam.'}
+                   </p>
+                 </button>
+              );
+           })}
+        </div>
+        
+        <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
+           <h3 className="font-semibold text-slate-800 dark:text-slate-200">{runModeStatus.label}</h3>
+           <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">{runModeStatus.description}</p>
+           
+           {runModeStatus.missingBlockers.length > 0 && (
+             <div className="mt-3 text-sm text-red-600 dark:text-red-400">
+               <strong>Uyarı:</strong> {runModeStatus.missingBlockers.join(' ')}
+             </div>
+           )}
+           
+           {!runModeStatus.canRunCheckout && (
+               <div className="mt-3 text-sm text-orange-600 dark:text-orange-400">
+                   Bu modda test işlemi yapmak şu an için bloklanmıştır. Aşağıdaki eksiklikleri kontrol ediniz.
+               </div>
+           )}
+           
+           {runModeStatus.canRunCheckout && runModeStatus.mode === 'sandbox_live' && (
+              <a href="/#/pricing" target="_blank" className="mt-4 inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700 transition">
+                 Start Sandbox Test (Pricing Flow)
+                 <svg className="w-4 h-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                 </svg>
+              </a>
+           )}
         </div>
       </div>
 
