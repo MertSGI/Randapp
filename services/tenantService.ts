@@ -69,24 +69,29 @@ export const tenantService = {
   async getCurrentTenant(): Promise<Tenant | null> {
     const hostname = window.location.hostname;
     
-    // In mock/pilot mode, allow lari_active_tenant_id to override the resolved host
+    // In all modes, if we are specifically previewing pilot demo, return it.
+    // This allows /pilot -> /#/tenant_pilot_demo flow to work even in production/supabase mode without breaking the publish gate.
+    const activeTenantId = localStorage.getItem('lari_active_tenant_id');
+    const isPilotDemoRoute = window.location.hash.includes('#/tenant_pilot_demo');
+    
+    if (isPilotDemoRoute || activeTenantId === 'tenant_pilot_demo') {
+        return {
+             id: 'tenant_pilot_demo',
+             slug: 'tenant_pilot_demo',
+             name: 'Lumina Güzellik & Kuaför',
+             status: 'active',
+             createdAt: new Date().toISOString(),
+             updatedAt: new Date().toISOString(),
+             verificationStatus: 'approved',
+             publicSiteStatus: 'published',
+             businessRiskStatus: 'normal',
+        } as Tenant;
+    }
+
+    // In mock mode, allow local overrides
     const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
     if (mode === 'mock') {
-       const activeTenantId = localStorage.getItem('lari_active_tenant_id');
-       if (activeTenantId === 'tenant_pilot_demo') {
-           return {
-                id: 'tenant_pilot_demo',
-                slug: 'tenant_pilot_demo',
-                name: 'Lumina Güzellik & Kuaför',
-                status: 'active',
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-                verificationStatus: 'approved',
-                publicSiteStatus: 'published',
-                businessRiskStatus: 'normal',
-           } as Tenant;
-       }
-       if (activeTenantId) {
+       if (activeTenantId && activeTenantId !== 'tenant_pilot_demo') {
           const registeredArr = JSON.parse(localStorage.getItem('lari_registered_tenants') || '[]');
           const tenantRecord = registeredArr.find((t: any) => t.id === activeTenantId);
           if (tenantRecord) {

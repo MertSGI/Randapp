@@ -51,17 +51,17 @@ const MarketingHomePage: React.FC = () => {
                 : "Digitize Your Business with LARİ"}
             </div>
 
-            <div className="flex justify-center lg:justify-start items-center flex-wrap gap-x-1.5 gap-y-1 mb-5 md:mb-6 text-lg sm:text-xl md:text-2xl lg:text-[1.65rem] font-extrabold tracking-tight text-slate-800 dark:text-slate-200">
-              {language === "en" && <span>For</span>}
-              <div className="relative inline-flex overflow-hidden h-[1.4em] w-[180px] sm:w-[240px] md:w-[280px] lg:w-[320px] shrink-0 justify-center lg:justify-start">
+            <div className="relative h-[1.3em] mb-4 md:mb-6 text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-extrabold tracking-tight">
                   <span
                     key={currentPhrase}
-                    className="absolute inset-0 animate-slideUpFade text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-violet-600 dark:from-blue-400 dark:to-violet-400 flex items-center justify-center lg:justify-start whitespace-nowrap"
+                    className="absolute inset-0 animate-slideUpFade flex items-center justify-center lg:justify-start"
                   >
-                    {currentPhrase}
+                    {language === "en" && <span className="text-slate-800 dark:text-slate-200 mr-3 whitespace-nowrap">For</span>}
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-violet-600 dark:from-blue-400 dark:to-violet-400 whitespace-nowrap">
+                      {currentPhrase}
+                    </span>
+                    {language === "tr" && <span className="text-slate-800 dark:text-slate-200 ml-3 whitespace-nowrap">için</span>}
                   </span>
-              </div>
-              {language === "tr" && <span className="whitespace-nowrap">için</span>}
             </div>
 
             {/* Desktop Headline */}

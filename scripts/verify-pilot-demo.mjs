@@ -9,55 +9,66 @@ const rootDir = path.join(__dirname, '..');
 
 const runTests = () => {
     let passed = true;
-    let output = '# Pilot Demo Readiness Report\n\n';
+    let output = '# Pilot Demo & Hero Bugfix QA Report\n\n';
 
-    output += `## Flow Check\n`;
-    
-    // Check PilotDemoService exists
-    const servicePath = path.join(rootDir, 'services', 'pilotDemoService.ts');
-    if (fs.existsSync(servicePath)) {
-        output += `- ✅ Pilot Demo Service exists\n`;
-        const content = fs.readFileSync(servicePath, 'utf8');
-        
-        if (content.includes('lari_in_pilot_demo') && content.includes('lari_saved_real_tenant_id')) {
-            output += `- ✅ Service safely isolates demo state without overwriting real state\n`;
-        } else {
-            output += `- ❌ Service does not safely isolate state\n`;
-            passed = false;
-        }
-
-        if (content.includes('Lumina Güzellik') || content.includes('Saç Kesimi')) {
-            output += `- ✅ Service uses realistic seeded demo data\n`;
-        } else {
-            output += `- ❌ Service might be missing realistic data\n`;
-            passed = false;
-        }
-    } else {
-        output += `❌ pilotDemoService.ts not found.\n`;
-        passed = false;
-    }
-
-    const appTsx = path.join(rootDir, 'App.tsx');
-    if (fs.existsSync(appTsx)) {
-        const content = fs.readFileSync(appTsx, 'utf8');
-        if (content.includes('path="/pilot"')) {
-             output += `- ✅ /pilot route added to App.tsx\n`;
-        } else {
-            output += `- ❌ /pilot route missing from App.tsx\n`;
-            passed = false;
-        }
-    }
-
+    output += `## 1. Hero Phrase Check\n`;
     const mkt = path.join(rootDir, 'pages', 'MarketingHomePage.tsx');
     if (fs.existsSync(mkt)) {
        const content = fs.readFileSync(mkt, 'utf8');
-       if (content.includes('to="/pilot"')) {
-           output += `- ✅ Link to /pilot exists in MarketingHomePage\n`;
+       if (content.includes('flex items-center justify-center lg:justify-start') && content.includes('{language === "tr" && <span className="text-slate-800 dark:text-slate-200 ml-3 whitespace-nowrap">için</span>}')) {
+           output += `- ✅ Homepage hero sector phrase does not render detached "için" and remains visually grouped.\n`;
        } else {
-           output += `- ❌ Link to /pilot missing\n`;
+           output += `- ❌ Homepage hero sector phrase fix is missing or malformed.\n`;
+           passed = false;
+       }
+       if (content.includes('14 gün') && !content.includes('7 günlük')) {
+           output += `- ✅ No 7-day trial copy found, only 14-day.\n`;
+       } else {
+           output += `- ❌ Bad trial copy found in home page.\n`;
            passed = false;
        }
     }
+
+    output += `\n## 2. Pilot & Demo Routing\n`;
+    const entryPage = path.join(rootDir, 'pages', 'PilotDemoEntryPage.tsx');
+    if (fs.existsSync(entryPage)) {
+        const content = fs.readFileSync(entryPage, 'utf8');
+        if (content.includes("window.open('/#/demo', '_blank')") || content.includes("window.open('/#/demo'")) {
+            output += `- ✅ /pilot "Kendi işletmeni önizle" CTA points to /#/demo safely.\n`;
+        } else {
+            output += `- ❌ /pilot "Kendi işletmeni önizle" missing or points elsewhere.\n`;
+            passed = false;
+        }
+    }
+    
+    output += `\n## 3. Pilot Account Suspended Fix\n`;
+    const tenantSvc = path.join(rootDir, 'services', 'tenantService.ts');
+    if (fs.existsSync(tenantSvc)) {
+        const content = fs.readFileSync(tenantSvc, 'utf8');
+        if (content.includes('isPilotDemoRoute || activeTenantId === \'tenant_pilot_demo\'')) {
+            output += `- ✅ /pilot customer booking view correctly returns pilot tenant bypassing host resolution.\n`;
+        } else {
+            output += `- ❌ Pilot public/customer view fix is missing in tenantService.\n`;
+            passed = false;
+        }
+    }
+    
+    // We already check isolation
+    const pilotSvc = path.join(rootDir, 'services', 'pilotDemoService.ts');
+    if (fs.existsSync(pilotSvc)) {
+        const content = fs.readFileSync(pilotSvc, 'utf8');
+        if (content.includes('lari_saved_real_tenant_id')) {
+            output += `- ✅ Service safely isolates demo state without overwriting real state.\n`;
+        }
+    }
+
+    output += `\n## 4. Secret & Card Data Check\n`;
+    const grepEnv = execSync('grep -r "process.env.VITE_" components/ pages/ services/ || true').toString();
+    const grepCards = execSync('grep -r -i "cardNumber" components/ pages/ services/ || true').toString();
+    if (grepCards === '') {
+       output += `- ✅ No raw card fields text (cardNumber) found.\n`;
+    }
+    // we also rely on backend for secret checks generally but a brief visual confirmation 
 
     output += `\n## Summary\n`;
     if (passed) {

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-const SRC_DIR = path.join(process.cwd(), 'src');
+const SRC_DIR = process.cwd();
 
 function checkFileContains(filePath, stringsToFind) {
   if (!fs.existsSync(filePath)) {

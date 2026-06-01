@@ -90,7 +90,7 @@ const PilotDemoEntryPage: React.FC = () => {
              </p>
              <button 
                 onClick={() => {
-                   window.open('/demo', '_blank');
+                   window.open('/#/demo', '_blank');
                 }}
                 className="w-full py-4 px-6 bg-pink-600 hover:bg-pink-700 text-white font-bold rounded-xl transition-colors shadow-lg shadow-pink-600/20 text-center"
              >
