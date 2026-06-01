@@ -6,11 +6,27 @@ import { TRIAL_CONFIG } from './trialConfigService';
 
 export const DEMO_PILOT_TENANT_ID = 'tenant_pilot_demo';
 
+const createSVGPlaceholder = (text: string, color1: string, color2: string) => {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+    <defs>
+      <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:${color1};stop-opacity:1" />
+        <stop offset="100%" style="stop-color:${color2};stop-opacity:1" />
+      </linearGradient>
+    </defs>
+    <rect x="0" y="0" width="800" height="600" fill="url(#grad)" />
+    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="bold" font-size="48" fill="white" opacity="0.9">${text}</text>
+  </svg>`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+};
+
 const PILOT_TENANT: Tenant = {
   id: DEMO_PILOT_TENANT_ID,
   slug: 'demo',
   name: 'Lumina Güzellik & Kuaför',
   status: 'active',
+  publicSiteStatus: 'published',
+  verificationStatus: 'approved',
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
   branding: {
@@ -20,6 +36,43 @@ const PILOT_TENANT: Tenant = {
     footerText: 'Lumina Güzellik. Tüm hakları saklıdır.',
     primaryColor: '#8b5cf6',
   }
+};
+
+const PILOT_BUSINESS_PROFILE = {
+    tenantId: DEMO_PILOT_TENANT_ID,
+    public_display_name: 'Lumina Güzellik & Kuaför',
+    about_text: 'Şehrin merkezinde, kendinizi özel hissedeceğiniz profesyonel saç, cilt ve tırnak bakım stüdyosu. Uzman kadromuzla yanınızdayız.',
+    short_description: 'Şehrin en iyi saç tasarım ve bakım stüdyosu.',
+    contact_phone: '0555 123 45 67',
+    contact_email: 'info@luminaguzellik.local',
+    address: 'Atatürk Caddesi, No: 123, Kat: 2',
+    city: 'İstanbul',
+    district: 'Kadıköy',
+    instagram_handle: 'luminaguzellik',
+    business_category: 'Güzellik Salonu',
+    working_hours: {
+      "Monday": "09:00-19:00",
+      "Tuesday": "09:00-19:00",
+      "Wednesday": "09:00-19:00",
+      "Thursday": "09:00-19:00",
+      "Friday": "09:00-20:00",
+      "Saturday": "09:00-20:00",
+      "Sunday": "Kapalı"
+    },
+    logo_url: createSVGPlaceholder('Lumina', '#1e1b4b', '#4c1d95'),
+    cover_images: [
+      createSVGPlaceholder('Stüdyo İç Mekan', '#312e81', '#4338ca'),
+      createSVGPlaceholder('Saç Tasarım Merkezi', '#4c1d95', '#6d28d9'),
+      createSVGPlaceholder('Manikür Masası', '#7c3aed', '#8b5cf6'),
+      createSVGPlaceholder('Berber Bölümü', '#1e1b4b', '#3730a3'),
+      createSVGPlaceholder('Bekleme Alanı', '#3730a3', '#4f46e5')
+    ],
+    gallery_images: [
+      createSVGPlaceholder('Saç Kesimi', '#1e1b4b', '#3730a3'),
+      createSVGPlaceholder('Manikür', '#4338ca', '#4f46e5'),
+      createSVGPlaceholder('Saç Boyama', '#4c1d95', '#6d28d9'),
+      createSVGPlaceholder('Müşteri Geri Bildirimi', '#312e81', '#4338ca')
+    ]
 };
 
 const PILOT_USER: User = {
@@ -33,16 +86,16 @@ const PILOT_USER: User = {
 
 // Realistic mock services and staff
 const PILOT_SERVICES = [
-  { id: 'srv_1', tenantId: DEMO_PILOT_TENANT_ID, name: 'Saç Kesimi', description: 'Trend modellere uygun kesim', duration: 45, price: 650, categoryId: 'cat_hair' },
-  { id: 'srv_2', tenantId: DEMO_PILOT_TENANT_ID, name: 'Saç Boyama', description: 'Organik boyalarla renklendirme', duration: 120, price: 1800, categoryId: 'cat_hair' },
-  { id: 'srv_3', tenantId: DEMO_PILOT_TENANT_ID, name: 'Fön', description: 'Kalıcı ve hacimli fön', duration: 30, price: 250, categoryId: 'cat_hair' },
-  { id: 'srv_4', tenantId: DEMO_PILOT_TENANT_ID, name: 'Manikür', description: 'Klasik veya kalıcı oje', duration: 45, price: 400, categoryId: 'cat_nails' },
+  { id: 'srv_1', tenantId: DEMO_PILOT_TENANT_ID, name: 'Saç Kesimi', description: 'Trend modellere uygun kesim', duration: 45, price: 650, categoryId: 'cat_hair', image: createSVGPlaceholder('Saç Kesimi', '#1e1b4b', '#312e81') },
+  { id: 'srv_2', tenantId: DEMO_PILOT_TENANT_ID, name: 'Saç Boyama', description: 'Organik boyalarla renklendirme', duration: 120, price: 1800, categoryId: 'cat_hair', image: createSVGPlaceholder('Saç Boyama', '#312e81', '#4338ca') },
+  { id: 'srv_3', tenantId: DEMO_PILOT_TENANT_ID, name: 'Fön', description: 'Kalıcı ve hacimli fön', duration: 30, price: 250, categoryId: 'cat_hair', image: createSVGPlaceholder('Fön', '#4338ca', '#4f46e5') },
+  { id: 'srv_4', tenantId: DEMO_PILOT_TENANT_ID, name: 'Manikür', description: 'Klasik veya kalıcı oje', duration: 45, price: 400, categoryId: 'cat_nails', image: createSVGPlaceholder('Manikür', '#4c1d95', '#6d28d9') },
 ];
 
 const PILOT_STAFF = [
-  { id: 'stf_1', tenantId: DEMO_PILOT_TENANT_ID, name: 'Elif Yılmaz', role: 'Saç Uzmanı', isAvailable: true, services: ['srv_1', 'srv_2', 'srv_3'] },
-  { id: 'stf_2', tenantId: DEMO_PILOT_TENANT_ID, name: 'Zeynep Kaya', role: 'Tırnak Uzmanı', isAvailable: true, services: ['srv_4'] },
-  { id: 'stf_3', tenantId: DEMO_PILOT_TENANT_ID, name: 'Ahmet Demir', role: 'Kuaför', isAvailable: true, services: ['srv_1', 'srv_3'] },
+  { id: 'stf_1', tenantId: DEMO_PILOT_TENANT_ID, name: 'Elif Yılmaz', role: 'Saç Uzmanı', title: 'Master Saç Stilisti', isAvailable: true, services: ['srv_1', 'srv_2', 'srv_3'], image: createSVGPlaceholder('EY', '#4c1d95', '#7c3aed') },
+  { id: 'stf_2', tenantId: DEMO_PILOT_TENANT_ID, name: 'Zeynep Kaya', role: 'Tırnak Uzmanı', title: 'Nail Artist', isAvailable: true, services: ['srv_4'], image: createSVGPlaceholder('ZK', '#4338ca', '#4f46e5') },
+  { id: 'stf_3', tenantId: DEMO_PILOT_TENANT_ID, name: 'Ahmet Demir', role: 'Kuaför', title: 'Kuaför / Kesim', isAvailable: true, services: ['srv_1', 'srv_3'], image: createSVGPlaceholder('AD', '#312e81', '#3730a3') },
 ];
 
 const PILOT_CUSTOMERS = [
@@ -97,6 +150,7 @@ export const pilotDemoService = {
     
     // Seed Data into dataprovider explicitly for `tenant_pilot_demo`
     await dataProvider.set(`randapp:${DEMO_PILOT_TENANT_ID}:branding`, PILOT_TENANT.branding);
+    await dataProvider.set(`randapp:${DEMO_PILOT_TENANT_ID}:profile`, PILOT_BUSINESS_PROFILE);
     await dataProvider.set(`randapp:${DEMO_PILOT_TENANT_ID}:services`, PILOT_SERVICES);
     await dataProvider.set(`randapp:${DEMO_PILOT_TENANT_ID}:staff`, PILOT_STAFF);
     await dataProvider.set(`randapp:${DEMO_PILOT_TENANT_ID}:appointments`, PILOT_APPOINTMENTS);

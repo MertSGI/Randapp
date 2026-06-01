@@ -14,7 +14,7 @@ This guide provides a structured presentation script for demonstrating the LARİ
 - Let them see the mobile preview (Product Showcase) running silently.
 
 ## Step 2: Customer Booking Experience
-- **Click "Canlı Örneği İncele"** (which navigates to `/pilot`).
+- **Click "Örnek İşletmeyi Gör"** (which navigates to `/pilot`).
 - **Click "Rezervasyon Sayfasını Aç"** (opens the public booking view for `Lumina Güzellik & Kuaför`).
 - Walk them through the customer perspective:
   - "This is what your clients see: your brand colors, your logo, your services."

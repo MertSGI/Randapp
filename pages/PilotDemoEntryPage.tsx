@@ -43,9 +43,9 @@ const PilotDemoEntryPage: React.FC = () => {
                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
              </div>
-             <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">Müşteri Deneyimi</h2>
+             <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">Müşteri Gözünden Gör</h2>
              <p className="text-slate-600 dark:text-slate-400 flex-1 mb-8">
-                Müşterilerinizin sizden nasıl randevu alacağını, yapay zeka asistanını ve dijital vitrininizi bir müşteri gözüyle deneyimleyin.
+                Müşterilerinizin sizden nasıl randevu alacağını, yapay zeka asistanını ve dijital vitrininizi bir müşteri gözüyle deneyimleyin. Randevu akışını test edin.
              </p>
              <button 
                 onClick={() => {
@@ -55,7 +55,7 @@ const PilotDemoEntryPage: React.FC = () => {
                 }}
                 className="w-full py-4 px-6 bg-slate-900 dark:bg-slate-700 hover:bg-slate-800 dark:hover:bg-slate-600 text-white font-bold rounded-xl transition-colors text-center"
              >
-                Rezervasyon Sayfasını Aç
+                Randevu Akışını Dene
              </button>
            </div>
 
@@ -66,7 +66,7 @@ const PilotDemoEntryPage: React.FC = () => {
                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
              </div>
-             <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">Salon Yönetimi</h2>
+             <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">Salon Sahibi Panelini Gör</h2>
              <p className="text-slate-600 dark:text-slate-400 flex-1 mb-8">
                 Gelen randevuları yönetin, müşteri hafızasını inceleyin ve işletme performansınızı salon sahibi olarak analiz edin.
              </p>

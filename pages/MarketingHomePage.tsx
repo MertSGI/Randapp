@@ -12,20 +12,20 @@ const MarketingHomePage: React.FC = () => {
   const phrases =
     language === "tr"
       ? [
-          "Kuaförler için",
-          "Berberler için",
-          "Güzellik salonları için",
-          "Klinikler için",
-          "Randevulu işletmeler için",
-          "Nail Studio'lar için",
+          "Kuaförler",
+          "Berberler",
+          "Güzellik salonları",
+          "Klinikler",
+          "Randevulu işletmeler",
+          "Stüdyolar",
         ]
       : [
-          "For Barbers",
-          "For Hair Salons",
-          "For Beauty Clinics",
-          "For Nail Studios",
-          "For Spas",
-          "For Appointment Businesses",
+          "Barbers",
+          "Hair Salons",
+          "Beauty Clinics",
+          "Nail Studios",
+          "Spas",
+          "Appointment Businesses",
         ];
 
   useEffect(() => {
@@ -45,19 +45,24 @@ const MarketingHomePage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
           {/* Left: Text Content & CTA */}
           <div className="flex flex-col text-center lg:text-left pt-4 lg:pt-0">
-            <div className="inline-block bg-violet-50 dark:bg-violet-900/30 text-violet-700 dark:text-violet-400 font-bold px-4 py-1.5 md:px-5 md:py-2 rounded-full text-xs md:text-sm mb-6 md:mb-8 border border-violet-100 dark:border-violet-800 self-center lg:self-start">
+            <div className="inline-block bg-violet-50 dark:bg-violet-900/30 text-violet-700 dark:text-violet-400 font-bold px-4 py-1.5 md:px-5 md:py-2 rounded-full text-xs md:text-sm mb-4 md:mb-6 border border-violet-100 dark:border-violet-800 self-center lg:self-start">
               {language === "tr"
                 ? "LARI ile İşletmenizi Dijitalleştirin"
                 : "Digitize Your Business with LARİ"}
             </div>
 
-            <div className="mb-3 md:mb-4 min-h-[3rem] sm:min-h-[1.3em] relative inline-flex w-full justify-center lg:justify-start align-bottom flex-col">
-              <span
-                key={currentPhrase}
-                className="animate-slideUpFade text-center lg:text-left text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-violet-600 dark:from-blue-400 dark:to-violet-400 font-extrabold text-[28px] sm:text-5xl md:text-[56px] leading-[1.1] tracking-tight"
-              >
-                {currentPhrase}
-              </span>
+            <div className="hidden md:block mb-4 text-base md:text-lg font-semibold text-slate-500 dark:text-slate-400">
+              {language === "tr"
+                ? "Kuaförler, güzellik salonları, klinikler ve randevulu işletmeler için"
+                : "For barbers, beauty clinics, nail studios, and service businesses"}
+            </div>
+            
+            <div className="block md:hidden mb-4 text-sm font-semibold text-slate-500 dark:text-slate-400 mx-auto text-center">
+              {language === "tr" ? (
+                <>Kuaförler, güzellik salonları, klinikler<br/>ve randevulu işletmeler için</>
+              ) : (
+                <>For barbers, salons, clinics,<br/>and service businesses</>
+              )}
             </div>
 
             {/* Desktop Headline */}
@@ -102,23 +107,24 @@ const MarketingHomePage: React.FC = () => {
               </Link>
               <Link
                 to="/pilot"
-                className="bg-white dark:bg-slate-800 text-slate-800 dark:text-white px-6 py-3.5 md:px-8 md:py-4 rounded-xl font-bold shadow-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition block w-full sm:w-auto text-center md:min-w-[200px] text-[15px] md:text-base cursor-pointer"
+                className="bg-white dark:bg-slate-800 text-slate-800 dark:text-white px-6 py-3.5 md:px-8 md:py-4 rounded-xl font-bold shadow-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition transform hover:-translate-y-1 block w-full sm:w-auto text-center md:min-w-[200px] text-[15px] md:text-base cursor-pointer"
               >
                 {language === "tr"
-                  ? "Canlı Örneği İncele"
-                  : "View Live Example"}
+                  ? "Örnek İşletmeyi Gör"
+                  : "View Demo Business"}
               </Link>
             </div>
-            <div className="mt-4 text-center lg:text-left flex flex-wrap gap-4 justify-center lg:justify-start">
+            
+            <div className="mt-5 flex flex-row flex-wrap justify-center lg:justify-start gap-3 w-full max-w-[320px] sm:max-w-none mx-auto lg:mx-0">
               <Link
                 to="/pricing"
-                className="text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 font-medium text-[13px] md:text-sm transition-colors border-b border-transparent hover:border-slate-400 inline-block px-4 py-2 lg:px-0"
+                className="flex items-center justify-center px-4 md:px-5 py-2 md:py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-medium text-[13px] md:text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition w-full sm:w-auto"
               >
-                {language === "tr" ? "Paketleri Gör" : "View Plans & Pricing"}
+                {language === "tr" ? "Paketleri İncele" : "View Plans"}
               </Link>
               <Link
                 to="/demo"
-                className="text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 font-medium text-[13px] md:text-sm transition-colors border-b border-transparent hover:border-slate-400 inline-block px-4 py-2 lg:px-0"
+                className="flex items-center justify-center px-4 md:px-5 py-2 md:py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-medium text-[13px] md:text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition w-full sm:w-auto"
               >
                 {language === "tr" ? "Kendi İşletmeni Önizle" : "Preview Your Business"}
               </Link>
@@ -129,8 +135,12 @@ const MarketingHomePage: React.FC = () => {
               <div className="flex items-center gap-1.5">
                 <span className="text-blue-500">✓</span>{" "}
                 {language === "tr"
-                  ? "Mini web sitesi dahil"
+                  ? "Mini web sitesi hazır"
                   : "Mini website included"}
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-green-500">✓</span>{" "}
+                {language === "tr" ? "Online randevu akışı" : "Online booking flow"}
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="text-violet-500">✓</span>{" "}
@@ -138,17 +148,17 @@ const MarketingHomePage: React.FC = () => {
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="text-indigo-500">✓</span>{" "}
-                {language === "tr" ? "Müşteri Hafızası" : "Customer Memory"}
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-green-500">✓</span>{" "}
-                {language === "tr"
-                  ? "14 gün ücretsiz deneme (Kart gerekli)"
-                  : "14 day free trial (Card required)"}
+                {language === "tr" ? "Müşteri hafızası" : "Customer memory"}
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="text-slate-500">✓</span>{" "}
-                {language === "tr" ? "KVKK odaklı yapı" : "Privacy focused"}
+                {language === "tr"
+                  ? "14 gün ödeme yok"
+                  : "14 days no charge"}
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-emerald-500">✓</span>{" "}
+                {language === "tr" ? "Güvenli kart doğrulama" : "Secure card check"}
               </div>
             </div>
 
@@ -176,7 +186,19 @@ const MarketingHomePage: React.FC = () => {
                 <div className="flex items-center justify-start gap-1.5 bg-slate-50 dark:bg-slate-900 px-3 py-2 rounded-lg border border-slate-100 dark:border-slate-800">
                   <span className="text-indigo-500 text-sm">✓</span>{" "}
                   <span>
-                    {language === "tr" ? "Müşteri hafızası" : "CRM / Memory"}
+                    {language === "tr" ? "Müşteri hafızası" : "Customer memory"}
+                  </span>
+                </div>
+                <div className="flex items-center justify-start gap-1.5 bg-slate-50 dark:bg-slate-900 px-3 py-2 rounded-lg border border-slate-100 dark:border-slate-800">
+                  <span className="text-slate-500 text-sm">✓</span>{" "}
+                  <span>
+                    {language === "tr" ? "14 gün ödeme yok" : "14 days free"}
+                  </span>
+                </div>
+                <div className="flex items-center justify-start gap-1.5 bg-slate-50 dark:bg-slate-900 px-3 py-2 rounded-lg border border-slate-100 dark:border-slate-800">
+                  <span className="text-emerald-500 text-sm">✓</span>{" "}
+                  <span>
+                    {language === "tr" ? "Güvenli ödeme" : "Secure checkout"}
                   </span>
                 </div>
               </div>

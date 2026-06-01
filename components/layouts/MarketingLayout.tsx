@@ -53,7 +53,7 @@ const MarketingLayout: React.FC = () => {
                 <button onClick={() => setLanguage('tr')} className={`px-3 py-1 rounded-md text-xs font-semibold ${language === 'tr' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 dark:text-gray-300'}`}>TR</button>
               </div>
               <Link to="/login" className="text-gray-600 dark:text-gray-200 text-sm font-medium hover:text-blue-600 dark:hover:text-blue-400 whitespace-nowrap">{language === 'tr' ? 'Giriş Yap' : 'Login'}</Link>
-              <Link to="/demo" className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-bold hover:bg-blue-700 transition whitespace-nowrap">{language === 'tr' ? 'Kendi Salonumu Önizle' : 'Preview My Salon'}</Link>
+              <Link to="/demo" className="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-sm hover:bg-blue-700 transition whitespace-nowrap">{language === 'tr' ? 'İşletmeni Önizle' : 'Preview Your Business'}</Link>
             </div>
 
             <div className="flex items-center md:hidden gap-2">
@@ -91,7 +91,7 @@ const MarketingLayout: React.FC = () => {
               </div>
               
               <Link to="/login" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-slate-700">{language === 'tr' ? 'Giriş Yap' : 'Login'}</Link>
-              <Link to="/demo" className="block w-full text-center mt-2 px-3 py-3 rounded-md text-base font-bold bg-blue-600 text-white hover:bg-blue-700">{language === 'tr' ? 'Kendi Salonumu Önizle' : 'Preview My Salon'}</Link>
+              <Link to="/demo" className="block w-full text-center mt-2 px-3 py-3 rounded-md text-base font-bold bg-blue-600 text-white hover:bg-blue-700">{language === 'tr' ? 'İşletmeni Önizle' : 'Preview Your Business'}</Link>
             </div>
           </div>
         )}

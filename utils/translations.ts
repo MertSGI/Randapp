@@ -45,7 +45,7 @@ export const translations = {
         faq_3_q: 'How does the 14-day trial work?',
         faq_3_a: 'If payment integration is enabled, your card is securely authorized to start the 14-day trial. You can cancel anytime before the trial ends without being charged.',
         faq_4_q: 'Can I use my own domain (like .com)?',
-        faq_4_a: 'You will be able to map domains in a future update. Currently, a dedicated LARİ business subdomain handles all customer traffic.',
+        faq_4_a: 'Currently, a dedicated LARİ business subdomain handles all customer traffic and booking links natively.',
         faq_5_q: 'Is customer data kept private?',
         faq_5_a: 'Absolutely. We enforce strict privacy rules. Internal notes and CRM data remain visible only to you and authorized staff.',
       },
@@ -53,7 +53,7 @@ export const translations = {
         title: 'Platform Features',
         subtitle: 'Everything you need to modernize your business operations and impress your customers.',
         page_title: 'All Your Business Needs in One Subscription',
-        page_subtitle: 'Website, booking, customer portal, customer memory, and future discovery logic all under your own brand.',
+        page_subtitle: 'Website, booking, customer portal, and customer memory all under your own brand.',
         feat1_title: 'Mini Website & Digital Storefront',
         feat1_desc: 'Not just a booking page, but a mini-website for your business. Your logo, cover photo, services, and Google Maps directions clearly presented.',
         feat1_1: 'Brand specific page colors and logo',
@@ -80,7 +80,7 @@ export const translations = {
         management_title: 'Staff & Service Controls',
         management_desc: 'Easily add your services with prices and durations. Manage your team members and their schedules.',
         ai_title: 'AI Stylist & Advanced Tools',
-        ai_desc: 'Provide an innovative experience. Integrated AI capabilities to suggest recommendations, plus future referral expansions.',
+        ai_desc: 'Provide an innovative experience. Integrated AI capabilities to suggest recommendations for your clients.',
         cta: 'Ready to try?'
       },
       demo: {
@@ -635,7 +635,7 @@ export const translations = {
         website_desc: 'Hizmetlerinizi, ekibinizi ve bilgilerinizi içeren modern bir karşılama sayfası.',
         management_title: 'Personel ve Hizmet Yönetimi',
         management_desc: 'Hizmetlerinizi ve çalışan takviminizi kolaylıkla düzenleyin.',
-        ai_title: 'AI Uzmanı & Kampanyalar (Yol Haritası)',
+        ai_title: 'AI Uzmanı & Kampanyalar',
         ai_desc: 'Yenilikçi yapay zeka analiz destekleri ve yeni nesil kampanya modülleri.',
         cta: 'Denemeye hazır mısınız?'
       },

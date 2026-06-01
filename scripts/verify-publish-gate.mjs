@@ -1,4 +1,4 @@
-import { test, expect, chromium } from '@playwright/test';
+import { chromium } from 'playwright';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import fs from 'fs';

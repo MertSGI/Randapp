@@ -3,7 +3,7 @@
 Before conducting a live demo with a prospect, run through this checklist to ensure the demo environment is stable and visually correct.
 
 ## 1. Flow & Navigation
-- [x] Marketing Homepage correctly routes to `/pilot` via "Canlı Örneği İncele" button
+- [x] Marketing Homepage correctly routes to `/pilot` via "Örnek İşletmeyi Gör" button
 - [x] Demo landing page (`/demo`) still functions correctly for custom preview generation
 - [x] `/pilot` securely enters the `tenant_pilot_demo` environment without breaking registered arrays
 

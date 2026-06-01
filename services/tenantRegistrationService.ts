@@ -37,7 +37,7 @@ export const tenantRegistrationService = {
         id: `biz-${tenantId}`,
         tenant_id: tenantId,
         short_description: `Hoşgeldiniz! ${data.businessDisplayName} olarak hazırız.`,
-        about_text: 'Tesisimiz yakında sizlerle.',
+        about_text: 'Tesisimiz online randevu kabul etmeye başlamıştır.',
         business_category: data.businessCategory,
         address: data.city,
         city: data.city,
