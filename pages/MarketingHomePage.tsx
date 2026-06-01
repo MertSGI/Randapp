@@ -97,8 +97,8 @@ const MarketingHomePage: React.FC = () => {
                 className="bg-blue-600 text-white px-6 py-3.5 md:px-8 md:py-4 rounded-xl font-bold shadow-lg shadow-blue-500/30 hover:bg-blue-700 transition transform hover:-translate-y-1 block w-full sm:w-auto text-center md:min-w-[200px] text-[15px] md:text-base cursor-pointer"
               >
                 {language === "tr"
-                  ? "7 Gün Ücretsiz Başla"
-                  : "Start 7-Day Free Trial"}
+                  ? "14 Gün Ücretsiz Başla"
+                  : "Start 14-Day Free Trial"}
               </Link>
               <Link
                 to="/pilot"
@@ -143,8 +143,8 @@ const MarketingHomePage: React.FC = () => {
               <div className="flex items-center gap-1.5">
                 <span className="text-green-500">✓</span>{" "}
                 {language === "tr"
-                  ? "7 gün ücretsiz deneme"
-                  : "7 day free trial"}
+                  ? "14 gün ücretsiz deneme (Kart gerekli)"
+                  : "14 day free trial (Card required)"}
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="text-slate-500">✓</span>{" "}
@@ -908,7 +908,7 @@ const MarketingHomePage: React.FC = () => {
       {/* 9. Pricing Bridge */}
       <section className="px-4 pt-16 pb-8 text-center max-w-4xl mx-auto">
         <div className="inline-block bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-bold px-4 py-2 rounded-full text-xs md:text-sm mb-6 border border-blue-100 dark:border-blue-800">
-          {language === "tr" ? "7 Gün Ücretsiz Pilot" : "7 Day Free Pilot"}
+          {language === "tr" ? "14 Gün Ücretsiz Pilot" : "14 Day Free Pilot"}
         </div>
         <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white mb-6 tracking-tight">
           {language === "tr"
@@ -933,8 +933,8 @@ const MarketingHomePage: React.FC = () => {
           </h2>
           <p className="text-blue-100 text-lg md:text-xl mb-10 max-w-2xl mx-auto font-medium">
             {language === "tr"
-              ? "Teknik bilgi veya kurulum deneyimi gerekmez. 7 gün ücretsiz deneyin ve kendi işletme vitrininizi hemen oluşturun."
-              : "No technical skills required. Try free for 7 days, start taking bookings immediately."}
+              ? "Teknik bilgi veya kurulum deneyimi gerekmez. 14 gün ücretsiz deneyin ve kendi işletme vitrininizi hemen oluşturun."
+              : "No technical skills required. Try free for 14 days, start taking bookings immediately."}
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4 max-w-xl mx-auto">
             <Link
@@ -942,8 +942,8 @@ const MarketingHomePage: React.FC = () => {
               className="inline-block w-full sm:w-1/2 bg-white text-blue-600 px-8 py-4 rounded-xl font-bold shadow-xl hover:bg-gray-50 transition transform hover:-translate-y-1 text-center text-lg"
             >
               {language === "tr"
-                ? "7 Gün Ücretsiz Başla"
-                : "Start 7-Day Free Trial"}
+                ? "14 Gün Ücretsiz Başla"
+                : "Start 14-Day Free Trial"}
             </Link>
             <Link
               to="/pricing"

@@ -1,4 +1,5 @@
 import { createSuccess, createError, MutationResult } from '../utils/mutationResult';
+import { TRIAL_CONFIG } from './trialConfigService';
 
 export interface PricingPlan {
   id: string;
@@ -59,7 +60,7 @@ export const DEFAULT_PLANS: Record<string, PricingPlan> = {
     referralEligible: false,
     isActive: true,
     isRecommended: false,
-    trialDays: 7,
+    trialDays: TRIAL_CONFIG.trialDayCount,
     iyzicoProductReferenceCode: 'test_product_1',
     iyzicoPlanReferenceCodeMonthly: 'test_plan_monthly_1',
     iyzicoPlanReferenceCodeAnnual: 'test_plan_annual_1'
@@ -89,7 +90,7 @@ export const DEFAULT_PLANS: Record<string, PricingPlan> = {
     referralEligible: true,
     isActive: true,
     isRecommended: true,
-    trialDays: 7,
+    trialDays: TRIAL_CONFIG.trialDayCount,
     iyzicoProductReferenceCode: 'test_product_2',
     iyzicoPlanReferenceCodeMonthly: 'test_plan_monthly_2',
     iyzicoPlanReferenceCodeAnnual: 'test_plan_annual_2'
@@ -119,7 +120,7 @@ export const DEFAULT_PLANS: Record<string, PricingPlan> = {
     referralEligible: true,
     isActive: true,
     isRecommended: false,
-    trialDays: 7,
+    trialDays: TRIAL_CONFIG.trialDayCount,
     iyzicoProductReferenceCode: 'test_product_3',
     iyzicoPlanReferenceCodeMonthly: 'test_plan_monthly_3',
     iyzicoPlanReferenceCodeAnnual: 'test_plan_annual_3'

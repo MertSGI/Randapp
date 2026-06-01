@@ -36,4 +36,4 @@ This guide provides a structured presentation script for demonstrating the LARİ
   - Briefly show the `Professional` plan active state. "Your billing is managed here directly via secure Iyzico infrastructure."
 - **Exit Demo**:
   - Click "Demo'dan Çık". This restores any previous actual testing tenant context without corrupting your real device sessions.
-- Call to Action: "Let's set up your actual account now for a 7-day free trial." (Navigate to `/pricing`).
+- Call to Action: "Let's set up your actual account now for a 14-day free trial." (Navigate to `/pricing`).

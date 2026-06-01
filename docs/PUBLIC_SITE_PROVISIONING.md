@@ -4,7 +4,7 @@ This document describes the intended architecture for generating and managing pu
 
 ## 1. Flow Overview
 
-1. **Purchase/Trial**: A professional completes checkout or begins a 7-day trial.
+1. **Purchase/Trial**: A professional completes checkout or begins a 14-day trial.
 2. **Onboarding Wizard**: They complete their business setup (Adding services, staff, branding, contact info, and choosing a public URL slug).
 3. **Tenant & Profile Updates**:
    - `tenant` table holds core details (`name`, `slug`, `subdomain`, `customDomain`, `status`).

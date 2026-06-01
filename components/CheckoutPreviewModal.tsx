@@ -46,10 +46,10 @@ export const CheckoutPreviewModal: React.FC<CheckoutPreviewModalProps> = ({ isOp
 
            <div className="bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30 rounded-xl p-4 mb-6">
               <h4 className="font-bold text-blue-900 dark:text-blue-300 text-sm mb-1">
-                 {language === 'tr' ? `${plan.trialDays} Günlük Ücretsiz Deneme` : `${plan.trialDays}-Day Free Trial`}
+                 {language === 'tr' ? `14 Günlük Ücretsiz Deneme` : `14-Day Free Trial`}
               </h4>
               <p className="text-xs text-blue-700 dark:text-blue-400">
-                 {language === 'tr' ? 'Bugün ödeme alınmayacak. Deneme süresi sonunda seçtiğiniz paketin ücreti tahsil edilecektir.' : 'No charge today. The subscription amount will be charged after your trial ends.'}
+                 {language === 'tr' ? '14 günlük ücretsiz denemeniz için güvenli ödeme sayfası hazırlanıyor... Kart bilgileriniz LARİ tarafından alınmaz; doğrulama güvenli ödeme sağlayıcısı üzerinden yapılır. 14 gün içinde iptal ederseniz ücret ödemezsiniz.' : 'Secure checkout is preparing... LARİ does not collect your card details. If you cancel within 14 days, you will not be charged.'}
               </p>
            </div>
 

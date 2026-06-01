@@ -10,6 +10,9 @@
 
 ## Plan Mapping Readiness
 Plans should map to Iyzico Product and Pricing Plan reference codes in the Edge function or shared config.
+
+## Trial Configuration Readiness
+- ✅ Trial configured to 14 days.
 - ✅ Starter plan reference mapping fields exist.
 - ✅ Professional plan reference mapping fields exist.
 - ✅ Premium plan reference mapping fields exist.

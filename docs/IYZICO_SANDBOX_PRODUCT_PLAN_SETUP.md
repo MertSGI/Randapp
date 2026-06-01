@@ -11,15 +11,15 @@ To test the end-to-end subscription payment flow with Iyzico Sandbox, you must m
 ## 2. Create Pricing Plans
 Within your new product, create the corresponding pricing plans. Currently, we recommend using a monthly billing cycle.
 
-Where supported by the sandbox, configure a 7-day trial period to test the `trialing` -> `active` lifecycle.
+Where supported by the sandbox, configure a 14-day trial period to test the `trialing` -> `active` lifecycle.
 
 ### Mapping Table
 
 | LARİ Plan ID | Plan Name | Monthly Price | Iyzico Product Ref Code | Iyzico Pricing Plan Ref Code | Trial Days | Status |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `starter` | Başlangıç | 1,250 TL | *(Set in config)* | *(Set in config)* | 7 | Pending Setup |
-| `professional` | Profesyonel | 2,750 TL | *(Set in config)* | *(Set in config)* | 7 | Pending Setup |
-| `premium` | Premium | 4,500 TL | *(Set in config)* | *(Set in config)* | 7 | Pending Setup |
+| `starter` | Başlangıç | 1,250 TL | *(Set in config)* | *(Set in config)* | 14 | Pending Setup |
+| `professional` | Profesyonel | 2,750 TL | *(Set in config)* | *(Set in config)* | 14 | Pending Setup |
+| `premium` | Premium | 4,500 TL | *(Set in config)* | *(Set in config)* | 14 | Pending Setup |
 
 ## 3. Apply References to Code
 Update your local `services/planService.ts` or Edge Function configuration mapping to ensure that when a user selects a LARİ plan, the correct `pricingPlanReferenceCode` is passed to the Iyzico initialization endpoint.

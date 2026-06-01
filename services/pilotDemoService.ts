@@ -2,6 +2,7 @@ import { Tenant, User, TenantBranding } from '../types';
 import { tenantService } from './tenantService';
 import { authService } from './authService';
 import { dataProvider } from './dataProvider';
+import { TRIAL_CONFIG } from './trialConfigService';
 
 export const DEMO_PILOT_TENANT_ID = 'tenant_pilot_demo';
 
@@ -107,7 +108,7 @@ export const pilotDemoService = {
         planId: 'professional',
         status: 'active',
         trialStart: new Date().toISOString(),
-        trialEnd: new Date(new Date().setDate(new Date().getDate() + 7)).toISOString(),
+        trialEnd: new Date(new Date().setDate(new Date().getDate() + TRIAL_CONFIG.trialDayCount)).toISOString(),
         currentPeriodStart: new Date().toISOString(),
         currentPeriodEnd: new Date(new Date().setMonth(new Date().getMonth() + 1)).toISOString(),
         cancelAtPeriodEnd: false,

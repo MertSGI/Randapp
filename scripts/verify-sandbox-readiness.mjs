@@ -51,6 +51,22 @@ const main = () => {
     
     // We check if the subscriptionService or planService mentions the mapping
     const planServicePath = path.join(rootDir, 'services', 'planService.ts');
+    const trialConfigPath = path.join(rootDir, 'services', 'trialConfigService.ts');
+
+    output += `\n## Trial Configuration Readiness\n`;
+    if (fs.existsSync(trialConfigPath)) {
+        const trialContent = fs.readFileSync(trialConfigPath, 'utf8');
+        if (trialContent.includes('trialDayCount: 14')) {
+            output += `- ✅ Trial configured to 14 days.\n`;
+        } else {
+            output += `- ❌ Trial not configured to 14 days.\n`;
+            passed = false;
+        }
+    } else {
+        output += `❌ trialConfigService.ts not found.\n`;
+        passed = false;
+    }
+
     let planServiceContent = '';
     if (fs.existsSync(planServicePath)) {
         planServiceContent = fs.readFileSync(planServicePath, 'utf8');

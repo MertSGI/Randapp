@@ -124,7 +124,7 @@ export default function RegistrationPage() {
              {language === 'tr' ? 'İşletmeni Oluştur' : 'Create Your Business'}
           </h1>
           <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-xl">
-             {language === 'tr' ? 'Hemen başlayın. 7 gün boyunca LARİ özelliklerini kredi kartsız deneyebilirsiniz.' : 'Start now. Try LARİ features for 7 days without a credit card.'}
+             {language === 'tr' ? '14 günlük ücretsiz denemeyi başlatmak için kartınızı güvenli ödeme sayfasında doğrulamanız gerekir. LARİ kart bilgilerinizi doğrudan almaz. 14 gün içinde iptal ederseniz ücret ödemezsiniz; iptal etmezseniz seçtiğiniz plan deneme sonunda otomatik olarak başlar.' : 'To start your 14-day free trial, you must verify your card on the secure payment page. LARİ does not collect your card details directly. If you cancel within 14 days, you will not be charged; if you do not cancel, your selected plan will automatically start at the end of the trial.'}
           </p>
 
           {error && (
@@ -214,7 +214,7 @@ export default function RegistrationPage() {
             </div>
 
             <button disabled={loading} type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-500/30 transition transform hover:-translate-y-0.5 disabled:opacity-70 disabled:hover:translate-y-0 text-lg">
-               {loading ? 'İşleniyor...' : (language === 'tr' ? 'Hesabı Oluştur & Başla' : 'Create Account & Start')}
+               {loading ? 'İşleniyor...' : (language === 'tr' ? 'Kartla 14 Gün Ücretsiz Başlat' : 'Start 14-Day Free Trial with Card')}
             </button>
             <p className="text-xs text-center text-slate-500 mt-4">
               Zaten hesabınız var mı? <Link to="/login" className="text-blue-600 font-medium hover:underline">Giriş Yap</Link>
@@ -242,8 +242,8 @@ export default function RegistrationPage() {
               </ul>
 
               <div className="bg-white/5 rounded-xl p-4">
-                 <p className="text-sm text-slate-300 font-medium mb-1">✅ 7 Gün Ücretsiz Deneme</p>
-                 <p className="text-xs text-slate-400">Üyelik sonrasında kredi kartı gerekmeden ücretsiz olarak kullanmaya başlayabilirsiniz.</p>
+                 <p className="text-sm text-slate-300 font-medium mb-1">✅ 14 Gün Ücretsiz Deneme</p>
+                 <p className="text-xs text-slate-400">Ücretsiz deneme için kart doğrulaması gerekir. 14 gün boyunca ücret alınmaz ve istediğiniz zaman iptal edebilirsiniz.</p>
               </div>
            </div>
         </div>

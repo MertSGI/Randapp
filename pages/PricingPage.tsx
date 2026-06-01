@@ -139,11 +139,18 @@ const PricingPage: React.FC = () => {
                    {ctaConfig.label}
                  </a>
                ) : (
-                 <Link 
-                   to={`/register?planId=${plan.id}&billingPeriod=${billingPeriod}`}
-                   className={`block w-full text-center font-bold py-3.5 md:py-4 rounded-xl transition shadow-md ${isRecommended ? 'bg-accent text-white hover:bg-blue-600 hover:shadow-lg' : 'bg-gray-100 dark:bg-slate-700 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-slate-600'} text-sm md:text-base`}>
-                   {ctaConfig.label || (language === 'tr' ? 'Hemen Başla' : 'Start Now')}
-                 </Link>
+                 <div>
+                   <Link 
+                     to={`/register?planId=${plan.id}&billingPeriod=${billingPeriod}`}
+                     className={`block w-full text-center font-bold py-3.5 md:py-4 rounded-xl transition shadow-md ${isRecommended ? 'bg-accent text-white hover:bg-blue-600 hover:shadow-lg' : 'bg-gray-100 dark:bg-slate-700 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-slate-600'} text-sm md:text-base`}>
+                     {ctaConfig.label || (language === 'tr' ? '14 Gün Ücretsiz Dene' : 'Start 14-Day Free Trial')}
+                   </Link>
+                   <p className="text-center text-[11px] text-gray-500 mt-2">
+                     {language === 'tr' 
+                       ? 'Kart doğrulaması gerekir. 14 gün boyunca ücret alınmaz.'
+                       : 'Card required. No charge for 14 days.'}
+                   </p>
+                 </div>
                )}
             </div>
           </div>

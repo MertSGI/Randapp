@@ -3,6 +3,7 @@ import { dataProvider } from './dataProvider';
 import { businessProfileService } from './businessProfileService';
 import { tenantService } from './tenantService';
 import { planService } from './planService';
+import { TRIAL_CONFIG } from './trialConfigService';
 
 export interface RegistrationData {
   ownerName: string;
@@ -60,8 +61,8 @@ export const tenantRegistrationService = {
       await dataProvider.set(`randapp:${tenantId}:subscription`, {
         planId: data.planId,
         billingPeriod: data.billingPeriod,
-        status: 'trialing',
-        currentPeriodEnd: new Date(Date.now() + (plan.trialDays || 7) * 24 * 60 * 60 * 1000).toISOString(),
+        status: 'pending_checkout',
+        currentPeriodEnd: new Date(Date.now() + (plan.trialDays || TRIAL_CONFIG.trialDayCount) * 24 * 60 * 60 * 1000).toISOString(),
         cancelAtPeriodEnd: false
       });
 
