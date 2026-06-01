@@ -1,9 +1,11 @@
+import { tenantService } from './tenantService';
 import { supabase } from './supabaseClient';
 import { dataProvider } from './dataProvider';
 import { subscriptionService } from './subscriptionService';
 import { provisioningService } from './provisioningService';
 import { getServices } from './serviceCatalogService';
 import { getStaffList } from './staffService';
+import { businessVerificationService } from './businessVerificationService';
 
 export interface GoLiveReadiness {
   canGoLive: boolean;
@@ -16,6 +18,8 @@ export interface GoLiveReadiness {
     servicesCompleted: boolean;
     staffCompleted: boolean;
     testAppointmentCompleted: boolean;
+    verificationApproved: boolean;
+    riskStatusNormal: boolean;
   };
 }
 
@@ -25,16 +29,14 @@ export const goLiveService = {
     const provStatus = await provisioningService.getProvisioningStatus(tenantId);
     const services = await getServices(tenantId, { activeOnly: true });
     const staff = await getStaffList(tenantId, { activeOnly: true });
+    const tenant = await tenantService.getCurrentTenant();
 
     const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
-    let goLiveStatus = 'paused';
+    let publicSiteStatus = 'draft';
     
-    // Attempt to get go_live_status
-    if (mode === 'supabase') {
-      const { data } = await supabase.from('tenants').select('go_live_status').eq('id', tenantId).single();
-      if (data) goLiveStatus = data.go_live_status || 'paused';
-    } else {
-      goLiveStatus = await dataProvider.get<string>(`randapp:${tenantId}:go_live_status`) || 'paused';
+    // Fallbacks
+    if (tenant) {
+       publicSiteStatus = tenant.publicSiteStatus || 'draft';
     }
 
     const checklist = {
@@ -43,13 +45,15 @@ export const goLiveService = {
       whatsappCompleted: true,
       servicesCompleted: services.length > 0,
       staffCompleted: staff.length > 0,
-      testAppointmentCompleted: true // mock assumption
+      testAppointmentCompleted: true, // mock assumption
+      verificationApproved: tenant?.verificationStatus === 'approved' || tenant?.verificationStatus === 'not_submitted',
+      riskStatusNormal: tenant?.businessRiskStatus !== 'prohibited'
     };
 
     const blockingReasons: string[] = [];
     
-    if (sub?.status !== 'active' && sub?.status !== 'trialing') {
-      blockingReasons.push('Abonelik durumu aktif değil.');
+    if (sub?.status === 'pending_checkout' || (!sub || (sub.status !== 'active' && sub.status !== 'trialing'))) {
+      blockingReasons.push('Abonelik veya deneme süresi aktif değil. Lütfen ödeme/doğrulama adımını tamamlayın.');
     }
     if (!checklist.servicesCompleted) {
       blockingReasons.push('En az 1 aktif hizmet eklenmesi gerekiyor.');
@@ -57,9 +61,12 @@ export const goLiveService = {
     if (!checklist.staffCompleted) {
       blockingReasons.push('En az 1 aktif çalışan eklenmesi gerekiyor.');
     }
+    if (tenant?.businessRiskStatus === 'prohibited') {
+      blockingReasons.push('Kullanım koşullarına uymayan işletme türü (Yayın engellendi).');
+    }
 
     const canGoLive = blockingReasons.length === 0;
-    const canAcceptBookings = canGoLive && goLiveStatus === 'live';
+    const canAcceptBookings = canGoLive && publicSiteStatus === 'published';
 
     return {
       canGoLive,
@@ -71,30 +78,22 @@ export const goLiveService = {
 
   async canTenantAcceptBookings(tenantId: string): Promise<{ allowed: boolean; reason?: string }> {
     const sub = await subscriptionService.getCurrentSubscription(tenantId);
-    if (sub?.status === 'expired' || sub?.status === 'cancelled') {
+    if (!sub || sub.status === 'expired' || sub.status === 'cancelled' || sub.status === 'past_due') {
       return { allowed: false, reason: 'Bu salonun online randevu sistemi geçici olarak kullanılamıyor.' };
     }
 
-    const provStatus = await provisioningService.getProvisioningStatus(tenantId);
-    if (provStatus === 'onboarding_required' || provStatus === 'setup_in_progress' || provStatus === 'ready_for_review') {
-       return { allowed: false, reason: 'Online randevu sistemi henüz aktif değil.' };
+    const tenant = await tenantService.getCurrentTenant();
+    if (tenant?.publicSiteStatus === 'suspended') {
+      return { allowed: false, reason: 'Bu işletmenin online randevu sayfası şu anda aktif değil.' };
+    }
+    if (tenant?.publicSiteStatus === 'paused') {
+      return { allowed: false, reason: 'Bu salon şu anda online randevu kabul etmiyor. Lütfen işletme ile iletişime geçin.' };
+    }
+    if (tenant?.publicSiteStatus === 'pending_review' || tenant?.publicSiteStatus === 'draft' || tenant?.publicSiteStatus === 'preview_ready') {
+      return { allowed: false, reason: 'Online randevu sistemi henüz aktif değil.' };
     }
 
     const readiness = await this.getGoLiveReadiness(tenantId);
-    
-    // Explicitly check for paused status
-    const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
-    let goLiveStatus = 'paused';
-    if (mode === 'supabase') {
-      const { data } = await supabase.from('tenants').select('go_live_status').eq('id', tenantId).single();
-      if (data) goLiveStatus = data.go_live_status || 'paused';
-    } else {
-      goLiveStatus = await dataProvider.get<string>(`randapp:${tenantId}:go_live_status`) || 'paused';
-    }
-
-    if (goLiveStatus === 'paused') {
-        return { allowed: false, reason: 'Bu salon şu anda online randevu kabul etmiyor. Lütfen işletme ile iletişime geçin.' };
-    }
 
     if (!readiness.canAcceptBookings) {
       if (readiness.blockingReasons.length > 0) {
@@ -109,22 +108,32 @@ export const goLiveService = {
   async markReadyForReview(tenantId: string): Promise<void> {
     const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
     if (mode === 'supabase') {
-      await supabase.from('tenants').update({ go_live_status: 'pending_review' }).eq('id', tenantId);
+      await supabase.from('tenants').update({ public_site_status: 'pending_review' }).eq('id', tenantId);
       await provisioningService.markTenantProvisioningStatus(tenantId, 'ready_for_review');
     } else {
-      await dataProvider.set(`randapp:${tenantId}:go_live_status`, 'pending_review');
+      const registeredArr = JSON.parse(localStorage.getItem('lari_registered_tenants') || '[]');
+      const index = registeredArr.findIndex((t: any) => t.id === tenantId);
+      if (index !== -1) {
+         registeredArr[index].publicSiteStatus = 'pending_review';
+         localStorage.setItem('lari_registered_tenants', JSON.stringify(registeredArr));
+      }
       await provisioningService.markTenantProvisioningStatus(tenantId, 'ready_for_review');
     }
   },
 
   async markTenantLive(tenantId: string): Promise<void> {
-    // Final approval should be server-side / Edge Function for production
     const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
     if (mode === 'supabase') {
-      await supabase.from('tenants').update({ go_live_status: 'live' }).eq('id', tenantId);
+      await supabase.from('tenants').update({ public_site_status: 'published' }).eq('id', tenantId);
       await provisioningService.markTenantProvisioningStatus(tenantId, 'live');
     } else {
-      await dataProvider.set(`randapp:${tenantId}:go_live_status`, 'live');
+      const registeredArr = JSON.parse(localStorage.getItem('lari_registered_tenants') || '[]');
+      const index = registeredArr.findIndex((t: any) => t.id === tenantId);
+      if (index !== -1) {
+         registeredArr[index].publicSiteStatus = 'published';
+         registeredArr[index].verificationStatus = 'approved';
+         localStorage.setItem('lari_registered_tenants', JSON.stringify(registeredArr));
+      }
       await provisioningService.markTenantProvisioningStatus(tenantId, 'live');
     }
   },
@@ -132,19 +141,30 @@ export const goLiveService = {
   async markTenantPaused(tenantId: string): Promise<void> {
     const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
     if (mode === 'supabase') {
-      await supabase.from('tenants').update({ go_live_status: 'paused' }).eq('id', tenantId);
+      await supabase.from('tenants').update({ public_site_status: 'paused' }).eq('id', tenantId);
     } else {
-      await dataProvider.set(`randapp:${tenantId}:go_live_status`, 'paused');
+      const registeredArr = JSON.parse(localStorage.getItem('lari_registered_tenants') || '[]');
+      const index = registeredArr.findIndex((t: any) => t.id === tenantId);
+      if (index !== -1) {
+         registeredArr[index].publicSiteStatus = 'paused';
+         localStorage.setItem('lari_registered_tenants', JSON.stringify(registeredArr));
+      }
     }
   },
 
   async markTenantNeedsChanges(tenantId: string): Promise<void> {
     const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
     if (mode === 'supabase') {
-      await supabase.from('tenants').update({ go_live_status: 'needs_changes' }).eq('id', tenantId);
+      await supabase.from('tenants').update({ public_site_status: 'preview_ready', verification_status: 'rejected' }).eq('id', tenantId);
       await provisioningService.markTenantProvisioningStatus(tenantId, 'setup_in_progress');
     } else {
-      await dataProvider.set(`randapp:${tenantId}:go_live_status`, 'needs_changes');
+      const registeredArr = JSON.parse(localStorage.getItem('lari_registered_tenants') || '[]');
+      const index = registeredArr.findIndex((t: any) => t.id === tenantId);
+      if (index !== -1) {
+         registeredArr[index].publicSiteStatus = 'preview_ready';
+         registeredArr[index].verificationStatus = 'rejected';
+         localStorage.setItem('lari_registered_tenants', JSON.stringify(registeredArr));
+      }
       await provisioningService.markTenantProvisioningStatus(tenantId, 'setup_in_progress');
     }
   },

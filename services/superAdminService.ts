@@ -198,11 +198,21 @@ export const superAdminService = {
        const { dataProvider } = await import('./dataProvider');
        await dataProvider.set(`randapp:${tenantId}:go_live_status`, 'live');
        await dataProvider.set(`randapp:${tenantId}:provisioning_status`, 'live');
+       
+       const registeredArr = JSON.parse(localStorage.getItem('lari_registered_tenants') || '[]');
+       const index = registeredArr.findIndex((t: any) => t.id === tenantId);
+       if (index !== -1) {
+          registeredArr[index].publicSiteStatus = 'published';
+          registeredArr[index].verificationStatus = 'approved';
+          localStorage.setItem('lari_registered_tenants', JSON.stringify(registeredArr));
+       }
        return new Promise(resolve => setTimeout(() => resolve(true), 500));
     }
     const { error } = await supabase.from('tenants').update({ 
       provisioning_status: 'live',
-      go_live_status: 'live' // if column exists
+      go_live_status: 'live', // if column exists
+      public_site_status: 'published',
+      verification_status: 'approved'
     }).eq('id', tenantId);
     if (error) {
        console.error("Super admin live approval failed", error);
@@ -217,11 +227,21 @@ export const superAdminService = {
        const { dataProvider } = await import('./dataProvider');
        await dataProvider.set(`randapp:${tenantId}:go_live_status`, 'needs_changes');
        await dataProvider.set(`randapp:${tenantId}:provisioning_status`, 'setup_in_progress');
+       
+       const registeredArr = JSON.parse(localStorage.getItem('lari_registered_tenants') || '[]');
+       const index = registeredArr.findIndex((t: any) => t.id === tenantId);
+       if (index !== -1) {
+          registeredArr[index].publicSiteStatus = 'preview_ready';
+          registeredArr[index].verificationStatus = 'rejected';
+          localStorage.setItem('lari_registered_tenants', JSON.stringify(registeredArr));
+       }
        return new Promise(resolve => setTimeout(() => resolve(true), 500));
      }
      const { error } = await supabase.from('tenants').update({ 
        provisioning_status: 'setup_in_progress',
-       go_live_status: 'needs_changes'
+       go_live_status: 'needs_changes',
+       public_site_status: 'preview_ready',
+       verification_status: 'rejected'
      }).eq('id', tenantId);
      if (error) throw error;
      return true;

@@ -59,6 +59,11 @@ export interface Tenant {
   createdAt: string;
   updatedAt: string;
   branding: TenantBranding;
+  
+  // Verification and Publish Gates
+  verificationStatus?: 'not_submitted' | 'submitted' | 'under_review' | 'approved' | 'rejected' | 'suspended';
+  publicSiteStatus?: 'draft' | 'preview_ready' | 'pending_review' | 'published' | 'paused' | 'suspended';
+  businessRiskStatus?: 'normal' | 'needs_review' | 'prohibited' | 'suspected_impersonation';
 }
 
 export interface Staff {

@@ -5,6 +5,7 @@ import { goLiveService, GoLiveReadiness } from '../services/goLiveService';
 
 import { createService } from '../services/serviceCatalogService';
 import { createStaff } from '../services/staffService';
+import { businessVerificationService } from '../services/businessVerificationService';
 
 interface OnboardingWizardProps {
   staffList: Staff[];
@@ -672,7 +673,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                    href={`/#/admin-preview`} 
                    target="_blank" 
                    rel="noopener noreferrer"
-                   className="inline-flex px-6 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-lg font-bold shadow-sm transition-all text-center items-center justify-center mb-4"
+                   className="inline-flex px-6 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-lg font-bold shadow-sm transition-all text-center items-center justify-center mb-4"
                  >
                    Site Önizlemesini Aç
                  </a>
@@ -689,12 +690,25 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                    Bağlantıyı Kopyala
                  </button>
                  <button 
-                   disabled={!isInfoCompleted || !isServicesCompleted || !isStaffCompleted || !isProfileCompleted || !isBrandingCompleted || (tenant as any)?.provisioning_status === 'ready_for_review' || (tenant as any)?.provisioning_status === 'live'}
+                   disabled={!isInfoCompleted || !isServicesCompleted || !isStaffCompleted || !isProfileCompleted || !isBrandingCompleted || tenant?.publicSiteStatus === 'pending_review' || tenant?.publicSiteStatus === 'published' || readiness?.blockingReasons.length > 0}
                    onClick={async () => {
                      if (!tenant) return;
                      try {
+                        const verifiedResult = businessVerificationService.submitForReview(tenant.id, {
+                           officialBusinessName: tenant.name,
+                           publicDisplayName: branding?.businessName || tenant.name,
+                           category: businessProfile?.business_category || ''
+                        });
+                        
+                        if (!verifiedResult.success) {
+                           alert('Kullanım koşullarına uymayan işletme türü (Yayın engellendi).');
+                           if (typeof refreshTenant === 'function') await refreshTenant();
+                           await goLiveService.getGoLiveReadiness(tenant.id).then(setReadiness);
+                           return;
+                        }
+
                         await goLiveService.markReadyForReview(tenant.id);
-                        alert("Yayına Hazır olarak işaretlendi. LARİ ekibi kurulumunuzu inceledikten sonra sistemi yayına alacaktır.");
+                        alert("Yayın İncelemesine Gönderildi. LARİ ekibi profilinizi doğruladıktan sonra aktif edilecektir.");
                         if (typeof refreshTenant === 'function') await refreshTenant();
                         await goLiveService.getGoLiveReadiness(tenant.id).then(setReadiness);
                      } catch(err) {
@@ -703,18 +717,23 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                    }} 
                    className="px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-lg font-bold shadow-sm transition-all"
                  >
-                   Yayına Hazır Olarak İşaretle
+                   Yayın İncelemesine Gönder
                  </button>
               </div>
 
-              {(tenant as any)?.provisioning_status === 'ready_for_review' && (
+              {tenant?.publicSiteStatus === 'pending_review' && (
                   <div className="bg-blue-50 text-blue-800 p-4 rounded-lg text-center font-medium border border-blue-200">
-                     Kurulumunuz inceleme için gönderildi. Lütfen LARİ ekibinin onayını bekleyin.
+                     İncelemede (Profiliniz değerlendiriliyor, lütfen bekleyiniz)
                   </div>
               )}
-              {(tenant as any)?.provisioning_status === 'live' && (
+              {tenant?.publicSiteStatus === 'published' && (
                   <div className="bg-green-50 text-green-800 p-4 rounded-lg text-center font-medium border border-green-200">
-                     İşletmeniz yayında! Randevu almaya başlayabilirsiniz.
+                     Yayında! İşletmeniz online randevu almaya açık.
+                  </div>
+              )}
+              {tenant?.publicSiteStatus === 'suspended' && (
+                  <div className="bg-red-50 text-red-800 p-4 rounded-lg text-center font-medium border border-red-200">
+                     Yayın Durduruldu. İşletmeniz online randevu kabul edemez.
                   </div>
               )}
               

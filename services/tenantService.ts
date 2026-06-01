@@ -84,7 +84,10 @@ export const tenantService = {
                 status: 'active',
                 createdAt: tenantRecord.created_at || new Date().toISOString(),
                 updatedAt: new Date().toISOString(),
-             };
+                verificationStatus: tenantRecord.verificationStatus || 'not_submitted',
+                publicSiteStatus: tenantRecord.publicSiteStatus || 'draft',
+                businessRiskStatus: tenantRecord.businessRiskStatus || 'normal',
+             } as Tenant;
           }
        }
     }

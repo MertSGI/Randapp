@@ -92,7 +92,10 @@ export const tenantRegistrationService = {
          ownerEmail: data.ownerEmail,
          created_at: new Date().toISOString(),
          planId: data.planId,
-         billingPeriod: data.billingPeriod
+         billingPeriod: data.billingPeriod,
+         verificationStatus: 'not_submitted',
+         publicSiteStatus: 'draft',
+         businessRiskStatus: 'normal'
       });
       localStorage.setItem('lari_registered_tenants', JSON.stringify(registered));
       localStorage.setItem('randapp_registered_tenants', JSON.stringify(registered));
