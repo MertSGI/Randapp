@@ -11,15 +11,15 @@ const FeaturesPage: React.FC = () => {
     <div className="py-12 md:py-16">
       <div className="text-center mb-12 md:mb-20 max-w-4xl mx-auto px-4">
          <div className="inline-block bg-violet-50 dark:bg-slate-800 text-violet-600 dark:text-violet-400 font-bold px-5 py-2 rounded-full text-sm mb-6 border border-violet-100 dark:border-slate-700">
-           {language === 'tr' ? 'Neden Randapp?' : 'Why Randapp?'}
+           {language === 'tr' ? 'Neden LARİ?' : 'Why LARİ?'}
          </div>
          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 dark:text-white tracking-tight leading-[1.15]">
            {language === 'tr' ? 'Karmaşık mesajlar yerine düzenli bir panel' : 'From messy messages to organized panel'}
          </h1>
          <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 leading-relaxed max-w-3xl mx-auto">
            {language === 'tr' 
-            ? 'Randapp sıradan bir takvim ajandası değildir. Müşterilerinizin markanızı algılayışını profesyonelleştiren ve sizi gereksiz mesaj trafiğinden kurtaran bir platformdur.' 
-            : 'Randapp is not just a calendar. It elevates how clients perceive your brand and frees you from endless message traffic.'}
+            ? 'LARİ sıradan bir takvim ajandası değildir. Müşterilerinizin markanızı algılayışını profesyonelleştiren ve sizi gereksiz mesaj trafiğinden kurtaran bir platformdur.' 
+            : 'LARİ is not just a calendar. It elevates how clients perceive your brand and frees you from endless message traffic.'}
          </p>
       </div>
       
@@ -246,8 +246,8 @@ const FeaturesPage: React.FC = () => {
               </h2>
               <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
                  {language === 'tr'
-                   ? 'Randapp, randevu ve müşteri geçmişinizi anlamlandırarak işletmenize daha akıllı kararlar aldırmayı hedefler. Güvenilir ve tutarlı iş akışları oluşturur.'
-                   : 'Randapp aims to make your business smarter by analyzing booking and customer history securely.'}
+                   ? 'LARİ, randevu ve müşteri geçmişinizi anlamlandırarak işletmenize daha akıllı kararlar aldırmayı hedefler. Güvenilir ve tutarlı iş akışları oluşturur.'
+                   : 'LARİ aims to make your business smarter by analyzing booking and customer history securely.'}
               </p>
               <div className="bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/30 text-amber-800 dark:text-amber-400 text-xs md:text-sm p-4 rounded-xl text-left shadow-sm">
                  <strong>{language === 'tr' ? 'Veri Gizliliği Notu:' : 'Privacy Note:'}</strong> {language === 'tr' ? 'Özel müşteri notları ve referans fotoğrafları varsayılan olarak AI analizine gönderilmez. Açık izin, veri minimizasyonu ve güvenli sunucu tarafı işleme esas alınır.' : 'Private customer notes and reference photos are not sent to AI analysis by default. Explicit permission, data minimization, and secure server-side processing principles apply.'}
@@ -312,8 +312,8 @@ const FeaturesPage: React.FC = () => {
               </h2>
               <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
                  {language === 'tr'
-                   ? 'Randapp’ın mobil uygulama yol haritası, müşterilerin tekrar randevu almasını, kampanyaları takip etmesini ve işletmeleri keşfetmesini kolaylaştıracak ek bir büyüme kanalı olarak planlanır.'
-                   : 'Randapp’s mobile app roadmap is planned as an additional growth channel to help clients rebook, track campaigns, and discover businesses effortlessly.'}
+                   ? 'LARİ’nin mobil uygulama yol haritası, müşterilerin tekrar randevu almasını, kampanyaları takip etmesini ve işletmeleri keşfetmesini kolaylaştıracak ek bir büyüme kanalı olarak planlanır.'
+                   : 'LARİ’s mobile app roadmap is planned as an additional growth channel to help clients rebook, track campaigns, and discover businesses effortlessly.'}
               </p>
            </div>
 

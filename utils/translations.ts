@@ -14,12 +14,12 @@ export const translations = {
       home: {
         badge: 'Built for precision. Perfect for your business.',
         title: 'Your complete digital storefront and scheduling engine',
-        subtitle: 'Randapp gives appointment-based businesses a professional mini website, smart booking, a customer portal, client memory, and built-in growth tools. No coding needed.',
+        subtitle: 'LARİ gives appointment-based businesses a professional mini website, smart booking, a customer portal, client memory, and built-in growth tools. No coding needed.',
         disclaimer: 'Perfect for salons, spas, clinics, private studios, and consultants.',
         btn_preview: 'View Demo',
         btn_pricing: 'See Pricing',
         btn_trial: 'Start 7-Day Free Trial',
-        problem_title: 'Why rely on Randapp?',
+        problem_title: 'Why rely on LARİ?',
         problem_1_title: 'More Than a Calendar',
         problem_1_desc: 'It\'s not just booking. Get an optimized mini-website, interactive price list, and professional Google Maps integrated storefront out of the box.',
         problem_2_title: 'Stop Losing Time',
@@ -30,7 +30,7 @@ export const translations = {
         step_1_title: 'Setup Your Identity',
         step_1_desc: 'Define your services, pricing, and availability. We generate your business portal.',
         step_2_title: 'Share & Promote',
-        step_2_desc: 'Drop your Randapp link on Instagram, Google Maps, or WhatsApp auto-replies.',
+        step_2_desc: 'Drop your LARİ link on Instagram, Google Maps, or WhatsApp auto-replies.',
         step_3_title: 'Get Booked 24/7',
         step_3_desc: 'Clients choose a time, and our system automatically prevents double-bookings.',
         step_4_title: 'Manage & Grow',
@@ -45,7 +45,7 @@ export const translations = {
         faq_3_q: 'How does the 7-day trial work?',
         faq_3_a: 'If payment integration is enabled, your card is securely authorized to start the 7-day trial. You can cancel anytime before the trial ends without being charged.',
         faq_4_q: 'Can I use my own domain (like .com)?',
-        faq_4_a: 'You will be able to map domains in a future update. Currently, a dedicated Randapp business subdomain handles all customer traffic.',
+        faq_4_a: 'You will be able to map domains in a future update. Currently, a dedicated LARİ business subdomain handles all customer traffic.',
         faq_5_q: 'Is customer data kept private?',
         faq_5_a: 'Absolutely. We enforce strict privacy rules. Internal notes and CRM data remain visible only to you and authorized staff.',
       },
@@ -138,11 +138,11 @@ export const translations = {
         support_hours_title: 'Support Hours',
         support_hours_1: 'Monday - Friday: 09:00 - 18:00',
         support_hours_2: 'Saturday: 10:00 - 15:00',
-        wa_template: 'Hello, I would like to get information about Randapp.\n\nBusiness: {salon}\nCity: {city}\nPhone: {phone}\n\nCan we discuss the details?'
+        wa_template: 'Hello, I would like to get information about LARİ.\n\nBusiness: {salon}\nCity: {city}\nPhone: {phone}\n\nCan we discuss the details?'
       },
       trial: {
         title: 'Preview Your Custom Business Website',
-        subtitle: 'Fill out the form below to practically see your business portal on Randapp.',
+        subtitle: 'Fill out the form below to practically see your business portal on LARİ.',
         step_1_title: 'Basic Info',
         step_1_desc: 'Let\'s start with your business name and basics.',
         step_2_title: 'Details',
@@ -163,7 +163,7 @@ export const translations = {
         generating: 'Generating Your Demo...',
         generating_desc: 'Setting up AI module, configuring routing, applying color palettes...',
         wa_redirect: 'Demo workspace will be prepared and sent. You will be redirected to WhatsApp to claim this workspace.',
-        wa_template: 'Hello, I want to create a demo for my business on Randapp.\n\nBusiness: {salon}\nOwner: {owner}\nPhone: {phone}\nLocation: {city} / {district}\nServices: {services}'
+        wa_template: 'Hello, I want to create a demo for my business on LARİ.\n\nBusiness: {salon}\nOwner: {owner}\nPhone: {phone}\nLocation: {city} / {district}\nServices: {services}'
       },
       pricing: {
         title: 'Simple, Transparent Pricing',
@@ -191,12 +191,12 @@ export const translations = {
         trial_wording_plan: 'I have read and agree to the KVKK Privacy Policy, Terms of Use, and Distance Selling / Subscription Agreements. I agree that my card information will be processed via a secure payment infrastructure.',
         btn_preview: 'View Demo',
         btn_sales: 'Contact Sales',
-        sales_wa_text: 'Hello, I would like to get information about the Randapp {planName} ({period}) plan.'
+        sales_wa_text: 'Hello, I would like to get information about the LARİ {planName} ({period}) plan.'
       },
       mobile_app: {
         badge: 'Mobile App (Future Roadmap)',
-        title: 'Get Discovered with the Future Randapp App',
-        subtitle: 'Randapp isn\'t just infrastructure for your business. In the future, your customers will download the Randapp Mobile app to book appointments directly and discover your business on the map.',
+        title: 'Get Discovered with the Future LARİ App',
+        subtitle: 'LARİ isn\'t just infrastructure for your business. In the future, your customers will download the LARİ Mobile app to book appointments directly and discover your business on the map.',
         notice: 'Important: The mobile app is planned as a future customer discovery and appointment companion. It is not live yet.',
         feat_1_title: 'Location-Based Discovery',
         feat_1_desc: 'Customers can see the best local businesses, clinics, and studios around them on the map.',
@@ -206,7 +206,7 @@ export const translations = {
         feat_3_desc: 'Verified customers can rate your business, increasing your trust and visibility.',
         feat_4_title: 'Campaigns & Referrals',
         feat_4_desc: 'Users can invite friends or benefit from mobile-app-only deals.',
-        cta: 'Join the Randapp platform today and reserve your spot.',
+        cta: 'Join the LARİ platform today and reserve your spot.',
         btn: 'Get a Demo'
       },
       rotating_phrases: [
@@ -570,12 +570,12 @@ export const translations = {
       home: {
         badge: '7 gün ücretsiz demo',
         title: 'Salonunuzu internette profesyonel gösterin. Randevuları otomatik alın.',
-        subtitle: 'Randapp; kuaförler, güzellik salonları, klinikler ve randevulu işletmeler için mini web sitesi, online randevu, müşteri hafızası ve kampanya yönetimini tek panelde birleştirir.',
+        subtitle: 'LARİ; kuaförler, güzellik salonları, klinikler ve randevulu işletmeler için mini web sitesi, online randevu, müşteri hafızası ve kampanya yönetimini tek panelde birleştirir.',
         disclaimer: 'Bu demoda canlı ödeme kapalıdır. Kurulum ve kullanım tamamen gösterim amaçlıdır.',
         btn_preview: 'Demoyu Aç',
         btn_pricing: 'Paketleri Gör',
         btn_trial: 'Demoyu Aç',
-        problem_title: 'Neden Randapp\'a güvenmelisiniz?',
+        problem_title: 'Neden LARİ\'ye güvenmelisiniz?',
         problem_1_title: 'Mini Web Sitesi & Dijital Vitrin',
         problem_1_desc: 'Müşterileriniz sizi profesyonel olarak görsün. Kendinize ait kurumsal bir web sitesi ve dijital vitrin ile daha fazla müşteriye ulaşın.',
         problem_2_title: 'Müşteri Hafızası (CRM Lite)',
@@ -586,7 +586,7 @@ export const translations = {
         step_1_title: 'Kimliğinizi Oluşturun',
         step_1_desc: 'İşletme bilgilerinizi, personelinizi ve hizmet fiyatlarınızı sisteme tanımlayın.',
         step_2_title: 'Paylaşın',
-        step_2_desc: 'Randapp linkinizi Instagram, Google Haritalar profilinize ve WhatsApp mesajlarınıza ekleyin.',
+        step_2_desc: 'LARİ linkinizi Instagram, Google Haritalar profilinize ve WhatsApp mesajlarınıza ekleyin.',
         step_3_title: 'Randevuları Kabul Edin',
         step_3_desc: 'Müşteriler 7/24 kendisi rezervasyon yapsın. Yönetici panelinizden takvimi kolayca görün.',
         step_4_title: 'Müşteri Yönetimi (CRM)',
@@ -594,14 +594,14 @@ export const translations = {
         faq_title: 'Sıkça Sorulan Sorular',
         cta_bottom_title: 'İşletmeniz İçin Yeni Bir Standart',
         cta_bottom_desc: 'Nasıl görüneceğinizi saniyeler içinde ücretsiz önizleyin.',
-        faq_1_q: 'Randapp içinde neler var?',
+        faq_1_q: 'LARİ içinde neler var?',
         faq_1_a: 'İşletmeler için tasarlanmış özel mini site, akıllı randevu sistemi, müşteri öz-hizmet paneli, müşteri hafızası (CRM) ve gelişmiş kampanya araçlarını içerir.',
         faq_2_q: 'Şu an canlı ödeme aktif mi?',
         faq_2_a: 'Henüz değil. Sistem tam işlevsel bir önizleme sunar ancak gerçek ödemeler için ödeme altyapısının devreye alınması gerekmektedir.',
         faq_3_q: '7 günlük ücretsiz deneme nasıl çalışır?',
         faq_3_a: 'Ödeme entegrasyonu aktif olduğunda deneme süresi kredi kartı provizyonu ile başlatılır. 7 gün dolmadan iptal etmeniz durumunda ücret alınmaz.',
         faq_4_q: 'Kendi alan adımı (domain) kullanabilir miyim?',
-        faq_4_a: 'Gelecek güncellemelerde kendi alan adınızı kullanabileceksiniz. Şu anda tüm özellikler güvenli Randapp iş portalınız üzerinden çalışır.',
+        faq_4_a: 'Gelecek güncellemelerde kendi alan adınızı kullanabileceksiniz. Şu anda tüm özellikler güvenli LARİ iş portalınız üzerinden çalışır.',
         faq_5_q: 'Müşteri verileri gizli mi?',
         faq_5_a: 'Kesinlikle. Katı bir gizlilik kuralı uyguluyoruz. Müşteri hafızasındaki gizli notlarınız sadece işletmenize ve yetkili çalışanlarınıza gösterilir.',
       },
@@ -694,11 +694,11 @@ export const translations = {
         support_hours_title: 'Destek Saatleri',
         support_hours_1: 'Pazartesi - Cuma: 09:00 - 18:00',
         support_hours_2: 'Cumartesi: 10:00 - 15:00',
-        wa_template: 'Merhaba, Randapp hakkında bilgi almak istiyorum.\n\nİşletme: {salon}\nİl: {city}\nTelefon: {phone}\n\nDetayları görüşebilir miyiz?'
+        wa_template: 'Merhaba, LARİ hakkında bilgi almak istiyorum.\n\nİşletme: {salon}\nİl: {city}\nTelefon: {phone}\n\nDetayları görüşebilir miyiz?'
       },
       trial: {
         title: 'İşletmenizi Önizleyin',
-        subtitle: 'İşletmenizin Randapp üzerinde nasıl görüneceğini anında oluşturmak için aşağıdaki formu doldurun.',
+        subtitle: 'İşletmenizin LARİ üzerinde nasıl görüneceğini anında oluşturmak için aşağıdaki formu doldurun.',
         step_1_title: 'Temel Bilgiler',
         step_1_desc: 'İşletme adı ve temelleriniz.',
         step_2_title: 'Detaylar',
@@ -719,7 +719,7 @@ export const translations = {
         generating: 'Demo Oluşturuluyor...',
         generating_desc: 'Kurumsal profil oluşturuluyor, yönlendirmeler yapılandırılıyor...',
         wa_redirect: 'Demo çalışma alanınız hazırlanıp iletilecektir. Bu alanı sahiplenmek için WhatsApp\'a yönlendirileceksiniz.',
-        wa_template: 'Merhaba, Randapp üzerinde işletmem için demo oluşturmak istiyorum.\n\nİşletme: {salon}\nSahibi: {owner}\nTelefon: {phone}\nKonum: {city} / {district}\nHizmetler: {services}'
+        wa_template: 'Merhaba, LARİ üzerinde işletmem için demo oluşturmak istiyorum.\n\nİşletme: {salon}\nSahibi: {owner}\nTelefon: {phone}\nKonum: {city} / {district}\nHizmetler: {services}'
       },
       pricing: {
         title: 'Basit ve Şeffaf Fiyatlandırma',
@@ -747,7 +747,7 @@ export const translations = {
         trial_wording_plan: 'KVKK Aydınlatma Metni, Kullanım Şartları ve Mesafeli Satış/Abonelik koşullarını okudum ve kabul ediyorum. Kart bilgilerimin güvenli ödeme altyapısı üzerinden işlenmesine onay veriyorum.',
         btn_preview: 'Demoyu Gör',
         btn_sales: 'Satış Ekibiyle Görüş',
-        sales_wa_text: 'Merhaba, Randapp {planName} ({period}) planı hakkında bilgi almak istiyorum.'
+        sales_wa_text: 'Merhaba, LARİ {planName} ({period}) planı hakkında bilgi almak istiyorum.'
       },
       mobile_app: {
         badge: 'Mobil Uygulama',
@@ -762,7 +762,7 @@ export const translations = {
         feat_3_desc: 'Hizmet alan müşteriler size puan vererek güvenilirliğinizi artırır.',
         feat_4_title: 'Kampanya ve Referans',
         feat_4_desc: 'Müşterilerinize özel kampanya kodları ve mobil anlaşmalar.',
-        cta: 'Randapp platformuna bugün katılın ve yerinizi ayırtın.',
+        cta: 'LARİ platformuna bugün katılın ve yerinizi ayırtın.',
         btn: 'Demo Alın'
       },
       rotating_phrases: [

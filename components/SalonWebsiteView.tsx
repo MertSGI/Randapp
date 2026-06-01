@@ -107,7 +107,7 @@ const SalonWebsiteView: React.FC<SalonWebsiteViewProps> = ({
     ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${businessProfile.address} ${businessProfile.district || ''} ${businessProfile.city || ''}`)}` 
     : undefined;
 
-  const displayName = businessProfile?.public_display_name || tenant?.name || 'Randapp Studio';
+  const displayName = businessProfile?.public_display_name || tenant?.name || 'LARİ Studio';
   const categoryStr = language === 'tr' ? 'Kuaför & Güzellik' : 'Hair & Beauty';
   const heroSlogan = businessProfile?.short_description || (language === 'tr' ? 'Şehrin en iyi saç tasarım stüdyosu.' : 'The best hair design studio in town.');
 
@@ -577,7 +577,7 @@ const SalonWebsiteView: React.FC<SalonWebsiteViewProps> = ({
             <div className="pt-8 border-t border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-500">
                <div>&copy; {new Date().getFullYear()} {displayName}. {language === 'tr' ? 'Tüm hakları saklıdır.' : 'All rights reserved.'}</div>
                <div className="flex items-center gap-1.5 opacity-60 hover:opacity-100 transition-opacity">
-                  <span>{language === 'tr' ? 'Bu web sitesi' : 'This website is designed with'} <strong className="text-slate-300">Randapp</strong> {language === 'tr' ? 'altyapısıyla hazırlanmıştır.' : 'infrastructure.'}</span>
+                  <span>{language === 'tr' ? 'Bu web sitesi' : 'This website is designed with'} <strong className="text-slate-300">LARİ</strong> {language === 'tr' ? 'altyapısıyla hazırlanmıştır.' : 'infrastructure.'}</span>
                </div>
             </div>
          </div>

@@ -114,7 +114,7 @@ const DemoLandingPage: React.FC = () => {
             </span>
           </div>
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold text-slate-900 dark:text-white mb-6 leading-[1.15] max-w-4xl mx-auto">
-            {language === 'tr' ? 'Randapp’te nasıl görünecek, saniyeler içinde görün.' : 'See how it will look on Randapp in seconds.'}
+            {language === 'tr' ? 'LARİ’de nasıl görünecek, saniyeler içinde görün.' : 'See how it will look on LARİ in seconds.'}
           </h1>
           <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto mb-10 leading-relaxed px-2">
             {language === 'tr' 

@@ -22,8 +22,8 @@ const AdminLayout: React.FC = () => {
       {/* Top Navbar */}
       <header className="bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 h-16 flex items-center justify-between px-6 flex-shrink-0">
         <div className="flex items-center gap-4">
-          <span className="text-xl font-bold text-accent dark:text-blue-400">
-            Randapp
+          <span className="text-xl font-bold text-accent dark:text-blue-400 font-sans tracking-wide">
+            LARİ
           </span>
           <div className="h-6 w-px bg-gray-300 dark:bg-slate-600"></div>
           <span className="text-sm font-medium text-gray-700 dark:text-gray-300">

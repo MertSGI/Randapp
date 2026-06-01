@@ -23,7 +23,7 @@ const SuperAdminSettingsPage: React.FC = () => {
            <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Platform Adı</label>
-                <input type="text" className="w-full sm:max-w-md p-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-lg text-sm dark:text-white" defaultValue="Randapp" />
+                <input type="text" className="w-full sm:max-w-md p-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-lg text-sm dark:text-white" defaultValue="LARİ" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Varsayılan Trial Süresi (Gün)</label>

@@ -694,7 +694,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                      if (!tenant) return;
                      try {
                         await goLiveService.markReadyForReview(tenant.id);
-                        alert("Yayına Hazır olarak işaretlendi. Randapp ekibi kurulumunuzu inceledikten sonra sistemi yayına alacaktır.");
+                        alert("Yayına Hazır olarak işaretlendi. LARİ ekibi kurulumunuzu inceledikten sonra sistemi yayına alacaktır.");
                         if (typeof refreshTenant === 'function') await refreshTenant();
                         await goLiveService.getGoLiveReadiness(tenant.id).then(setReadiness);
                      } catch(err) {
@@ -709,7 +709,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
 
               {(tenant as any)?.provisioning_status === 'ready_for_review' && (
                   <div className="bg-blue-50 text-blue-800 p-4 rounded-lg text-center font-medium border border-blue-200">
-                     Kurulumunuz inceleme için gönderildi. Lütfen Randapp ekibinin onayını bekleyin.
+                     Kurulumunuz inceleme için gönderildi. Lütfen LARİ ekibinin onayını bekleyin.
                   </div>
               )}
               {(tenant as any)?.provisioning_status === 'live' && (

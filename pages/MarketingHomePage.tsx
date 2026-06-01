@@ -143,7 +143,9 @@ const MarketingHomePage: React.FC = () => {
          <div className="text-center mb-12">
             <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-4">{language === 'tr' ? 'Sadece randevu linki değil, işletme web sitesi + yönetim paneli' : 'Not just a booking link: A full website + admin panel'}</h2>
          </div>
-         <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm bg-white dark:bg-slate-800 hide-scrollbar">
+         
+         {/* Desktop Table View - Hidden on Mobile */}
+         <div className="hidden md:block overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm bg-white dark:bg-slate-800 hide-scrollbar">
             <table className="w-full text-left min-w-[600px]">
                <thead>
                   <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
@@ -204,6 +206,38 @@ const MarketingHomePage: React.FC = () => {
                   </tr>
                </tbody>
             </table>
+         </div>
+
+         {/* Mobile Cards View - Shown on Mobile only */}
+         <div className="block md:hidden space-y-4">
+            {[
+               { name: language === 'tr' ? 'Mini Web Sitesi' : 'Mini Website', social: '-', booking: '-', lari: '✓' },
+               { name: language === 'tr' ? 'Online Randevu' : 'Online Booking', social: '-', booking: '✓', lari: '✓' },
+               { name: language === 'tr' ? 'Uzman / Fark Etmez Seçimi' : 'Staff/No-Preference Selection', social: '-', booking: '✓', lari: '✓' },
+               { name: language === 'tr' ? 'AI Stil Asistanı' : 'AI Style Assistant', social: '-', booking: '-', lari: '✓' },
+               { name: language === 'tr' ? 'Müşteri Hafızası (CRM Lite)' : 'Customer Memory (CRM Lite)', social: '-', booking: language === 'tr' ? 'Kısmi' : 'Partial', lari: '✓' },
+               { name: language === 'tr' ? 'Kampanya ve Yönlendirme' : 'Campaign/Referral', social: '-', booking: '-', lari: '✓' },
+               { name: language === 'tr' ? 'Yönetici Paneli' : 'Admin Dashboard', social: '-', booking: '✓', lari: '✓' },
+               { name: language === 'tr' ? 'Mobil Keşif Kanalı' : 'Mobile Discovery Channel', social: '-', booking: '-', lari: '✓' },
+            ].map((item, idx) => (
+               <div key={idx} className="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                  <h4 className="font-bold text-slate-900 dark:text-white mb-3 text-sm">{item.name}</h4>
+                  <div className="grid grid-cols-3 gap-2 text-center text-[11px]">
+                     <div className="bg-slate-50 dark:bg-slate-900 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800">
+                        <span className="text-slate-400 dark:text-slate-500 block font-medium mb-1">{language === 'tr' ? 'Sosyal' : 'Social'}</span>
+                        <span className="font-bold text-slate-500 dark:text-slate-400">{item.social}</span>
+                     </div>
+                     <div className="bg-slate-50 dark:bg-slate-900 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800">
+                        <span className="text-slate-400 dark:text-slate-500 block font-medium mb-1">{language === 'tr' ? 'Randevu L.' : 'Booking'}</span>
+                        <span className="font-bold text-slate-500 dark:text-slate-400">{item.booking}</span>
+                     </div>
+                     <div className="bg-blue-50/50 dark:bg-blue-900/20 p-2.5 rounded-lg border border-blue-100 dark:border-blue-800/40">
+                        <span className="text-blue-600 dark:text-blue-400 block font-bold mb-1">LARİ</span>
+                        <span className="font-extrabold text-green-600 dark:text-green-400 text-xs">{item.lari}</span>
+                     </div>
+                  </div>
+               </div>
+            ))}
          </div>
       </section>
 
