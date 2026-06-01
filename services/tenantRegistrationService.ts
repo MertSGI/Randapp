@@ -20,6 +20,7 @@ export interface RegistrationData {
   planId: string;
   billingPeriod: 'monthly' | 'annual';
   acceptTerms: boolean;
+  referralCode?: string;
 }
 
 export const tenantRegistrationService = {
@@ -31,6 +32,11 @@ export const tenantRegistrationService = {
       // 2. Initialize a local tenant profile (or via Supabase if active)
       // Since we don't have full database setup guaranteed, store metadata securely in data provider
       await dataProvider.set(`randapp:${tenantId}:is_seeded`, 'false');
+      
+      if (data.referralCode) {
+        const { referralProgramService } = await import('./referralProgramService');
+        referralProgramService.markReferralRegistered(data.referralCode, tenantId, data.ownerEmail);
+      }
       
       // 3. Save basic business form details for setup phase
       const businessDetails = {

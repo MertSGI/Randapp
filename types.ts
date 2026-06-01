@@ -267,40 +267,75 @@ export interface Plan {
   isRecommended: boolean;
 }
 
-export interface ReferralCampaign {
+export interface PlatformReferralProgram {
   id: string;
-  tenantId: string | 'global';
-  campaignType: 'customer_referral' | 'business_referral';
-  title: string;
-  description: string;
-  rewardType: 'discount' | 'credit' | 'free_month' | 'custom';
-  rewardValue: string;
-  active: boolean;
+  name: string;
+  isActive: boolean;
+  rewardPerQualifiedReferralMonths: number;
+  milestoneRewardThreshold: number;
+  milestoneRewardMonths: number;
+  qualificationRule: 'card_verified_trial_started' | 'subscription_activated';
+  appliesToPlanIds: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PlatformReferral {
+  id: string;
+  referrerTenantId: string;
+  referredTenantId?: string;
+  referredOwnerEmail: string;
+  referralCode: string;
+  status: 'invited' | 'registered' | 'trial_started' | 'qualified' | 'rewarded' | 'rejected' | 'expired';
+  qualificationEvent?: string;
+  qualifiedAt?: string;
+  rewardedAt?: string;
+  rewardMonths?: number;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ReferralRewardLedger {
+  id: string;
+  tenantId: string;
+  referralId?: string;
+  rewardType: 'free_months' | 'manual_credit';
+  monthsGranted: number;
+  status: 'pending' | 'applied' | 'cancelled';
+  appliedAt?: string;
+  subscriptionExtensionUntil?: string;
+  createdAt: string;
+}
+
+export interface BusinessCustomerCampaign {
+  id: string;
+  tenantId: string;
+  name: string;
+  type: 'refer_friend' | 'discount' | 'loyalty';
+  isActive: boolean;
+  rewardDescription: string;
+  customerReward: string;
+  referredCustomerReward: string;
   startDate?: string;
   endDate?: string;
   maxUses?: number;
-  createdBy: 'super_admin' | 'salon_owner';
-}
-
-export interface ReferralCode {
-  id: string;
-  code: string;
-  campaignId: string;
-  referrerType: 'customer' | 'tenant';
-  referrerId: string;
-  usageCount: number;
-  status: 'active' | 'inactive';
-}
-
-export interface ReferralLead {
-  id: string;
-  campaignId: string;
-  referralCode: string;
-  leadName: string;
-  leadPhone?: string;
-  leadEmail?: string;
-  status: 'pending' | 'converted' | 'rejected';
+  terms?: string;
   createdAt: string;
+  updatedAt: string;
+}
+
+export interface BusinessCustomerReferral {
+  id: string;
+  tenantId: string;
+  campaignId: string;
+  referrerCustomerId: string;
+  referredCustomerName: string;
+  referredCustomerPhone?: string;
+  status: 'pending' | 'booked' | 'completed' | 'rewarded' | 'rejected';
+  appointmentId?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export const SERVICES: Service[] = [

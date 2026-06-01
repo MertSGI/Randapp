@@ -17,6 +17,7 @@ export default function RegistrationPage() {
   const queryParams = new URLSearchParams(location.search);
   const selectedPlanId = queryParams.get('planId') || 'professional';
   const billingPeriod = queryParams.get('billingPeriod') || 'monthly';
+  const referralCode = queryParams.get('ref') || undefined;
   
   const plan = planService.getPlan(selectedPlanId);
   const [loading, setLoading] = useState(false);
@@ -38,6 +39,7 @@ export default function RegistrationPage() {
     planId: selectedPlanId,
     billingPeriod: billingPeriod as 'monthly' | 'annual',
     acceptTerms: false,
+    referralCode: referralCode,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {

@@ -20,25 +20,45 @@ const BillingTab: React.FC = () => {
   const [checkoutMessage, setCheckoutMessage] = useState<string | null>(null);
   
   const [previewPlan, setPreviewPlan] = useState<PricingPlan | null>(null);
+  const [platformLedgers, setPlatformLedgers] = useState<any[]>([]);
 
   useEffect(() => {
     // Check for callback parameters from payment provider
     const urlParams = new URLSearchParams(window.location.hash.split('?')[1] || '');
     if (urlParams.get('checkout') === 'cancelled') {
-        setCheckoutError(translations[language || 'tr']?.billing?.checkout_cancelled_msg || 'Güvenli ödeme işlemi iptal edildi.');
+        const trLang = translations[language || 'tr']?.billing;
+        setCheckoutError(trLang?.checkout_cancelled_msg || 'Güvenli ödeme işlemi iptal edildi.');
         window.history.replaceState(null, '', window.location.pathname + window.location.search + '#/admin?tab=abonelik');
     }
     if (urlParams.get('checkout') === 'success') {
-        setCheckoutMessage(translations[language || 'tr']?.billing?.checkout_success_msg || 'Ödeme başarıyla tamamlandı. Aboneliğiniz güncellendi.');
+        const trLang = translations[language || 'tr']?.billing;
+        setCheckoutMessage(trLang?.checkout_success_msg || 'Ödeme başarıyla tamamlandı. Aboneliğiniz güncellendi.');
         window.history.replaceState(null, '', window.location.pathname + window.location.search + '#/admin?tab=abonelik');
+        
+        // Handle referral mapping on checkout success
+        if (tenant?.id) {
+          import('../services/referralProgramService').then(({ referralProgramService }) => {
+            referralProgramService.markReferralTrialStarted(tenant.id);
+          });
+        }
     }
     if (urlParams.get('checkout_simulate') === 'true') {
         setCheckoutMessage('QA Dry Run: Ödeme başarıyla simüle edildi. (Iyzico bağlantısı yapılmadı)');
         window.history.replaceState(null, '', window.location.pathname + window.location.search + '#/admin?tab=abonelik');
+        
+        // Handle referral mapping on checkout success
+        if (tenant?.id) {
+          import('../services/referralProgramService').then(({ referralProgramService }) => {
+            referralProgramService.markReferralTrialStarted(tenant.id);
+          });
+        }
     }
     
     if (tenant) {
       loadBillingData();
+      import('../services/referralProgramService').then(({ referralProgramService }) => {
+        setPlatformLedgers(referralProgramService.listReferralRewards(tenant.id));
+      });
     }
   }, [tenant]);
 
@@ -174,6 +194,24 @@ const BillingTab: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
+            {platformLedgers.length > 0 && (
+               <div className="mb-6 bg-indigo-50 border border-indigo-200 p-4 rounded-xl">
+                  <div className="flex items-center gap-3 mb-2">
+                     <span className="bg-indigo-600 text-white p-1.5 rounded-lg">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+                        </svg>
+                     </span>
+                     <h3 className="font-bold text-indigo-900">{language === 'tr' ? 'Referans Ödülleri' : 'Referral Rewards'}</h3>
+                  </div>
+                  <p className="text-sm text-indigo-800">
+                     {language === 'tr' 
+                        ? `Toplam ${platformLedgers.reduce((acc, curr) => acc + curr.monthsGranted, 0)} ay ücretsiz kullanım tanımlandı. Sonraki faturanızdan düşülecektir.` 
+                        : `Total of ${platformLedgers.reduce((acc, curr) => acc + curr.monthsGranted, 0)} free months granted. Will be applied to next cycle.`}
+                  </p>
+               </div>
+            )}
+
             <div className="mb-4">
               <p className="text-sm text-gray-500 dark:text-gray-400">{t.billing.active_plan}</p>
               <p className="text-lg font-bold text-gray-900 dark:text-white">{currentPlan?.name || t.billing.plan_free_trial}</p>

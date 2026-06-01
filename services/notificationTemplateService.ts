@@ -132,6 +132,17 @@ class NotificationTemplateService {
         providerRequired: true
       },
       {
+        id: 'platform_referral_reward_earned',
+        channel: 'email',
+        audience: 'business_owner',
+        title: 'Referans Ödülü Kazanıldı',
+        subject: 'Tebrikler! Ücretsiz Kullanım Ayı Kazandınız 🎉',
+        body: 'Merhaba {business_name}, önermiş olduğunuz işletme aboneliğini başlattığı için LARİ platform referans programı kapsamında 1 ay ücretsiz kullanım kazandınız! Ödülünüz, ilk uygun faturanızda indirim olarak yansıtılacaktır.',
+        variables: ['business_name'],
+        enabled: true,
+        providerRequired: true
+      },
+      {
         id: 'support_followup',
         channel: 'email',
         audience: 'customer',

@@ -28,6 +28,12 @@ This document describes the mapping of application entities into Supabase tables
 - **Business Verification (business_verification_reviews)**: Logs of Super Admin manual review gate for publish approval.
 - **Audit Logs (audit_logs)**: Detailed tracking of tenant state changes and risk-related events.
 
+## Referral & Growth
+- **Referral Campaigns (referral_campaigns)**: B2C Custom reward models published by salons for their end users.
+- **Platform Referral Settings (platform_referral_programs)**: B2B system configurations dictating global free-month reward thresholds.
+- **Platform Referrals (platform_referrals)**: The relationship linking referring tenant IDs to the referred, holding current qualification lifecycle state.
+- **Referral Reward Ledger (referral_reward_ledgers)**: Auditable trails of free months granted off active subscriptions, consumed and pending.
+
 ## Notification & Communication Layer
 
 - **Notification Templates (notification_templates)**: Scaffolding dictating text/email/WhatsApp notifications.
