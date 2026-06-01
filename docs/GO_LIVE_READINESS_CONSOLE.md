@@ -19,9 +19,15 @@ The dashboard specifically verifies:
 LARİ plans (`Starter`, `Professional`, `Premium`) need corresponding references mapped to the Iyzico Sandbox environment to successfully negotiate checkout sessions through edge functions. The console asserts whether these mappings are defined in the environment.
 
 ## What it DOES NOT do
+- **It does not collect or store credentials in the browser.** There are no input fields. Real keys and secrets must be set through Supabase secrets / backend deployment process only. The Super Admin Console only visualizes readiness status and setup instructions.
 - **It does not expose real API keys.** It only checks for variable presence or shows placeholders.
 - **It does not fix the issues automatically.** You must still use the `supabase secrets set` command line tools to deploy values.
 - **It does not perform real test purchases.** Human verification using test cards is still necessary.
+
+## Güvenlik Prensipleri
+- **Canlı ve Sandbox Değerleri:** Gerçek iyzico anahtarları yalnızca Supabase Edge Function secret ortamında (`supabase secrets set` ile) kullanılmalıdır.
+- **Sıfır İletim:** Bu ekran yalnızca kurulum durumunu ve eksikleri gösterir; gizli anahtar değerlerini almaz, saklamaz veya internete iletmez.
+- **Supabase secrets üzerinden tanımlanmalı:** Güvenlik gereği her ortam değişkeni doğrudan veritabanı / container katmanından beslenir.
 
 ## Internal Routing
 The console is located at `/super-admin/go-live` and is strictly isolated from customer routes.

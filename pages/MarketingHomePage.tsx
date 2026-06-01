@@ -51,9 +51,9 @@ const MarketingHomePage: React.FC = () => {
                 : "Digitize Your Business with LARİ"}
             </div>
 
-            <div className="flex justify-center lg:justify-start items-center gap-2 mb-5 md:mb-6 text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-slate-700 dark:text-slate-300">
+            <div className="flex justify-center lg:justify-start items-center flex-wrap gap-x-1.5 gap-y-1 mb-5 md:mb-6 text-lg sm:text-xl md:text-2xl lg:text-[1.65rem] font-extrabold tracking-tight text-slate-800 dark:text-slate-200">
               {language === "en" && <span>For</span>}
-              <div className="relative overflow-hidden h-[1.4em] w-[220px] sm:w-[280px] md:w-[340px] shrink-0">
+              <div className="relative inline-flex overflow-hidden h-[1.4em] w-[180px] sm:w-[240px] md:w-[280px] lg:w-[320px] shrink-0 justify-center lg:justify-start">
                   <span
                     key={currentPhrase}
                     className="absolute inset-0 animate-slideUpFade text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-violet-600 dark:from-blue-400 dark:to-violet-400 flex items-center justify-center lg:justify-start whitespace-nowrap"
@@ -114,17 +114,17 @@ const MarketingHomePage: React.FC = () => {
               </Link>
             </div>
             
-            <div className="mt-6 flex flex-wrap items-center justify-center lg:justify-start gap-y-2 gap-x-4 text-[13px] md:text-sm font-semibold text-slate-500 dark:text-slate-400">
-              <span className="opacity-75">{language === "tr" ? "Önce keşfetmek ister misiniz?" : "Want to explore first?"}</span>
-              <div className="flex items-center gap-3">
-                <Link to="/pricing" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors flex items-center gap-0.5 group">
+            <div className="mt-5 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-2 sm:gap-3 text-[13px] md:text-sm text-slate-500 dark:text-slate-400">
+              <span className="font-medium opacity-85">{language === "tr" ? "Önce keşfetmek ister misiniz?" : "Want to explore first?"}</span>
+              <div className="flex items-center gap-2">
+                <Link to="/pricing" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold transition-colors flex items-center gap-0.5 group">
                   <span>{language === "tr" ? "Paketleri karşılaştır" : "Compare plans"}</span>
-                  <span className="transform group-hover:translate-x-0.5 transition-transform">→</span>
+                  <span className="transform group-hover:translate-x-0.5 transition-transform font-bold">→</span>
                 </Link>
-                <span className="text-slate-300 dark:text-slate-700">|</span>
-                <Link to="/demo" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors flex items-center gap-0.5 group">
+                <span className="text-slate-300 dark:text-slate-700 font-light">•</span>
+                <Link to="/demo" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold transition-colors flex items-center gap-0.5 group">
                   <span>{language === "tr" ? "İşletmeni önizle" : "Preview your business"}</span>
-                  <span className="transform group-hover:translate-x-0.5 transition-transform">→</span>
+                  <span className="transform group-hover:translate-x-0.5 transition-transform font-bold">→</span>
                 </Link>
               </div>
             </div>

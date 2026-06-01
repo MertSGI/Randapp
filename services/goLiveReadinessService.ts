@@ -1,6 +1,6 @@
 export interface ReadinessCheck {
   id: string;
-  category: 'functions' | 'secrets' | 'plans' | 'urls' | 'checklist' | 'overall';
+  category: 'functions' | 'secrets' | 'plans' | 'urls' | 'checklist' | 'overall' | 'pilot_readiness';
   title: string;
   status: 'passed' | 'warning' | 'failed' | 'idle';
   value?: string;
@@ -102,6 +102,19 @@ class GoLiveReadinessService {
           { id: 'chk_verify_super', category: 'checklist', title: 'Verify Super Admin sees payment', status: 'idle' },
           { id: 'chk_frontend_card', category: 'checklist', title: 'Verify 0 raw card forms in LARİ UI', status: 'passed' },
           { id: 'chk_frontend_secrets', category: 'checklist', title: 'Verify 0 production secrets exposed', status: 'passed' },
+        ]
+      },
+      pilot_readiness: {
+        title: 'Pilot Müşteri Hazırlığı (Müşteri Kabul Adımları)',
+        description: 'Pilot lansmanı ve müşteri onboarding öncesi operasyonel hazırlık listesi (Internal)',
+        checks: [
+          { id: 'pil_demo', category: 'pilot_readiness', title: 'Pilot Demo / Örnek İşletme Alanı', status: 'passed', hint: '/pilot - Zengin içerikli, veri izole tamamlanmış örnek işletme', value: 'Hazır (Ready)' },
+          { id: 'pil_preview', category: 'pilot_readiness', title: 'Kendi İşletmeni Önizle Alanı', status: 'passed', hint: '/demo - Kişiselleştirilmiş işletme önizleme simülatörü', value: 'Hazır (Ready)' },
+          { id: 'pil_register', category: 'pilot_readiness', title: 'Kayıt Akışı (Self-Service)', status: 'passed', hint: '/register - Gerçek üye kayıt shell oluşturma altyapısı', value: 'Hazır (Ready)' },
+          { id: 'pil_billing', category: 'pilot_readiness', title: '14 Günlük Kredi Kartlı Deneme Kontrolü', status: 'passed', hint: 'Kayıt esnasında güvenli iyzico doğrulaması zorunlu kılınmıştır', value: 'Uyumlu' },
+          { id: 'pil_gate', category: 'pilot_readiness', title: 'Yayın Onay ve Yayınlama Kilidi (Publish Gate)', status: 'passed', hint: 'Onaylanmamış salonların web sitesi ziyaretçilerine kapalı kalır', value: 'Aktif' },
+          { id: 'pil_notifications', category: 'pilot_readiness', title: 'Sistem Bildirim Şablonları / Altyapı', status: 'warning', hint: 'SMTP ve WhatsApp altyapı integrasyonu bekliyor', value: 'Kurulum Lazım (Needs Setup)' },
+          { id: 'pil_support', category: 'pilot_readiness', title: 'Destek & Onboarding Çağrı Hazırlığı', status: 'idle', hint: 'Müşteri kurulum desteği, WhatsApp destek hattı ve KVKK belgeleri', value: 'Kontrol Gerek (Manual)' }
         ]
       }
     };

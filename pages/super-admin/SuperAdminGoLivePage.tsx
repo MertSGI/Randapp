@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { goLiveReadinessService, ReadinessReport, ReadinessCheck } from '../../services/goLiveReadinessService';
 import { paymentRunModeService, RunModeStatus, PaymentRunMode } from '../../services/paymentRunModeService';
+import { customerPilotReadinessService } from '../../services/customerPilotReadinessService';
 
 const StatusBadge = ({ status }: { status: string }) => {
   switch (status) {
@@ -45,6 +46,24 @@ const SuperAdminGoLivePage: React.FC = () => {
         <div className="text-right">
           <div className="text-sm font-bold text-slate-300">Last Checked</div>
           <div className="text-xs text-slate-500">{new Date(report.lastChecked).toLocaleString()}</div>
+        </div>
+      </div>
+
+      <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900 rounded-xl p-5 flex items-start gap-3">
+        <svg className="w-5 h-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <div className="text-sm text-blue-800 dark:text-blue-300 space-y-1">
+          <p className="font-bold">Güvenlik ve Konfigürasyon Bilgilendirmesi</p>
+          <p>
+            Gizli anahtarlar ve API şifreleri (Iyzico ve Supabase servis anahtarları) <strong>veri güvenliği nedeniyle hiçbir şekilde bu panelden veya arayüz üzerinden girilemez, saklanamaz veya güncellenemez.</strong>
+          </p>
+          <p>
+            Tüm gizli değişkenler doğrudan <strong>Supabase secrets (CLI) üzerinden tanımlanmalı</strong> ve saklanmalıdır. Bu panel yalnızca mevcut kurulum durumunu ve eksiklikleri gösterir.
+          </p>
+          <p className="text-xs font-mono opacity-80 mt-1">
+            Örn: supabase secrets set IYZICO_API_KEY="your-key"
+          </p>
         </div>
       </div>
 
@@ -133,7 +152,7 @@ const SuperAdminGoLivePage: React.FC = () => {
              </div>
              <ul className="divide-y divide-slate-100 dark:divide-slate-700/50 p-2">
                 {category.checks.map(check => (
-                   <li key={check.id} className="p-3 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-750 rounded-lg transition-colors">
+                   <li key={check.id} className="p-3 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-755 rounded-lg transition-colors">
                       <div className="flex-1 min-w-0 pr-4">
                          <div className="font-medium text-sm text-slate-800 dark:text-slate-200 truncate">{check.title}</div>
                          {check.hint && (
@@ -153,6 +172,68 @@ const SuperAdminGoLivePage: React.FC = () => {
              </ul>
            </div>
         ))}
+      </div>
+
+      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 space-y-6">
+        <div>
+          <h2 className="text-lg font-bold text-gray-900 dark:text-white">Pilot Bildirim Şablonları & Sözleşmeleri (Scaffolding)</h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            Gelecekte entegre edilecek olan SMTP ve WhatsApp servisleri için tasarlanmış şablon listesi (Merchants/Customers)
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200">Kayıtlı Bildirim Şablonları ({customerPilotReadinessService.getNotificationTemplates().length})</h3>
+            <div className="space-y-3 max-h-[350px] overflow-y-auto pr-2">
+              {customerPilotReadinessService.getNotificationTemplates().map(tpl => (
+                <div key={tpl.id} className="p-3 bg-slate-50 dark:bg-slate-900/40 rounded-lg border border-slate-100 dark:border-slate-800 text-xs">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="font-bold text-slate-700 dark:text-slate-300">{tpl.name}</span>
+                    <span className="px-1.5 py-0.5 rounded text-[10px] bg-indigo-100 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-300 font-mono">
+                      {tpl.recipient === 'merchant' ? 'Salon Sahibine' : 'Müşteriye'}
+                    </span>
+                  </div>
+                  <div className="text-slate-650 dark:text-slate-400 font-medium mb-1"><span className="opacity-75">Konu:</span> {tpl.subject_tr}</div>
+                  <div className="text-slate-500 dark:text-slate-400 italic bg-white dark:bg-slate-900 p-2 rounded border border-slate-150 dark:border-slate-850 font-mono whitespace-pre-wrap">{tpl.body_tr}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <div className="space-y-3">
+              <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200">Operasyonel Destek & Sorumlular</h3>
+              <div className="space-y-2">
+                {customerPilotReadinessService.getOperationalContacts().map((contact, idx) => (
+                  <div key={idx} className="p-3 bg-indigo-50/50 dark:bg-indigo-950/10 rounded-lg border border-indigo-100 dark:border-indigo-900/30 text-xs">
+                    <div className="font-bold text-slate-800 dark:text-slate-200 mb-1">{contact.role}</div>
+                    <div className="text-slate-600 dark:text-slate-400"><strong>Adı:</strong> {contact.name}</div>
+                    <div className="text-slate-600 dark:text-slate-400"><strong>Mail:</strong> {contact.email}</div>
+                    <div className="text-slate-600 dark:text-slate-400"><strong>Destek Telefon/WP:</strong> {contact.whatsapp}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200">Entegrasyon Sağlayıcıları</h3>
+              <div className="space-y-2">
+                {customerPilotReadinessService.getProviders().map((provider, idx) => (
+                  <div key={idx} className="p-3 bg-slate-50 dark:bg-slate-900/40 rounded-lg border border-slate-100 dark:border-slate-800 text-xs flex justify-between items-start gap-4">
+                    <div>
+                      <div className="font-semibold text-slate-700 dark:text-slate-300">{provider.name}</div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{provider.hint}</div>
+                    </div>
+                    <span className="px-1.5 py-0.5 rounded text-[10px] bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-400 font-bold uppercase whitespace-nowrap">
+                      {provider.status}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
