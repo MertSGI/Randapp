@@ -42,6 +42,10 @@ A script (`scripts/verify-product-flow.mjs`) actively tests the core product wor
 **7. Admin Continuity**
 - Ensures that when a new tenant registers, `TenantService` resolves the hostname fallback logic strictly to the newly generated `lari_active_tenant_id` to provide immediate "preview" consistency.
 
+**8. External Sharing & Attribution (`qa:share-toolkit`)**
+- Validates the existence of contextual text macros for major platforms (WhatsApp, Google, Meta).
+- Ensures `BookingPage` properly reads inbound `?source=` parameters and attaches tracking to resulting appointments.
+
 ## Execution
 Run `npx --yes node scripts/verify-product-flow.mjs`.
 Run `npx --yes node scripts/verify-publish-gate.mjs`.

@@ -71,6 +71,14 @@ export const adminFeatureAvailabilityService = {
          isBlocked: false
       };
     }
+    if (report.isPublished) {
+      return {
+         message: 'Randevu bağlantınızı paylaşın.',
+         ctaText: 'Paylaşım Araçlarını Aç',
+         targetTab: 'settings',
+         isBlocked: false
+      };
+    }
     if (report.canSubmitForReview && !report.isPendingReview) {
       return {
          message: 'Tüm zorunlu adımlar tamamlandı. Yayın incelemesine gönderebilirsiniz!',

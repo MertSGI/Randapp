@@ -56,6 +56,12 @@ The core objective was to finalize feature entitlement enforcement and ensure th
 *   **Admin Sharing UI:** Shipped `PublicLinkSection` presenting owners with 1-click URL copies and QR shortcuts to safely bridge their physical and digital booking footprint.
 *   **Custom Domain Gating:** Established UI/UX boundary logic for Premium/Kurumsal custom domain onboarding requests without over-engineering DNS automation before necessary.
 
+### 1.8 Customer Acquisition & Share Toolkit
+*   **Share Templates:** Created `shareToolkitService.ts` to expose highly converting text macros for WhatsApp, Instagram Bios, Instagram Stories, and Google Business profiles.
+*   **Attribution & Tracking:** Interlocked `source={platform}` into public URLs enabling basic funnel recording in the updated `SalonReportsTab`.
+*   **Admin UI Overhaul:** Swapped the basic link visualizer with `ShareToolkitSection.tsx` inside `AdminSettingsTab` rendering QR code previews, branch-dropdown link switchers, and marketing checklists.
+*   **Publish Gate Restraint:** Ensured next-action notifications correctly await the `isPublished = true` flag before prompting owners to disseminate links on social media.
+
 ## 2. Security & Data Integrity Readiness
 
 *   **Trial Isolation:** The 14-day rule logic stands firm. No features activate beyond registration without passing through the mock paywall/subscription logic.

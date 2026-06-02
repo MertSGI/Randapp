@@ -30,7 +30,13 @@ export const reportingService = {
     const serviceRevenueMap: Record<string, number> = {};
     const serviceCountMap: Record<string, number> = {};
 
+    const sourceCountMap: Record<string, number> = {};
+
     filteredAppointments.forEach(apt => {
+      if (apt.source) {
+         sourceCountMap[apt.source] = (sourceCountMap[apt.source] || 0) + 1;
+      }
+      
       if (apt.status === 'cancelled') return;
       
       const service = services.find(s => s.id === apt.serviceId);
@@ -65,7 +71,8 @@ export const reportingService = {
       estimatedRevenue,
       averageAppointmentValue,
       mostBookedService,
-      topRevenueService
+      topRevenueService,
+      sourceBreakdown: sourceCountMap
     };
   }
 };

@@ -253,6 +253,7 @@ export interface Appointment {
   createdAt: string;
   syncedToGoogle: boolean;
   phone?: string;
+  source?: string;
 }
 
 export interface TimeSlot {

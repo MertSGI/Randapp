@@ -66,6 +66,7 @@ const BookingPage: React.FC = () => {
   const timeSlots = generateTimeSlots();
   
   const requestedPreview = new URLSearchParams(window.location.hash.split('?')[1]).get('preview') === 'true';
+  const urlSource = new URLSearchParams(window.location.hash.split('?')[1]).get('source') || undefined;
   const isAuthorizedPreview = requestedPreview && canPreviewTenantSite(currentUser, tenant?.id);
 
   useEffect(() => {
@@ -281,6 +282,7 @@ const BookingPage: React.FC = () => {
       serviceId: selectedService.id,
       staffId: selectedStaff.id,
       branchId: currentBranchId,
+      source: urlSource,
       date: selectedDate,
       time: selectedTime,
       status: 'confirmed' as const,

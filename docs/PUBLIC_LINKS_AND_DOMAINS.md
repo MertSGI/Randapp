@@ -24,8 +24,9 @@ Examples: `admin, login, register, pricing, demo, pilot, book, api, super-admin,
 ## 3. Branch Mapping
 Since Enterprise (Kurumsal) businesses carry multiple active branches, the system maps out an "All Branches" root URL (which triggers `Step 0.5 Branch Selection` in the Booking Page) and optionally presents localized links that silently pre-load `selectedBranch` to skip this step for users sent from the localized Instagram or Google Profile of that specific branch.
 
-## 4. QR Configuration
+## 4. QR Configuration & Share Toolkit
 Instead of bloating the frontend build with heavy QR libraries at this stage, LARİ uses standard reliable integration mapping `api.qrserver.com` passing the fully URI string.
+This is heavily operationalized via the `shareToolkitService`, which adds attribution parameters (e.g. `source=qr`, `source=whatsapp`) and wraps links in highly converting share text to ensure maximum bookings. See `SHARE_TOOLKIT.md` for detail.
 
 ## 5. Custom Domain Readiness
 A visual placeholder and service status check evaluates custom domain entitlements:

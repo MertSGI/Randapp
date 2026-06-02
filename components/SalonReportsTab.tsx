@@ -169,6 +169,41 @@ const SalonReportsTab: React.FC<SalonReportsTabProps> = ({ appointments, service
           </div>
         </div>
       </div>
+
+      {/* SOURCE BREAKDOWN BLOCK */}
+      <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm mt-6">
+        <h3 className="text-lg font-bold mb-4 text-indigo-700 dark:text-indigo-400">
+          Randevu Kaynakları (Müşteri Kazanım)
+        </h3>
+        {Object.keys(metrics.sourceBreakdown || {}).length > 0 ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+            {Object.entries(metrics.sourceBreakdown).map(([source, count]) => {
+                const sourceMap: any = {
+                  whatsapp: 'WhatsApp',
+                  instagram: 'Instagram Bio',
+                  instagram_story: 'Instagram Story',
+                  google_business: 'Google Business',
+                  launch: 'İlk Duyuru',
+                  qr: 'QR Kod',
+                  reminder: 'Hatırlatıcı Mesaj'
+                };
+                return (
+                  <div key={source} className="bg-gray-50 dark:bg-slate-900 p-4 rounded-lg border border-gray-100 dark:border-slate-700 text-center">
+                    <div className="text-xs font-semibold text-gray-500 uppercase truncate" title={sourceMap[source] || source}>{sourceMap[source] || source}</div>
+                    <div className="mt-2 text-2xl font-bold text-gray-900 dark:text-white">{count as number}</div>
+                  </div>
+                );
+            })}
+          </div>
+        ) : (
+          <div className="text-center py-8 bg-gray-50 dark:bg-slate-900/50 rounded-lg border border-dashed border-gray-200 dark:border-slate-700">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Henüz tanımlı paylaşım kaynaklarından randevu alınmadı.<br/>
+              Paylaşım araçları üzerinden linklerinizi daha fazla kişiye ulaştırarak rezervasyon sayınızı artırın!
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
