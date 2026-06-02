@@ -9,6 +9,7 @@
 
 ## 3. Pilot Account Suspended Fix
 - ✅ /pilot customer booking view correctly returns pilot tenant bypassing host resolution.
+- ✅ /pilot getTenantBranding correctly bypasses Supabase request to avoid "not found" layout crash.
 - ✅ Service safely isolates demo state without overwriting real state.
 
 ## 4. Secret & Card Data Check

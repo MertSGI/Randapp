@@ -72,7 +72,7 @@ export const tenantService = {
     // In all modes, if we are specifically previewing pilot demo, return it.
     // This allows /pilot -> /#/tenant_pilot_demo flow to work even in production/supabase mode without breaking the publish gate.
     const activeTenantId = localStorage.getItem('lari_active_tenant_id');
-    const isPilotDemoRoute = window.location.hash.includes('#/tenant_pilot_demo');
+    const isPilotDemoRoute = window.location.hash.includes('#/tenant_pilot_demo') || window.location.pathname.includes('/tenant_pilot_demo');
     
     if (isPilotDemoRoute || activeTenantId === 'tenant_pilot_demo') {
         return {
@@ -114,6 +114,11 @@ export const tenantService = {
   },
 
   async getTenantBranding(tenantId: string): Promise<TenantBranding | null> {
+    if (tenantId === 'tenant_pilot_demo') {
+      const key = `randapp:${tenantId}:branding`;
+      return dataProvider.get<TenantBranding>(key);
+    }
+    
     const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
     if (mode === 'supabase') {
       const { data: branding, error } = await supabase

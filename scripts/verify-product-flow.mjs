@@ -73,12 +73,13 @@ async function run() {
       { path: '/#/pricing', expected: ['Pro', 'Plan'] },
       { path: '/#/register?planId=professional', expected: ['Hesap Bilgileri', 'Account'] },
       { path: '/#/book', expected: ['Randevu', 'Service', 'Yükleniyor', 'Loading'] },
-      { path: '/#/super-admin/go-live', expected: ['Sandbox', 'Hazırlığı'] }
+      { path: '/#/super-admin/go-live', expected: ['Sandbox', 'Hazırlığı'] },
+      { path: '/#/tenant_pilot_demo', expected: ['Lumina'] }
     ];
 
     let oldBrandFound = [];
     let forbiddenWordsFound = [];
-    const forbiddenList = ['mock', 'demo payment', 'payment disabled', 'sandbox', 'roadmap', 'not configured', 'coming soon', 'yakında'];
+    const forbiddenList = ['mock', 'demo payment', 'payment disabled', 'sandbox', 'roadmap', 'not configured', 'coming soon', 'yakında', 'salon bulunamadı', 'hesap askıda', 'business inactive'];
 
     for (const r of testRoutes) {
       try {

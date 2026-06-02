@@ -2,26 +2,24 @@
 # Product Flow QA Report
 
 ## Run Metadata
-- Timestamp: 2026-06-02T05:14:09.913Z
+- Timestamp: 2026-06-02T05:37:06.640Z
 - Viewports: Mobile(390), Desktop(1440)
 - Roles: guest, admin, superadmin
-- Status: **PASS**
+- Status: **FAIL**
 
 ## Route Matrix
-- [ ] `/#/` - Missing typical terms
-- [ ] `/#/features` - Missing typical terms
-- [ ] `/#/pricing` - Missing typical terms
-- [ ] `/#/register?planId=professional` - Missing typical terms
-- [ ] `/#/book` - Missing typical terms
+- [x] `/#/` - Found expected text
+- [x] `/#/features` - Found expected text
+- [x] `/#/pricing` - Found expected text
+- [x] `/#/register?planId=professional` - Found expected text
+- [x] `/#/book` - Found expected text
 - [ ] `/#/super-admin/go-live` - Missing typical terms
+- [ ] `/#/tenant_pilot_demo` - Missing typical terms
 
 ## Flow Matrix
-- **Registration → checkout handoff**: FAIL
-  - Evidence: page.fill: Timeout 30000ms exceeded.
-Call log:
-  - waiting for locator('input[name="ownerName"]')
-
-  - Risk: High failure
+- **Registration → tenant shell created → checkout handoff**: PASS
+  - Evidence: Checkout handoff invoked. Current URL: http://localhost:4040/#/login
+  - Risk: None
 - **admin setup -> site preview consistency**: PASS
   - Evidence: TenantService resolves mock registration to active_tenant
   - Risk: Relies on local browser storage temporarily
@@ -35,5 +33,5 @@ Call log:
 - [x] No raw card inputs 
 - [x] No secrets exposed \n  []
 - [x] No old brand in UI \n  []
-- [x] No forbidden wording in UI \n  []
+- [ ] No forbidden wording in UI \n  ["/#/book: hesap askıda"]
     

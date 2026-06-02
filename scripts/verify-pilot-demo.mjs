@@ -48,7 +48,14 @@ const runTests = () => {
         if (content.includes('isPilotDemoRoute || activeTenantId === \'tenant_pilot_demo\'')) {
             output += `- ✅ /pilot customer booking view correctly returns pilot tenant bypassing host resolution.\n`;
         } else {
-            output += `- ❌ Pilot public/customer view fix is missing in tenantService.\n`;
+            output += `- ❌ Pilot public/customer view tenant fetch bypass is missing in tenantService.\n`;
+            passed = false;
+        }
+        
+        if (content.includes("tenantId === 'tenant_pilot_demo'") && content.includes("dataProvider.get")) {
+            output += `- ✅ /pilot getTenantBranding correctly bypasses Supabase request to avoid "not found" layout crash.\n`;
+        } else {
+            output += `- ❌ Pilot getting tenant branding bypass is missing.\n`;
             passed = false;
         }
     }

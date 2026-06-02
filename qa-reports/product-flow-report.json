@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "timestamp": "2026-06-02T05:14:09.913Z",
+    "timestamp": "2026-06-02T05:37:06.640Z",
     "baseUrl": "http://localhost:4040",
     "viewports": "Mobile(390), Desktop(1440)",
     "roles": [
@@ -8,46 +8,51 @@
       "admin",
       "superadmin"
     ],
-    "status": "pass"
+    "status": "fail"
   },
   "routeMatrix": [
     {
       "path": "/#/",
-      "pass": false,
-      "note": "Missing typical terms"
+      "pass": true,
+      "note": "Found expected text"
     },
     {
       "path": "/#/features",
-      "pass": false,
-      "note": "Missing typical terms"
+      "pass": true,
+      "note": "Found expected text"
     },
     {
       "path": "/#/pricing",
-      "pass": false,
-      "note": "Missing typical terms"
+      "pass": true,
+      "note": "Found expected text"
     },
     {
       "path": "/#/register?planId=professional",
-      "pass": false,
-      "note": "Missing typical terms"
+      "pass": true,
+      "note": "Found expected text"
     },
     {
       "path": "/#/book",
+      "pass": true,
+      "note": "Found expected text"
+    },
+    {
+      "path": "/#/super-admin/go-live",
       "pass": false,
       "note": "Missing typical terms"
     },
     {
-      "path": "/#/super-admin/go-live",
+      "path": "/#/tenant_pilot_demo",
       "pass": false,
       "note": "Missing typical terms"
     }
   ],
   "flowMatrix": [
     {
-      "flow": "Registration → checkout handoff",
-      "pass": false,
-      "evidence": "page.fill: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('input[name=\"ownerName\"]')\n",
-      "risk": "High failure"
+      "flow": "Registration → tenant shell created → checkout handoff",
+      "pass": true,
+      "evidence": "Checkout handoff invoked. Current URL: http://localhost:4040/#/login",
+      "risk": "None"
     },
     {
       "flow": "admin setup -> site preview consistency",
@@ -80,8 +85,8 @@
     },
     {
       "test": "No forbidden wording in UI",
-      "pass": true,
-      "notes": "[]"
+      "pass": false,
+      "notes": "[\"/#/book: hesap askıda\"]"
     }
   ]
 }
