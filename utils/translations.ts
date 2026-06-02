@@ -277,7 +277,7 @@ export const translations = {
         privacy_link: 'Privacy & Data Processing Notice'
       },
       step5_title: 'Booking Confirmed!',
-      step5_subtitle: "We've synced this to our calendar.",
+      step5_subtitle: "Your appointment is booked. The business may contact you if needed.",
       step5_whatsapp_sent_to: 'Automated WhatsApp sent to:',
       step5_whatsapp_share: 'Share via WhatsApp',
       step5_ai_title: 'Appointment Notification Prepared',
@@ -839,7 +839,7 @@ export const translations = {
         privacy_link: 'Aydınlatma Metni'
       },
       step5_title: 'Randevu Onaylandı!',
-      step5_subtitle: "Bu randevuyu takvimimize işledik.",
+      step5_subtitle: "Randevunuz oluşturuldu. İşletme sizinle gerektiğinde iletişime geçebilir.",
       step5_whatsapp_sent_to: 'WhatsApp / SMS bilgi mesajı şu numaraya gönderildi:',
       step5_whatsapp_share: 'WhatsApp ile Paylaş',
       step5_ai_title: 'Randevu Bilgilendirmesi Hazırlanmıştır',

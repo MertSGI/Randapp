@@ -15,10 +15,11 @@ interface SalonWebsiteViewProps {
   language: string;
   isBookingOpen?: boolean;
   bookingComponent?: React.ReactNode;
+  isAiEnabled?: boolean;
 }
 
 const SalonWebsiteView: React.FC<SalonWebsiteViewProps> = ({
-  tenant, businessProfile, staffList, servicesList, onStartBooking, onServiceSelect, onStaffSelect, language, isBookingOpen, bookingComponent
+  tenant, businessProfile, staffList, servicesList, onStartBooking, onServiceSelect, onStaffSelect, language, isBookingOpen, bookingComponent, isAiEnabled = false
 }) => {
   const [currentCoverIndex, setCurrentCoverIndex] = useState(0);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
@@ -133,9 +134,11 @@ const SalonWebsiteView: React.FC<SalonWebsiteViewProps> = ({
              <button onClick={() => { document.getElementById('staff')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-accent transition-colors">{language === 'tr' ? 'Uzmanlar' : 'Staff'}</button>
              <button onClick={() => { document.getElementById('gallery')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-accent transition-colors">{language === 'tr' ? 'Galeri' : 'Gallery'}</button>
              <button onClick={() => { document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-accent transition-colors">{language === 'tr' ? 'Konum' : 'Location'}</button>
-             <button onClick={() => setIsAIOpen(true)} className="text-violet-600 dark:text-violet-400 hover:text-violet-800 transition-colors flex items-center gap-1 font-bold">
-                <span className="text-lg">🪄</span> {language === 'tr' ? 'AI Stil Asistanı' : 'AI Style'}
-             </button>
+             {isAiEnabled && (
+               <button onClick={() => setIsAIOpen(true)} className="text-violet-600 dark:text-violet-400 hover:text-violet-800 transition-colors flex items-center gap-1 font-bold">
+                  <span className="text-lg">🪄</span> {language === 'tr' ? 'AI Stil Asistanı' : 'AI Style'}
+               </button>
+             )}
          </div>
 
          {/* Header CTAs */}

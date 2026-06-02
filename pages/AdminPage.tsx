@@ -776,7 +776,8 @@ const AdminPage: React.FC = () => {
                     {staff.phone && <div className="text-xs bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 px-3 py-1 rounded-full truncate w-full transition-colors duration-300">{staff.phone}</div>}
                 </div>
               </div>
-            )})}
+            );
+            })}
             </div>
           )}
         </div>

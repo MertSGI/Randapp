@@ -31,6 +31,12 @@ The core objective was to finalize feature entitlement enforcement and ensure th
 *   **Dashboard Next Actions:** Introduced a "Smart Setup Banner" in `AdminPage.tsx` that determines the user's setup step (via the onboarding report) and blocks access to certain tabs until onboarding/payment verification is completed.
 *   **Empty States & Mobile UX:** Enhanced empty states with direct CTAs (e.g. "Site Önizlemesini Aç" in Appointments) and polished mobile menus ensuring proper naming conventions across all resolutions.
 
+### 1.4 Public Booking Flow Finalization
+*   **Customer UX Optimization:** Streamlined the 5-step booking flow (`BookingPage.tsx`) utilizing compact, mobile-friendly selection cards for Services and Staff (including "Fark Etmez / İlk Müsait" auto-routing).
+*   **Availability Polish:** Removed placeholder slots and correctly utilized `availabilityService` for staff-specific slots, enhancing empty states when no slots are available.
+*   **Confirmation Clarity:** Suppressed technical AI processing logs in the user-facing booking confirmation (Step 5), and replaced them with a clean, localized "Appointment Details" summary card containing Business Name, Staff, Date, and Customer Info.
+*   **AI Feature Gating:** Successfully gated the "AI Style Assistant" (`SalonWebsiteView.tsx`) behind an `isAiEnabled` prop, preventing unentitled (e.g. free plan) users from exposing this feature on their public sites, while still permitting it freely on the Pilot Demo.
+
 ## 2. Security & Data Integrity Readiness
 
 *   **Trial Isolation:** The 14-day rule logic stands firm. No features activate beyond registration without passing through the mock paywall/subscription logic.

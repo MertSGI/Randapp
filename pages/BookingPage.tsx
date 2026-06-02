@@ -57,6 +57,7 @@ const BookingPage: React.FC = () => {
   const [saveProfile, setSaveProfile] = useState(false);
   const [hasSavedProfile, setHasSavedProfile] = useState(false);
   const [isAnyStaffPreselected, setIsAnyStaffPreselected] = useState(false);
+  const [isAiEnabled, setIsAiEnabled] = useState(false);
 
   const timeSlots = generateTimeSlots();
   
@@ -84,6 +85,14 @@ const BookingPage: React.FC = () => {
            }
         });
       });
+
+      if (tenant.id === 'biz_pilot_tenant') {
+         setIsAiEnabled(true);
+      } else {
+         subscriptionService.getPlanForTenant(tenant.id).then(plan => {
+            setIsAiEnabled(plan && plan.id !== 'free');
+         });
+      }
 
       const saved = customerService.getSavedCustomerProfile(tenant.id);
       if (saved) {
@@ -368,6 +377,7 @@ const BookingPage: React.FC = () => {
           onStaffSelect={handleWebsiteStaffSelect}
           language={language}
           isBookingOpen={step > 0}
+          isAiEnabled={isAiEnabled}
           bookingComponent={
             step > 0 ? (
               <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-xl shadow-blue-900/5 border border-gray-100 dark:border-slate-700/50 p-6 md:p-8 lg:p-10 mx-auto w-full mb-12">
@@ -783,6 +793,33 @@ const BookingPage: React.FC = () => {
               </div>
             )}
 
+            <div className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl max-w-sm mx-auto mb-8 overflow-hidden shadow-sm text-left">
+              <div className="bg-gray-50 dark:bg-slate-800/80 px-4 py-3 border-b border-gray-200 dark:border-slate-700">
+                 <h4 className="font-bold text-gray-900 dark:text-white uppercase tracking-wide text-xs">{language === 'tr' ? 'Randevu Detayları' : 'Appointment Details'}</h4>
+              </div>
+              <div className="p-4 space-y-4">
+                 <div>
+                    <div className="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 font-medium mb-1">{language === 'tr' ? 'İşletme' : 'Business'}</div>
+                    <div className="font-medium text-gray-900 dark:text-white">{branding?.businessName || tenant?.name}</div>
+                 </div>
+                 <div className="h-px border-b border-dashed border-gray-200 dark:border-slate-700"></div>
+                 <div>
+                    <div className="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 font-medium mb-1">{language === 'tr' ? 'Hizmet' : 'Service'}</div>
+                    <div className="font-medium text-gray-900 dark:text-white">{language === 'tr' ? selectedService?.name_tr : selectedService?.name}</div>
+                 </div>
+                 <div className="h-px border-b border-dashed border-gray-200 dark:border-slate-700"></div>
+                 <div>
+                    <div className="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 font-medium mb-1">{language === 'tr' ? 'Tarih & Saat' : 'Date & Time'}</div>
+                    <div className="font-medium text-gray-900 dark:text-white">{selectedDate} <span className="text-accent font-bold">•</span> {selectedTime}</div>
+                 </div>
+                 <div className="h-px border-b border-dashed border-gray-200 dark:border-slate-700"></div>
+                 <div>
+                    <div className="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 font-medium mb-1">{language === 'tr' ? 'Müşteri Bilgisi' : 'Customer Info'}</div>
+                    <div className="font-medium text-gray-900 dark:text-white">{formData.name} <span className="opacity-70 font-normal ml-1">({formData.phone})</span></div>
+                 </div>
+              </div>
+            </div>
+
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
               {/* Calendar Link Button */}
               {calendarLink && (
@@ -812,6 +849,7 @@ const BookingPage: React.FC = () => {
               </a>
             </div>
 
+            {/* 
             {confirmation && (
               <div className="text-left bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-slate-700 rounded-lg p-6 mb-8 shadow-sm transition-colors duration-300">
                 <h4 className="text-xs uppercase tracking-wide text-gray-400 dark:text-gray-500 font-semibold mb-3 flex items-center gap-2">
@@ -825,6 +863,7 @@ const BookingPage: React.FC = () => {
                 </div>
               </div>
             )}
+            */}
 
             <div className="bg-blue-50 dark:bg-slate-800 border border-blue-100 dark:border-slate-700 rounded-xl p-5 mb-8 text-sm text-gray-700 dark:text-gray-300">
               <p className="mb-3">{t.customer_portal?.portal_prompt}</p>
