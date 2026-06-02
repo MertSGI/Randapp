@@ -137,14 +137,24 @@ const DemoLandingPage: React.FC = () => {
   };
 
   const handleContinue = () => {
-    // In production, this would pass data to checkout/trial
-    navigate('/pricing');
+    navigate('/register');
   };
 
   return (
-    <div className="bg-slate-50 dark:bg-slate-900 min-h-screen pt-24 pb-28 sm:pb-16 transition-colors duration-300">
+    <div className="bg-slate-50 dark:bg-slate-900 min-h-screen pt-12 sm:pt-24 pb-28 sm:pb-16 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
+        {/* Navigation / Back */}
+        <div className="mb-8">
+            <button 
+                onClick={() => navigate('/pilot')}
+                className="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
+            >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                {language === 'tr' ? 'Örnek Demolara Dön' : 'Back to Demos'}
+            </button>
+        </div>
+
         {/* Hero Section */}
         <div className="text-center mb-12 md:mb-16">
           <div className="mb-4 min-h-[3.5rem] sm:min-h-[1.3em] relative inline-flex w-full justify-center align-bottom px-2 flex-col">

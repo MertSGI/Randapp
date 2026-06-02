@@ -14,15 +14,14 @@ This guide provides a structured presentation script for demonstrating the LARİ
 - Let them see the mobile preview (Product Showcase) running silently.
 
 ## Step 2: Customer Booking Experience
-- **Click "Örnek İşletmeyi Gör"** (which navigates to `/pilot`).
-- **Click "Rezervasyon Sayfasını Aç"** (opens the public booking view for `Lumina Güzellik & Kuaför`).
+- **Click "Müşteri deneyimini incele"** (which opens the public booking view for `Lumina Güzellik & Kuaför`).
 - Walk them through the customer perspective:
   - "This is what your clients see: your brand colors, your logo, your services."
   - Book a service (e.g. "Saç Kesimi" or "Manikür").
   - Emphasize the AI Style Assistant: "Your customers can optionally consult with an AI assistant for recommendations before booking."
 
 ## Step 3: Salon Owner Admin View
-- **Go back to `/pilot` and click "Admin Paneline Git"**.
+- **Go back to `/pilot` and click "İşletme panelini incele"**.
 - This safely opens a read-only preview at `/pilot/admin` without requiring login or exposing real sessions.
 - Show the Dashboard: 
   - Point to the day's appointments: "The booking we just made appears right here automatically."

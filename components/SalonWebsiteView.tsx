@@ -231,7 +231,7 @@ const SalonWebsiteView: React.FC<SalonWebsiteViewProps> = ({
             </div>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-lg mx-auto pointer-events-auto">
-               <button onClick={onStartBooking} className="w-full sm:w-auto px-8 py-4 bg-accent text-white rounded-2xl font-bold text-lg shadow-xl shadow-blue-900/50 hover:-translate-y-1 hover:bg-blue-600 hover:shadow-2xl transition-all border border-blue-400/30">
+               <button onClick={onStartBooking} className="hidden sm:block w-full sm:w-auto px-8 py-4 bg-accent text-white rounded-2xl font-bold text-lg shadow-xl shadow-blue-900/50 hover:-translate-y-1 hover:bg-blue-600 hover:shadow-2xl transition-all border border-blue-400/30">
                   {language === 'tr' ? 'Randevu Al' : 'Book Your Appointment'}
                </button>
                {isAiEnabled && (
