@@ -1,4 +1,4 @@
-import { Tenant as GlobalTenant, SalonBusinessProfile, Service, Staff, Appointment, TimeSlot } from '../../types';
+import { Tenant as GlobalTenant, SalonBusinessProfile, Service, Staff, Appointment, TimeSlot, BusinessCustomerCampaign, BusinessCustomerReferral, CustomerCampaignReward } from '../../types';
 
 export interface Tenant extends GlobalTenant {
   official_business_name?: string;
@@ -85,3 +85,14 @@ export interface SuperAdminRepository {
   rejectTenant(tenantId: string, reason: string): Promise<void>;
   suspendTenant(tenantId: string): Promise<void>;
 }
+
+export interface CampaignRepository {
+  listCampaigns(tenantId: string): Promise<BusinessCustomerCampaign[]>;
+  saveCampaign(tenantId: string, campaign: BusinessCustomerCampaign): Promise<BusinessCustomerCampaign>;
+  deleteCampaign(campaignId: string): Promise<boolean>;
+  listCustomerReferrals(tenantId: string): Promise<BusinessCustomerReferral[]>;
+  saveCustomerReferral(tenantId: string, referral: BusinessCustomerReferral): Promise<BusinessCustomerReferral>;
+  listCustomerRewards(tenantId: string): Promise<CustomerCampaignReward[]>;
+  saveCustomerReward(tenantId: string, reward: CustomerCampaignReward): Promise<CustomerCampaignReward>;
+}
+

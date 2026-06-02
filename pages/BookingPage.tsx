@@ -44,7 +44,7 @@ const BookingPage: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [selectedTime, setSelectedTime] = useState<string>('');
   const [bookedSlots, setBookedSlots] = useState<string[]>([]);
-  const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', referrerName: '', campaignCode: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confirmation, setConfirmation] = useState<{ subject: string; body: string } | null>(null);
   const [calendarLink, setCalendarLink] = useState<string>('');
@@ -92,7 +92,9 @@ const BookingPage: React.FC = () => {
         setFormData({
            name: saved.fullName || '',
            email: saved.email || '',
-           phone: saved.phone || ''
+           phone: saved.phone || '',
+           referrerName: '',
+           campaignCode: ''
         });
       }
     }
@@ -239,6 +241,25 @@ const BookingPage: React.FC = () => {
     };
 
     const newAppointment = await createAppointment(tenant.id, newAppointmentPayload);
+
+    if (formData.referrerName && tenant) {
+      try {
+        const { customerCampaignService } = await import('../services/customerCampaignService');
+        const camps = await customerCampaignService.listCampaigns(tenant.id);
+        const activeCamp = camps.find(c => c.isActive) || { id: 'default' };
+        
+        await customerCampaignService.createCustomerReferral(tenant.id, {
+          campaignId: formData.campaignCode || activeCamp.id,
+          referrerCustomerId: 'referred_by_' + formData.referrerName,
+          referredCustomerName: formData.name,
+          referredCustomerPhone: formData.phone,
+          status: 'booked',
+          appointmentId: newAppointment.id,
+        });
+      } catch (err) {
+        console.warn("Failed to register customer referral during booking:", err);
+      }
+    }
 
     let aiResponse = { subject: 'Confirmation', body: 'Your appointment is booked.' };
     try {
@@ -562,7 +583,7 @@ const BookingPage: React.FC = () => {
                              customerService.clearSavedCustomerProfile(tenant.id);
                              setHasSavedProfile(false);
                              setSaveProfile(false);
-                             setFormData({name: '', email: '', phone: ''});
+                             setFormData({name: '', email: '', phone: '', referrerName: '', campaignCode: ''});
                           }
                        }}
                        className="text-xs font-semibold bg-white dark:bg-slate-800 text-red-600 dark:text-red-400 px-3 py-1.5 rounded-md border border-red-200 dark:border-red-900 hover:bg-red-50 dark:hover:bg-red-900 transition-colors"
@@ -608,6 +629,37 @@ const BookingPage: React.FC = () => {
                   value={formData.phone}
                   onChange={(e) => setFormData({...formData, phone: e.target.value})}
                 />
+              </div>
+
+              <div className="border-t border-gray-200 dark:border-slate-700 pt-4 mt-2">
+                <label className="block text-sm font-semibold text-indigo-950 dark:text-indigo-400 mb-1">
+                  {language === 'tr' ? 'Sizi Yönlendiren Biri Var mı? (Opsiyonel)' : 'Who Referred You? (Optional)'}
+                </label>
+                <p className="text-xs text-gray-500 mb-2">
+                  {language === 'tr' ? 'Varsa arkadaşınızın ismini girerek kampanya ödüllerinden yararlanabilirsiniz.' : 'Enter your friend\'s name to benefit from active referrals.'}
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs uppercase tracking-wider text-gray-500 font-medium mb-1">{language === 'tr' ? 'Öneren Arkadaşınız' : 'Friend\'s Name'}</label>
+                    <input
+                      type="text"
+                      className="block w-full rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white shadow-sm focus:border-accent focus:ring-accent text-xs p-2.5 border"
+                      placeholder={language === 'tr' ? 'Arkadaşınızın Adı Soyadı' : 'Friend\'s full name'}
+                      value={formData.referrerName}
+                      onChange={(e) => setFormData({...formData, referrerName: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs uppercase tracking-wider text-gray-500 font-medium mb-1">{language === 'tr' ? 'Kampanya / Referans Kodu' : 'Campaign/Referral Code'}</label>
+                    <input
+                      type="text"
+                      className="block w-full rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white shadow-sm focus:border-accent focus:ring-accent text-xs p-2.5 border"
+                      placeholder="e.g. REF-CODE"
+                      value={formData.campaignCode}
+                      onChange={(e) => setFormData({...formData, campaignCode: e.target.value})}
+                    />
+                  </div>
+                </div>
               </div>
 
               {!hasSavedProfile && (

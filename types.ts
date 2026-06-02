@@ -338,6 +338,27 @@ export interface BusinessCustomerReferral {
   updatedAt: string;
 }
 
+export interface CustomerCampaignReward {
+  id: string;
+  tenantId: string;
+  campaignId: string;
+  customerReferralId?: string;
+  customerId: string;
+  appointmentId?: string;
+  rewardOwnerType: 'referrer_customer' | 'referred_customer';
+  rewardDescription: string;
+  rewardValueType: 'percent_discount' | 'fixed_discount' | 'free_service' | 'manual_reward';
+  rewardValue?: number;
+  status: 'available' | 'reserved' | 'used' | 'cancelled' | 'expired';
+  availableAt: string;
+  expiresAt?: string;
+  usedAt?: string;
+  usedAppointmentId?: string;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export const SERVICES: Service[] = [
   { 
     id: 'srv_1', 

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Appointment, Service, Staff } from '../types';
 import { reportingService } from '../services/reportingService';
 import { useTenant } from '../contexts/TenantContext';
@@ -15,6 +15,17 @@ const SalonReportsTab: React.FC<SalonReportsTabProps> = ({ appointments, service
   const [dateRange, setDateRange] = useState<'this_month' | 'last_month' | 'last_30_days'>('this_month');
   const { tenant } = useTenant();
   const { language } = useLanguage();
+  const [campaignStats, setCampaignStats] = useState<{
+    totalConversions: number;
+    rewardsGenerated: number;
+    rewardsClaimed: number;
+    topCampaign: string;
+  }>({
+    totalConversions: 0,
+    rewardsGenerated: 0,
+    rewardsClaimed: 0,
+    topCampaign: '-',
+  });
 
   const planId = tenant?.planId || 'baslangic';
   const hasAccess = entitlementService.canUseFeature(planId, 'reports_basic') || entitlementService.canUseFeature(planId, 'reports_advanced');
@@ -22,6 +33,43 @@ const SalonReportsTab: React.FC<SalonReportsTabProps> = ({ appointments, service
   const metrics = useMemo(() => {
     return reportingService.getReportMetrics(appointments, services, dateRange);
   }, [appointments, services, dateRange]);
+
+  useEffect(() => {
+    if (tenant) {
+      import('../services/customerCampaignService').then(({ customerCampaignService }) => {
+        customerCampaignService.listCustomerReferrals(tenant.id).then(allRefs => {
+          const completedCount = allRefs.filter(r => r.status === 'completed' || r.status === 'rewarded').length;
+          
+          customerCampaignService.listCustomerRewards(tenant.id).then(allRewards => {
+            const generated = allRewards.length;
+            const claimed = allRewards.filter(rw => rw.status === 'used').length;
+            
+            const counts: Record<string, number> = {};
+            let maxCount = 0;
+            let bestCampaignId = '-';
+            allRefs.forEach(r => {
+              counts[r.campaignId] = (counts[r.campaignId] || 0) + 1;
+              if (counts[r.campaignId] > maxCount) {
+                maxCount = counts[r.campaignId];
+                bestCampaignId = r.campaignId;
+              }
+            });
+
+            const topCampaignName = bestCampaignId === 'default' 
+              ? (language === 'tr' ? 'Arkadaşını Getir v1' : 'Refer a Friend v1') 
+              : bestCampaignId === '-' ? '-' : bestCampaignId;
+
+            setCampaignStats({
+              totalConversions: completedCount,
+              rewardsGenerated: generated,
+              rewardsClaimed: claimed,
+              topCampaign: topCampaignName
+            });
+          }).catch(err => console.warn(err));
+        }).catch(err => console.warn(err));
+      }).catch(err => console.warn(err));
+    }
+  }, [tenant, language]);
 
   if (!hasAccess) {
     return (
@@ -91,6 +139,33 @@ const SalonReportsTab: React.FC<SalonReportsTabProps> = ({ appointments, service
           <h3 className="text-lg font-bold mb-4 text-gray-900 dark:text-white">En Yüksek Ciro Getiren Hizmet</h3>
           <div className="text-xl font-medium text-green-600">
             {metrics.topRevenueService || 'Yeterli veri yok'}
+          </div>
+        </div>
+      </div>
+
+      {/* CAMPAIGN PERFORMANCE BLOCK */}
+      <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm">
+        <h3 className="text-lg font-bold mb-4 text-purple-700 dark:text-purple-400 flex items-center gap-2">
+          <span>{language === 'tr' ? 'Müşteri Davet Kampanyası Performansı' : 'Customer Referral Campaign Performance'}</span>
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="bg-purple-50/40 dark:bg-purple-950/10 p-4 rounded-lg border border-purple-100/40 dark:border-purple-800/20 text-center">
+            <div className="text-xs font-semibold text-gray-500 uppercase">{language === 'tr' ? 'Toplam Dönüşüm' : 'Total Referral Conversions'}</div>
+            <div className="mt-2 text-2xl font-bold text-purple-700 dark:text-purple-400">{campaignStats.totalConversions}</div>
+          </div>
+          <div className="bg-purple-50/40 dark:bg-purple-950/10 p-4 rounded-lg border border-purple-100/40 dark:border-purple-800/20 text-center">
+            <div className="text-xs font-semibold text-gray-500 uppercase">{language === 'tr' ? 'Üretilen Ödüller' : 'Rewards Generated'}</div>
+            <div className="mt-2 text-2xl font-bold text-gray-900 dark:text-white">{campaignStats.rewardsGenerated}</div>
+          </div>
+          <div className="bg-purple-50/40 dark:bg-purple-950/10 p-4 rounded-lg border border-purple-100/40 dark:border-purple-800/20 text-center">
+            <div className="text-xs font-semibold text-gray-500 uppercase">{language === 'tr' ? 'Kullanılan Ödüller' : 'Rewards Claimed'}</div>
+            <div className="mt-2 text-2xl font-bold text-green-600">{campaignStats.rewardsClaimed}</div>
+          </div>
+          <div className="bg-purple-50/40 dark:bg-purple-950/10 p-4 rounded-lg border border-purple-100/40 dark:border-purple-800/20 text-center">
+            <div className="text-xs font-semibold text-gray-500 uppercase">{language === 'tr' ? 'En Popüler Kampanya' : 'Top Campaign'}</div>
+            <div className="mt-2 text-sm font-semibold truncate text-gray-900 dark:text-white" title={campaignStats.topCampaign}>
+              {campaignStats.topCampaign}
+            </div>
           </div>
         </div>
       </div>

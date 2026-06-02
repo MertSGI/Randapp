@@ -70,3 +70,62 @@ export const sendAutomatedWhatsApp = async (
   });
 };
 
+
+/**
+ * NON-SENDING GUEST REFERRAL NOTIFICATIONS
+ * Mock notification hooks for when a customer makes a referral, the friend books, and rewards are granted.
+ */
+export const notifyReferralBooked = async (referrerName: string, refereeName: string, campaignName: string): Promise<void> => {
+  console.group("🔔 [Notification Event] Müşteri Referans Kaydı Oluştu");
+  console.log(`Öneren: ${referrerName}`);
+  console.log(`Davet Edilen Arkadaş: ${refereeName}`);
+  console.log(`Kampanya: ${campaignName}`);
+  console.log(`Durum: Randevu Alındı (Bekliyor)`);
+  console.log(`Eylem: Randevu tamamlandığında her iki tarafa ödül tanımlanacaktır.`);
+  console.groupEnd();
+};
+
+export const notifyReferralCompleted = async (referrerName: string, refereeName: string, rewardDesc: string): Promise<void> => {
+  console.group("🔔 [Notification Event] Müşteri Referansı Tamamlandı!");
+  console.log(`Öneren: ${referrerName}`);
+  console.log(`Davet Edilen Arkadaş: ${refereeName}`);
+  console.log(`Ödül Hak Edişi: ${rewardDesc}`);
+  console.log(`Eylem: İşletme sahibine hak edilen ödül bildirimi ve SMS taslağı hazırlandı.`);
+  console.groupEnd();
+};
+
+export const notifyReferralRewarded = async (referrerName: string, rewardDesc: string): Promise<void> => {
+  console.group("🔔 [Notification Event] Referans Ödülü Teslim Edildi");
+  console.log(`Müşteri: ${referrerName}`);
+  console.log(`Teslim Edilen Ödül: ${rewardDesc}`);
+  console.log(`SMS Taslağı: "Sayın ${referrerName}, davet ettiğiniz arkadaşınız randevusunu tamamladı! Kazandığınız '${rewardDesc}' hesabınıza tanımlandı."`);
+  console.groupEnd();
+};
+
+export const notifyCustomerRewardAvailable = async (customerId: string, rewardDesc: string): Promise<void> => {
+  console.group("🔔 [Notification Event] Müşteri Kampanya Ödülü Tanımlandı");
+  console.log(`Müşteri: ${customerId}`);
+  console.log(`Kazanılan Ödül: ${rewardDesc}`);
+  console.log(`Durum: Kullanıma Hazır (Available)`);
+  console.log(`Eylem: Randevu sırasında hak edilen indirim uygulanabilir.`);
+  console.groupEnd();
+};
+
+export const notifyCustomerRewardUsed = async (customerId: string, rewardDesc: string): Promise<void> => {
+  console.group("🔔 [Notification Event] Müşteri Kampanya Ödülü Kullanıldı");
+  console.log(`Müşteri: ${customerId}`);
+  console.log(`Kullanılan Ödül: ${rewardDesc}`);
+  console.log(`Durum: Kullanıldı (Used)`);
+  console.log(`Eylem: Ödül başarıyla işlem tescili aldı.`);
+  console.groupEnd();
+};
+
+export const notifyCustomerRewardExpiring = async (customerId: string, rewardDesc: string): Promise<void> => {
+  console.group("🔔 [Notification Event] Müşteri Kampanya Ödülü Süresi Doluyor");
+  console.log(`Müşteri: ${customerId}`);
+  console.log(`Yaklaşan Kayıp: ${rewardDesc}`);
+  console.log(`Durum: Süresi Yakın (Expiring)`);
+  console.log(`Eylem: Müşteriye son kullanma tarihi hatırlatma SMS taslağı tetiklendi.`);
+  console.groupEnd();
+};
+

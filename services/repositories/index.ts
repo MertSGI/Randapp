@@ -1,29 +1,33 @@
 import { dataSourceConfig } from '../dataSourceConfig';
 
 // Repository Types
-import { BusinessProfileRepository, CatalogRepository, BookingRepository } from './types';
+import { BusinessProfileRepository, CatalogRepository, BookingRepository, CampaignRepository } from './types';
 
 // Local Implementations
 import { LocalBusinessProfileRepository } from './localBusinessProfileRepository';
 import { LocalCatalogRepository } from './localCatalogRepository';
 import { LocalBookingRepository } from './localBookingRepository';
+import { LocalCampaignRepository } from './localCampaignRepository';
 
 // Supabase Implementations
 import { SupabaseBusinessProfileRepository } from './supabaseBusinessProfileRepository';
 import { SupabaseCatalogRepository } from './supabaseCatalogRepository';
 import { SupabaseBookingRepository } from './supabaseBookingRepository';
+import { SupabaseCampaignRepository } from './supabaseCampaignRepository';
 
 // Singleton instances for local providers to maintain state easily if needed
 const localProviders = {
   businessProfile: new LocalBusinessProfileRepository(),
   catalog: new LocalCatalogRepository(),
   booking: new LocalBookingRepository(),
+  campaign: new LocalCampaignRepository(),
 };
 
 const rawSupabaseProviders = {
   businessProfile: new SupabaseBusinessProfileRepository(),
   catalog: new SupabaseCatalogRepository(),
   booking: new SupabaseBookingRepository(),
+  campaign: new SupabaseCampaignRepository(),
 };
 
 // Pilot demo bypass helper proxy
@@ -66,6 +70,7 @@ const supabaseProviders = {
   businessProfile: createPilotBypassProxy(rawSupabaseProviders.businessProfile, localProviders.businessProfile),
   catalog: createPilotBypassProxy(rawSupabaseProviders.catalog, localProviders.catalog),
   booking: createPilotBypassProxy(rawSupabaseProviders.booking, localProviders.booking),
+  campaign: createPilotBypassProxy(rawSupabaseProviders.campaign, localProviders.campaign),
 };
 
 /**
@@ -97,3 +102,14 @@ export const getBookingRepository = (): BookingRepository => {
   }
   return localProviders.booking;
 };
+
+/**
+ * Returns the currently active CampaignRepository based on the environment data source mode.
+ */
+export const getCampaignRepository = (): CampaignRepository => {
+  if (dataSourceConfig.mode === 'supabase') {
+    return supabaseProviders.campaign;
+  }
+  return localProviders.campaign;
+};
+

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { CustomerProfile, Appointment, Staff, Service, CustomerMemoryNote, CustomerMemoryPhoto } from '../types';
+import { CustomerProfile, Appointment, Staff, Service, CustomerMemoryNote, CustomerMemoryPhoto, CustomerCampaignReward } from '../types';
 import { adminCustomerService } from '../services/adminCustomerService';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTenant } from '../contexts/TenantContext';
@@ -20,6 +20,11 @@ const CustomerMemoryTab: React.FC<CustomerMemoryTabProps> = ({ appointments, sta
   const { confirm: showConfirm, alert: showAlert } = useDialog();
   const [customers, setCustomers] = useState<CustomerProfile[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useState<CustomerProfile | null>(null);
+  const [customerRewards, setCustomerRewards] = useState<CustomerCampaignReward[]>([]);
+  const [referralActivity, setReferralActivity] = useState<{
+    invitedOthers: any[];
+    wasInvitedBy: any | null;
+  }>({ invitedOthers: [], wasInvitedBy: null });
 
   // Note form
   const [newNote, setNewNote] = useState('');
@@ -56,6 +61,30 @@ const CustomerMemoryTab: React.FC<CustomerMemoryTabProps> = ({ appointments, sta
     };
     loadCustomers();
   }, [tenant, appointments, targetAppointmentId, onClearTarget, hasAccess]);
+
+  useEffect(() => {
+    if (tenant && selectedCustomer) {
+      import('../services/customerCampaignService').then(({ customerCampaignService }) => {
+        customerCampaignService.listCustomerReferrals(tenant.id).then(allRefs => {
+          const invitedOthers = allRefs.filter(r => r.referrerCustomerId === selectedCustomer.id || r.referrerCustomerId === 'referred_by_' + selectedCustomer.fullName);
+          const wasInvitedBy = allRefs.find(r => r.referredCustomerName === selectedCustomer.fullName || (selectedCustomer.phone && r.referredCustomerPhone === selectedCustomer.phone)) || null;
+          setReferralActivity({ invitedOthers, wasInvitedBy });
+        }).catch(err => {
+          console.warn("Could not retrieve customer referral activity for memory card:", err);
+        });
+
+        // Load active customer rewards from reward ledger
+        customerCampaignService.listCustomerRewardsByCustomer(tenant.id, selectedCustomer.id).then(rewList => {
+          setCustomerRewards(rewList);
+        }).catch(err => {
+          console.warn("Could not retrieve customer rewards from ledger:", err);
+          setCustomerRewards([]);
+        });
+      });
+    } else {
+      setCustomerRewards([]);
+    }
+  }, [tenant, selectedCustomer]);
 
   const handleSelectCustomer = (customer: CustomerProfile) => {
     setSelectedCustomer(customer);
@@ -407,6 +436,109 @@ const CustomerMemoryTab: React.FC<CustomerMemoryTabProps> = ({ appointments, sta
                 ))}
               </div>
               <p className="mt-2 text-xs text-gray-400">{t.admin.reference_photos_notice}</p>
+            </div>
+
+            {/* Referral & Campaign Activity */}
+            <div className="border-t border-gray-200 dark:border-slate-700 pt-6 mt-6">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
+                {language === 'tr' ? 'Referans ve Kampanyalar' : 'Referrals & Campaigns'}
+              </h3>
+              
+              <div className="space-y-4">
+                {/* Invited By */}
+                {referralActivity.wasInvitedBy ? (
+                  <div className="bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-950/20 dark:to-blue-950/20 p-4 rounded-lg border border-indigo-100 dark:border-indigo-900/30 flex justify-between items-center">
+                    <div>
+                      <p className="text-xs text-indigo-500 uppercase font-semibold">{language === 'tr' ? 'Yönlendiren Kişi' : 'Referred By'}</p>
+                      <p className="text-sm font-bold text-gray-900 dark:text-white mt-1">
+                        {referralActivity.wasInvitedBy.referrerCustomerId.startsWith('referred_by_') 
+                         ? referralActivity.wasInvitedBy.referrerCustomerId.replace('referred_by_', '') 
+                         : referralActivity.wasInvitedBy.referrerCustomerId}
+                      </p>
+                    </div>
+                    <span className="text-xs font-semibold bg-indigo-100 dark:bg-indigo-900/40 text-indigo-800 dark:text-indigo-200 px-2.5 py-1 rounded">
+                      {referralActivity.wasInvitedBy.campaignId === 'default' ? 'Arkadaşını Getir v1' : referralActivity.wasInvitedBy.campaignId}
+                    </span>
+                  </div>
+                ) : (
+                  <p className="text-xs text-gray-400 italic">
+                    {language === 'tr' ? 'Bu müşteri herhangi bir referans kaydıyla gelmedi.' : 'This customer was not registered via referral code.'}
+                  </p>
+                )}
+
+                {/* Invited Others */}
+                <div>
+                  <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    {language === 'tr' ? `Davet Ettiği Arkadaşlar (${referralActivity.invitedOthers.length})` : `Invited Friends (${referralActivity.invitedOthers.length})`}
+                  </h4>
+                  {referralActivity.invitedOthers.length === 0 ? (
+                    <p className="text-xs text-gray-400 italic">
+                      {language === 'tr' ? 'Henüz kimseyi davet etmedi.' : 'Has not invited anyone yet.'}
+                    </p>
+                  ) : (
+                    <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                      {referralActivity.invitedOthers.map(ref => (
+                        <div key={ref.id} className="bg-gray-50 dark:bg-slate-750/30 p-3 rounded-lg border border-gray-200 dark:border-slate-700 flex justify-between items-center text-xs">
+                          <div>
+                            <p className="font-bold text-gray-800 dark:text-gray-200">{ref.referredCustomerName}</p>
+                            {ref.referredCustomerPhone && <p className="text-gray-400">{ref.referredCustomerPhone}</p>}
+                          </div>
+                          <div className="text-right">
+                            <span className={`px-2 py-0.5 rounded-full font-bold uppercase text-[9px] ${
+                              ref.status === 'completed' ? 'bg-teal-100 text-teal-800' :
+                              ref.status === 'rewarded' ? 'bg-green-100 text-green-800' :
+                              ref.status === 'booked' ? 'bg-indigo-100 text-indigo-800' :
+                              ref.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                              'bg-amber-100 text-amber-800'
+                            }`}>
+                              {ref.status}
+                            </span>
+                            <p className="text-[10px] text-gray-400 mt-1">{new Date(ref.createdAt).toLocaleDateString()}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Earned Rewards from Ledger */}
+                <div className="border-t border-gray-100 dark:border-slate-700/60 pt-4">
+                  <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    {language === 'tr' ? 'Hak Edilen Kampanya Ödülleri' : 'Earned Campaign Rewards'}
+                  </h4>
+                  {customerRewards.length === 0 ? (
+                    <p className="text-xs text-gray-400 italic">
+                      {language === 'tr' ? 'Henüz hak kazanılmış bir ödülü bulunmuyor.' : 'Has not earned any campaign rewards yet.'}
+                    </p>
+                  ) : (
+                    <div className="space-y-2">
+                      {customerRewards.map(rw => (
+                        <div key={rw.id} className="bg-purple-50/50 dark:bg-purple-950/10 p-3 rounded-lg border border-purple-100/40 dark:border-purple-800/20 flex justify-between items-center text-xs">
+                          <div>
+                            <p className="font-bold text-gray-800 dark:text-gray-200">{rw.rewardDescription}</p>
+                            <p className="text-[10px] text-purple-600 dark:text-purple-400 font-semibold mt-0.5">
+                              {rw.rewardOwnerType === 'referrer_customer' ? (language === 'tr' ? 'Davet Eden Ödülü' : 'Referrer Reward') : (language === 'tr' ? 'Yeni Üye Ödülü' : 'Referee Friend Reward')}
+                            </p>
+                          </div>
+                          <div className="text-right flex flex-col items-end">
+                            <span className={`px-2 py-0.5 rounded-full font-bold uppercase text-[9px] ${
+                              rw.status === 'available' ? 'bg-purple-105 text-purple-700 bg-purple-50 dark:bg-purple-900/20' :
+                              rw.status === 'used' ? 'bg-green-105 text-green-700 bg-green-50 dark:bg-green-900/20' :
+                              rw.status === 'cancelled' ? 'bg-red-105 text-red-700 bg-red-50 dark:bg-red-900/20' :
+                              'bg-gray-105 text-gray-700 bg-gray-50'
+                            }`}>
+                              {rw.status === 'available' ? (language === 'tr' ? 'Aktif' : 'Active') :
+                               rw.status === 'used' ? (language === 'tr' ? 'Kullanıldı' : 'Used') :
+                               rw.status === 'cancelled' ? (language === 'tr' ? 'İptal' : 'Cancelled') : rw.status}
+                            </span>
+                            <p className="text-[9px] text-gray-400 mt-1">{new Date(rw.createdAt).toLocaleDateString()}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
 
