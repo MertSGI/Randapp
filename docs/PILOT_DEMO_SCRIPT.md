@@ -23,13 +23,11 @@ This guide provides a structured presentation script for demonstrating the LARİ
 
 ## Step 3: Salon Owner Admin View
 - **Go back to `/pilot` and click "Admin Paneline Git"**.
-- This safely logs you into the demo account as `Demo Sahibi`.
+- This safely opens a read-only preview at `/pilot/admin` without requiring login or exposing real sessions.
 - Show the Dashboard: 
   - Point to the day's appointments: "The booking we just made appears right here automatically."
-- Show Customer Memory:
-  - Open a customer profile. "LARİ remembers their preferences—like if they want decaf coffee or have an allergy to specific hair dyes."
-- Show Settings/Profile:
-  - Briefly demonstrate how easy it is to add a staff member or change prices.
+- Point out the metrics: "You get a bird's-eye view of your business, total appointments, and staff usage."
+- Emphasize that in the real dashboard they will have full Customer Memory, Settings, Staff configuration, and Reports.
 
 ## Step 4: Closing the Demo
 - **Show the Billing Tab**: 

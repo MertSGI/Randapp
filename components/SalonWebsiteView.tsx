@@ -113,7 +113,7 @@ const SalonWebsiteView: React.FC<SalonWebsiteViewProps> = ({
   const heroSlogan = businessProfile?.short_description || (language === 'tr' ? 'Şehrin en iyi saç tasarım stüdyosu.' : 'The best hair design studio in town.');
 
   return (
-    <div className="w-full bg-slate-50 dark:bg-slate-900 min-h-screen pb-24 md:pb-0 font-sans text-gray-900 dark:text-white">
+    <div className="w-full bg-slate-50 dark:bg-slate-900 min-h-[100dvh] pb-[100px] md:pb-0 font-sans text-gray-900 dark:text-white">
       
       {/* 1. Header Desktop & Mobile */}
       <header className="sticky top-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md z-40 border-b border-gray-200 dark:border-slate-800 px-4 xl:px-8 py-3 flex items-center justify-between shadow-sm">
@@ -152,7 +152,7 @@ const SalonWebsiteView: React.FC<SalonWebsiteViewProps> = ({
       {/* 2. Hero Section (Gallery) */}
       <section 
          id="hero" 
-         className="relative w-full h-[65vh] min-h-[500px] flex items-center justify-center bg-gray-900 overflow-hidden cursor-pointer"
+         className="relative w-full h-[65vh] min-h-[550px] md:min-h-[600px] flex items-center justify-center bg-gray-900 overflow-hidden cursor-pointer"
          onMouseEnter={() => setIsPaused(true)}
          onMouseLeave={() => setIsPaused(false)}
          onClick={() => coverImages.length > 0 && setLightboxImage(coverImages[currentCoverIndex])}
@@ -164,7 +164,7 @@ const SalonWebsiteView: React.FC<SalonWebsiteViewProps> = ({
                 key={idx}
                 src={img} 
                 alt={`Slide ${idx}`} 
-                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${currentCoverIndex === idx ? 'opacity-50' : 'opacity-0'}`} 
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${currentCoverIndex === idx ? 'opacity-70' : 'opacity-0'}`} 
                 onError={(e) => { e.currentTarget.style.display = 'none'; }} 
              />
            ))
@@ -224,7 +224,9 @@ const SalonWebsiteView: React.FC<SalonWebsiteViewProps> = ({
             <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 mb-10 text-sm font-semibold text-gray-300">
                <span className="flex items-center gap-1.5"><svg className="w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"/></svg> {language === 'tr' ? 'Online Randevu' : 'Online Booking'}</span>
                <span className="flex items-center gap-1.5"><svg className="w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"/></svg> {language === 'tr' ? 'Uzman Seçimi' : 'Staff Choice'}</span>
-               <span className="flex items-center gap-1.5 text-violet-300"><span className="text-lg">🪄</span> {language === 'tr' ? 'AI Stil Asistanı' : 'AI Assistant'}</span>
+               {isAiEnabled && (
+                  <span className="flex items-center gap-1.5 text-violet-300"><span className="text-lg">🪄</span> {language === 'tr' ? 'AI Stil Asistanı' : 'AI Assistant'}</span>
+               )}
             </div>
             </div>
             
@@ -232,9 +234,11 @@ const SalonWebsiteView: React.FC<SalonWebsiteViewProps> = ({
                <button onClick={onStartBooking} className="w-full sm:w-auto px-8 py-4 bg-accent text-white rounded-2xl font-bold text-lg shadow-xl shadow-blue-900/50 hover:-translate-y-1 hover:bg-blue-600 hover:shadow-2xl transition-all border border-blue-400/30">
                   {language === 'tr' ? 'Randevu Al' : 'Book Your Appointment'}
                </button>
-               <button onClick={() => setIsAIOpen(true)} className="w-full sm:w-auto px-8 py-4 bg-white/10 hover:bg-white/20 text-white backdrop-blur-md rounded-2xl font-bold text-lg shadow-lg hover:-translate-y-1 transition-all border border-white/20 flex items-center justify-center gap-2">
-                  <span>🪄</span> {language === 'tr' ? 'AI Stil Asistanı ile Fikir Al' : 'AI Style Advice'}
-               </button>
+               {isAiEnabled && (
+                  <button onClick={() => setIsAIOpen(true)} className="hidden sm:flex w-full sm:w-auto px-8 py-4 bg-white/10 hover:bg-white/20 text-white backdrop-blur-md rounded-2xl font-bold text-lg shadow-lg hover:-translate-y-1 transition-all border border-white/20 items-center justify-center gap-2">
+                     <span>🪄</span> {language === 'tr' ? 'AI Stil Asistanı ile Fikir Al' : 'AI Style Advice'}
+                  </button>
+               )}
             </div>
          </div>
       </section>
@@ -247,11 +251,15 @@ const SalonWebsiteView: React.FC<SalonWebsiteViewProps> = ({
                {language === 'tr' ? 'Randevu Al' : 'Book Now'}
             </button>
             <div className="w-px h-8 bg-gray-200 dark:bg-slate-700 shrink-0" />
-            <button onClick={() => setIsAIOpen(true)} className="flex-1 flex items-center justify-center gap-2 py-3 px-4 hover:bg-gray-50 dark:hover:bg-slate-700/50 rounded-xl transition-colors font-bold text-violet-600 dark:text-violet-400">
-               <span className="text-xl leading-none">🪄</span>
-               {language === 'tr' ? 'AI Stil Fikri' : 'AI Style Idea'}
-            </button>
-            <div className="w-px h-8 bg-gray-200 dark:bg-slate-700 shrink-0" />
+            {isAiEnabled && (
+               <>
+                  <button onClick={() => setIsAIOpen(true)} className="flex-1 flex items-center justify-center gap-2 py-3 px-4 hover:bg-gray-50 dark:hover:bg-slate-700/50 rounded-xl transition-colors font-bold text-violet-600 dark:text-violet-400">
+                     <span className="text-xl leading-none">🪄</span>
+                     {language === 'tr' ? 'AI Stil Fikri' : 'AI Style Idea'}
+                  </button>
+                  <div className="w-px h-8 bg-gray-200 dark:bg-slate-700 shrink-0" />
+               </>
+            )}
             {businessProfile?.whatsapp_number && (
                <>
                   <a href={`https://wa.me/${businessProfile.whatsapp_number.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center gap-2 py-3 px-4 hover:bg-gray-50 dark:hover:bg-slate-700/50 rounded-xl transition-colors font-bold text-gray-900 dark:text-white">
@@ -587,13 +595,15 @@ const SalonWebsiteView: React.FC<SalonWebsiteViewProps> = ({
       </footer>
 
       {/* Sticky Mobile Bottom CTA Bar */}
-      <div className="fixed sm:hidden bottom-0 left-0 right-0 p-4 bg-white/90 dark:bg-slate-900/95 backdrop-blur-lg border-t border-gray-200 dark:border-slate-800 z-50 flex gap-3 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.1)]">
-          <button onClick={onStartBooking} className="flex-1 bg-accent text-white font-bold h-14 rounded-2xl shadow-lg shadow-blue-500/20 active:scale-95 transition-transform text-lg flex items-center justify-center">
+      <div className="fixed sm:hidden bottom-0 left-0 right-0 p-4 bg-white/90 dark:bg-slate-900/95 backdrop-blur-xl border-t border-gray-200/50 dark:border-slate-800/50 z-50 flex gap-3 shadow-[0_-20px_40px_-15px_rgba(0,0,0,0.1)] pb-[calc(1rem+env(safe-area-inset-bottom))]">
+          <button onClick={onStartBooking} className="flex-1 bg-accent text-white font-bold h-[52px] rounded-2xl shadow-[0_8px_16px_-6px_rgba(59,130,246,0.4)] active:scale-[0.98] transition-transform text-lg flex items-center justify-center">
              {language === 'tr' ? 'Randevu Al' : 'Book Now'}
           </button>
-          <button onClick={() => setIsAIOpen(true)} className="w-14 h-14 shrink-0 bg-violet-100 dark:bg-violet-900/50 text-violet-700 dark:text-violet-300 font-bold rounded-2xl border border-violet-200 dark:border-violet-700 active:scale-95 transition-transform text-2xl flex items-center justify-center shadow-inner">
-             🪄
-          </button>
+          {isAiEnabled && (
+             <button onClick={() => setIsAIOpen(true)} className="w-[52px] h-[52px] shrink-0 bg-violet-50 dark:bg-violet-900/30 text-violet-600 dark:text-violet-300 font-bold rounded-2xl border border-violet-100 dark:border-violet-800 active:scale-[0.98] transition-transform text-2xl flex items-center justify-center shadow-sm">
+                🪄
+             </button>
+          )}
       </div>
 
       {/* Lightbox */}

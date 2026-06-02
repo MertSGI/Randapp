@@ -111,6 +111,7 @@ The LARİ platform serves four distinct personas across public, admin, customer,
 * Verified `isAnyStaffPreselected` respects auto-assignment.
 * Master QA `verify-master-system-audit.mjs` was created and tied into global `qa:all`.
 * **ADDED**: `dataExportService` and `migrationDryRunService` added to allow safe backup/restore of local tenant setups before Supabase cutover.
+* **ADDED**: `PilotAdminPreviewPage` added for safe, read-only demo/sales experiences without exposing real session auth state.
 
 ## 14. Known Limitations
 1.  **LocalStorage Persistence**: Real multi-device use is structurally impossible under `VITE_DATA_MODE=mock`. However, data can now be exported/imported safely through the SuperAdmin interface. See `DATA_EXPORT_IMPORT_AND_MIGRATION_DRY_RUN.md` and `LIVE_CUTOVER_EXECUTION_RUNBOOK.md`.

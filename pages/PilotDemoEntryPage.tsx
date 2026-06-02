@@ -15,8 +15,7 @@ const PilotDemoEntryPage: React.FC = () => {
   }, []);
 
   const handleStartOwnerDemo = async () => {
-     await pilotDemoService.startPilotOwnerDemoSession();
-     navigate('/admin');
+     openInNewTab('/pilot/admin');
   };
 
   const openInNewTab = (path: string) => {

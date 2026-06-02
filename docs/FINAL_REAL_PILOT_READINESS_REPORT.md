@@ -9,7 +9,7 @@ This report provides a realistic assessment of the LARİ platform's readiness fo
 - **Pilot Customer Onboarding Flow**: Sales scripts, onboarding tasks, and first-week follow-up guidelines are documented and integrated into the Super Admin Pilot Tracker.
 - **Data Governance**: Privacy policies, terms of service, and explicit customer consent checkboxes are implemented.
 - **Marketing Toolkit**: The Share Toolkit and referral reward system are operational.
-- **Multi-tenant Core**: The system correctly isolates businesses, user sessions, and domain routing.
+- **Pilot Customer Admin Demo**: In pilot contexts, prospective customers can transparently preview the read-only `/pilot/admin` panel without leaking credentials or interacting with the actual admin authentication flow.
 
 ## 2. What is Ready Only as Local/Demo Mode
 - **Payment Sandbox**: The Iyzico payment integration is fully implemented in code, but unless Edge Functions are deployed with active sandbox keys, it relies on `local_dry_run` bypassing.

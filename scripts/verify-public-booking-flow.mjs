@@ -22,9 +22,21 @@ console.log('Running Public Booking Flow Readiness Check...\n');
 const bookingPagePath = path.join(rootDir, 'src/pages/BookingPage.tsx');
 const bookingPageContent = fs.readFileSync(fs.existsSync(bookingPagePath) ? bookingPagePath : path.join(rootDir, 'pages/BookingPage.tsx'), 'utf-8');
 
+const viewContent = fs.readFileSync(fs.existsSync(path.join(rootDir, 'src/components/SalonWebsiteView.tsx')) ? path.join(rootDir, 'src/components/SalonWebsiteView.tsx') : path.join(rootDir, 'components/SalonWebsiteView.tsx'), 'utf-8');
+
 assert(
   bookingPageContent.includes("isAiEnabled="),
   "BookingPage must pass isAiEnabled to SalonWebsiteView"
+);
+
+assert(
+  viewContent.includes("env(safe-area-inset-bottom)"),
+  "SalonWebsiteView must contain safe-area styling for mobile sticky CTA"
+);
+
+assert(
+  (viewContent.match(/{isAiEnabled && \(/g) || []).length >= 3,
+  "SalonWebsiteView must wrap AI magic wands and buttons with isAiEnabled conditionals"
 );
 
 assert(
