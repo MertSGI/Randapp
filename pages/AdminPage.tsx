@@ -8,8 +8,9 @@ import { useAuth } from '../contexts/AuthContext';
 import { getAppointments, updateAppointmentStatus } from '../services/appointmentService';
 import { getStaffList, createStaff, updateStaff, deleteStaff } from '../services/staffService';
 import { getServices, createService, updateService, deleteService } from '../services/serviceCatalogService';
-import { Service } from '../types';
+import { Service, BusinessBranch } from '../types';
 import { useDialog } from '../contexts/DialogContext';
+import { branchService } from '../services/branchService';
 
 import BillingTab from '../components/BillingTab';
 import OnboardingWizard from '../components/OnboardingWizard';
@@ -56,6 +57,8 @@ const AdminPage: React.FC = () => {
   const [aiAnalysis, setAiAnalysis] = useState<string>('');
   const [loadingAnalysis, setLoadingAnalysis] = useState(false);
   const [targetAppointmentId, setTargetAppointmentId] = useState<string | null>(null);
+  const [branches, setBranches] = useState<BusinessBranch[]>([]);
+  const [selectedBranchFilter, setSelectedBranchFilter] = useState<string>('all');
 
   // New/Edit staff form state
   const [editingStaffId, setEditingStaffId] = useState<string | null>(null);
@@ -126,6 +129,9 @@ const AdminPage: React.FC = () => {
 
     const servicesData = await getServices(tenant.id);
     setServicesList(servicesData);
+
+    const branchesData = await branchService.listBranches(tenant.id);
+    setBranches(branchesData);
 
     try {
       const report = await onboardingChecklistService.getOnboardingReport(tenant.id);
@@ -608,11 +614,23 @@ const AdminPage: React.FC = () => {
         tabAvailability['appointments']?.isAccessible === false 
           ? renderLockedFeature(tabAvailability['appointments']!.lockReason!, tabAvailability['appointments']!.recommendedAction) 
           : <div className="bg-white dark:bg-slate-800 shadow overflow-hidden sm:rounded-md transition-colors duration-300">
-            <div className="px-4 py-5 sm:px-6 bg-gray-50 dark:bg-slate-800/80 border-b border-gray-200 dark:border-slate-700 transition-colors duration-300">
+            <div className="px-4 py-5 sm:px-6 bg-gray-50 dark:bg-slate-800/80 border-b border-gray-200 dark:border-slate-700 flex justify-between items-center transition-colors duration-300">
               <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white transition-colors duration-300">{t.admin.recent_title}</h3>
+              {branches.length > 1 && (
+                <select 
+                  value={selectedBranchFilter}
+                  onChange={(e) => setSelectedBranchFilter(e.target.value)}
+                  className="rounded-md border-gray-300 shadow-sm focus:border-accent focus:ring-accent sm:text-sm p-1.5 dark:bg-slate-700 dark:border-slate-600 dark:text-white"
+                >
+                  <option value="all">Tüm Şubeler</option>
+                  {branches.map(b => (
+                    <option key={b.id} value={b.id}>{b.name}</option>
+                  ))}
+                </select>
+              )}
             </div>
             <ul className="divide-y divide-gray-200 dark:divide-slate-700 max-h-[600px] overflow-y-auto">
-              {appointments.length === 0 ? (
+              {appointments.filter(a => selectedBranchFilter === 'all' || a.branchId === selectedBranchFilter).length === 0 ? (
                 <div className="py-12 flex flex-col items-center justify-center text-center px-4">
                   <div className="w-16 h-16 bg-gray-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center mb-4 border border-gray-100 dark:border-slate-600">
                     <svg className="w-8 h-8 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
@@ -622,9 +640,10 @@ const AdminPage: React.FC = () => {
                   <button onClick={() => window.open('/#/book?preview=true', '_blank')} className="px-5 py-2 bg-white text-gray-700 border border-gray-300 dark:bg-slate-700 dark:text-gray-200 dark:border-slate-600 rounded-lg shadow-sm font-medium hover:bg-gray-50 dark:hover:bg-slate-600 transition-colors text-sm">Site Önizlemesini Aç</button>
                 </div>
               ) : (
-                appointments.map((apt) => {
+                appointments.filter(a => selectedBranchFilter === 'all' || a.branchId === selectedBranchFilter).map((apt) => {
                   const assignedStaff = staffList.find(s => s.id === apt.staffId);
                   const assignedService = servicesList.find(s => s.id === apt.serviceId);
+                  const branchName = branches.find(b => b.id === apt.branchId)?.name;
                   const serviceName = language === 'tr' ? (assignedService?.name_tr || assignedService?.name) : assignedService?.name;
                   return (
                     <li key={apt.id} className="p-4 hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors duration-300">
@@ -634,7 +653,7 @@ const AdminPage: React.FC = () => {
                             {apt.user_name}
                           </p>
                           <p className="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300 mt-0.5">
-                            {apt.date} at {apt.time} • {serviceName || t.admin.unknown_service} {assignedStaff && `(${t.admin.with} ${assignedStaff.name})`}
+                            {apt.date} at {apt.time} • {serviceName || t.admin.unknown_service} {assignedStaff && `(${t.admin.with} ${assignedStaff.name})`} {branchName && `• [${branchName}]`}
                           </p>
                           <div className="mt-1 flex flex-wrap items-center text-xs text-gray-400 dark:text-gray-500 gap-x-2 gap-y-1 transition-colors duration-300">
                               <span>{apt.user_email}</span>
@@ -932,7 +951,11 @@ const AdminPage: React.FC = () => {
       {activeTab === 'reports' && (
         tabAvailability['reports']?.isAccessible === false 
           ? renderLockedFeature(tabAvailability['reports']!.lockReason!, tabAvailability['reports']!.recommendedAction) 
-          : <SalonReportsTab appointments={appointments} services={servicesList} staff={staffList} />
+          : <SalonReportsTab 
+              appointments={appointments.filter(a => selectedBranchFilter === 'all' || a.branchId === selectedBranchFilter)} 
+              services={servicesList.filter(s => selectedBranchFilter === 'all' || !s.branchId || s.branchId === selectedBranchFilter)} 
+              staff={staffList.filter(st => selectedBranchFilter === 'all' || !st.branchId || st.branchId === selectedBranchFilter)} 
+            />
       )}
       
       {activeTab === 'billing' && <BillingTab />}

@@ -11,8 +11,9 @@ import { createAppointment, getBookedSlots, updateAppointmentStatus } from '../s
 import { subscriptionService, SubscriptionStatus } from '../services/subscriptionService';
 import { businessProfileService } from '../services/businessProfileService';
 import { availabilityService } from '../services/availabilityService';
+import { branchService } from '../services/branchService';
 import { customerService } from '../services/customerService';
-import { SalonBusinessProfile } from '../types';
+import { SalonBusinessProfile, BusinessBranch } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import { canPreviewTenantSite } from '../utils/previewAuth';
 import SalonWebsiteView from '../components/SalonWebsiteView';
@@ -58,6 +59,9 @@ const BookingPage: React.FC = () => {
   const [hasSavedProfile, setHasSavedProfile] = useState(false);
   const [isAnyStaffPreselected, setIsAnyStaffPreselected] = useState(false);
   const [isAiEnabled, setIsAiEnabled] = useState(false);
+  const [branches, setBranches] = useState<BusinessBranch[]>([]);
+  const [isMultiBranchEnabled, setIsMultiBranchEnabled] = useState(false);
+  const [selectedBranch, setSelectedBranch] = useState<BusinessBranch | null>(null);
 
   const timeSlots = generateTimeSlots();
   
@@ -76,6 +80,7 @@ const BookingPage: React.FC = () => {
       getStaffList(tenant.id, { activeOnly: true }).then(setStaffList);
       getServices(tenant.id, { activeOnly: true }).then(setServicesList);
       businessProfileService.getPublicBusinessProfile(tenant.id).then(setBusinessProfile);
+      branchService.listBranches(tenant.id).then(setBranches);
       
       import('../services/goLiveService').then(({ goLiveService }) => {
         goLiveService.canTenantAcceptBookings(tenant.id).then((status) => {
@@ -88,9 +93,11 @@ const BookingPage: React.FC = () => {
 
       if (tenant.id === 'biz_pilot_tenant') {
          setIsAiEnabled(true);
+         setIsMultiBranchEnabled(true);
       } else {
          subscriptionService.getPlanForTenant(tenant.id).then(plan => {
             setIsAiEnabled(plan && plan.id !== 'free');
+            setIsMultiBranchEnabled(plan?.features?.multi_branch || false);
          });
       }
 
@@ -141,11 +148,28 @@ const BookingPage: React.FC = () => {
   const onStartBooking = () => {
     setSelectedService(null);
     setSelectedStaff(null);
+    setSelectedBranch(null);
     setIsAnyStaffPreselected(false);
     setSelectedDate(new Date().toISOString().split('T')[0]);
     setSelectedTime('');
-    setStep(1); // Go to service select
+    
+    if (isMultiBranchEnabled && branches.length > 1) {
+       setStep(0.5);
+    } else {
+       if (branches.length === 1) setSelectedBranch(branches[0]);
+       setStep(1);
+    }
   };
+
+  const currentBranchId = selectedBranch ? selectedBranch.id : undefined;
+
+  const filteredServices = (!isMultiBranchEnabled || branches.length <= 1 || !currentBranchId)
+    ? servicesList
+    : servicesList.filter(s => !s.branchId || s.branchId === currentBranchId);
+
+  const filteredStaff = (!isMultiBranchEnabled || branches.length <= 1 || !currentBranchId)
+    ? staffList
+    : staffList.filter(s => !s.branchId || s.branchId === currentBranchId);
 
   const handleWebsiteServiceSelect = (service: Service) => {
     setSelectedService(service);
@@ -243,6 +267,7 @@ const BookingPage: React.FC = () => {
       phone: formData.phone,
       serviceId: selectedService.id,
       staffId: selectedStaff.id,
+      branchId: currentBranchId,
       date: selectedDate,
       time: selectedTime,
       status: 'confirmed' as const,
@@ -386,6 +411,33 @@ const BookingPage: React.FC = () => {
                 {step < 5 && (
                   <div className="grid lg:grid-cols-3 gap-8 md:gap-12 relative mt-8">
                     <div className="lg:col-span-2">
+        {/* Step 0.5: Branch Selection */}
+        {step === 0.5 && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">{language === 'tr' ? 'Şube Seçin' : 'Select Branch'}</h2>
+              <button onClick={() => setStep(0)} className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white underline transition-colors duration-300">{language === 'tr' ? 'Geri Dön' : 'Go Back'}</button>
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+              {branches.map((branch) => (
+                <button
+                  key={branch.id}
+                  onClick={() => { setSelectedBranch(branch); setStep(1); }}
+                  className="flex flex-col p-5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl hover:border-accent hover:shadow-md transition-all text-left"
+                >
+                  <h3 className="font-bold text-lg text-gray-900 dark:text-white mb-2 flex items-center gap-2">
+                     {branch.name}
+                     {branch.isPrimary && <span className="text-[10px] uppercase font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full tracking-wider">Merkez</span>}
+                  </h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">{branch.address}, {branch.district}</p>
+                  {branch.phone && <p className="text-xs text-gray-400 dark:text-gray-500">📞 {branch.phone}</p>}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Step 1: Service Selection */}
         {step === 1 && (
           <div className="space-y-6">
@@ -394,13 +446,13 @@ const BookingPage: React.FC = () => {
               <button onClick={() => setStep(0)} className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white underline transition-colors duration-300">{language === 'tr' ? 'Geri Dön' : 'Go Back'}</button>
             </div>
             
-            {servicesList.length === 0 ? (
+            {filteredServices.length === 0 ? (
               <div className="text-center py-12">
                 <p className="mt-4 text-gray-500 dark:text-gray-400 text-lg">Şu anda seçilebilir aktif hizmet bulunmuyor.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
-                {servicesList.map((service) => (
+                {filteredServices.map((service) => (
                   <button
                     key={service.id}
                     onClick={() => handleWidgetServiceSelect(service)}
@@ -454,8 +506,8 @@ const BookingPage: React.FC = () => {
                  onClick={() => {
                      // For "Bana Fark Etmez", simply select the first staff 
                      // In real scenario, we would calculate earliest slot across all staff
-                     if (staffList.length > 0) {
-                        handleStaffSelect(staffList[0], true);
+                     if (filteredStaff.length > 0) {
+                        handleStaffSelect(filteredStaff[0], true);
                      }
                  }}
                  className="flex flex-col items-center justify-center p-6 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-slate-700 dark:to-slate-600 border-2 border-dashed border-indigo-200 dark:border-slate-500 rounded-2xl hover:border-indigo-400 dark:hover:border-slate-400 transition-colors"
@@ -464,7 +516,7 @@ const BookingPage: React.FC = () => {
                  <span className="text-sm text-indigo-500 dark:text-slate-300 mt-2">{t.booking.earliest_available}</span>
               </button>
 
-              {staffList.map((staff) => (
+              {filteredStaff.map((staff) => (
                 <button
                   key={staff.id}
                   onClick={() => handleStaffSelect(staff)}
@@ -721,6 +773,17 @@ const BookingPage: React.FC = () => {
                   </h3>
                   
                   <div className="space-y-5">
+                     {selectedBranch && branches.length > 1 && (
+                        <>
+                           <div>
+                              <div className="text-xs uppercase tracking-wider text-gray-500 font-bold mb-1">{language === 'tr' ? 'Şube' : 'Branch'}</div>
+                              <div className="font-bold text-gray-900 dark:text-white flex justify-between items-center text-base">
+                                 <span>{selectedBranch.name}</span>
+                              </div>
+                           </div>
+                           <div className="h-px w-full bg-gray-200 dark:bg-slate-700"></div>
+                        </>
+                     )}
                      <div>
                         <div className="text-xs uppercase tracking-wider text-gray-500 font-bold mb-1">{language === 'tr' ? 'Hizmet' : 'Service'}</div>
                         {selectedService ? (

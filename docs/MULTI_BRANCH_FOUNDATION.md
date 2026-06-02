@@ -17,18 +17,16 @@ The multi-branch features are tightly enclosed within `entitlementService.ts`.
 - **Kurumsal:** `maxBranches = 999`, `multi_branch = true`.
 - Attempted expansion by a non-Kurumsal user will result in a visual upsell/lock message inside the `BranchManagementSection`.
 
-## 3. Public Booking Routing (Foundation Phase)
+## 3. Public Booking Routing & Branch Awareness
 
-### Current Implementation state:
-- The public `SalonWebsiteView` handles single-branch requests flawlessly.
-- Data structures (`types.ts`) accept `branchId` cleanly across related relational data (`Appointment`, `Service`, `Staff`).
+### Implementation state:
+- **Public Booking**: If `branches > 1` and `multi_branch` is enabled, the `BookingPage` intercepts the standard flow with an interactive `Step 0.5: Şube Seçin` selector.
+- **Service/Staff Segregation**: Staff and Services optionally bind to a `branchId`. When a customer selects a branch during booking, `BookingPage` filters available staff and services exclusively to that branch (while globally-attributed items fall back seamlessly).
+- **Appointment Capture**: Successfully books the appointment attaching the `branchId`, enabling location-specific confirmation messages.
+- **Admin Visibility**: `AdminPage` detects multiple branches and introduces a dynamic filter dropdown, dividing the dashboard list seamlessly between "Tüm Şubeler" and individual locations.
 
-### **Roadmap for Full Enterprise Online Booking:**
-When full multi-branch goes live entirely, the UX flow should be:
-1. `BookingPage` resolves the `Tenant`.
-2. Checks `branchService.listBranches(tenant.id)`.
-3. If branches > 1: Present a map/list branch selector as **Step 0**.
-4. Steps 1-5 filter out `Staff`, `Services`, and `timeSlots` corresponding ONLY to the selected `branchId`.
+### Backward Compatibility (Singleton Fallback):
+If a tenant downgrades or only operates one location, the UI automatically skips Step 0.5, locking down the exact identical flow that has operated flawlessly.
 
 ## 4. Supabase DB Schema Implications (Migration Preview)
 
