@@ -78,6 +78,8 @@ The core objective was to finalize feature entitlement enforcement and ensure th
 - [x] Backend Supabase Schemas & Migration Guidelines.
 - [x] Payment Run Modes (local_dry_run, sandbox_live, production_live).
 - [x] Feature Entitlement Restrictions.
+- [x] Data Governance & Privacy Constraints.
+- [x] First Pilot Onboarding Tracking & Sales Scripts.
 
 ## 4. Next Steps (Iyzico Operational Sandbox Strategy)
 

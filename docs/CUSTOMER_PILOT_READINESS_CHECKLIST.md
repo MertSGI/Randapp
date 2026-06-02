@@ -49,3 +49,14 @@ This document is for internal team and Super Admin review only. It outlines the 
 - [ ] **Prohibited Business Policy**: Ensured merchants do not sell illegal goods/services.
 - [ ] **KVKK / Privacy Statement**: Active in registration wizard.
 - [ ] **Terms of Use Acceptance**: Present in the `/register` process.
+
+---
+
+## 6. First 7-Day Pilot Success Metrics
+(Monitored via `SuperAdminPilotTrackerPage` and internal Pilot Onboarding Service)
+- [ ] **Business Profile Created**: Basic setup completed (services, staff, hours).
+- [ ] **Public Link Shared**: Link added to Instagram Bio or WhatsApp.
+- [ ] **Owner Log-in Frequency**: Owner logged in at least twice in the first week.
+- [ ] **First Booking Received**: At least one appointment dynamically captured.
+- [ ] **Customer Memory Usage**: At least one profile updated with personal preferences/notes.
+- [ ] **Feedback Collected**: Reached out successfully with 'First Week Follow-Up Script'.

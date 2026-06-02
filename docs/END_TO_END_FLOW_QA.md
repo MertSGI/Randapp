@@ -51,6 +51,7 @@ Run `npx --yes node scripts/verify-product-flow.mjs`.
 Run `npx --yes node scripts/verify-publish-gate.mjs`.
 Run `npx --yes node scripts/verify-admin-ux-readiness.mjs`.
 Run `npx --yes node scripts/verify-public-booking-flow.mjs`.
+Run `npx --yes node scripts/verify-pilot-onboarding-readiness.mjs`.
 
 ## Remaining Gaps
 - Currently tests run in browser UI but do not deeply examine Database state when `VITE_DATA_MODE=supabase`. E2E must be combined with unit tests against test DB credentials before production.

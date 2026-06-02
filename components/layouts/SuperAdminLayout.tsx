@@ -38,6 +38,7 @@ const SuperAdminLayout: React.FC = () => {
     { label: 'Planlar & Fiyatlar', path: '/super-admin/plans' },
     { label: 'Referans Kampanyaları', path: '/super-admin/referrals' },
     { label: 'Sandbox ve Yayın Hazırlığı', path: '/super-admin/go-live' },
+    { label: 'Pilot Müşteriler', path: '/super-admin/pilots' },
   ];
 
   return (

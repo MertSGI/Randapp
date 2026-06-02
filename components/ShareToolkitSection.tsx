@@ -128,18 +128,24 @@ const ShareToolkitSection: React.FC<ShareToolkitSectionProps> = ({ tenant }) => 
 
            <div>
               <h4 className="font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-slate-700 pb-2 mb-4">Paylaşım Kontrol Listesi</h4>
+              {!tenant.isPublished ? (
+                <div className="p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300 rounded-lg text-sm mb-4">
+                  Siteniz henüz yayında değil. <strong>Yayına alındığında</strong> aşağıdaki adımları tamamlamanız tavsiye edilir.
+                </div>
+              ) : null}
               <div className="space-y-2">
                  {[
                    { key: 'instagram_bio', label: "Instagram Bio'ya Eklendi" },
                    { key: 'whatsapp_quick_reply', label: "WhatsApp Sabit (Hazır) Mesajına Eklendi" },
                    { key: 'google_business', label: "Google İşletme Profiline Eklendi" },
-                   { key: 'shared_with_staff', label: "Personelle Links Paylaşıldı" },
+                   { key: 'announced_to_old_customers', label: "İlk Müşterilere Duyuruldu" },
                    { key: 'qr_printed', label: "Salon İçine QR Etiketi Asıldı" },
-                   { key: 'announced_to_old_customers', label: "Eski Müşterilere Duyuruldu" }
+                   { key: 'first_booking_tested', label: "İlk Randevu Test Edildi" }
                  ].map(item => (
-                    <label key={item.key} className="flex items-center gap-3 p-2 hover:bg-gray-50 dark:hover:bg-slate-700/30 rounded cursor-pointer transition">
+                    <label key={item.key} className={`flex items-center gap-3 p-2 rounded transition ${tenant.isPublished ? 'hover:bg-gray-50 dark:hover:bg-slate-700/30 cursor-pointer' : 'opacity-60 cursor-not-allowed'}`}>
                        <input 
                          type="checkbox" 
+                         disabled={!tenant.isPublished}
                          checked={!!checklist[item.key]} 
                          onChange={() => toggleChecklist(item.key)}
                          className="w-4 h-4 text-indigo-600 rounded border-gray-300 dark:border-slate-500" 
