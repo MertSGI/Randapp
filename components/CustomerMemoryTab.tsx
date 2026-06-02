@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { CustomerProfile, Appointment, Staff, Service, CustomerMemoryNote, CustomerMemoryPhoto, CustomerCampaignReward } from '../types';
 import { adminCustomerService } from '../services/adminCustomerService';
+import { consentService } from '../services/consentService';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTenant } from '../contexts/TenantContext';
 import { useDialog } from '../contexts/DialogContext';
@@ -272,6 +273,8 @@ const CustomerMemoryTab: React.FC<CustomerMemoryTabProps> = ({ appointments, sta
 
   // Details View
   const customerApps = appointments.filter(a => selectedCustomer.appointmentIds?.includes(a.id)).sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  const limitMemory = tenant && selectedCustomer ? !consentService.canUseCustomerMemory(tenant.id, selectedCustomer.id) : false;
+  const consentFlags = tenant && selectedCustomer ? consentService.getCustomerConsent(tenant.id, selectedCustomer.id) : null;
 
   return (
     <div className="space-y-6">
@@ -290,6 +293,11 @@ const CustomerMemoryTab: React.FC<CustomerMemoryTabProps> = ({ appointments, sta
                <span className="text-xs bg-accent text-white px-2 py-1 rounded-full font-normal hidden sm:inline-block">
                  {t.admin.total_appointments}: {selectedCustomer.totalAppointments}
                </span>
+               {consentFlags ? (
+                 <span className="text-xs border border-green-200 bg-green-50 text-green-700 px-2 py-1 rounded font-medium ml-2">İzinler: Aktif</span>
+               ) : (
+                 <span className="text-xs border border-gray-200 bg-gray-50 text-gray-500 px-2 py-1 rounded font-medium ml-2">İzin Bekleniyor</span>
+               )}
             </h2>
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{selectedCustomer.phone} • {selectedCustomer.email}</p>
           </div>
@@ -300,30 +308,38 @@ const CustomerMemoryTab: React.FC<CustomerMemoryTabProps> = ({ appointments, sta
         </div>
 
         {/* Top metrics block for quick info answers */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-           <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-100 dark:border-blue-800/50">
-             <p className="text-xs text-blue-600 dark:text-blue-400 uppercase font-semibold mb-1">{t.admin.last_service}</p>
-             <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-               {servicesList.find(s => s.id === selectedCustomer.lastServiceId)?.name_tr || servicesList.find(s => s.id === selectedCustomer.lastServiceId)?.name || t.admin.unknown_service}
-             </p>
-           </div>
-           <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg border border-purple-100 dark:border-purple-800/50">
-             <p className="text-xs text-purple-600 dark:text-purple-400 uppercase font-semibold mb-1">{t.admin.preferred_staff}</p>
-             <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-               {staffList.find(s => s.id === selectedCustomer.preferredStaffId)?.name || t.admin.unknown_staff}
-             </p>
-           </div>
-           <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-100 dark:border-green-800/50">
-             <p className="text-xs text-green-600 dark:text-green-400 uppercase font-semibold mb-1">{t.admin.hair_style_pref}</p>
-             <p className="text-sm font-medium text-gray-900 dark:text-white truncate" title={selectedCustomer.stylePreference || '-'}>
-               {selectedCustomer.stylePreference || '-'}
-             </p>
-           </div>
-        </div>
+        {!limitMemory && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+             <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-100 dark:border-blue-800/50">
+               <p className="text-xs text-blue-600 dark:text-blue-400 uppercase font-semibold mb-1">{t.admin.last_service}</p>
+               <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                 {servicesList.find(s => s.id === selectedCustomer.lastServiceId)?.name_tr || servicesList.find(s => s.id === selectedCustomer.lastServiceId)?.name || t.admin.unknown_service}
+               </p>
+             </div>
+             <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg border border-purple-100 dark:border-purple-800/50">
+               <p className="text-xs text-purple-600 dark:text-purple-400 uppercase font-semibold mb-1">{t.admin.preferred_staff}</p>
+               <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                 {staffList.find(s => s.id === selectedCustomer.preferredStaffId)?.name || t.admin.unknown_staff}
+               </p>
+             </div>
+             <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-100 dark:border-green-800/50">
+               <p className="text-xs text-green-600 dark:text-green-400 uppercase font-semibold mb-1">{t.admin.hair_style_pref}</p>
+               <p className="text-sm font-medium text-gray-900 dark:text-white truncate" title={selectedCustomer.stylePreference || '-'}>
+                 {selectedCustomer.stylePreference || '-'}
+               </p>
+             </div>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           
           {/* LEFT COLUMN: Preferences & Notes */}
+          {limitMemory ? (
+          <div className="bg-orange-50 dark:bg-orange-900/20 border justify-center border-orange-200 dark:border-orange-800 p-6 rounded-lg text-center mb-6 h-fit">
+             <h3 className="text-orange-800 dark:text-orange-400 font-medium mb-2">Sınırlı Müşteri Hafızası</h3>
+             <p className="text-sm text-orange-700 dark:text-orange-300">Bu müşteri için ayrıntılı müşteri hafızası izni (veri işleme) bulunmuyor. Yalnızca geçmiş randevu listesine erişebilirsiniz.</p>
+          </div>
+          ) : (
           <div className="space-y-8">
             {/* Style Preferences */}
             <div>
@@ -548,6 +564,7 @@ const CustomerMemoryTab: React.FC<CustomerMemoryTabProps> = ({ appointments, sta
               </div>
             </div>
           </div>
+          )}
 
           {/* RIGHT COLUMN: Appointment History */}
           <div className="bg-gray-50 dark:bg-slate-700/30 rounded-lg p-4 border border-gray-100 dark:border-slate-700 h-fit">
@@ -586,7 +603,27 @@ const CustomerMemoryTab: React.FC<CustomerMemoryTabProps> = ({ appointments, sta
               )}
             </div>
           </div>
+        </div>
 
+        {/* Data Governance / Customer Data Requests */}
+        <div className="mt-8 pt-6 border-t border-gray-100 dark:border-slate-700">
+           <h3 className="text-sm font-medium text-gray-500 uppercase flex items-center gap-2 mb-4">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              {language === 'tr' ? 'Veri Portabilitesi ve Hak Talepleri (KVKK/GDPR)' : 'Data Portability & Rights Requests (GDPR)'}
+           </h3>
+           <div className="flex gap-4 items-center">
+              <button disabled className="text-xs bg-slate-100 dark:bg-slate-800 text-slate-500 py-2 px-4 rounded-lg font-medium opacity-70 cursor-not-allowed border border-slate-200 dark:border-slate-700">
+                 {language === 'tr' ? 'Müşteri Kaydını Dışa Aktar (CSV)' : 'Export Customer Record (CSV)'}
+              </button>
+              <button disabled className="text-xs bg-red-50 dark:bg-red-900/10 text-red-400 py-2 px-4 rounded-lg font-medium opacity-70 cursor-not-allowed">
+                 {language === 'tr' ? 'Unutulma Hakkı (Veriyi Anonimleştir)' : 'Right to be Forgotten (Anonymize Data)'}
+              </button>
+              <span className="text-[10px] text-gray-400 italic">
+                 {language === 'tr' ? '* Yakında aktif edilecek.' : '* Coming soon.'}
+              </span>
+           </div>
         </div>
       </div>
     </div>

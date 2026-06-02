@@ -123,6 +123,39 @@ export interface Service {
   category?: string;
 }
 
+export interface CustomerConsentFlags {
+  bookingContactConsent: boolean;
+  appointmentReminderConsent: boolean;
+  marketingConsent: boolean;
+  referralCampaignConsent: boolean;
+  customerMemoryConsent: boolean;
+  referencePhotoConsent: boolean;
+  aiStyleAssistantConsent: boolean;
+  consentVersion: string;
+  consentCapturedAt: string;
+  consentSource: 'booking' | 'admin' | 'customer_portal' | 'import';
+}
+
+export interface CustomerDataRequest {
+  id: string;
+  tenantId: string;
+  customerId: string;
+  requestType: 'export' | 'delete' | 'correction';
+  status: 'pending' | 'completed' | 'rejected';
+  requestedAt: string;
+  completedAt?: string;
+  notes?: string;
+}
+
+export interface BusinessOwnerTermsAcceptance {
+  tenantId: string;
+  ownerUserId: string;
+  termsVersion: string;
+  privacyVersion: string;
+  acceptedAt: string;
+  source: string;
+}
+
 export interface Customer {
   id: string;
   tenantId: string;
@@ -132,6 +165,7 @@ export interface Customer {
   notes?: string;
   segment?: string;
   createdAt: string;
+  consentFlags?: CustomerConsentFlags;
 }
 
 export interface CustomerMemoryNote {

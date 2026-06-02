@@ -51,6 +51,19 @@ class GoLiveReadinessService {
           { id: 'qa_sandbox', category: 'overall', title: 'Sandbox Readiness Script', status: 'passed' },
         ]
       },
+      data_governance: {
+        title: 'Veri Yönetişimi / KVKK / GDPR (Data Governance)',
+        description: 'Müşteri veri gizliliği, onam metinleri, rıza kayıtları ve sözleşme durumları',
+        checks: [
+          { id: 'dg_privacy_page', category: 'checklist', title: 'Gizlilik ve KVKK Politikası Yayında', status: 'passed', hint: 'Platform ve Tenant kullanımına uygun KVKK metinleri hazır.' },
+          { id: 'dg_terms_page', category: 'checklist', title: 'Kullanım Sözleşmesi (Platform & Tenant) Yayında', status: 'passed' },
+          { id: 'dg_booking_consent', category: 'checklist', title: 'Booking Akışı KVKK & Pazarlama Rıza Toplama Altyapısı', status: 'passed', hint: 'KVK, Hatırlatma, Pazarlama onam kutuları ve kayıt altyapısı aktif.' },
+          { id: 'dg_customer_memory', category: 'checklist', title: 'Müşteri Hafızası Açık Rıza Zorunluluğu', status: 'passed', hint: 'KVKK ve Hafıza İzni olmayan profiller Admin ekranında maskeleniyor.' },
+          { id: 'dg_export_readiness', category: 'checklist', title: 'Veri Dışa Aktarım (Data Export) Standardizasyonu', status: 'warning', value: 'Planlanan', hint: 'Veri portabilitesi talepleri için CSV/JSON export şablonları hazırlanmalı.' },
+          { id: 'dg_right_to_forget', category: 'checklist', title: 'Unutulma Hakkı (Veri İmha/Anonimleştirme) Altyapısı', status: 'warning', value: 'Planlanan', hint: 'Hard deletion veya soft deletion/anonimleştirme scriptleri (CRON) planlandı.' },
+          { id: 'dg_owner_terms', category: 'checklist', title: 'Mesafeli Kayıt Sözleşmesi Onamları (Kayıt Ekranı)', status: 'passed', hint: 'İşletme yeni kayıt onam kayıt motoru entegre edildi.' }
+        ]
+      },
       functions: {
         title: 'Supabase Edge Functions',
         description: 'Ödeme ve abonelik altyapı servisleri',

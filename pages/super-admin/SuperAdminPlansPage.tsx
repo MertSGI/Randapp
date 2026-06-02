@@ -33,6 +33,8 @@ const SuperAdminPlansPage: React.FC = () => {
             customDomainEnabled: false,
             includedSubdomain: true,
             customComDomainIncluded: false,
+            multiBranchEnabled: false,
+            maxBranches: 1,
             aiRecommendationsEnabled: false,
             aiVisualizationEnabled: false,
             aiMonthlyQuota: 0,

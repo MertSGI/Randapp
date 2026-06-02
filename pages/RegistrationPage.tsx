@@ -101,6 +101,13 @@ export default function RegistrationPage() {
       const result = await tenantRegistrationService.registerTenant(formData);
       if (result.success) {
         // Registration successful
+        
+        // Record owner terms acceptance
+        import('../services/consentService').then(({ consentService }) => {
+           // We might not have ownerUserId here as it registers a tenant, so we use email as ownerUserId for now or 'owner_' + tenantId
+           consentService.recordBusinessOwnerTermsAcceptance(result.tenantId || 'unknown_tenant', formData.ownerEmail);
+        }).catch(e => console.error(e));
+
         // Depending on local vs prod mode, we would redirect to a real checkout init or admin
         // For now, render checkout preview (handoff)
         setRegisteredTenantId(result.tenantId || null);
@@ -208,7 +215,7 @@ export default function RegistrationPage() {
                 <span className="text-sm text-slate-600 dark:text-slate-400">
                   {language === 'tr' ? (
                      <>
-                        <a href="#" className="text-blue-600 dark:text-blue-400 hover:underline">KVKK Aydınlatma Metni</a>, <a href="#" className="text-blue-600 dark:text-blue-400 hover:underline">Kullanım Şartları</a> ve Mesafeli Kayıt koşullarını okudum, kabul ediyorum.
+                        <a href="/#/privacy" target="_blank" className="text-blue-600 dark:text-blue-400 hover:underline">KVKK Aydınlatma Metni ve Gizlilik Sözleşmesi</a> ile <a href="/#/terms" target="_blank" className="text-blue-600 dark:text-blue-400 hover:underline">Kullanım Şartları</a>'nı ve Mesafeli Kayıt koşullarını okudum, kabul ediyorum.
                      </>
                   ) : 'I accept the Terms and Conditions and Privacy Policy.'}
                 </span>

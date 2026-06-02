@@ -92,7 +92,7 @@ export const publicLinkService = {
 
   canUseCustomDomain(tenant: Tenant): boolean {
     if (tenant.id === 'biz_pilot_tenant') return true;
-    return entitlementService.canUseFeature(tenant.planId || 'free', 'customDomain');
+    return entitlementService.canUseFeature(tenant.planId || 'free', 'custom_domain_manual');
   },
 
   getCustomDomainStatus(tenant: Tenant): 'locked' | 'not_requested' | 'under_review' | 'active' | 'rejected' {

@@ -46,6 +46,7 @@ const BookingPage: React.FC = () => {
   const [selectedTime, setSelectedTime] = useState<string>('');
   const [bookedSlots, setBookedSlots] = useState<string[]>([]);
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', referrerName: '', campaignCode: '' });
+  const [consentForms, setConsentForms] = useState({ requiredBookingConsent: false, reminderConsent: false, marketingConsent: false, referralConsent: false });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confirmation, setConfirmation] = useState<{ subject: string; body: string } | null>(null);
   const [calendarLink, setCalendarLink] = useState<string>('');
@@ -108,8 +109,8 @@ const BookingPage: React.FC = () => {
          setIsMultiBranchEnabled(true);
       } else {
          subscriptionService.getPlanForTenant(tenant.id).then(plan => {
-            setIsAiEnabled(plan && plan.id !== 'free');
-            setIsMultiBranchEnabled(plan?.features?.multi_branch || false);
+            setIsAiEnabled(!!(plan && plan.id !== 'free'));
+            setIsMultiBranchEnabled(plan?.multiBranchEnabled || false);
          });
       }
 
@@ -252,8 +253,24 @@ const BookingPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedService || !selectedTime || !selectedStaff || !tenant) return;
+    if (!consentForms.requiredBookingConsent) {
+       alert('Lütfen randevu işlemini tamamlamak için öncelikle kullanım iznini onaylayınız.');
+       return;
+    }
 
     setIsSubmitting(true);
+    
+    // Attempt dynamic import for consent service
+    import('../services/consentService').then(({ consentService }) => {
+       const customerId = `guest_${Date.now()}`;
+       consentService.captureBookingConsent(tenant.id, {
+          id: customerId,
+          requiredBookingConsent: consentForms.requiredBookingConsent,
+          reminderConsent: consentForms.reminderConsent,
+          marketingConsent: consentForms.marketingConsent,
+          referralConsent: consentForms.referralConsent
+       });
+    }).catch(console.error);
 
     if (saveProfile) {
       customerService.saveCustomerProfile(tenant.id, {
@@ -759,11 +776,65 @@ const BookingPage: React.FC = () => {
                           {t.booking.form.save_details}
                        </span>
                     </label>
-                    <p className="text-xs text-gray-500 mt-2">
-                       {t.booking.form.privacy_notice} <a href="#" onClick={(e) => e.preventDefault()} className="text-accent hover:underline">{t.booking.form.privacy_link}</a>
-                    </p>
                  </div>
               )}
+
+              {/* Data Consent section */}
+              <div className="pt-2 pb-2 space-y-3 border-t border-gray-200 dark:border-slate-700 mt-4">
+                 
+                 <label className="flex gap-3 cursor-pointer items-start">
+                    <input 
+                       type="checkbox" 
+                       required
+                       className="mt-1 w-4 h-4 text-accent border-gray-300 rounded focus:ring-accent"
+                       checked={consentForms.requiredBookingConsent}
+                       onChange={(e) => setConsentForms({...consentForms, requiredBookingConsent: e.target.checked})}
+                    />
+                    <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight">
+                       Randevu oluşturmak ve gerektiğinde işletmenin benimle iletişime geçebilmesi için bilgilerimin kullanılmasını kabul ediyorum.* 
+                       <br/><a href="/#/privacy" target="_blank" rel="noopener noreferrer" className="text-accent underline inline-flex mt-1">Gizlilik sözleşmesini okudum</a>
+                    </span>
+                 </label>
+
+                 <label className="flex gap-3 cursor-pointer items-start">
+                    <input 
+                       type="checkbox" 
+                       className="mt-0.5 w-4 h-4 text-accent border-gray-300 rounded focus:ring-accent"
+                       checked={consentForms.reminderConsent}
+                       onChange={(e) => setConsentForms({...consentForms, reminderConsent: e.target.checked})}
+                    />
+                    <span className="text-xs text-gray-600 dark:text-gray-400">
+                       Randevu hatırlatmaları, onayları ve anket bildirimleri almak istiyorum.
+                    </span>
+                 </label>
+
+                 <label className="flex gap-3 cursor-pointer items-start">
+                    <input 
+                       type="checkbox" 
+                       className="mt-0.5 w-4 h-4 text-accent border-gray-300 rounded focus:ring-accent"
+                       checked={consentForms.marketingConsent}
+                       onChange={(e) => setConsentForms({...consentForms, marketingConsent: e.target.checked})}
+                    />
+                    <span className="text-xs text-gray-600 dark:text-gray-400">
+                       Kampanya, duyuru ve avantajlar için benimle SMS/E-posta yoluyla iletişime geçilmesini onaylıyorum.
+                    </span>
+                 </label>
+                 
+                 {(formData.referrerName || formData.campaignCode) && (
+                   <label className="flex gap-3 cursor-pointer items-start">
+                      <input 
+                         type="checkbox" 
+                         className="mt-0.5 w-4 h-4 text-accent border-gray-300 rounded focus:ring-accent"
+                         checked={consentForms.referralConsent}
+                         onChange={(e) => setConsentForms({...consentForms, referralConsent: e.target.checked})}
+                      />
+                      <span className="text-xs text-gray-600 dark:text-gray-400">
+                         Referans kampanyası kapsamında bilgilerimin (isim ve işlem) bu işletme tarafından ve referans olan kişiyle kısmen paylaşılmasını/takip edilmesini kabul ediyorum.
+                      </span>
+                   </label>
+                 )}
+
+              </div>
 
               <div className="pt-4">
                 <button
