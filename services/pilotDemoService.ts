@@ -135,19 +135,7 @@ const PILOT_APPOINTMENTS = [
 
 export const pilotDemoService = {
   
-  async seedAndEnterDemoContext() {
-    // Save previous state to restore later if needed
-    const prevTenant = localStorage.getItem('lari_active_tenant_id');
-    const prevSession = localStorage.getItem('lari_active_owner_session');
-    
-    // We do NOT overwrite lari_registered_tenants array, just the active one for the session
-    if (prevTenant && prevTenant !== DEMO_PILOT_TENANT_ID) {
-       localStorage.setItem('lari_saved_real_tenant_id', prevTenant);
-    }
-    if (prevSession && !prevSession.includes('user_pilot_owner')) {
-       localStorage.setItem('lari_saved_real_session', prevSession);
-    }
-    
+  async seedDemoDataOnly() {
     // Seed Data into dataprovider explicitly for `tenant_pilot_demo`
     await dataProvider.set(`randapp:${DEMO_PILOT_TENANT_ID}:branding`, PILOT_TENANT.branding);
     await dataProvider.set(`randapp:${DEMO_PILOT_TENANT_ID}:profile`, PILOT_BUSINESS_PROFILE);
@@ -171,7 +159,28 @@ export const pilotDemoService = {
     await dataProvider.set(`randapp:${DEMO_PILOT_TENANT_ID}:subscription`, mockSub);
     localStorage.setItem(`mock_subscription_${DEMO_PILOT_TENANT_ID}`, JSON.stringify(mockSub));
     
-    // Auth and tenant active
+    // Set allowed client-facing keys
+    localStorage.setItem('lari_demo_context', 'true');
+    localStorage.setItem('lari_active_demo_tenant_id', DEMO_PILOT_TENANT_ID);
+  },
+
+  async seedAndEnterDemoContext() {
+    // First ensure the demo data itself is fully seeded
+    await this.seedDemoDataOnly();
+
+    // Save previous state to restore later if needed
+    const prevTenant = localStorage.getItem('lari_active_tenant_id');
+    const prevSession = localStorage.getItem('lari_active_owner_session');
+    
+    // We do NOT overwrite lari_registered_tenants array, just the active one for the session
+    if (prevTenant && prevTenant !== DEMO_PILOT_TENANT_ID) {
+       localStorage.setItem('lari_saved_real_tenant_id', prevTenant);
+    }
+    if (prevSession && !prevSession.includes('user_pilot_owner')) {
+       localStorage.setItem('lari_saved_real_session', prevSession);
+    }
+    
+    // Auth and tenant active for OWNER
     localStorage.setItem('lari_active_tenant_id', DEMO_PILOT_TENANT_ID);
     localStorage.setItem('lari_active_owner_session', JSON.stringify(PILOT_USER));
     localStorage.setItem('lari_in_pilot_demo', 'true');
@@ -190,11 +199,17 @@ export const pilotDemoService = {
            created_at: new Date().toISOString()
        });
        localStorage.setItem('lari_registered_tenants', JSON.stringify(regArr));
-    }
+     }
+  },
+
+  async startPilotOwnerDemoSession() {
+     await this.seedAndEnterDemoContext();
   },
 
   async exitDemoContext() {
      localStorage.removeItem('lari_in_pilot_demo');
+     localStorage.removeItem('lari_demo_context');
+     localStorage.removeItem('lari_active_demo_tenant_id');
      
      const savedTenant = localStorage.getItem('lari_saved_real_tenant_id');
      if (savedTenant) {

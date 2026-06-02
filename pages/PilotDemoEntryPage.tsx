@@ -8,11 +8,16 @@ const PilotDemoEntryPage: React.FC = () => {
 
   useEffect(() => {
     const initDemo = async () => {
-      await pilotDemoService.seedAndEnterDemoContext();
+      await pilotDemoService.seedDemoDataOnly();
       setLoading(false);
     };
     initDemo();
   }, []);
+
+  const handleStartOwnerDemo = async () => {
+     await pilotDemoService.startPilotOwnerDemoSession();
+     navigate('/admin');
+  };
 
   const openInNewTab = (path: string) => {
     const isBrowser = (import.meta as any).env.VITE_ROUTER_MODE === 'browser';
@@ -77,7 +82,7 @@ const PilotDemoEntryPage: React.FC = () => {
                 Gelen randevuları yönetin, müşteri hafızasını inceleyin ve işletme performansınızı salon sahibi olarak analiz edin.
              </p>
              <button 
-                onClick={() => navigate('/admin')}
+                onClick={handleStartOwnerDemo}
                 className="w-full py-4 px-6 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition-colors shadow-lg shadow-indigo-600/20 text-center"
              >
                 Admin Paneline Git

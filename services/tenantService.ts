@@ -79,9 +79,9 @@ export const tenantService = {
     
     if (isPilotDemoRoute || activeTenantId === 'tenant_pilot_demo') {
         try {
-          // Dynamically import and seed if not already done or explicitly on route
+          // Dynamically import and seed data only, without establishing an owner session
           import('./pilotDemoService').then(({ pilotDemoService }) => {
-            pilotDemoService.seedAndEnterDemoContext();
+            pilotDemoService.seedDemoDataOnly();
           });
         } catch (e) {
           console.error("Dynamic seed failed", e);
