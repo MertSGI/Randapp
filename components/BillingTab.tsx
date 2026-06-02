@@ -26,12 +26,12 @@ const BillingTab: React.FC = () => {
     // Check for callback parameters from payment provider
     const urlParams = new URLSearchParams(window.location.hash.split('?')[1] || '');
     if (urlParams.get('checkout') === 'cancelled') {
-        const trLang = translations[language || 'tr']?.billing;
+        const trLang = translations[language || 'tr']?.billing as any;
         setCheckoutError(trLang?.checkout_cancelled_msg || 'Güvenli ödeme işlemi iptal edildi.');
         window.history.replaceState(null, '', window.location.pathname + window.location.search + '#/admin?tab=abonelik');
     }
     if (urlParams.get('checkout') === 'success') {
-        const trLang = translations[language || 'tr']?.billing;
+        const trLang = translations[language || 'tr']?.billing as any;
         setCheckoutMessage(trLang?.checkout_success_msg || 'Ödeme başarıyla tamamlandı. Aboneliğiniz güncellendi.');
         window.history.replaceState(null, '', window.location.pathname + window.location.search + '#/admin?tab=abonelik');
         
@@ -134,7 +134,7 @@ const BillingTab: React.FC = () => {
 
         {checkoutMessage && (
           <div className="mb-6 bg-green-50 border border-green-500 p-4 rounded-md">
-            <h3 className="text-green-900 font-bold">{t.billing.checkout_success || 'Başarılı'}</h3>
+            <h3 className="text-green-900 font-bold">{(t.billing as any).checkout_success || 'Başarılı'}</h3>
             <p className="text-green-800 text-sm mt-1">{checkoutMessage}</p>
           </div>
         )}

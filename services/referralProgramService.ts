@@ -182,32 +182,23 @@ export const referralProgramService = {
     const refs = getStorage<PlatformReferral>(STORAGE_KEYS.REFERRALS, []);
     const program = this.getActivePlatformReferralProgram();
     
-    // find all qualified referrals for this referrer
-    const qualifiedRefs = refs.filter(r => r.referrerTenantId === referrerTenantId && r.status === 'qualified');
-    
-    // Check which ones have not been rewarded
-    const unrewarded = qualifiedRefs.filter(r => !r.rewardedAt);
-    
-    // We apply base reward for each newly qualified
-    for (const ref of unrewarded) {
-      this.applyReferralReward(referrerTenantId, ref.id, program.rewardPerQualifiedReferralMonths, 'base');
-    }
-    
-    // Check milestones
-    const allRewardedOrQualified = refs.filter(r => r.referrerTenantId === referrerTenantId && (r.status === 'qualified' || r.status === 'rewarded'));
-    const count = allRewardedOrQualified.length;
-    
-    if (count > 0 && count % program.milestoneRewardThreshold === 0) {
-       // Only apply milestone if we just crossed the threshold on this exact evaluation
-       // To be safe, we check if we already granted a milestone ledger for this threshold
-       const ledgers = getStorage<ReferralRewardLedger>(STORAGE_KEYS.LEDGERS, []);
-       const milestoneGranted = ledgers.filter(l => l.tenantId === referrerTenantId && l.rewardType === 'manual_credit' && l.monthsGranted === program.milestoneRewardMonths).length;
-       
-       const thresholdsCrossed = Math.floor(count / program.milestoneRewardThreshold);
-       if (thresholdsCrossed > milestoneGranted) {
-           // grant milestone
-           this.applyReferralReward(referrerTenantId, undefined, program.milestoneRewardMonths, 'milestone');
-       }
+    // Sort all qualified/rewarded referrals by creation date for stable order
+    const tenantQualifiedRefs = refs
+      .filter(r => r.referrerTenantId === referrerTenantId && (r.status === 'qualified' || r.status === 'rewarded'))
+      .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+
+    let count = 0;
+    for (const ref of tenantQualifiedRefs) {
+      count++;
+      if (ref.status === 'qualified' && !ref.rewardedAt) {
+        // Ordinal position `count` determines the exact reward
+        if (count % program.milestoneRewardThreshold === 0) {
+           const milestoneReward = program.milestoneRewardMonths - (program.milestoneRewardThreshold - 1) * program.rewardPerQualifiedReferralMonths;
+           this.applyReferralReward(referrerTenantId, ref.id, milestoneReward, 'milestone');
+        } else {
+           this.applyReferralReward(referrerTenantId, ref.id, program.rewardPerQualifiedReferralMonths, 'base');
+        }
+      }
     }
   },
 
@@ -227,7 +218,6 @@ export const referralProgramService = {
     ledgers.push(newLedger);
     setStorage(STORAGE_KEYS.LEDGERS, ledgers);
     
-    // Mark referral as rewarded if it's a base reward
     if (referralId) {
        const refs = getStorage<PlatformReferral>(STORAGE_KEYS.REFERRALS, []);
        const refIndex = refs.findIndex(r => r.id === referralId);
@@ -238,9 +228,64 @@ export const referralProgramService = {
           setStorage(STORAGE_KEYS.REFERRALS, refs);
        }
     }
-    
-    // Send hook/notification
-    // e.g. "You've earned X months free!"
+  },
+
+  listAllPlatformReferrals(): PlatformReferral[] {
+    return getStorage<PlatformReferral>(STORAGE_KEYS.REFERRALS, []);
+  },
+
+  listAllRewardLedgers(): ReferralRewardLedger[] {
+    return getStorage<ReferralRewardLedger>(STORAGE_KEYS.LEDGERS, []);
+  },
+
+  updateReferralStatus(referralId: string, status: PlatformReferral['status'], notes?: string): PlatformReferral | null {
+    const refs = getStorage<PlatformReferral>(STORAGE_KEYS.REFERRALS, []);
+    const index = refs.findIndex(r => r.id === referralId);
+    if (index > -1) {
+       refs[index].status = status;
+       if (notes !== undefined) refs[index].notes = notes;
+       refs[index].updatedAt = new Date().toISOString();
+       if (status === 'qualified') {
+         refs[index].qualifiedAt = new Date().toISOString();
+       }
+       setStorage(STORAGE_KEYS.REFERRALS, refs);
+       
+       if (status === 'qualified') {
+         this.evaluateRewardsForReferrer(refs[index].referrerTenantId);
+       }
+       return refs[index];
+    }
+    return null;
+  },
+
+  updateLedgerStatus(ledgerId: string, status: ReferralRewardLedger['status']): ReferralRewardLedger | null {
+    const ledgers = getStorage<ReferralRewardLedger>(STORAGE_KEYS.LEDGERS, []);
+    const index = ledgers.findIndex(l => l.id === ledgerId);
+    if (index > -1) {
+       ledgers[index].status = status;
+       if (status === 'applied') {
+         ledgers[index].appliedAt = new Date().toISOString();
+       }
+       setStorage(STORAGE_KEYS.LEDGERS, ledgers);
+       return ledgers[index];
+    }
+    return null;
+  },
+
+  manuallyCreateRewardLedger(tenantId: string, months: number, type: 'free_months' | 'manual_credit'): ReferralRewardLedger {
+    const ledgers = getStorage<ReferralRewardLedger>(STORAGE_KEYS.LEDGERS, []);
+    const newLedger: ReferralRewardLedger = {
+       id: `ledg_${Date.now()}`,
+       tenantId,
+       rewardType: type,
+       monthsGranted: months,
+       status: 'applied',
+       appliedAt: new Date().toISOString(),
+       createdAt: new Date().toISOString()
+    };
+    ledgers.push(newLedger);
+    setStorage(STORAGE_KEYS.LEDGERS, ledgers);
+    return newLedger;
   },
 
   listTenantReferrals(tenantId: string): PlatformReferral[] {

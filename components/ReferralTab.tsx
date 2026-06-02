@@ -32,6 +32,10 @@ const ReferralTab: React.FC = () => {
   const referralCode = tenant?.id ? referralProgramService.createReferralCode(tenant.id) : '';
   const referralLink = `${window.location.origin}/#/register?ref=${referralCode}&planId=${planId}`;
 
+  const program = referralProgramService.getActivePlatformReferralProgram();
+  const qualifiedCount = platformReferrals.filter(r => r.status === 'qualified' || r.status === 'rewarded').length;
+  const earnedMonths = platformLedgers.reduce((acc, curr) => acc + curr.monthsGranted, 0);
+
   return (
     <div className="space-y-10">
     

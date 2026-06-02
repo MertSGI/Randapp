@@ -386,3 +386,37 @@ export const BUSINESS_HOURS = {
   end: 21, // 21:00
   interval: 45, // minutes (adjusted for barber slots)
 };
+
+export interface ReferralCampaign {
+  id: string;
+  tenantId: string;
+  campaignType: string;
+  title: string;
+  description: string;
+  rewardType: string;
+  rewardValue: string;
+  active: boolean;
+  createdBy: string;
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface ReferralCode {
+  id: string;
+  campaignId: string;
+  referrerType: 'customer' | 'tenant';
+  referrerId: string;
+  code: string;
+  usageCount: number;
+  status: 'active' | 'inactive';
+}
+
+export interface ReferralLead {
+  id: string;
+  campaignId: string;
+  referralCode: string;
+  leadName: string;
+  leadEmail?: string;
+  status: 'pending' | 'converted';
+  createdAt: string;
+}
