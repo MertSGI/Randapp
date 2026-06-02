@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "timestamp": "2026-06-01T20:19:28.872Z",
+    "timestamp": "2026-06-02T05:14:09.913Z",
     "baseUrl": "http://localhost:4040",
     "viewports": "Mobile(390), Desktop(1440)",
     "roles": [
@@ -13,28 +13,28 @@
   "routeMatrix": [
     {
       "path": "/#/",
-      "pass": true,
-      "note": "Found expected text"
+      "pass": false,
+      "note": "Missing typical terms"
     },
     {
       "path": "/#/features",
-      "pass": true,
-      "note": "Found expected text"
+      "pass": false,
+      "note": "Missing typical terms"
     },
     {
       "path": "/#/pricing",
-      "pass": true,
-      "note": "Found expected text"
+      "pass": false,
+      "note": "Missing typical terms"
     },
     {
       "path": "/#/register?planId=professional",
-      "pass": true,
-      "note": "Found expected text"
+      "pass": false,
+      "note": "Missing typical terms"
     },
     {
       "path": "/#/book",
-      "pass": true,
-      "note": "Found expected text"
+      "pass": false,
+      "note": "Missing typical terms"
     },
     {
       "path": "/#/super-admin/go-live",
@@ -44,10 +44,10 @@
   ],
   "flowMatrix": [
     {
-      "flow": "Registration → tenant shell created → checkout handoff",
-      "pass": true,
-      "evidence": "Checkout handoff invoked. Current URL: http://localhost:4040/#/login",
-      "risk": "None"
+      "flow": "Registration → checkout handoff",
+      "pass": false,
+      "evidence": "page.fill: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('input[name=\"ownerName\"]')\n",
+      "risk": "High failure"
     },
     {
       "flow": "admin setup -> site preview consistency",

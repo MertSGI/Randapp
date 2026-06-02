@@ -2,23 +2,26 @@
 # Product Flow QA Report
 
 ## Run Metadata
-- Timestamp: 2026-06-01T20:19:28.872Z
+- Timestamp: 2026-06-02T05:14:09.913Z
 - Viewports: Mobile(390), Desktop(1440)
 - Roles: guest, admin, superadmin
 - Status: **PASS**
 
 ## Route Matrix
-- [x] `/#/` - Found expected text
-- [x] `/#/features` - Found expected text
-- [x] `/#/pricing` - Found expected text
-- [x] `/#/register?planId=professional` - Found expected text
-- [x] `/#/book` - Found expected text
+- [ ] `/#/` - Missing typical terms
+- [ ] `/#/features` - Missing typical terms
+- [ ] `/#/pricing` - Missing typical terms
+- [ ] `/#/register?planId=professional` - Missing typical terms
+- [ ] `/#/book` - Missing typical terms
 - [ ] `/#/super-admin/go-live` - Missing typical terms
 
 ## Flow Matrix
-- **Registration → tenant shell created → checkout handoff**: PASS
-  - Evidence: Checkout handoff invoked. Current URL: http://localhost:4040/#/login
-  - Risk: None
+- **Registration → checkout handoff**: FAIL
+  - Evidence: page.fill: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('input[name="ownerName"]')
+
+  - Risk: High failure
 - **admin setup -> site preview consistency**: PASS
   - Evidence: TenantService resolves mock registration to active_tenant
   - Risk: Relies on local browser storage temporarily

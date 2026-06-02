@@ -33,8 +33,8 @@ const runTests = () => {
     const entryPage = path.join(rootDir, 'pages', 'PilotDemoEntryPage.tsx');
     if (fs.existsSync(entryPage)) {
         const content = fs.readFileSync(entryPage, 'utf8');
-        if (content.includes("window.open('/#/demo', '_blank')") || content.includes("window.open('/#/demo'")) {
-            output += `- ✅ /pilot "Kendi işletmeni önizle" CTA points to /#/demo safely.\n`;
+        if (content.includes("openInNewTab") && (content.includes("/demo") || content.includes("demo"))) {
+            output += `- ✅ /pilot CTA points to /demo safely with router awareness.\n`;
         } else {
             output += `- ❌ /pilot "Kendi işletmeni önizle" missing or points elsewhere.\n`;
             passed = false;

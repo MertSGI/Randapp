@@ -44,7 +44,7 @@ const checks = [
   },
   {
     file: path.join(SRC_DIR, 'services', 'subscriptionService.ts'),
-    strings: ['entitlementService.getLimit(sub.planId, \'max_staff\')', 'entitlementService.getLimit(sub.planId, \'max_services\')']
+    strings: ['entitlementService.getLimit(plan.id, \'maxStaff\')', 'entitlementService.getLimit(plan.id, \'maxServices\')']
   },
   {
     file: path.join(SRC_DIR, 'components', 'CustomerMemoryTab.tsx'),

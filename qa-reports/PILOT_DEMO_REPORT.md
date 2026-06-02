@@ -5,7 +5,7 @@
 - ✅ No 7-day trial copy found, only 14-day.
 
 ## 2. Pilot & Demo Routing
-- ✅ /pilot "Kendi işletmeni önizle" CTA points to /#/demo safely.
+- ✅ /pilot CTA points to /demo safely with router awareness.
 
 ## 3. Pilot Account Suspended Fix
 - ✅ /pilot customer booking view correctly returns pilot tenant bypassing host resolution.

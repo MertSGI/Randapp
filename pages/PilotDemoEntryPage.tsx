@@ -14,6 +14,12 @@ const PilotDemoEntryPage: React.FC = () => {
     initDemo();
   }, []);
 
+  const openInNewTab = (path: string) => {
+    const isBrowser = (import.meta as any).env.VITE_ROUTER_MODE === 'browser';
+    const url = isBrowser ? path : `/#${path}`;
+    window.open(url, '_blank');
+  };
+
   if (loading) {
      return (
         <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
@@ -51,7 +57,7 @@ const PilotDemoEntryPage: React.FC = () => {
                 onClick={() => {
                    // Ensure tenant applies in public mode
                    localStorage.setItem('lari_active_tenant_id', DEMO_PILOT_TENANT_ID);
-                   window.open(`/#/${DEMO_PILOT_TENANT_ID}`, '_blank');
+                   openInNewTab(`/${DEMO_PILOT_TENANT_ID}`);
                 }}
                 className="w-full py-4 px-6 bg-slate-900 dark:bg-slate-700 hover:bg-slate-800 dark:hover:bg-slate-600 text-white font-bold rounded-xl transition-colors text-center"
              >
@@ -90,7 +96,7 @@ const PilotDemoEntryPage: React.FC = () => {
              </p>
              <button 
                 onClick={() => {
-                   window.open('/#/demo', '_blank');
+                   openInNewTab('/demo');
                 }}
                 className="w-full py-4 px-6 bg-pink-600 hover:bg-pink-700 text-white font-bold rounded-xl transition-colors shadow-lg shadow-pink-600/20 text-center"
              >
