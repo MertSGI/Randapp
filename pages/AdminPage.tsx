@@ -19,6 +19,7 @@ import CustomerMemoryTab from '../components/CustomerMemoryTab';
 import ReferralTab from '../components/ReferralTab';
 import AdminSettingsTab from '../components/AdminSettingsTab';
 import { ImageUpload } from '../components/ImageUpload';
+import { onboardingChecklistService, OnboardingReport } from '../services/onboardingChecklistService';
 
 const AdminPage: React.FC = () => {
   const navigate = useNavigate();
@@ -48,6 +49,7 @@ const AdminPage: React.FC = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [staffList, setStaffList] = useState<Staff[]>([]);
   const [servicesList, setServicesList] = useState<Service[]>([]);
+  const [onboardingReport, setOnboardingReport] = useState<OnboardingReport | null>(null);
   const [aiAnalysis, setAiAnalysis] = useState<string>('');
   const [loadingAnalysis, setLoadingAnalysis] = useState(false);
   const [targetAppointmentId, setTargetAppointmentId] = useState<string | null>(null);
@@ -99,6 +101,13 @@ const AdminPage: React.FC = () => {
 
     const servicesData = await getServices(tenant.id);
     setServicesList(servicesData);
+
+    try {
+      const report = await onboardingChecklistService.getOnboardingReport(tenant.id);
+      setOnboardingReport(report);
+    } catch (e) {
+      console.error("Error loading onboarding report:", e);
+    }
   };
 
   const handleCancel = async (id: string) => {
@@ -409,17 +418,97 @@ const AdminPage: React.FC = () => {
                  </button>
              </div>
           </div>
-          
-          {/* Setup Reminder */}
-          {(!tenant?.branding?.primaryColor || servicesList.length === 0 || staffList.length === 0) && (
-            <div className="bg-yellow-50 dark:bg-yellow-900/40 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 flex flex-col sm:flex-row justify-between sm:items-center gap-4 shadow-sm">
-              <div>
-                <h3 className="font-bold text-yellow-800 dark:text-yellow-400">Kurulum Tamamlanmadı</h3>
-                <p className="text-sm text-yellow-700 dark:text-yellow-500 mt-1">Müşterilerinizin randevu alabilmesi için işletme kurulumunu tamamlamanız gerekmektedir.</p>
+                 {/* Enhanced Professional Setup & Progress Banner */}
+          {onboardingReport && (onboardingReport.progressPercent < 100 || !onboardingReport.isPublished) && (
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5 shadow-sm space-y-4">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                  <h3 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <span className="flex h-2.5 w-2.5 rounded-full bg-blue-600"></span>
+                    İşletme Kurulum Rehberi
+                  </h3>
+                  <p className="text-xs text-gray-500 dark:text-gray-450 mt-1">
+                    Sitenizin yayına alınması ve online randevu kabul etmesi için kuruluma devam edin.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 animate-pulse">
+                  <span className="text-xs font-semibold px-2.5 py-1 bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-450 rounded-full">
+                    Kurulum %{onboardingReport.progressPercent} Tamamlandı
+                  </span>
+                </div>
               </div>
-              <button onClick={() => setActiveTab('setup')} className="whitespace-nowrap px-4 py-2 bg-yellow-100 text-yellow-800 hover:bg-yellow-200 dark:bg-yellow-700 dark:hover:bg-yellow-600 dark:text-yellow-100 rounded-md text-sm font-medium transition-colors">
-                Kuruluma Devam Et
-              </button>
+
+              {/* Progress Bar */}
+              <div className="w-full bg-gray-100 dark:bg-slate-700 rounded-full h-2">
+                <div 
+                  className="bg-blue-600 h-2 rounded-full transition-all duration-500 ease-out" 
+                  style={{ width: `${onboardingReport.progressPercent}%` }}
+                ></div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+                {/* Next Action */}
+                <div className="p-3 bg-slate-50 dark:bg-slate-900/50 rounded-lg border border-gray-150 dark:border-slate-800">
+                  <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider block">Sıradaki Adım</span>
+                  {onboardingReport.nextStep ? (
+                    <div className="mt-1">
+                      <span className="text-sm font-semibold text-gray-800 dark:text-slate-205">{onboardingReport.nextStep.title}</span>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{onboardingReport.nextStep.description}</p>
+                    </div>
+                  ) : (
+                    <div className="mt-1">
+                      <span className="text-sm font-semibold text-green-700 dark:text-green-500">Tüm Adımlar Tamam!</span>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Yayın incelemesine göndermek üzere kurulum sihirbazının son adımına geçebilirsiniz.</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Publish & Verification Status */}
+                <div className="p-3 bg-slate-50 dark:bg-slate-900/50 rounded-lg border border-gray-150 dark:border-slate-800">
+                  <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider block">Yayın Uygunluğu</span>
+                  <div className="mt-1 text-xs">
+                    {onboardingReport.pendingCheckout ? (
+                      <p className="text-red-655 dark:text-red-400 font-medium">
+                        Deneme süresini başlatmak için ödeme doğrulaması tamamlanmalıdır.
+                      </p>
+                    ) : onboardingReport.canSubmitForReview ? (
+                      <p className="text-green-700 dark:text-green-400 font-medium">
+                        Tüm zorunlu adımlar tamamlandı. Yayın incelemesine gönderebilirsiniz!
+                      </p>
+                    ) : onboardingReport.isPendingReview ? (
+                      <p className="text-blue-600 dark:text-blue-450 font-medium">
+                        Siteniz LARİ ekibi tarafından incelemede. Kısa süre içinde yayında olacaktır!
+                      </p>
+                    ) : onboardingReport.isPublished ? (
+                      <p className="text-green-700 dark:text-green-405 font-medium">
+                        Siteniz aktif ve yayında! Online randevular açık.
+                      </p>
+                    ) : (
+                      <p className="text-gray-600 dark:text-gray-400">
+                        Yayın incelemesine gönderebilmek için temel işletme bilgileri, hizmet, uzman ve ödeme doğrulaması tamamlanmalıdır.
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex justify-end gap-3 pt-2">
+                {onboardingReport.nextStep?.targetTab && (
+                  <button 
+                    onClick={() => setActiveTab(onboardingReport.nextStep?.targetTab)}
+                    className="px-4 py-2 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-lg text-xs font-semibold transition"
+                  >
+                    Hemen Tamamla
+                  </button>
+                )}
+                <button 
+                  onClick={() => setActiveTab('setup')}
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold shadow-sm transition"
+                >
+                  Kurulum Sihirbazını Aç
+                </button>
+              </div>
             </div>
           )}
 

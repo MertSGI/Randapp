@@ -4,9 +4,21 @@ This document describes the intended architecture for generating and managing pu
 
 ## 1. Flow Overview
 
-1. **Purchase/Trial**: A professional completes checkout or begins a 14-day trial.
-2. **Onboarding Wizard**: They complete their business setup (Adding services, staff, branding, contact info, and choosing a public URL slug).
-3. **Verification Gate**: Business submits profile for review. `publicSiteStatus` becomes `pending_review`. Verification checks run against prohibited business policies.
+1. **Purchase/Trial**: A professional completes checkout or begins a 14-day card-required trial.
+2. **Onboarding Checklist (10 Steps)**: They complete a structured, 10-step setup checklist with real-time feedback and draft persistence:
+   - **İşletme Bilgileri**: Official business name, category, and city/district.
+   - **İletişim & Konum**: Phone, WhatsApp, and full open address.
+   - **Hizmet Kataloğu**: En least 1 active service.
+   - **Çalışanlar**: En least 1 active staff member.
+   - **Çalışma Saatleri**: Configured opening and closing hours.
+   - **Marka & Tasarım**: Accent brand colour, logo, and about description.
+   - **Randevu Kuralları**: Auto-approval preference and cancellation terms.
+   - **Ödeme Doğrulaması**: Valid active or trialing trial subscription. `pending_checkout` is blocked.
+   - **Önizleme & Test**: An interactive customer page preview simulator on the dashboard.
+   - **Yayın İncelemesi**: Submit to LARİ team for and review.
+3. **Admin Dashboard Progress Tracker**: A bento-style setup banner on the dashboard shows real-time progress %, next steps CTAs, and publish eligibility clearly in Turkish.
+4. **Draft Recovery**: Unsubmitted onboarding inputs are mirrored directly to standard `localStorage` to safeguard against reloading data loss.
+5. **Verification Gate**: Business submits profile for review. `publicSiteStatus` becomes `pending_review`. Verification checks run against prohibited business policies.
 4. **Tenant & Profile Updates**:
    - `tenant` table holds core details (status, `publicSiteStatus`, `verificationStatus`).
    - `salon_business_profiles` table holds rich display data.

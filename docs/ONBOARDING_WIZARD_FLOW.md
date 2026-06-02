@@ -4,26 +4,30 @@ The onboarding wizard guides salon owners through setting up their salon on the 
 
 ## Steps
 
-1. **Salon Information**: Collect basic details.
-   - **Required**: Business Name, WhatsApp Number.
-   - *Optional*: Instagram Handle, Address.
-2. **Branding & Design**: Customize the look and feel.
-   - **Required**: Primary Color (defaults to black).
-   - *Optional*: Logo URL, Footer Text.
-3. **Services**: Setting up the services offered.
-   - The wizard prompts the user to add *at least one active service*. It displays currently added services and directs the user to the `Services` tab for management.
-4. **Staff / Specialists**: Setting up the team.
-   - The wizard prompts the user to add *at least one active staff member*. Displays currently added staff and directs the user to the `Staff` tab for management.
-5. **Business Hours**: Operational hours.
-   - Currently, standard hours (09:00 - 18:00) are automatically applied as a placeholder. Detailed configuration will come in a later phase.
-6. **Test Appointment**: Verification.
-   - The owner is encouraged to generate a test appointment on their own booking page to verify settings. The booking page link is provided.
-7. **Go-Live Readiness**: Final review and submission.
-   - Validates that Steps 1, 3, and 4 are complete.
-   - If complete, the owner can "Mark as Ready for Review".
-   - The Super Admin will then review and officially approve the tenant to go live.
+1. **İşletme Bilgileri (Salon Name & Category)**:
+   - **Required**: Salon Name, Category (Select), City, District.
+2. **İletişim & Konum**:
+   - **Required**: WhatsApp Number, Open Address.
+   - *Optional*: Phone (Alternative).
+3. **Hizmet Kataloğu**:
+   - **Required**: At least one active service. Features inline quick service add.
+4. **Çalışanlar**:
+   - **Required**: At least one active staff member. Features inline quick staff add.
+5. **Çalışma Saatleri**:
+   - **Required**: Selected operational week days, startup and closure times.
+6. **Marka & Tasarım**:
+   - *Optional*: Brand accent color, logo url, and public short about description.
+7. **Randevu Kuralları**:
+   - *Optional*: Auto-approve checkbox, custom cancellation policy.
+8. **Ödeme Doğrulaması**:
+   - **Required**: Trial subscription is fully verified or card added. Blocked if `pending_checkout`.
+9. **Önizleme & Test**:
+   - **Required**: High-fidelity live interactive micro-preview simulator showing how the public mobile app/site renders and testing slot selection.
+10. **Yayına Al**:
+    - **Required**: Publishes request submit checklist which invokes verification and safety gates.
 
-## State Management
-- Step completion is derived dynamically from tenant data, service arrays, and staff arrays.
-- Validation checks are enforced before allowing progression or clicking "Ready for Review".
-- If the tenant is missing required data, `readiness.blockingReasons` are displayed in Step 7.
+## State Management & Features
+- **Cheklisi Service**: `/services/onboardingChecklistService.ts` computes exact progress percentages and next actionable steps dynamically.
+- **Draft Recovery**: Unsaved drafts are written instantly to `localStorage` representing complete reload-data-loss protection.
+- **Live Preview Simulator**: Step 9 simulates customer booking directly within the onboarding wizard for quick testing.
+- **Payment Verification**: Integrates securely with billing states, enforcing trial or card additions before submission.

@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useTenant } from '../contexts/TenantContext';
 import { Staff, Service, Appointment } from '../types';
 import { goLiveService, GoLiveReadiness } from '../services/goLiveService';
-
 import { createService } from '../services/serviceCatalogService';
 import { createStaff } from '../services/staffService';
 import { businessVerificationService } from '../services/businessVerificationService';
+import { onboardingChecklistService, OnboardingReport } from '../services/onboardingChecklistService';
+import { businessProfileService } from '../services/businessProfileService';
+import { useDialog } from '../contexts/DialogContext';
 
 interface OnboardingWizardProps {
   staffList: Staff[];
@@ -23,140 +25,202 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   onNavigateToTab
 }) => {
   const { tenant, refreshTenant, branding } = useTenant();
-  
-  // States based on previous setup
-  const [setupSalonName, setSetupSalonName] = useState(tenant?.name || '');
-  const [setupLogoUrl, setSetupLogoUrl] = useState(tenant?.branding?.logoUrl || '');
-  const [setupPrimaryColor, setSetupPrimaryColor] = useState(tenant?.branding?.primaryColor || '#000000');
-  const [setupWhatsapp, setSetupWhatsapp] = useState(tenant?.branding?.whatsappNumber || '');
-  const [setupInstagram, setSetupInstagram] = useState(tenant?.branding?.instagramUrl || '');
-  const [setupAddress, setSetupAddress] = useState(tenant?.branding?.address || '');
-  const [setupFooter, setSetupFooter] = useState(tenant?.branding?.footerText || '');
-  const [setupSaving, setSetupSaving] = useState(false);
-  const [internalNotes, setInternalNotes] = useState('');
-  
+  const { alert: showAlert, confirm: showConfirm } = useDialog();
+
   const [activeStep, setActiveStep] = useState(1);
+  const [onboardingReport, setOnboardingReport] = useState<OnboardingReport | null>(null);
   const [readiness, setReadiness] = useState<GoLiveReadiness | null>(null);
+  const [setupSaving, setSetupSaving] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
 
-  // New states for business profile
-  const [profileShortDesc, setProfileShortDesc] = useState('');
-  const [profileAddress, setProfileAddress] = useState('');
-  const [profileCoverImages, setProfileCoverImages] = useState<string[]>([]);
+  // Draft forms state - recovery from localStorage or DB values
+  const [setupSalonName, setSetupSalonName] = useState(() => localStorage.getItem('lari_onboarding_salonName') || tenant?.name || '');
+  const [profileCategory, setProfileCategory] = useState(() => localStorage.getItem('lari_onboarding_category') || '');
+  const [profileCity, setProfileCity] = useState(() => localStorage.getItem('lari_onboarding_city') || 'İstanbul');
+  const [profileDistrict, setProfileDistrict] = useState(() => localStorage.getItem('lari_onboarding_district') || '');
 
-  // Quick add states
+  const [setupWhatsapp, setSetupWhatsapp] = useState(() => localStorage.getItem('lari_onboarding_whatsapp') || tenant?.branding?.whatsappNumber || '');
+  const [setupPhone, setSetupPhone] = useState(() => localStorage.getItem('lari_onboarding_phone') || '');
+  const [profileAddress, setProfileAddress] = useState(() => localStorage.getItem('lari_onboarding_address') || tenant?.branding?.address || '');
+
   const [newServiceName, setNewServiceName] = useState('');
   const [newServicePrice, setNewServicePrice] = useState('500');
   const [newServiceDuration, setNewServiceDuration] = useState('60');
-  const [newServiceActive, setNewServiceActive] = useState(true);
-  
+
   const [newStaffName, setNewStaffName] = useState('');
-  const [newStaffTitle, setNewStaffTitle] = useState('Uzman');
-  const [newStaffActive, setNewStaffActive] = useState(true);
-  
-  const [isAdding, setIsAdding] = useState(false);
+  const [newStaffTitle, setNewStaffTitle] = useState('Uzman Saç Tasarımcı');
 
-  // Business logic step completed checks
-  const isInfoCompleted = !!setupSalonName && !!setupWhatsapp; // Enforced whatsapp here based on prompt
-  const isBrandingCompleted = !!setupPrimaryColor;
-  const isProfileCompleted = !!profileShortDesc && !!profileAddress;
-  const isServicesCompleted = servicesList.some(s => s.active);
-  const isStaffCompleted = staffList.some(s => s.active);
-  const isTestApptCompleted = appointments.length > 0;
+  // Availability state
+  const [activeDays, setActiveDays] = useState<string[]>(() => {
+    const saved = localStorage.getItem('lari_onboarding_activeDays');
+    return saved ? JSON.parse(saved) : ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'];
+  });
+  const [startTime, setStartTime] = useState(() => localStorage.getItem('lari_onboarding_startTime') || '09:00');
+  const [endTime, setEndTime] = useState(() => localStorage.getItem('lari_onboarding_endTime') || '20:00');
 
+  // Branding states
+  const [setupLogoUrl, setSetupLogoUrl] = useState(() => localStorage.getItem('lari_onboarding_logoUrl') || tenant?.branding?.logoUrl || '');
+  const [setupPrimaryColor, setSetupPrimaryColor] = useState(() => localStorage.getItem('lari_onboarding_primaryColor') || tenant?.branding?.primaryColor || '#14b8a6');
+  const [profileShortDesc, setProfileShortDesc] = useState(() => localStorage.getItem('lari_onboarding_shortDesc') || '');
+
+  // Booking rules states
+  const [autoApprove, setAutoApprove] = useState(() => localStorage.getItem('lari_onboarding_autoApprove') !== 'false');
+  const [cancelPolicy, setCancelPolicy] = useState(() => localStorage.getItem('lari_onboarding_cancelPolicy') || 'Son 24 saate kadar ücretsiz iptal edilebilir.');
+
+  // Interactive Live Preview Simulation State
+  const [selectedPreviewService, setSelectedPreviewService] = useState<string | null>(null);
+  const [selectedPreviewStaff, setSelectedPreviewStaff] = useState<string | null>(null);
+  const [selectedPreviewTime, setSelectedPreviewTime] = useState<string | null>(null);
+  const [previewBookingStatus, setPreviewBookingStatus] = useState<'idle' | 'booked'>('idle');
+
+  // Synchronize dynamic updates with local state & recover half-entered data
   useEffect(() => {
     if (tenant) {
-      setSetupSalonName(tenant.name || '');
-      setSetupLogoUrl(tenant.branding?.logoUrl || '');
-      setSetupPrimaryColor(tenant.branding?.primaryColor || '#000000');
-      setSetupWhatsapp(tenant.branding?.whatsappNumber || '');
-      setSetupInstagram(tenant.branding?.instagramUrl || '');
-      setSetupAddress(tenant.branding?.address || '');
-      setSetupFooter(tenant.branding?.footerText || '');
-      
-      goLiveService.getGoLiveReadiness(tenant.id).then(setReadiness);
+      if (!setupSalonName) setSetupSalonName(tenant.name || '');
+      if (!setupWhatsapp) setSetupWhatsapp(tenant.branding?.whatsappNumber || '');
+      if (!setupPrimaryColor) setSetupPrimaryColor(tenant.branding?.primaryColor || '#14b8a6');
+      if (!profileAddress) setProfileAddress(tenant.branding?.address || '');
 
-      // Load profile info for onboarding step
-      import('../services/businessProfileService').then(({ businessProfileService }) => {
-         businessProfileService.getBusinessProfile(tenant.id).then(prof => {
-            if (prof) {
-               setProfileShortDesc(prof.short_description || '');
-               setProfileAddress(prof.address || '');
-               if (prof.cover_images) setProfileCoverImages(prof.cover_images);
-               else if (prof.cover_image_url) setProfileCoverImages([prof.cover_image_url]);
-            }
-         });
+      businessProfileService.getBusinessProfile(tenant.id).then(prof => {
+        if (prof) {
+          if (!profileCategory) setProfileCategory(prof.business_category || 'Güzellik Salonu');
+          if (!profileCity) setProfileCity(prof.city || 'İstanbul');
+          if (!profileDistrict) setProfileDistrict(prof.district || '');
+          if (!profileShortDesc) setProfileShortDesc(prof.short_description || '');
+          if (!setupPhone) setSetupPhone(prof.phone || '');
+        }
       });
-    }
-  }, [tenant, servicesList, staffList, appointments]);
 
-  const handleSaveInfo = async (e: React.FormEvent) => {
+      refreshReport();
+    }
+  }, [tenant]);
+
+  // Sync draft edits instantly to localStorage
+  useEffect(() => { localStorage.setItem('lari_onboarding_salonName', setupSalonName); }, [setupSalonName]);
+  useEffect(() => { localStorage.setItem('lari_onboarding_category', profileCategory); }, [profileCategory]);
+  useEffect(() => { localStorage.setItem('lari_onboarding_city', profileCity); }, [profileCity]);
+  useEffect(() => { localStorage.setItem('lari_onboarding_district', profileDistrict); }, [profileDistrict]);
+  useEffect(() => { localStorage.setItem('lari_onboarding_whatsapp', setupWhatsapp); }, [setupWhatsapp]);
+  useEffect(() => { localStorage.setItem('lari_onboarding_phone', setupPhone); }, [setupPhone]);
+  useEffect(() => { localStorage.setItem('lari_onboarding_address', profileAddress); }, [profileAddress]);
+  useEffect(() => { localStorage.setItem('lari_onboarding_startTime', startTime); }, [startTime]);
+  useEffect(() => { localStorage.setItem('lari_onboarding_endTime', endTime); }, [endTime]);
+  useEffect(() => { localStorage.setItem('lari_onboarding_activeDays', JSON.stringify(activeDays)); }, [activeDays]);
+  useEffect(() => { localStorage.setItem('lari_onboarding_logoUrl', setupLogoUrl); }, [setupLogoUrl]);
+  useEffect(() => { localStorage.setItem('lari_onboarding_primaryColor', setupPrimaryColor); }, [setupPrimaryColor]);
+  useEffect(() => { localStorage.setItem('lari_onboarding_shortDesc', profileShortDesc); }, [profileShortDesc]);
+  useEffect(() => { localStorage.setItem('lari_onboarding_autoApprove', String(autoApprove)); }, [autoApprove]);
+  useEffect(() => { localStorage.setItem('lari_onboarding_cancelPolicy', cancelPolicy); }, [cancelPolicy]);
+
+  const refreshReport = async () => {
+    if (!tenant) return;
+    const rep = await onboardingChecklistService.getOnboardingReport(tenant.id);
+    setOnboardingReport(rep);
+    const read = await goLiveService.getGoLiveReadiness(tenant.id);
+    setReadiness(read);
+  };
+
+  const steps = [
+    { id: 1, key: 'business_profile', name: 'İşletme Bilgileri', description: 'Kategori ve konum', required: true },
+    { id: 2, key: 'contact_location', name: 'İletişim & Adres', description: 'WhatsApp ve telefon', required: true },
+    { id: 3, key: 'services', name: 'Hizmet Kataloğu', description: 'Randevu seçimi için', required: true },
+    { id: 4, key: 'staff', name: 'Uzmanlar/Personel', description: 'Ekip tanımı', required: true },
+    { id: 5, key: 'availability', name: 'Çalışma Saatleri', description: 'Rezervasyon takvimi', required: true },
+    { id: 6, key: 'gallery_branding', name: 'Marka & Tasarım', description: 'Renk ve Logo', required: false },
+    { id: 7, key: 'booking_rules', name: 'Randevu Kuralları', description: 'politika & onay', required: false },
+    { id: 8, key: 'payment_verification', name: 'Ödeme Doğrulaması', description: 'Abonelik aktivasyon', required: true },
+    { id: 9, key: 'preview_review', name: 'Önizleme & Test', description: 'Tasarım kontrolü', required: true },
+    { id: 10, key: 'publish_review', name: 'Yayına Al', description: 'LARİ ekibi onayı', required: true }
+  ];
+
+  // Logic to determine step status and clickability
+  const isStepClickable = (stepId: number) => {
+    if (stepId === 1) return true;
+    
+    // Check if previous required steps are fulfilled
+    for (let i = 1; i < stepId; i++) {
+      const stepConfig = steps.find(s => s.id === i);
+      if (stepConfig && stepConfig.required) {
+        // Evaluate completion using report or current fields
+        if (i === 1 && (!setupSalonName || !profileCategory || !profileDistrict)) return false;
+        if (i === 2 && (!setupWhatsapp || !profileAddress)) return false;
+        if (i === 3 && servicesList.length === 0) return false;
+        if (i === 4 && staffList.length === 0) return false;
+      }
+    }
+    return true;
+  };
+
+  // Step 1 Save
+  const handleSaveBusinessProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!tenant) return;
-    if (!setupSalonName || !setupWhatsapp) {
-        alert("Salon Adı ve WhatsApp numarası zorunludur.");
-        return;
+    if (!setupSalonName) {
+      await showAlert("İşletme adı zorunludur.");
+      return;
+    }
+    if (!profileDistrict) {
+      await showAlert("Lütfen ilçe bilgisini doldurun.");
+      return;
     }
     setSetupSaving(true);
     try {
       const { tenantService } = await import('../services/tenantService');
       await tenantService.updateTenantBranding(tenant.id, {
         businessName: setupSalonName,
-        whatsappNumber: setupWhatsapp,
-        instagramUrl: setupInstagram,
-        address: setupAddress,
+      });
+      await businessProfileService.updateBusinessProfile(tenant.id, {
+        business_category: profileCategory,
+        city: profileCity,
+        district: profileDistrict,
       });
       await refreshTenant();
+      await refreshReport();
       setActiveStep(2);
-    } catch (error) {
-      console.error(error);
-      alert('Kayıt sırasında hata oluştu.');
+    } catch (err) {
+      console.error(err);
+      await showAlert("Kaydedilirken bir hata oluştu.");
     } finally {
       setSetupSaving(false);
     }
   };
 
-  const handleSaveBranding = async (e: React.FormEvent) => {
+  // Step 2 Save
+  const handleSaveContactLocation = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!tenant) return;
+    if (!setupWhatsapp) {
+      await showAlert("En azından bir WhatsApp iletişim numarası girilmesi zorunludur.");
+      return;
+    }
+    if (!profileAddress) {
+      await showAlert("Müşterilerinizin işletmeyi bulabilmesi için adres girmelisiniz.");
+      return;
+    }
     setSetupSaving(true);
     try {
       const { tenantService } = await import('../services/tenantService');
       await tenantService.updateTenantBranding(tenant.id, {
-        logoUrl: setupLogoUrl,
-        primaryColor: setupPrimaryColor,
-        footerText: setupFooter
+        whatsappNumber: setupWhatsapp,
+        address: profileAddress
+      });
+      await businessProfileService.updateBusinessProfile(tenant.id, {
+        phone: setupPhone,
+        address: profileAddress
       });
       await refreshTenant();
+      await refreshReport();
       setActiveStep(3);
-    } catch (error) {
-      console.error(error);
-      alert('Kayıt sırasında hata oluştu.');
-    } finally {
-      setSetupSaving(false);
-    }
-  };
-
-  const handleSaveProfile = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!tenant) return;
-    setSetupSaving(true);
-    try {
-      const { businessProfileService } = await import('../services/businessProfileService');
-      await businessProfileService.updateBusinessProfile(tenant.id, {
-        short_description: profileShortDesc,
-        address: profileAddress,
-        cover_images: profileCoverImages
-      });
-      setActiveStep(4);
     } catch (err) {
       console.error(err);
-      alert('Kayıt sırasında hata oluştu.');
+      await showAlert("Kaydedilirken bir hata oluştu.");
     } finally {
       setSetupSaving(false);
     }
   };
 
-  const handleQuickAddService = async (e: React.FormEvent) => {
+  // Step 3: Add Service
+  const handleAddService = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!tenant || !newServiceName) return;
     setIsAdding(true);
@@ -166,21 +230,23 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
         name_tr: newServiceName,
         price: Number(newServicePrice),
         duration: Number(newServiceDuration),
-        active: newServiceActive,
+        active: true,
         category: 'Ek Hizmetler',
         image: ''
       } as any);
       setNewServiceName('');
       refreshData();
+      await refreshReport();
     } catch (err) {
       console.error(err);
-      alert('Hizmet eklenemedi.');
+      await showAlert('Hizmet eklenemedi.');
     } finally {
       setIsAdding(false);
     }
   };
 
-  const handleQuickAddStaff = async (e: React.FormEvent) => {
+  // Step 4: Add Staff
+  const handleAddStaff = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!tenant || !newStaffName) return;
     setIsAdding(true);
@@ -188,557 +254,888 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
       await createStaff(tenant.id, {
         name: newStaffName,
         title: newStaffTitle,
-        active: newStaffActive,
+        active: true,
         rating: 5,
         reviewCount: 0
-      } as any); // using as any since types might conflict slightly without all properties
+      } as any);
       setNewStaffName('');
       refreshData();
+      await refreshReport();
     } catch (err) {
       console.error(err);
-      alert('Çalışan eklenemedi.');
+      await showAlert('Çalışan eklenemedi.');
     } finally {
       setIsAdding(false);
     }
   };
 
-  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || e.target.files.length === 0 || !tenant) return;
+  // Step 5: Save Hours
+  const handleSaveAvailability = async () => {
+    if (!tenant) return;
     setSetupSaving(true);
     try {
-      const { mediaUploadService } = await import('../services/mediaUploadService');
-      const url = await mediaUploadService.uploadCoverImage(tenant.id, e.target.files[0]);
-      setSetupLogoUrl(url);
+      localStorage.setItem(`lari_availability_${tenant.id}_configured`, 'true');
+      await businessProfileService.updateBusinessProfile(tenant.id, {
+        opening_hours_summary: `${activeDays.join(', ')} / ${startTime}-${endTime}`
+      });
+      await refreshReport();
+      setActiveStep(6);
+      await showAlert('Çalışma saatleri başarıyla yapılandırıldı.');
     } catch (err) {
       console.error(err);
-      alert('Logo yüklenemedi.');
     } finally {
       setSetupSaving(false);
     }
   };
 
-  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || e.target.files.length === 0 || !tenant) return;
+  const handleToggleDay = (day: string) => {
+    if (activeDays.includes(day)) {
+      setActiveDays(activeDays.filter(d => d !== day));
+    } else {
+      setActiveDays([...activeDays, day]);
+    }
+  };
+
+  // Step 6: Branding Save
+  const handleSaveBranding = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!tenant) return;
     setSetupSaving(true);
-    const newUrls: string[] = [];
     try {
-      for (let i = 0; i < e.target.files.length; i++) {
-         const { mediaUploadService } = await import('../services/mediaUploadService');
-         const url = await mediaUploadService.uploadCoverImage(tenant.id, e.target.files[i]);
-         newUrls.push(url);
-      }
-      setProfileCoverImages([...profileCoverImages, ...newUrls]);
+      const { tenantService } = await import('../services/tenantService');
+      await tenantService.updateTenantBranding(tenant.id, {
+        logoUrl: setupLogoUrl,
+        primaryColor: setupPrimaryColor
+      });
+      await businessProfileService.updateBusinessProfile(tenant.id, {
+        short_description: profileShortDesc,
+        logo_url: setupLogoUrl
+      });
+      await refreshTenant();
+      await refreshReport();
+      setActiveStep(7);
     } catch (err) {
       console.error(err);
-      alert('Kapak fotoğrafları yüklenemedi.');
     } finally {
       setSetupSaving(false);
     }
   };
 
-  const removeCoverImage = (indexToRemove: number) => {
-     const newImages = [...profileCoverImages];
-     newImages.splice(indexToRemove, 1);
-     setProfileCoverImages(newImages);
+  // Step 7: Booking Rules Save
+  const handleSaveBookingRules = async () => {
+    if (!tenant) return;
+    setSetupSaving(true);
+    try {
+      await businessProfileService.updateBusinessProfile(tenant.id, {
+        booking_policy: autoApprove ? 'Otomatik randevu onayı etkindir.' : 'Tüm randevular salon onayı gerektirir.',
+        cancellation_policy: cancelPolicy
+      });
+      await refreshReport();
+      setActiveStep(8);
+      await showAlert('Randevu kuralları kaydedildi.');
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSetupSaving(false);
+    }
   };
 
-  const steps = [
-    { id: 1, name: 'Salon Bilgileri', completed: isInfoCompleted },
-    { id: 2, name: 'Marka & Tasarım', completed: isBrandingCompleted },
-    { id: 3, name: 'İşletme Profili', completed: isProfileCompleted },
-    { id: 4, name: 'Hizmetler', completed: isServicesCompleted },
-    { id: 5, name: 'Çalışanlar', completed: isStaffCompleted },
-    { id: 6, name: 'Çalışma Saatleri', completed: true },
-    { id: 7, name: 'Test Randevusu', completed: isTestApptCompleted },
-    { id: 8, name: 'Yayına Hazır', completed: isInfoCompleted && isBrandingCompleted && isProfileCompleted && isServicesCompleted && isStaffCompleted }
-  ];
+  // Step 8: Action to pay or verify
+  const handleCheckoutRedirect = () => {
+    if (typeof onNavigateToTab === 'function') {
+      onNavigateToTab('billing');
+    } else {
+      setActiveStep(10);
+    }
+  };
+
+  // Mock booking event simulator for preview tab
+  const handleTriggerMockBooking = async () => {
+    if (!selectedPreviewService) {
+      await showAlert("Lütfen test için bir hizmet seçin.");
+      return;
+    }
+    if (!selectedPreviewStaff) {
+      await showAlert("Lütfen bir uzman seçin.");
+      return;
+    }
+    setPreviewBookingStatus('booked');
+    await showAlert("Harika! Test rezervasyon simülasyonu başarıyla oluşturuldu.");
+  };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-      {/* Sidebar Wizard Navigation - Hidden on mobile, visible on md and up */}
-      <div className="hidden md:block md:col-span-1 border-r border-gray-200 dark:border-slate-700 pr-4">
-        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Kurulum Sihirbazı</h2>
-        <nav className="space-y-2">
-          {steps.map(step => (
-            <button
-              key={step.id}
-              onClick={() => setActiveStep(step.id)}
-              className={`w-full text-left px-3 py-3 rounded-lg flex items-center justify-between transition-colors ${
-                activeStep === step.id 
-                  ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 font-medium' 
-                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800'
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${
-                  step.completed 
-                    ? 'bg-green-100 text-green-600 dark:bg-green-900/50 dark:text-green-400' 
-                    : activeStep === step.id 
-                      ? 'bg-blue-200 text-blue-800 dark:bg-blue-700 dark:text-blue-100' 
-                      : 'bg-gray-200 text-gray-500 dark:bg-slate-700 dark:text-gray-400'
-                }`}>
-                  {step.completed ? '✓' : step.id}
-                </div>
-                <span>{step.name}</span>
-              </div>
-            </button>
-          ))}
-        </nav>
-      </div>
-
-      {/* Main Content Area */}
-      <div className="md:col-span-3">
-        {/* Mobile Progress Header */}
-        <div className="md:hidden mb-4 flex items-center justify-between bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700">
-           <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 flex items-center justify-center font-bold text-sm">
-                 {activeStep}
-              </div>
-              <div className="font-semibold text-gray-900 dark:text-white">
-                 {steps.find(s => s.id === activeStep)?.name}
-              </div>
-           </div>
-           <div className="text-sm text-gray-500 dark:text-gray-400">
-              Adım {activeStep} / {steps.length}
-           </div>
+      {/* Sidebar with step numbers and progress indicator */}
+      <div className="md:col-span-1 border-r border-slate-100 dark:border-slate-800 pr-2">
+        <div className="mb-4">
+          <h2 className="text-base font-bold text-gray-900 dark:text-white">Kurulum Adımları</h2>
+          {onboardingReport && (
+            <div className="mt-2 text-xs text-indigo-600 dark:text-indigo-400 font-semibold flex items-center gap-1.5">
+              <span>Kurulum İlerlemesi: %{onboardingReport.progressPercent}</span>
+            </div>
+          )}
         </div>
 
-        <div className="bg-white dark:bg-slate-800 shadow-sm rounded-lg border border-gray-200 dark:border-slate-700 p-6">
+        <div className="flex flex-col gap-1.5">
+          {steps.map(step => {
+            const clickable = isStepClickable(step.id);
+            const isCurrent = activeStep === step.id;
+            return (
+              <button
+                key={step.id}
+                disabled={!clickable}
+                onClick={() => setActiveStep(step.id)}
+                className={`w-full text-left p-3 rounded-xl transition-all flex items-center justify-between border ${
+                  isCurrent 
+                    ? 'bg-blue-50 dark:bg-blue-900/10 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 font-bold' 
+                    : clickable 
+                      ? 'bg-transparent border-transparent hover:bg-slate-50 dark:hover:bg-slate-800 text-gray-600 dark:text-gray-400' 
+                      : 'bg-transparent border-transparent text-gray-300 dark:text-gray-600 cursor-not-allowed opacity-40'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                    isCurrent 
+                      ? 'bg-blue-600 text-white shadow-sm shadow-blue-250' 
+                      : 'bg-gray-150 dark:bg-slate-800 text-gray-500'
+                  }`}>
+                    {step.id}
+                  </div>
+                  <div>
+                    <span className="text-xs block leading-tight">{step.name}</span>
+                    <span className="text-[9px] font-normal block text-gray-400 dark:text-gray-500">{step.description}</span>
+                  </div>
+                </div>
+                {step.required && (
+                  <span className="text-[9px] text-red-500 dark:text-red-400 font-extrabold px-1.5 py-0.5 rounded bg-red-50 dark:bg-red-950/20">*</span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Main step forms content */}
+      <div className="md:col-span-3">
+        <div className="bg-white dark:bg-slate-800 border border-slate-150 dark:border-slate-700 rounded-2xl p-6 shadow-sm">
           
+          {/* STEP 1: BUSINESS PROFILE */}
           {activeStep === 1 && (
-            <div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">1. Salon Bilgilerini Girin</h3>
-              <form onSubmit={handleSaveInfo} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1">Salon Adı</label>
-                  <input type="text" required value={setupSalonName} onChange={e => setSetupSalonName(e.target.value)} className="w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-2 border" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">WhatsApp Numarası <span className="text-red-500">*</span></label>
-                  <input type="text" required value={setupWhatsapp} onChange={e => setSetupWhatsapp(e.target.value)} placeholder="Örn: +905550000000" className="w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-2 border" />
-                </div>
-                <div className="pt-4 flex justify-end">
-                  <button type="submit" disabled={setupSaving || !setupSalonName || !setupWhatsapp} className="px-6 py-2 bg-accent text-white rounded-md font-medium disabled:opacity-50">Kaydet & Sonraki</button>
-                </div>
-              </form>
-            </div>
-          )}
+            <form onSubmit={handleSaveBusinessProfile} className="space-y-5">
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">1. Temel İşletme Bilgileri</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Sitenizde görüntülenecek resmi salon adı ve çalışma kategorisidir.</p>
+              </div>
 
-          {activeStep === 2 && (
-            <div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">2. Marka ve Tasarım</h3>
-              <form onSubmit={handleSaveBranding} className="space-y-6">
+              <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Logo Yükle</label>
-                  <div className="flex items-center gap-4">
-                     {setupLogoUrl ? (
-                         <div className="relative group">
-                            <img src={setupLogoUrl} alt="Logo" className="w-16 h-16 rounded-lg object-cover border border-gray-200 dark:border-slate-700 bg-white" />
-                            <button type="button" onClick={() => setSetupLogoUrl('')} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-                            </button>
-                         </div>
-                     ) : (
-                         <div className="w-16 h-16 rounded-lg bg-gray-100 dark:bg-slate-700 border border-dashed border-gray-300 dark:border-slate-600 flex items-center justify-center">
-                            <span className="text-xs text-gray-400">Yok</span>
-                         </div>
-                     )}
-                     <div className="flex-1">
-                        <input 
-                           type="file" 
-                           accept="image/*"
-                           onChange={handleLogoUpload}
-                           className="block w-full text-sm text-gray-500
-                                      file:mr-4 file:py-2 file:px-4
-                                      file:rounded-md file:border-0
-                                      file:text-sm file:font-semibold
-                                      file:bg-blue-50 file:text-blue-700
-                                      hover:file:bg-blue-100 dark:file:bg-slate-700 dark:file:text-slate-300"
-                        />
-                     </div>
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Ana Renk (Primary Color)</label>
-                  <div className="flex items-center gap-3">
-                    <input type="color" value={setupPrimaryColor} onChange={e => setSetupPrimaryColor(e.target.value)} className="h-10 w-16 p-1 rounded border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700" />
-                    <span className="font-mono text-gray-500">{setupPrimaryColor}</span>
-                  </div>
-                </div>
-                <div className="pt-4 flex justify-between">
-                  <button type="button" onClick={() => setActiveStep(1)} className="px-6 py-2 bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-md font-medium">Geri</button>
-                  <button type="submit" disabled={setupSaving} className="px-6 py-2 bg-accent text-white rounded-md font-medium disabled:opacity-50">Kaydet & Sonraki</button>
-                </div>
-              </form>
-            </div>
-          )}
-
-          {activeStep === 3 && (
-            <div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">3. İşletme Profili (Web Sitesi)</h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">Müşterilerinizin salon sayfanızı bir web sitesi gibi görmesi için bu bilgileri doldurun. Detaylı düzenlemeleri daha sonra 'Web Sitesi' sekmesinden yapabilirsiniz.</p>
-              <form onSubmit={handleSaveProfile} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1">Kısa Açıklama (Slogan)</label>
-                  <input type="text" required value={profileShortDesc} onChange={e => setProfileShortDesc(e.target.value)} placeholder="Örn: Şehrin en iyi saç tasarım merkezi" className="w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-2 border" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Adres</label>
-                  <textarea rows={2} required value={profileAddress} onChange={e => setProfileAddress(e.target.value)} className="w-full rounded-md border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-2 border"></textarea>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Kapak Fotoğrafları / İşletme Görselleri (Birden fazla seçebilirsiniz)</label>
-                  <p className="text-xs text-gray-500 mb-2">Bu görseller web sitenizin kapak alanında otomatik geçiş yapar ve tıklanınca büyütülür.</p>
+                  <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">Resmi Salon Adı <span className="text-red-500">*</span></label>
                   <input 
-                     type="file" 
-                     multiple
-                     accept="image/*"
-                     onChange={handleCoverUpload}
-                     className="block w-full text-sm text-gray-500
-                                file:mr-4 file:py-2 file:px-4
-                                file:rounded-md file:border-0
-                                file:text-sm file:font-semibold
-                                file:bg-blue-50 file:text-blue-700
-                                hover:file:bg-blue-100 dark:file:bg-slate-700 dark:file:text-slate-300 mb-2"
+                    type="text" 
+                    required 
+                    placeholder="Örn: Mia Güzellik & Saç Tasarım"
+                    value={setupSalonName} 
+                    onChange={e => setSetupSalonName(e.target.value)} 
+                    className="w-full rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-3 border text-sm" 
                   />
-                  {profileCoverImages.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mt-2">
-                          {profileCoverImages.map((img, idx) => (
-                              <div key={idx} className="relative group">
-                                 <img src={img} className="h-16 w-24 object-cover rounded-md shadow-sm" />
-                                 <button type="button" onClick={() => removeCoverImage(idx)} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                     <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-                                 </button>
-                              </div>
-                          ))}
-                      </div>
-                  )}
                 </div>
-                <div className="pt-4 flex justify-between">
-                  <button type="button" onClick={() => setActiveStep(2)} className="px-6 py-2 bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-md font-medium">Geri</button>
-                  <button type="submit" disabled={setupSaving || !profileShortDesc || !profileAddress} className="px-6 py-2 bg-accent text-white rounded-md font-medium disabled:opacity-50">Kaydet & Sonraki</button>
+
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">İşletme Kategorisi <span className="text-red-500">*</span></label>
+                  <select 
+                    value={profileCategory} 
+                    onChange={e => setProfileCategory(e.target.value)}
+                    className="w-full rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-3 border text-sm"
+                  >
+                    <option value="">Kategori Seçin...</option>
+                    <option value="Güzellik Salonu">Güzellik Salonu</option>
+                    <option value="Kuaför & Saç Tasarım">Kuaför & Saç Tasarım</option>
+                    <option value="Tırnak & El-Ayak Bakımı">Tırnak & El-Ayak Bakımı</option>
+                    <option value="Estetik & Cilt Bakımı">Estetik & Cilt Bakımı</option>
+                    <option value="Berber / Erkek Kuaförü">Berber / Erkek Kuaförü</option>
+                    <option value="Spa & Masaj">Spa & Masaj</option>
+                  </select>
                 </div>
-              </form>
-            </div>
-          )}
 
-          {activeStep === 4 && (
-            <div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">4. Hizmetler</h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">Randevu alınabilmesi için en az 1 aktif hizmet belirlemelisiniz.</p>
-              
-              <div className="p-4 bg-gray-50 dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-slate-700 mb-6">
-                 <div className="flex justify-between items-center mb-2">
-                   <h4 className="font-medium text-gray-900 dark:text-white">Ekli Hizmetler ({servicesList.length})</h4>
-                   <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${isServicesCompleted ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                     {isServicesCompleted ? 'Tamamlandı' : 'En az 1 aktif hizmet gerekli'}
-                   </span>
-                 </div>
-                 <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400 mb-4">
-                   {servicesList.slice(0, 3).map(s => <li key={s.id}>• {s.name} {s.active ? '(Aktif)' : '(Pasif)'} - {s.price} TL</li>)}
-                   {servicesList.length > 3 && <li>ve {servicesList.length - 3} daha...</li>}
-                   {servicesList.length === 0 && <li className="text-red-500 py-2 font-medium">Yayına çıkmak için en az 1 aktif hizmet eklemelisiniz.</li>}
-                 </ul>
-                 
-                 {!isServicesCompleted && (
-                   <form onSubmit={handleQuickAddService} className="mt-4 p-4 border border-dashed border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800">
-                     <h5 className="text-sm font-bold text-gray-800 dark:text-white mb-3">Hızlı Hizmet Ekle</h5>
-                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
-                       <div>
-                         <input type="text" placeholder="Hizmet Adı (Örn: Saç Kesimi)" required value={newServiceName} onChange={e => setNewServiceName(e.target.value)} className="w-full text-sm rounded-md border-gray-300 dark:border-slate-600 bg-gray-50 dark:bg-slate-900 p-2 border" />
-                       </div>
-                       <div>
-                         <input type="number" placeholder="Fiyat (TL)" required value={newServicePrice} onChange={e => setNewServicePrice(e.target.value)} className="w-full text-sm rounded-md border-gray-300 dark:border-slate-600 bg-gray-50 dark:bg-slate-900 p-2 border" />
-                       </div>
-                       <div>
-                         <input type="number" placeholder="Süre (Dk)" required value={newServiceDuration} onChange={e => setNewServiceDuration(e.target.value)} className="w-full text-sm rounded-md border-gray-300 dark:border-slate-600 bg-gray-50 dark:bg-slate-900 p-2 border" />
-                       </div>
-                       <div className="flex items-center">
-                         <label className="flex items-center text-sm cursor-pointer">
-                           <input type="checkbox" checked={newServiceActive} onChange={e => setNewServiceActive(e.target.checked)} className="mr-2" />
-                           Aktif
-                         </label>
-                       </div>
-                     </div>
-                     <button type="submit" disabled={isAdding || !newServiceName} className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded py-2 text-sm font-medium transition-colors disabled:opacity-50">
-                       Hizmeti Kaydet
-                     </button>
-                   </form>
-                 )}
-
-                 {onNavigateToTab && (
-                   <button 
-                     onClick={() => onNavigateToTab('services')} 
-                     className="mt-4 text-sm text-accent dark:text-blue-400 hover:underline inline-flex items-center w-full justify-center sm:justify-start"
-                   >
-                     {isServicesCompleted ? 'Tüm Hizmetleri Yönet →' : 'Gelişmiş Hizmet Ayarlarına Git →'}
-                   </button>
-                 )}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">Bulunduğu Şehir <span className="text-red-500">*</span></label>
+                    <input 
+                      type="text" 
+                      required 
+                      value={profileCity} 
+                      onChange={e => setProfileCity(e.target.value)}
+                      className="w-full rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-3 border text-sm" 
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">Bulunduğu İlçe <span className="text-red-500">*</span></label>
+                    <input 
+                      type="text" 
+                      required 
+                      placeholder="Örn: Beşiktaş"
+                      value={profileDistrict} 
+                      onChange={e => setProfileDistrict(e.target.value)}
+                      className="w-full rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-3 border text-sm" 
+                    />
+                  </div>
+                </div>
               </div>
-              <div className="pt-4 flex justify-between">
-                 <button type="button" onClick={() => setActiveStep(3)} className="px-6 py-2 bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-md font-medium">Geri</button>
-                 <button type="button" onClick={() => setActiveStep(5)} disabled={!isServicesCompleted} className="px-6 py-2 bg-accent text-white rounded-md font-medium disabled:opacity-50">Sonraki</button>
-              </div>
-            </div>
-          )}
 
-          {activeStep === 5 && (
-            <div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">5. Çalışanlar / Uzmanlar</h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">Müşterilerin randevu alabilmesi için en az 1 aktif çalışan tanımlamalısınız.</p>
-              
-              <div className="p-4 bg-gray-50 dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-slate-700 mb-6">
-                 <div className="flex justify-between items-center mb-2">
-                   <h4 className="font-medium text-gray-900 dark:text-white">Ekli Çalışanlar ({staffList.length})</h4>
-                   <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${isStaffCompleted ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                     {isStaffCompleted ? 'Tamamlandı' : 'En az 1 aktif uzman gerekli'}
-                   </span>
-                 </div>
-                 <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400 mb-4">
-                   {staffList.slice(0, 3).map(s => <li key={s.id}>• {s.name} - {s.title} {s.active ? '(Aktif)' : '(Pasif)'}</li>)}
-                   {staffList.length > 3 && <li>ve {staffList.length - 3} daha...</li>}
-                   {staffList.length === 0 && <li className="text-red-500 py-2 font-medium">Yayına çıkmak için en az 1 aktif çalışan eklemelisiniz.</li>}
-                 </ul>
-
-                 {!isStaffCompleted && (
-                   <form onSubmit={handleQuickAddStaff} className="mt-4 p-4 border border-dashed border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800">
-                     <h5 className="text-sm font-bold text-gray-800 dark:text-white mb-3">Hızlı Çalışan Ekle</h5>
-                     <div className="grid grid-cols-1 gap-3 mb-3">
-                       <div>
-                         <input type="text" placeholder="Ad Soyad (Örn: Ayşe Yılmaz)" required value={newStaffName} onChange={e => setNewStaffName(e.target.value)} className="w-full text-sm rounded-md border-gray-300 dark:border-slate-600 bg-gray-50 dark:bg-slate-900 p-2 border" />
-                       </div>
-                       <div>
-                         <input type="text" placeholder="Unvan (Örn: Kıdemli Stilist)" value={newStaffTitle} onChange={e => setNewStaffTitle(e.target.value)} className="w-full text-sm rounded-md border-gray-300 dark:border-slate-600 bg-gray-50 dark:bg-slate-900 p-2 border" />
-                       </div>
-                       <div className="flex items-center">
-                         <label className="flex items-center text-sm cursor-pointer">
-                           <input type="checkbox" checked={newStaffActive} onChange={e => setNewStaffActive(e.target.checked)} className="mr-2" />
-                           Aktif (Randevu alabilir)
-                         </label>
-                       </div>
-                     </div>
-                     <button type="submit" disabled={isAdding || !newStaffName} className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded py-2 text-sm font-medium transition-colors disabled:opacity-50">
-                       Çalışanı Kaydet
-                     </button>
-                   </form>
-                 )}
-
-                 {onNavigateToTab && (
-                   <button 
-                     onClick={() => onNavigateToTab('staff')} 
-                     className="mt-4 text-sm text-accent dark:text-blue-400 hover:underline inline-flex items-center w-full justify-center sm:justify-start"
-                   >
-                     {isStaffCompleted ? 'Tüm Çalışanları Yönet →' : 'Gelişmiş Çalışan Ayarlarına Git →'}
-                   </button>
-                 )}
-              </div>
-              <div className="pt-4 flex justify-between">
-                 <button type="button" onClick={() => setActiveStep(4)} className="px-6 py-2 bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-md font-medium">Geri</button>
-                 <button type="button" onClick={() => setActiveStep(6)} disabled={!isStaffCompleted} className="px-6 py-2 bg-accent text-white rounded-md font-medium disabled:opacity-50">Sonraki</button>
-              </div>
-            </div>
-          )}
-
-          {activeStep === 6 && (
-            <div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">6. Çalışma Saatleri</h3>
-              <div className="p-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-lg mb-6 flex flex-col items-start gap-4">
-                <p className="text-blue-800 dark:text-blue-300">Çalışma saatleri şu anda temel varsayılan ayar olarak kaydedilir. Detaylı saat yönetimi sonraki fazda eklenecektir.</p>
+              <div className="pt-4 flex justify-end border-t border-slate-100 dark:border-slate-700">
                 <button 
-                  onClick={() => {
-                     alert('Varsayılan çalışma saatleri uygulandı.');
-                     setActiveStep(7);
-                  }}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-medium transition"
+                  type="submit" 
+                  disabled={setupSaving}
+                  className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold text-xs"
                 >
-                  Varsayılan çalışma saatlerini kullan: 09:00–18:00
+                  {setupSaving ? 'Kaydediliyor...' : 'Kaydet ve Sonraki Adım'}
                 </button>
               </div>
-              {onNavigateToTab && (
-                 <button 
-                   onClick={() => onNavigateToTab('settings')} 
-                   className="mb-6 text-sm text-accent dark:text-blue-400 hover:underline flex items-center"
-                 >
-                   Çalışma saatlerini düzenle
-                 </button>
-               )}
-              <div className="pt-4 flex justify-between">
-                 <button type="button" onClick={() => setActiveStep(5)} className="px-6 py-2 bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-md font-medium">Geri</button>
-                 <button type="button" onClick={() => setActiveStep(7)} className="px-6 py-2 bg-accent text-white rounded-md font-medium">Sonraki</button>
-              </div>
-            </div>
+            </form>
           )}
 
-          {activeStep === 7 && (
-            <div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">7. Test Randevusu Oluşturun</h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">Tüm ayarlarınızı görmek ve sistemin doğru çalıştığını onaylamak için kendi profilinize bir test randevusu oluşturabilirsiniz.</p>
+          {/* STEP 2: CONTACT & LOCATION */}
+          {activeStep === 2 && (
+            <form onSubmit={handleSaveContactLocation} className="space-y-5">
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">2. İletişim Numaraları & Konum Tarifi</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Müşterilerinizin sizle bağlantı kuracağı ve randevuya geleceği resmi adres.</p>
+              </div>
 
-              <div className="bg-blue-50 dark:bg-blue-900/20 border border-gray-200 dark:border-slate-700 rounded-lg p-6 mb-6">
-                <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">Randevu Sayfanız:</h4>
-                <div className="flex flex-col sm:flex-row gap-4 items-center">
-                  <input type="text" readOnly value={`lari.com/${(import.meta as any).env.VITE_ROUTER_MODE === 'hash' ? '#/' : ''}${tenant?.slug || 'benimsalonum'}`} className="w-full bg-white dark:bg-slate-800 border-gray-300 dark:border-slate-600 p-3 rounded border text-gray-700 dark:text-gray-300 font-mono text-sm" />
-                  <div className="flex gap-2 w-full sm:w-auto">
-                    <button onClick={() => {
-                      navigator.clipboard.writeText(`${window.location.origin}/${(import.meta as any).env.VITE_ROUTER_MODE === 'hash' ? '#/' : ''}${tenant?.slug || 'benimsalonum'}`);
-                      alert('Link kopyalandı.');
-                    }} className="px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded font-medium whitespace-nowrap shadow-sm flex-1 sm:flex-none">
-                      Kopyala
-                    </button>
-                    <a href={`/#/admin-preview`} target="_blank" rel="noreferrer" className="px-4 py-3 bg-white dark:bg-slate-700 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 rounded font-medium whitespace-nowrap shadow-sm hover:bg-gray-50 dark:hover:bg-slate-600 flex-1 sm:flex-none text-center">
-                      Önizle
-                    </a>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">WhatsApp İletişim Numarası <span className="text-red-500">*</span></label>
+                  <input 
+                    type="text" 
+                    required 
+                    placeholder="Örn: +905551234567"
+                    value={setupWhatsapp} 
+                    onChange={e => setSetupWhatsapp(e.target.value)} 
+                    className="w-full rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-3 border text-sm" 
+                  />
+                  <span className="text-[10px] text-slate-400 mt-0.5 block">NOT: Müşterileriniz bu hat üzerinden doğrudan size WhatsApp yazabilirler.</span>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">Sabit/Cep Telefonu (Alternatif)</label>
+                  <input 
+                    type="text" 
+                    placeholder="Örn: 02120000000"
+                    value={setupPhone} 
+                    onChange={e => setSetupPhone(e.target.value)} 
+                    className="w-full rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-3 border text-sm" 
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">Açık İşletme Adresi <span className="text-red-500">*</span></label>
+                  <textarea 
+                    required 
+                    rows={3}
+                    placeholder="Örn: Levent Mah. Nispetiye Cad. No:12 D:4"
+                    value={profileAddress} 
+                    onChange={e => setProfileAddress(e.target.value)} 
+                    className="w-full rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-3 border text-sm"
+                  ></textarea>
+                </div>
+              </div>
+
+              <div className="pt-4 flex justify-between border-t border-slate-100 dark:border-slate-700">
+                <button type="button" onClick={() => setActiveStep(1)} className="px-5 py-2.5 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold">Geri</button>
+                <button 
+                  type="submit" 
+                  disabled={setupSaving}
+                  className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold text-xs"
+                >
+                  {setupSaving ? 'Kaydediliyor...' : 'Kaydet ve Sonraki Adım'}
+                </button>
+              </div>
+            </form>
+          )}
+
+          {/* STEP 3: SERVICES */}
+          {activeStep === 3 && (
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">3. Hizmet Listenizi Oluşturun</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Müşterilerinizin online randevu seçerken yaptırmak istediği hizmetler.</p>
+              </div>
+
+              {/* Added services list */}
+              <div className="space-y-3">
+                <h4 className="text-xs font-bold text-gray-700 dark:text-white">Ekli Hizmetler ({servicesList.length})</h4>
+                <div className="border border-slate-100 dark:border-slate-700 rounded-xl divide-y divide-slate-100 dark:divide-slate-700 overflow-hidden">
+                  {servicesList.map(s => (
+                    <div key={s.id} className="p-3 bg-slate-50 dark:bg-slate-900/40 flex justify-between items-center text-xs">
+                      <div>
+                        <span className="font-bold text-gray-800 dark:text-white">{s.name_tr || s.name}</span>
+                        <span className="mx-2 text-gray-300">|</span>
+                        <span className="text-gray-500">{s.duration} Dakika</span>
+                      </div>
+                      <div className="font-bold text-indigo-600 dark:text-indigo-400">
+                        {s.price} TL
+                      </div>
+                    </div>
+                  ))}
+                  {servicesList.length === 0 && (
+                    <div className="p-6 text-center text-xs text-gray-400">Henüz hiç hizmet eklemediniz. Aşağıdaki formdan ilk hizmetinizi ekleyin!</div>
+                  )}
+                </div>
+              </div>
+
+              {/* Quick Add Form */}
+              <form onSubmit={handleAddService} className="p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-850 space-y-4">
+                <h4 className="text-xs font-bold text-gray-800 dark:text-slate-350">Hızlı Hizmet Ekle</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">Hizmet Adı</label>
+                    <input 
+                      type="text" 
+                      required 
+                      placeholder="Örn: Saç Kesim & Fön"
+                      value={newServiceName} 
+                      onChange={e => setNewServiceName(e.target.value)}
+                      className="w-full text-xs rounded border border-gray-300 dark:border-slate-650 bg-white dark:bg-slate-700 p-2 border-slate-200 dark:text-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">Fiyat (TL)</label>
+                    <input 
+                      type="number" 
+                      required 
+                      value={newServicePrice} 
+                      onChange={e => setNewServicePrice(e.target.value)}
+                      className="w-full text-xs rounded border border-gray-300 dark:border-slate-650 bg-white dark:bg-slate-700 p-2 border-slate-200 dark:text-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">Süre (Dakika)</label>
+                    <input 
+                      type="number" 
+                      required 
+                      value={newServiceDuration} 
+                      onChange={e => setNewServiceDuration(e.target.value)}
+                      className="w-full text-xs rounded border border-gray-300 dark:border-slate-650 bg-white dark:bg-slate-700 p-2 border-slate-200 dark:text-white"
+                    />
                   </div>
                 </div>
-                <p className="text-sm text-blue-700 dark:text-blue-300 mt-4">Tavsiye: Linki gizli sekmede (Incognito) açarak bir müşteri gibi deneyimleyebilirsiniz.</p>
-              </div>
+                <div className="flex justify-end pt-1">
+                  <button 
+                    type="submit" 
+                    disabled={isAdding || !newServiceName}
+                    className="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs font-semibold"
+                  >
+                    {isAdding ? 'Ekleniyor...' : 'Hizmet Listeye Ekle'}
+                  </button>
+                </div>
+              </form>
 
-              <div className="mt-6 flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-slate-700 mb-6">
-                 <span className="text-gray-700 dark:text-gray-300 font-medium">Test Randevusu Durumu:</span>
-                 <span className={`px-3 py-1 rounded-full text-sm font-medium ${isTestApptCompleted ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
-                   {isTestApptCompleted ? 'Test Başarılı' : 'Bekleniyor veya Atlandı'}
-                 </span>
-              </div>
-              <div className="pt-4 flex justify-between">
-                 <button type="button" onClick={() => setActiveStep(6)} className="px-6 py-2 bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-md font-medium">Geri</button>
-                 <button type="button" onClick={() => setActiveStep(8)} className="px-6 py-2 bg-accent text-white rounded-md font-medium">Daha Sonra Test Edeceğim / Sonraki</button>
+              <div className="pt-4 flex justify-between border-t border-slate-100 dark:border-slate-700">
+                <button type="button" onClick={() => setActiveStep(2)} className="px-5 py-2.5 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold">Geri</button>
+                <button 
+                  type="button" 
+                  disabled={servicesList.length === 0}
+                  onClick={() => setActiveStep(4)}
+                  className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white rounded-lg font-bold text-xs"
+                >
+                  Sonraki Adım
+                </button>
               </div>
             </div>
           )}
 
-          {activeStep === 8 && (
-            <div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">8. Yayına Hazırlık Onayı</h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                 <div className="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 rounded-lg p-5">
-                    <h4 className="font-bold text-red-800 dark:text-red-300 mb-4 border-b border-red-200 dark:border-red-700/50 pb-2">Zorunlu Adımlar</h4>
-                    <ul className="space-y-3">
-                       <li className="flex items-center justify-between text-sm">
-                          <span className="text-gray-700 dark:text-gray-300">Temel Bilgiler (İsim, WhatsApp)</span>
-                          <span>{isInfoCompleted ? '✅' : '❌'}</span>
-                       </li>
-                       <li className="flex items-center justify-between text-sm">
-                          <span className="text-gray-700 dark:text-gray-300">İşletme Profili (Slogan, Adres)</span>
-                          <span>{isProfileCompleted ? '✅' : '❌'}</span>
-                       </li>
-                       <li className="flex items-center justify-between text-sm">
-                          <span className="text-gray-700 dark:text-gray-300">Marka ve Tasarım (Renk)</span>
-                          <span>{isBrandingCompleted ? '✅' : '❌'}</span>
-                       </li>
-                       <li className="flex items-center justify-between text-sm">
-                          <span className="text-gray-700 dark:text-gray-300">En az 1 Hizmet</span>
-                          <span>{isServicesCompleted ? '✅' : '❌'}</span>
-                       </li>
-                       <li className="flex items-center justify-between text-sm">
-                          <span className="text-gray-700 dark:text-gray-300">En az 1 Uzman</span>
-                          <span>{isStaffCompleted ? '✅' : '❌'}</span>
-                       </li>
-                    </ul>
-                 </div>
-                 
-                 <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-lg p-5">
-                    <h4 className="font-bold text-blue-800 dark:text-blue-300 mb-4 border-b border-blue-200 dark:border-blue-700/50 pb-2">Önerilen Adımlar</h4>
-                    <ul className="space-y-3">
-                       <li className="flex items-center justify-between text-sm">
-                          <span className="text-gray-700 dark:text-gray-300">Logo ve Kapak Fotoğrafı</span>
-                          <span>{setupSalonName && tenant?.branding?.logoUrl ? '✅' : '⚠️'}</span>
-                       </li>
-                       <li className="flex items-center justify-between text-sm">
-                          <span className="text-gray-700 dark:text-gray-300">Instagram Bağlantısı</span>
-                          <span>{tenant?.branding?.instagramUrl ? '✅' : '⚠️'}</span>
-                       </li>
-                       <li className="flex items-center justify-between text-sm">
-                          <span className="text-gray-700 dark:text-gray-300">Test Randevusu</span>
-                          <span>{isTestApptCompleted ? '✅' : '⚠️'}</span>
-                       </li>
-                    </ul>
-                 </div>
+          {/* STEP 4: STAFF */}
+          {activeStep === 4 && (
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">4. Ekibinizi ve Uzmanları Tanımlayın</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Sitenizde randevu takvimi olan ve hizmeti gerçekleştirecek çalışanlar.</p>
               </div>
 
-              {readiness && !readiness.canGoLive && (
-                <div className="bg-red-50 text-red-700 p-4 rounded-lg mb-6 border border-red-200">
-                  <h4 className="font-bold mb-2">Engeller:</h4>
-                  <ul className="list-disc pl-5 space-y-1 text-sm">
-                    {readiness.blockingReasons.map((reason, idx) => (
-                      <li key={idx}>{reason}</li>
-                    ))}
-                  </ul>
+              {/* Added staff list */}
+              <div className="space-y-3">
+                <h4 className="text-xs font-bold text-gray-700 dark:text-white">Ekip Üyeleri ({staffList.length})</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {staffList.map(s => (
+                    <div key={s.id} className="p-3 bg-slate-50 dark:bg-slate-900/40 border border-slate-100 dark:border-slate-700 rounded-xl flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-xs">
+                        {s.name.substring(0, 2).toUpperCase()}
+                      </div>
+                      <div>
+                        <div className="font-bold text-xs text-gray-800 dark:text-white">{s.name}</div>
+                        <div className="text-[10px] text-gray-400">{s.title || 'Uzman'}</div>
+                      </div>
+                    </div>
+                  ))}
+                  {staffList.length === 0 && (
+                    <div className="p-6 text-center text-xs text-gray-400 col-span-2">Henüz personel eklemediniz. Herhangi bir randevu kaydı için en az 1 personel eklenmesi gerekir.</div>
+                  )}
+                </div>
+              </div>
+
+              {/* Quick Add Staff Form */}
+              <form onSubmit={handleAddStaff} className="p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-850 space-y-4">
+                <h4 className="text-xs font-bold text-gray-800 dark:text-slate-350">Hızlı Personel Ekle</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">Ad Soyad</label>
+                    <input 
+                      type="text" 
+                      required 
+                      placeholder="Örn: Ayşe Yılmaz"
+                      value={newStaffName} 
+                      onChange={e => setNewStaffName(e.target.value)}
+                      className="w-full text-xs rounded border border-gray-300 dark:border-slate-650 bg-white dark:bg-slate-700 p-2 border-slate-200 dark:text-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">Uzmanlık Unvanı</label>
+                    <input 
+                      type="text" 
+                      required 
+                      placeholder="Örn: Protez Tırnak Uzmanı"
+                      value={newStaffTitle} 
+                      onChange={e => setNewStaffTitle(e.target.value)}
+                      className="w-full text-xs rounded border border-gray-300 dark:border-slate-650 bg-white dark:bg-slate-700 p-2 border-slate-200 text-gray-700 dark:text-white"
+                    />
+                  </div>
+                </div>
+                <div className="flex justify-end pt-1">
+                  <button 
+                    type="submit" 
+                    disabled={isAdding || !newStaffName}
+                    className="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs font-semibold"
+                  >
+                    {isAdding ? 'Ekleniyor...' : 'Çalışanı Listeye Ekle'}
+                  </button>
+                </div>
+              </form>
+
+              <div className="pt-4 flex justify-between border-t border-slate-100 dark:border-slate-700">
+                <button type="button" onClick={() => setActiveStep(3)} className="px-5 py-2.5 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold">Geri</button>
+                <button 
+                  type="button" 
+                  disabled={staffList.length === 0}
+                  onClick={() => setActiveStep(5)}
+                  className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white rounded-lg font-bold text-xs"
+                >
+                  Sonraki Adım
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* STEP 5: AVAILABILITY */}
+          {activeStep === 5 && (
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">5. Çalışma Günleri ve Saatleri</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Haftalık salon açılış ve kapanış saatleri ile aktif olacağınız randevu günleri.</p>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-650 dark:text-gray-400 mb-2">Çalışılan Günler</label>
+                  <div className="flex flex-wrap gap-2">
+                    {['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'].map(day => {
+                      const isActive = activeDays.includes(day);
+                      return (
+                        <button
+                          type="button"
+                          key={day}
+                          onClick={() => handleToggleDay(day)}
+                          className={`px-3 py-1.5 text-xs rounded-lg border font-medium ${
+                            isActive 
+                              ? 'bg-blue-600 text-white border-blue-600' 
+                              : 'bg-transparent text-gray-500 border-gray-300 dark:border-slate-700'
+                          }`}
+                        >
+                          {day}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">Başlangıç Saati</label>
+                    <select 
+                      value={startTime} 
+                      onChange={e => setStartTime(e.target.value)}
+                      className="w-full rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-3 border text-sm"
+                    >
+                      {['07:00','08:00','08:30','09:00','09:30','10:00','11:00'].map(t => (
+                        <option key={t} value={t}>{t}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">Kapanış Saati</label>
+                    <select 
+                      value={endTime} 
+                      onChange={e => setEndTime(e.target.value)}
+                      className="w-full rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-3 border text-sm"
+                    >
+                      {['17:00','18:00','19:00','19:30','20:00','20:30','21:00','22:00'].map(t => (
+                        <option key={t} value={t}>{t}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4 flex justify-between border-t border-slate-100 dark:border-slate-700">
+                <button type="button" onClick={() => setActiveStep(4)} className="px-5 py-2.5 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold">Geri</button>
+                <button 
+                  type="button" 
+                  onClick={handleSaveAvailability}
+                  disabled={activeDays.length === 0}
+                  className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white rounded-lg font-bold text-xs"
+                >
+                  Ok, Kaydet ve Sonraki
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* STEP 6: BRANDING & GALLERY */}
+          {activeStep === 6 && (
+            <form onSubmit={handleSaveBranding} className="space-y-5">
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">6. Görsel & Marka Kimliği (İsteğe Bağlı)</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Sitenizin müşteri gözünde şık görünmesi için logo, renk ve kısa slogan ekleyin.</p>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">Sitenin Birincil Rengi</label>
+                  <div className="flex gap-2 items-center">
+                    <input 
+                      type="color" 
+                      value={setupPrimaryColor} 
+                      onChange={e => setSetupPrimaryColor(e.target.value)}
+                      className="w-10 h-10 border-0 rounded cursor-pointer"
+                    />
+                    <span className="text-xs font-mono">{setupPrimaryColor}</span>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">İşletme Logosu Bağlantı Adresi (URL)</label>
+                  <input 
+                    type="text" 
+                    placeholder="https://..."
+                    value={setupLogoUrl} 
+                    onChange={e => setSetupLogoUrl(e.target.value)}
+                    className="w-full rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-3 border text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">Müşteriler İçin Tanıtım Metni (Slogan)</label>
+                  <textarea 
+                    rows={2}
+                    placeholder="Örn: En modern saç, tırnak ve cilt tasarımlarıyla profesyonel dokunuşlar sunuyoruz."
+                    value={profileShortDesc} 
+                    onChange={e => setProfileShortDesc(e.target.value)}
+                    className="w-full rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-3 border text-sm"
+                  ></textarea>
+                </div>
+              </div>
+
+              <div className="pt-4 flex justify-between border-t border-slate-100 dark:border-slate-700">
+                <button type="button" onClick={() => setActiveStep(5)} className="px-5 py-2.5 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold">Geri</button>
+                <button 
+                  type="submit" 
+                  disabled={setupSaving}
+                  className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold text-xs"
+                >
+                  Seçenekleri Kaydet ve Devam
+                </button>
+              </div>
+            </form>
+          )}
+
+          {/* STEP 7: BOOKING RULES */}
+          {activeStep === 7 && (
+            <div className="space-y-5">
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">7. Rezervasyon & Güvenlik Kuralları</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Sitenizden gelecek randevuların iptal süreleri ve onay prosedürleri.</p>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-700 rounded-xl">
+                  <div>
+                    <span className="text-xs font-bold text-gray-800 dark:text-white block">Otomatik Randevu Onayı</span>
+                    <span className="text-[10px] text-gray-400 block">Etkinleştirildiğinde randevular sahibin manuel onayı olmadan doğrudan onaylanır.</span>
+                  </div>
+                  <input 
+                    type="checkbox" 
+                    checked={autoApprove} 
+                    onChange={e => setAutoApprove(e.target.checked)}
+                    className="w-5 h-5 rounded border-gray-300 dark:border-slate-600"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">İptal Politikası Açıklaması</label>
+                  <input 
+                    type="text" 
+                    value={cancelPolicy} 
+                    onChange={e => setCancelPolicy(e.target.value)}
+                    className="w-full rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-3 border text-sm"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-4 flex justify-between border-t border-slate-100 dark:border-slate-700">
+                <button type="button" onClick={() => setActiveStep(6)} className="px-5 py-2.5 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold">Geri</button>
+                <button 
+                  type="button" 
+                  onClick={handleSaveBookingRules}
+                  className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold text-xs"
+                >
+                  Kaydet ve Devam
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* STEP 8: SUBSCRIPTION AND PAYMENT GATE */}
+          {activeStep === 8 && (
+            <div className="space-y-5">
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">8. Ödeme & Güvenli Doğrulama</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Sitenizin dış dünyaya açılması için ödeme doğrulamasını kontrol edin.</p>
+              </div>
+
+              {onboardingReport?.pendingCheckout ? (
+                <div className="p-5 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900 rounded-xl space-y-4">
+                  <div className="flex gap-3">
+                    <span className="text-2xl">⚠️</span>
+                    <div>
+                      <h4 className="font-bold text-sm text-red-800 dark:text-red-400">Abonelik Engellendi (Seçili kart gerekiyor)</h4>
+                      <p className="text-xs text-red-700 dark:text-red-500 mt-1">Sistemin kötü amaçlı kullanımını engellemek amacıyla 14 günlük deneme süresini başlatmadan önce bir ödeme kartı tanımlanması zorunludur.</p>
+                    </div>
+                  </div>
+                  <div className="border-t border-red-150 pt-3 flex justify-end">
+                    <button 
+                      onClick={handleCheckoutRedirect}
+                      className="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-bold"
+                    >
+                      Kredi Kartı Ekle / Denemeyi Başlat
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="p-5 bg-green-50 dark:bg-green-950/25 border border-green-200 dark:border-green-800 rounded-xl space-y-3">
+                  <div className="flex gap-3">
+                    <span className="text-2xl">✅</span>
+                    <div>
+                      <h4 className="font-bold text-sm text-green-800 dark:text-green-400">Deneme Süresi / Ödeme Doğrulandı</h4>
+                      <p className="text-xs text-green-700 dark:text-green-500 mt-1">14 günlük ücretsiz deneme üyeliğiniz aktiftir. Güvenlik doğrulamaları tamamlanmıştır.</p>
+                    </div>
+                  </div>
                 </div>
               )}
 
-              <div className="bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg p-6 mb-8 text-center">
-                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Yayına göndermeden önce site önizlemesini kontrol etmenizi tavsiye ederiz. Randevu sisteminiz henüz dışarıdan erişilebilir değildir.</p>
-                 <a 
-                   href={`/#/admin-preview`} 
-                   target="_blank" 
-                   rel="noopener noreferrer"
-                   className="inline-flex px-6 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-lg font-bold shadow-sm transition-all text-center items-center justify-center mb-4"
-                 >
-                   Site Önizlemesini Aç
-                 </a>
+              <div className="pt-4 flex justify-between border-t border-slate-100 dark:border-slate-700">
+                <button type="button" onClick={() => setActiveStep(7)} className="px-5 py-2.5 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold">Geri</button>
+                <button 
+                  type="button" 
+                  onClick={() => setActiveStep(9)}
+                  className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold text-xs"
+                >
+                  Sonraki Adım
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* STEP 9: LIVE PREVIEW SIMULATOR */}
+          {activeStep === 9 && (
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">9. Gerçek Zamanlı Müşteri Önizleme Simülatörü</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Yayına çıkmadan önce, müşterilerinizin cep telefonunda göreceği canlı randevu sayfasını test edin!</p>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4 mb-4 justify-center">
-                 <button 
-                   onClick={() => {
-                     navigator.clipboard.writeText(`${window.location.origin}/${(import.meta as any).env.VITE_ROUTER_MODE === 'hash' ? '#/' : ''}book`);
-                     alert('Randevu sayfanızın adresi kopyalandı.');
-                   }}
-                   className="px-6 py-3 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg font-bold shadow-sm transition-all"
-                 >
-                   Bağlantıyı Kopyala
-                 </button>
-                 <button 
-                   disabled={!isInfoCompleted || !isServicesCompleted || !isStaffCompleted || !isProfileCompleted || !isBrandingCompleted || tenant?.publicSiteStatus === 'pending_review' || tenant?.publicSiteStatus === 'published' || readiness?.blockingReasons.length > 0}
-                   onClick={async () => {
-                     if (!tenant) return;
-                     try {
+              {/* Interactive Mock Frame representation */}
+              <div className="bg-slate-900 text-slate-100 rounded-2xl overflow-hidden border-8 border-slate-800 shadow-xl max-w-sm mx-auto">
+                {/* Simulated Header */}
+                <div className="p-4 bg-slate-950 text-center relative border-b border-slate-800">
+                  <div className="w-1.5 h-1.5 bg-slate-750 rounded-full mx-auto mb-2"></div>
+                  {setupLogoUrl ? (
+                    <img referrerPolicy="no-referrer" src={setupLogoUrl} className="w-10 h-10 rounded-full mx-auto bg-white p-0.5 object-contain" alt="Logo" />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-indigo-500 text-white font-bold flex items-center justify-center mx-auto text-sm">
+                      {setupSalonName.substring(0,2).toUpperCase()}
+                    </div>
+                  )}
+                  <h4 className="font-bold text-xs mt-1 text-white">{setupSalonName}</h4>
+                  <p className="text-[9px] text-slate-450">{profileCategory || 'Güzellik Hizmetleri'} • {profileCity}/{profileDistrict || 'İstanbul'}</p>
+                </div>
+
+                {/* Simulated Body */}
+                <div className="p-4 space-y-4 max-h-96 overflow-y-auto bg-slate-900 text-slate-150">
+                  
+                  {/* Slogan */}
+                  {profileShortDesc && (
+                    <p className="text-[10px] italic text-slate-400 text-center">"{profileShortDesc}"</p>
+                  )}
+
+                  {/* Services step */}
+                  <div className="space-y-1.5">
+                    <span className="text-[10px] font-bold text-indigo-400 block tracking-wider uppercase">Hizmet Seçiniz</span>
+                    <div className="space-y-1">
+                      {servicesList.map(s => (
+                        <button 
+                          type="button"
+                          key={s.id} 
+                          onClick={() => { setSelectedPreviewService(s.id); setPreviewBookingStatus('idle'); }}
+                          className={`w-full text-left p-2.5 rounded-lg border text-xs flex justify-between items-center transition ${
+                            selectedPreviewService === s.id 
+                              ? 'bg-indigo-950/40 border-indigo-500 text-indigo-300' 
+                              : 'bg-slate-950 border-slate-800 hover:border-slate-700 text-slate-350'
+                          }`}
+                        >
+                          <div>
+                            <div className="font-bold">{s.name_tr || s.name}</div>
+                            <div className="text-[9px] text-slate-500">{s.duration} dk</div>
+                          </div>
+                          <div className="font-bold text-indigo-400">{s.price} TL</div>
+                        </button>
+                      ))}
+                      {servicesList.length === 0 && (
+                        <p className="text-[10px] text-slate-500">Eklenmiş hizmet bulunmuyor.</p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Staff selection */}
+                  <div className="space-y-1.5">
+                    <span className="text-[10px] font-bold text-indigo-400 block tracking-wider uppercase">Uzman Seçiniz</span>
+                    <div className="grid grid-cols-2 gap-2">
+                      {staffList.map(s => (
+                        <button 
+                          type="button"
+                          key={s.id}
+                          onClick={() => { setSelectedPreviewStaff(s.id); setPreviewBookingStatus('idle'); }}
+                          className={`text-center p-2 rounded-lg border text-[11px] font-medium transition ${
+                            selectedPreviewStaff === s.id 
+                              ? 'bg-indigo-950/40 border-indigo-500 text-indigo-300' 
+                              : 'bg-slate-950 border-slate-800 hover:border-slate-700 text-slate-350'
+                          }`}
+                        >
+                          <div className="text-xs font-bold">{s.name}</div>
+                          <div className="text-[9px] text-slate-500">{s.title || 'Uzman'}</div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Booking Trigger button */}
+                  {previewBookingStatus === 'booked' ? (
+                    <div className="p-3 bg-green-950/20 text-green-400 rounded-lg border border-green-800 text-center text-xs">
+                      🎉 Test Randevusu Tamamlandı! Gerçek sitede anında bildirim alırsınız.
+                    </div>
+                  ) : (
+                    <button 
+                      type="button"
+                      onClick={handleTriggerMockBooking}
+                      className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold transition shadow"
+                    >
+                      Randevu Al (Simülasyon)
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className="pt-4 flex justify-between border-t border-slate-100 dark:border-slate-700">
+                <button type="button" onClick={() => setActiveStep(8)} className="px-5 py-2.5 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold">Geri</button>
+                <button 
+                  type="button" 
+                  onClick={() => setActiveStep(10)}
+                  className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold text-xs"
+                >
+                  Son Adım Yayına Gönder
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* STEP 10: PUBLISH ACTION REVIEW */}
+          {activeStep === 10 && (
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">10. Sitenizi Yayın İncelemesine Gönderin</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">LARİ editörleri güvenlik kontrollerinden geçirdikten sonra sitenizi yayına alacaktır.</p>
+              </div>
+
+              {/* Status indicators */}
+              <div className="space-y-3">
+                {readiness && !readiness.canGoLive ? (
+                  <div className="p-4 bg-red-50 text-red-800 rounded-xl border border-red-200 space-y-2">
+                    <h4 className="font-bold text-xs">Lütfen Sitenizi Yayına Göndermeden Önce Eksikleri Tamamlayın:</h4>
+                    <ul className="list-disc pl-5 text-[11px] space-y-1">
+                      {readiness.blockingReasons.map((reason, idx) => (
+                        <li key={idx}>{reason}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : (
+                  <div className="p-4 bg-green-50 dark:bg-green-950/25 text-green-800 dark:text-green-300 rounded-xl border border-green-200 dark:border-green-850">
+                    <p className="text-xs font-bold">Harika! Tüm zorunlu kurulum adımlarını tamamladınız.</p>
+                    <p className="text-[11px] text-gray-500 mt-1">Siteniz artık onaylanmaya ve internet aramalarında görünmeye hazırdır.</p>
+                  </div>
+                )}
+              </div>
+
+              {tenant?.publicSiteStatus === 'pending_review' ? (
+                <div className="p-4 bg-blue-50 text-blue-800 rounded-xl text-center text-xs font-bold border border-blue-200">
+                  Siteniz incelemede. LARİ editörleri onayladığında anında SMS ve E-posta alacaksınız.
+                </div>
+              ) : tenant?.publicSiteStatus === 'published' ? (
+                <div className="p-4 bg-green-50 text-green-800 rounded-xl text-center text-xs font-bold border border-green-200">
+                  Yayında! Sitenizin kurulumu onaylandı ve müşterilerinize açıldı.
+                </div>
+              ) : (
+                <div className="flex justify-center pt-2">
+                  <button 
+                    disabled={readiness && !readiness.canGoLive}
+                    onClick={async () => {
+                      if (!tenant) return;
+                      try {
                         const verifiedResult = businessVerificationService.submitForReview(tenant.id, {
-                           officialBusinessName: tenant.name,
-                           publicDisplayName: branding?.businessName || tenant.name,
-                           category: ''
+                          officialBusinessName: setupSalonName,
+                          publicDisplayName: setupSalonName,
+                          category: profileCategory
                         });
                         
                         if (!verifiedResult.success) {
-                           alert('Kullanım koşullarına uymayan işletme türü (Yayın engellendi).');
-                           if (typeof refreshTenant === 'function') await refreshTenant();
-                           await goLiveService.getGoLiveReadiness(tenant.id).then(setReadiness);
-                           return;
+                          await showAlert('Onay Başarısız: İşletme kategorisi veya adı Lari yayın politikalarına uygun bulunamadı.');
+                          await refreshReport();
+                          return;
                         }
 
                         await goLiveService.markReadyForReview(tenant.id);
-                        alert("Yayın İncelemesine Gönderildi. LARİ ekibi profilinizi doğruladıktan sonra aktif edilecektir.");
-                        if (typeof refreshTenant === 'function') await refreshTenant();
-                        await goLiveService.getGoLiveReadiness(tenant.id).then(setReadiness);
-                     } catch(err) {
-                        alert("Hata oluştu.");
-                     }
-                   }} 
-                   className="px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-lg font-bold shadow-sm transition-all"
-                 >
-                   Yayın İncelemesine Gönder
-                 </button>
-              </div>
+                        await showAlert("Yayın incelemesine başarıyla gönderildi. Siteniz kısa sürede aktifleştirilecektir.");
+                        await refreshReport();
+                      } catch(err) {
+                        await showAlert("Hata oluştu.");
+                      }
+                    }} 
+                    className="px-8 py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white rounded-xl font-bold text-xs"
+                  >
+                    Yayın İncelemesine Gönder
+                  </button>
+                </div>
+              )}
 
-              {tenant?.publicSiteStatus === 'pending_review' && (
-                  <div className="bg-blue-50 text-blue-800 p-4 rounded-lg text-center font-medium border border-blue-200">
-                     İncelemede (Profiliniz değerlendiriliyor, lütfen bekleyiniz)
-                  </div>
-              )}
-              {tenant?.publicSiteStatus === 'published' && (
-                  <div className="bg-green-50 text-green-800 p-4 rounded-lg text-center font-medium border border-green-200">
-                     Yayında! İşletmeniz online randevu almaya açık.
-                  </div>
-              )}
-              {tenant?.publicSiteStatus === 'suspended' && (
-                  <div className="bg-red-50 text-red-800 p-4 rounded-lg text-center font-medium border border-red-200">
-                     Yayın Durduruldu. İşletmeniz online randevu kabul edemez.
-                  </div>
-              )}
-              
-              <div className="pt-8 flex justify-start">
-                 <button type="button" onClick={() => setActiveStep(7)} className="px-6 py-2 bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-md font-medium">Geri</button>
+              <div className="pt-4 flex justify-start border-t border-slate-100 dark:border-slate-700">
+                <button type="button" onClick={() => setActiveStep(9)} className="px-5 py-2.5 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold">Geri</button>
               </div>
             </div>
           )}
