@@ -26,6 +26,11 @@ The core objective was to finalize feature entitlement enforcement and ensure th
 *   **Demo Funneling CTA:**
     *   In `PilotDemoEntryPage.tsx`, updated the cards to seamlessly push a user towards checking their own business digitally (`/demo`).
 
+### 1.3 Admin UX Upgrade
+*   **Feature Availability Matrix:** Created `adminFeatureAvailabilityService` to check both onboarding progress and entitlements, explicitly locking tabs such as Referrals, and guiding the user to complete their setup.
+*   **Dashboard Next Actions:** Introduced a "Smart Setup Banner" in `AdminPage.tsx` that determines the user's setup step (via the onboarding report) and blocks access to certain tabs until onboarding/payment verification is completed.
+*   **Empty States & Mobile UX:** Enhanced empty states with direct CTAs (e.g. "Site Önizlemesini Aç" in Appointments) and polished mobile menus ensuring proper naming conventions across all resolutions.
+
 ## 2. Security & Data Integrity Readiness
 
 *   **Trial Isolation:** The 14-day rule logic stands firm. No features activate beyond registration without passing through the mock paywall/subscription logic.

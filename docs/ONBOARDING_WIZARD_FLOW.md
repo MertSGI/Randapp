@@ -27,7 +27,8 @@ The onboarding wizard guides salon owners through setting up their salon on the 
     - **Required**: Publishes request submit checklist which invokes verification and safety gates.
 
 ## State Management & Features
-- **Cheklisi Service**: `/services/onboardingChecklistService.ts` computes exact progress percentages and next actionable steps dynamically.
+- **Checklist Service**: `/services/onboardingChecklistService.ts` computes exact progress percentages and next actionable steps dynamically.
+- **Admin Feature Availability**: The admin panel strictly locks advanced features and conditionally routes incomplete setups to the Setup Wizard by enforcing `adminFeatureAvailabilityService`. Only essential tabs (`settings`, `billing`, `dashboard`, `staff`, `services`) are available until certain onboarding criteria are met. Advanced tabs (like `customers`, `referrals`, `appointments`) are gated by progress and subscription entitlements.
 - **Draft Recovery**: Unsaved drafts are written instantly to `localStorage` representing complete reload-data-loss protection.
 - **Live Preview Simulator**: Step 9 simulates customer booking directly within the onboarding wizard for quick testing.
 - **Payment Verification**: Integrates securely with billing states, enforcing trial or card additions before submission.

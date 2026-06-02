@@ -2,7 +2,7 @@
 # Product Flow QA Report
 
 ## Run Metadata
-- Timestamp: 2026-06-02T06:01:32.762Z
+- Timestamp: 2026-06-02T08:57:31.923Z
 - Viewports: Mobile(390), Desktop(1440)
 - Roles: guest, admin, superadmin
 - Status: **FAIL**

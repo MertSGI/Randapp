@@ -29,7 +29,8 @@ const runIsolationTests = () => {
             passed = false;
         }
 
-        if (content.includes("lari_active_owner_session") && !content.match(/seedDemoDataOnly\(\)[\s\S]*?lari_active_owner_session/)) {
+        const seedDemoDataContent = content.substring(content.indexOf('seedDemoDataOnly()'), content.indexOf('seedAndEnterDemoContext()'));
+        if (content.includes("lari_active_owner_session") && !seedDemoDataContent.includes('lari_active_owner_session')) {
             output += `- ✅ pilotDemoService does not set lari_active_owner_session inside seedDemoDataOnly.\n`;
         } else {
             output += `- ❌ pilotDemoService incorrectly sets lari_active_owner_session inside seedDemoDataOnly.\n`;

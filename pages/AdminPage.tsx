@@ -20,6 +20,7 @@ import ReferralTab from '../components/ReferralTab';
 import AdminSettingsTab from '../components/AdminSettingsTab';
 import { ImageUpload } from '../components/ImageUpload';
 import { onboardingChecklistService, OnboardingReport } from '../services/onboardingChecklistService';
+import { adminFeatureAvailabilityService, AdminFeatureAvailability } from '../services/adminFeatureAvailabilityService';
 
 const AdminPage: React.FC = () => {
   const navigate = useNavigate();
@@ -50,6 +51,8 @@ const AdminPage: React.FC = () => {
   const [staffList, setStaffList] = useState<Staff[]>([]);
   const [servicesList, setServicesList] = useState<Service[]>([]);
   const [onboardingReport, setOnboardingReport] = useState<OnboardingReport | null>(null);
+  const [tabAvailability, setTabAvailability] = useState<Record<string, AdminFeatureAvailability>>({});
+  const [adminNextAction, setAdminNextAction] = useState<{message: string, ctaText: string, targetTab: string, isBlocked: boolean} | null>(null);
   const [aiAnalysis, setAiAnalysis] = useState<string>('');
   const [loadingAnalysis, setLoadingAnalysis] = useState(false);
   const [targetAppointmentId, setTargetAppointmentId] = useState<string | null>(null);
@@ -73,6 +76,28 @@ const AdminPage: React.FC = () => {
   const [newServiceImage, setNewServiceImage] = useState('');
   const [newServiceActive, setNewServiceActive] = useState(true);
   const [isMobileMoreMenuOpen, setIsMobileMoreMenuOpen] = useState(false);
+
+  const renderLockedFeature = (lockReason: string, recommendedAction: string | null) => {
+    return (
+      <div className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-sm text-center border border-gray-100 dark:border-slate-700 max-w-2xl mx-auto my-12">
+         <div className="w-16 h-16 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-500 dark:text-blue-400">
+           <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+         </div>
+         <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Özellik Kilitli</h3>
+         <p className="text-gray-500 dark:text-gray-400 mb-6">{lockReason}</p>
+         {recommendedAction === 'upgrade' && (
+           <button onClick={() => setActiveTab('billing')} className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium shadow-sm transition">
+             Abonelik Planlarını İncele
+           </button>
+         )}
+         {recommendedAction === 'setup' && (
+           <button onClick={() => setActiveTab('setup')} className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium shadow-sm transition">
+             Kurulum Sihirbazına Dön
+           </button>
+         )}
+      </div>
+    );
+  };
 
   useEffect(() => {
     if (authLoading) return;
@@ -105,8 +130,18 @@ const AdminPage: React.FC = () => {
     try {
       const report = await onboardingChecklistService.getOnboardingReport(tenant.id);
       setOnboardingReport(report);
+      
+      const nextAction = await adminFeatureAvailabilityService.getAdminHomeNextActions(tenant.id);
+      setAdminNextAction(nextAction);
+      
+      const available: Record<string, AdminFeatureAvailability> = {};
+      const validTabs = ['dashboard', 'setup', 'appointments', 'staff', 'services', 'reports', 'billing', 'profile', 'settings', 'customers', 'referrals'];
+      for (const tab of validTabs) {
+        available[tab] = await adminFeatureAvailabilityService.getAvailability(tenant.id, tab);
+      }
+      setTabAvailability(available);
     } catch (e) {
-      console.error("Error loading onboarding report:", e);
+      console.error("Error loading admin data:", e);
     }
   };
 
@@ -312,7 +347,7 @@ const AdminPage: React.FC = () => {
             onClick={() => setActiveTab('dashboard')}
             className={`${activeTab === 'dashboard' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
           >
-            Dashboard
+            {(t.admin as any).tab_dashboard || 'Dashboard'}
           </button>
           <button
             onClick={() => setActiveTab('appointments')}
@@ -348,7 +383,7 @@ const AdminPage: React.FC = () => {
             onClick={() => setActiveTab('referrals')}
             className={`${activeTab === 'referrals' ? 'border-accent text-accent dark:border-blue-400 dark:text-blue-400 border-b-2' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-slate-500 border-b-2'} whitespace-nowrap py-2 px-1 font-medium text-sm transition-colors duration-300`}
           >
-            {(t.admin as any).tab_referrals || 'Referans & Kayıt'}
+            {(t.admin as any).tab_referrals || 'Referrals'}
           </button>
           <button
             onClick={() => setActiveTab('reports')}
@@ -387,13 +422,15 @@ const AdminPage: React.FC = () => {
       )}
 
       {activeTab === 'customers' && (
-        <CustomerMemoryTab 
-          appointments={appointments}
-          staffList={staffList}
-          servicesList={servicesList}
-          targetAppointmentId={targetAppointmentId}
-          onClearTarget={() => setTargetAppointmentId(null)}
-        />
+        tabAvailability['customers']?.isAccessible === false 
+          ? renderLockedFeature(tabAvailability['customers']!.lockReason!, tabAvailability['customers']!.recommendedAction) 
+          : <CustomerMemoryTab 
+              appointments={appointments}
+              staffList={staffList}
+              servicesList={servicesList}
+              targetAppointmentId={targetAppointmentId}
+              onClearTarget={() => setTargetAppointmentId(null)}
+            />
       )}
 
       {activeTab === 'dashboard' && (
@@ -450,7 +487,11 @@ const AdminPage: React.FC = () => {
                 {/* Next Action */}
                 <div className="p-3 bg-slate-50 dark:bg-slate-900/50 rounded-lg border border-gray-150 dark:border-slate-800">
                   <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider block">Sıradaki Adım</span>
-                  {onboardingReport.nextStep ? (
+                  {adminNextAction ? (
+                     <div className="mt-1">
+                       <span className={`text-sm font-semibold ${adminNextAction.isBlocked ? 'text-red-650 dark:text-red-400' : 'text-gray-800 dark:text-gray-200'}`}>{adminNextAction.message}</span>
+                     </div>
+                  ) : onboardingReport.nextStep ? (
                     <div className="mt-1">
                       <span className="text-sm font-semibold text-gray-800 dark:text-slate-205">{onboardingReport.nextStep.title}</span>
                       <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{onboardingReport.nextStep.description}</p>
@@ -494,17 +535,24 @@ const AdminPage: React.FC = () => {
 
               {/* Action Buttons */}
               <div className="flex justify-end gap-3 pt-2">
-                {onboardingReport.nextStep?.targetTab && (
+                {adminNextAction ? (
+                  <button 
+                    onClick={() => setActiveTab(adminNextAction.targetTab)}
+                    className="px-4 py-2 border border-blue-600 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-sm transition"
+                  >
+                    {adminNextAction.ctaText}
+                  </button>
+                ) : onboardingReport.nextStep?.targetTab ? (
                   <button 
                     onClick={() => setActiveTab(onboardingReport.nextStep?.targetTab)}
                     className="px-4 py-2 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-lg text-xs font-semibold transition"
                   >
                     Hemen Tamamla
                   </button>
-                )}
+                ) : null}
                 <button 
                   onClick={() => setActiveTab('setup')}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold shadow-sm transition"
+                  className={`px-4 py-2 ${adminNextAction ? 'bg-white text-gray-700 border-gray-300 border hover:bg-gray-50 dark:bg-slate-700 dark:text-white' : 'bg-blue-600 hover:bg-blue-700 text-white'} rounded-lg text-xs font-bold shadow-sm transition`}
                 >
                   Kurulum Sihirbazını Aç
                 </button>
@@ -542,13 +590,22 @@ const AdminPage: React.FC = () => {
       )}
 
       {activeTab === 'appointments' && (
-          <div className="bg-white dark:bg-slate-800 shadow overflow-hidden sm:rounded-md transition-colors duration-300">
+        tabAvailability['appointments']?.isAccessible === false 
+          ? renderLockedFeature(tabAvailability['appointments']!.lockReason!, tabAvailability['appointments']!.recommendedAction) 
+          : <div className="bg-white dark:bg-slate-800 shadow overflow-hidden sm:rounded-md transition-colors duration-300">
             <div className="px-4 py-5 sm:px-6 bg-gray-50 dark:bg-slate-800/80 border-b border-gray-200 dark:border-slate-700 transition-colors duration-300">
               <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white transition-colors duration-300">{t.admin.recent_title}</h3>
             </div>
             <ul className="divide-y divide-gray-200 dark:divide-slate-700 max-h-[600px] overflow-y-auto">
               {appointments.length === 0 ? (
-                <li className="p-8 text-center text-gray-500 dark:text-gray-400 transition-colors duration-300">{t.admin.empty}</li>
+                <div className="py-12 flex flex-col items-center justify-center text-center px-4">
+                  <div className="w-16 h-16 bg-gray-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center mb-4 border border-gray-100 dark:border-slate-600">
+                    <svg className="w-8 h-8 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                  </div>
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-1">Henüz Randevu Yok</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 max-w-sm mb-6">Müşterileriniz online rezervasyon yaptıkça randevularınız otomatik olarak burada görünecektir.</p>
+                  <button onClick={() => window.open('/#/book?preview=true', '_blank')} className="px-5 py-2 bg-white text-gray-700 border border-gray-300 dark:bg-slate-700 dark:text-gray-200 dark:border-slate-600 rounded-lg shadow-sm font-medium hover:bg-gray-50 dark:hover:bg-slate-600 transition-colors text-sm">Site Önizlemesini Aç</button>
+                </div>
               ) : (
                 appointments.map((apt) => {
                   const assignedStaff = staffList.find(s => s.id === apt.staffId);
@@ -612,7 +669,9 @@ const AdminPage: React.FC = () => {
       )}
 
       {activeTab === 'staff' && (
-        <div className="space-y-8">
+        tabAvailability['staff']?.isAccessible === false 
+          ? renderLockedFeature(tabAvailability['staff']!.lockReason!, tabAvailability['staff']!.recommendedAction) 
+          : <div className="space-y-8">
           <div className="bg-white dark:bg-slate-800 shadow-sm rounded-lg border border-gray-200 dark:border-slate-700 overflow-hidden p-6 transition-colors duration-300">
             <h3 className="text-lg font-medium text-gray-900 dark:text-white border-b border-gray-200 dark:border-slate-700 pb-4 mb-4 transition-colors duration-300">
               {editingStaffId ? t.admin.edit_staff : t.admin.add_staff}
@@ -658,8 +717,17 @@ const AdminPage: React.FC = () => {
             </form>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {staffList.map(staff => {
+          {staffList.length === 0 ? (
+            <div className="py-12 flex flex-col items-center justify-center text-center px-4 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl shadow-sm">
+                <div className="w-16 h-16 bg-gray-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center mb-4 border border-gray-100 dark:border-slate-600">
+                  <svg className="w-8 h-8 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                </div>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-1">Henüz Uzman Eklenmemiş</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 max-w-sm mb-6">Müşterilerinize hizmet verecek çalışanları yukarıdaki formdan ekleyebilirsiniz.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {staffList.map(staff => {
               const isOwner = staff.id === 'stf_1' || staff.name.toLowerCase().includes('mustafa ali yılmaz');
               return (
               <div key={staff.id} className={`bg-white dark:bg-slate-800 border text-center p-6 border-gray-200 dark:border-slate-700 rounded-xl shadow-sm flex flex-col items-center relative group transition-colors duration-300 ${!staff.active ? 'opacity-60' : ''}`}>
@@ -709,12 +777,15 @@ const AdminPage: React.FC = () => {
                 </div>
               </div>
             )})}
-          </div>
+            </div>
+          )}
         </div>
       )}
 
       {activeTab === 'services' && (
-        <div className="space-y-8">
+        tabAvailability['services']?.isAccessible === false 
+          ? renderLockedFeature(tabAvailability['services']!.lockReason!, tabAvailability['services']!.recommendedAction) 
+          : <div className="space-y-8">
           <div className="bg-white dark:bg-slate-800 shadow-sm rounded-lg border border-gray-200 dark:border-slate-700 overflow-hidden p-6 transition-colors duration-300">
             <h3 className="text-lg font-medium text-gray-900 dark:text-white border-b border-gray-200 dark:border-slate-700 pb-4 mb-4 transition-colors duration-300">
               {editingServiceId ? t.admin.edit_service : t.admin.add_service}
@@ -760,8 +831,17 @@ const AdminPage: React.FC = () => {
             </form>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {servicesList.map(service => (
+          {servicesList.length === 0 ? (
+            <div className="py-12 flex flex-col items-center justify-center text-center px-4 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl shadow-sm">
+                <div className="w-16 h-16 bg-gray-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center mb-4 border border-gray-100 dark:border-slate-600">
+                  <svg className="w-8 h-8 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+                </div>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-1">Henüz Hizmet Eklenmemiş</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 max-w-sm mb-6">Müşterilerinize online randevu sitenizde sunacağınız hizmetleri yukarıdaki formdan eklemeye başlayın.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {servicesList.map(service => (
               <div key={service.id} className={`bg-white dark:bg-slate-800 border text-center p-6 border-gray-200 dark:border-slate-700 rounded-xl shadow-sm flex flex-col items-center relative group transition-colors duration-300 ${!service.active ? 'opacity-60' : ''}`}>
                 {!service.active && (
                    <span className="absolute top-2 left-2 bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded-md">{t.admin.inactive}</span>
@@ -813,23 +893,30 @@ const AdminPage: React.FC = () => {
                 <div className="text-xs bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300 px-3 py-1 rounded-full transition-colors duration-300">{service.id}</div>
               </div>
             ))}
-          </div>
+            </div>
+          )}
         </div>
       )}
       
       {activeTab === 'reports' && (
-        <SalonReportsTab 
-          appointments={appointments} 
-          services={servicesList} 
-          staff={staffList} 
-        />
+        tabAvailability['reports']?.isAccessible === false 
+          ? renderLockedFeature(tabAvailability['reports']!.lockReason!, tabAvailability['reports']!.recommendedAction) 
+          : <SalonReportsTab appointments={appointments} services={servicesList} staff={staffList} />
       )}
       
       {activeTab === 'billing' && <BillingTab />}
 
-      {activeTab === 'profile' && <BusinessProfileTab />}
+      {activeTab === 'profile' && (
+        tabAvailability['profile']?.isAccessible === false 
+          ? renderLockedFeature(tabAvailability['profile']!.lockReason!, tabAvailability['profile']!.recommendedAction) 
+          : <BusinessProfileTab />
+      )}
       
-      {activeTab === 'referrals' && <ReferralTab />}
+      {activeTab === 'referrals' && (
+        tabAvailability['referrals']?.isAccessible === false 
+          ? renderLockedFeature(tabAvailability['referrals']!.lockReason!, tabAvailability['referrals']!.recommendedAction) 
+          : <ReferralTab />
+      )}
       
       {activeTab === 'settings' && <AdminSettingsTab />}
       
@@ -887,13 +974,13 @@ const AdminPage: React.FC = () => {
                      {t.admin.tab_billing}
                   </button>
                   <button onClick={() => setActiveTab('referrals')} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 ${activeTab === 'referrals' ? 'bg-blue-50 dark:bg-slate-700 text-accent font-semibold' : 'text-gray-700 dark:text-gray-300'}`}>
-                     {(t.admin as any).tab_referrals || 'Referans & Puan'}
+                     {(t.admin as any).tab_referrals || 'Referrals'}
                   </button>
                   <button onClick={() => setActiveTab('profile')} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 ${activeTab === 'profile' ? 'bg-blue-50 dark:bg-slate-700 text-accent font-semibold' : 'text-gray-700 dark:text-gray-300'}`}>
                      {t.admin.tab_profile}
                   </button>
                   <button onClick={() => setActiveTab('settings')} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 ${activeTab === 'settings' ? 'bg-blue-50 dark:bg-slate-700 text-accent font-semibold' : 'text-gray-700 dark:text-gray-300'}`}>
-                     {(t.admin as any).tab_settings || 'Ayarlar'}
+                     {(t.admin as any).tab_settings || 'Settings'}
                   </button>
                   <button onClick={() => { window.open('/#/book?preview=true', '_blank'); }} className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 text-gray-700 dark:text-gray-300 border-t border-gray-100 dark:border-slate-700`}>
                      Site Önizleme

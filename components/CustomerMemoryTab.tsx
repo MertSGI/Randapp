@@ -217,7 +217,14 @@ const CustomerMemoryTab: React.FC<CustomerMemoryTabProps> = ({ appointments, sta
           </div>
           <ul className="divide-y divide-gray-200 dark:divide-slate-700 max-h-[600px] overflow-y-auto">
             {customers.length === 0 ? (
-              <li className="p-8 text-center text-gray-500">{t.admin.no_customer_history}</li>
+              <div className="py-12 flex flex-col items-center justify-center text-center px-4">
+                <div className="w-16 h-16 bg-gray-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center mb-4 border border-gray-100 dark:border-slate-600">
+                  <svg className="w-8 h-8 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                </div>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-1">Kayıtlı Müşteri Yok</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 max-w-sm mb-6">{t.admin.no_customer_history}</p>
+                <button onClick={() => window.open('/#/book?preview=true', '_blank')} className="px-5 py-2 bg-white text-gray-700 border border-gray-300 dark:bg-slate-700 dark:text-gray-200 dark:border-slate-600 rounded-lg shadow-sm font-medium hover:bg-gray-50 dark:hover:bg-slate-600 transition-colors text-sm">Site Önizlemesini Aç</button>
+              </div>
             ) : (
               customers.map(customer => {
                 const staff = staffList.find(s => s.id === customer.preferredStaffId);
