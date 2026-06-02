@@ -3,6 +3,7 @@ import { goLiveReadinessService, ReadinessReport, ReadinessCheck } from '../../s
 import { paymentRunModeService, RunModeStatus, PaymentRunMode } from '../../services/paymentRunModeService';
 import { customerPilotReadinessService } from '../../services/customerPilotReadinessService';
 import { notificationTemplateService } from '../../services/notificationTemplateService';
+import { SuperAdminDataExportSection } from './SuperAdminDataExportSection';
 
 const StatusBadge = ({ status }: { status: string }) => {
   switch (status) {
@@ -250,6 +251,8 @@ const SuperAdminGoLivePage: React.FC = () => {
            </div>
         ))}
       </div>
+
+      <SuperAdminDataExportSection />
 
       <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 space-y-6">
         <div>

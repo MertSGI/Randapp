@@ -110,13 +110,14 @@ The LARİ platform serves four distinct personas across public, admin, customer,
 * Validated that `pending_checkout` block behaves appropriately.
 * Verified `isAnyStaffPreselected` respects auto-assignment.
 * Master QA `verify-master-system-audit.mjs` was created and tied into global `qa:all`.
+* **ADDED**: `dataExportService` and `migrationDryRunService` added to allow safe backup/restore of local tenant setups before Supabase cutover.
 
 ## 14. Known Limitations
-1.  **LocalStorage Persistence**: Real multi-device use is structurally impossible under `VITE_DATA_MODE=mock`.
+1.  **LocalStorage Persistence**: Real multi-device use is structurally impossible under `VITE_DATA_MODE=mock`. However, data can now be exported/imported safely through the SuperAdmin interface.
 2.  **Notification Sink**: Email & WhatsApp texts currently stream strictly to `console.log`.
 
 ## 15. Risks before Real Pilot
-1.  *Data Volatility*: Starting a real pilot while still configured to `VITE_DATA_MODE=mock` will result in the loss of their configurations and appointments if they clear cache.
+1.  *Data Volatility*: Starting a real pilot while still configured to `VITE_DATA_MODE=mock` will result in the loss of their configurations and appointments if they clear cache. **STATUS**: Mitigated partially by the new Data Export functionality (`.json` backups), but fundamentally requires Supabase to fully fix.
 2.  *Iyzico Block*: To collect payment smoothly, Cloud Run must implement the webhook/edge hooks. For now, it bypasses locally.
 3.  *DNS*: Custom Domains are "ready" in the app, but rely entirely on wildcard NGINX routing not yet provided.
 
