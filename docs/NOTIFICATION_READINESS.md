@@ -45,6 +45,7 @@ The templates defined here are already integrated seamlessly into core business 
 
 - **Appointment Creation:** `createAppointment` safely logs the hook for the `appointment_confirmation` template.
 - **Appointment Cancellation:** `updateAppointmentStatus` safely logs the hook for the `booking_cancelled` template when an appointment goes into cancellation states.
+- **Appointment Completion:** Completing appointments manages states safely representing the completed CRM node, which could be hooked for a `post_visit_review` or `referral_reward_unlocked` notification.
 
 These hook abstractions allow easy migration towards Event Bridge, Supabase DB Triggers, or standard Pub/Sub outboxing without breaking client-side UI threads.
 

@@ -37,6 +37,11 @@ The core objective was to finalize feature entitlement enforcement and ensure th
 *   **Confirmation Clarity:** Suppressed technical AI processing logs in the user-facing booking confirmation (Step 5), and replaced them with a clean, localized "Appointment Details" summary card containing Business Name, Staff, Date, and Customer Info.
 *   **AI Feature Gating:** Successfully gated the "AI Style Assistant" (`SalonWebsiteView.tsx`) behind an `isAiEnabled` prop, preventing unentitled (e.g. free plan) users from exposing this feature on their public sites, while still permitting it freely on the Pilot Demo.
 
+### 1.5 Appointment Operations Lifecycle
+*   **Status Management:** Formalized `confirmed`, `completed`, `cancelled`, and `no_show` status lifecycle in the Admin Panel (`AdminPage.tsx`).
+*   **Dashboard Stats Accuracy:** Segregated Total, "Today's Confirmed", and "Completed" stats on the dashboard to reflect business operations correctly.
+*   **Customer Memory Integrations:** Validated that completing or cancelling appointments interacts appropriately with `customerCampaignService` to mark rewarded states, and correctly leaves a localized trace on the customer's history.
+
 ## 2. Security & Data Integrity Readiness
 
 *   **Trial Isolation:** The 14-day rule logic stands firm. No features activate beyond registration without passing through the mock paywall/subscription logic.

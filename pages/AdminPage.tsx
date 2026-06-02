@@ -154,6 +154,19 @@ const AdminPage: React.FC = () => {
     }
   };
 
+  const handleComplete = async (id: string) => {
+    if (!tenant) return;
+    // In a real app we might show a confirm dialog. Here let's just complete.
+    await updateAppointmentStatus(tenant.id, id, 'completed', '', 'salon');
+    loadData();
+  };
+
+  const handleNoShow = async (id: string) => {
+    if (!tenant) return;
+    await updateAppointmentStatus(tenant.id, id, 'no_show', '', 'salon');
+    loadData();
+  };
+
   const runAnalysis = async () => {
     setLoadingAnalysis(true);
     const analysis = await GeminiService.analyzeSchedule(appointments, language);
@@ -571,19 +584,21 @@ const AdminPage: React.FC = () => {
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm p-6 border border-gray-100 dark:border-slate-700 transition-colors duration-300 cursor-pointer" onClick={() => setActiveTab('appointments')}>
-              <div className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase transition-colors duration-300">{t.admin.stats_total}</div>
+              <div className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase transition-colors duration-300">{t.admin.stats_total || 'Toplam Randevu'}</div>
               <div className="mt-2 text-3xl font-bold text-gray-900 dark:text-white transition-colors duration-300">{appointments.length}</div>
             </div>
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm p-6 border border-gray-100 dark:border-slate-700 transition-colors duration-300 cursor-pointer" onClick={() => setActiveTab('appointments')}>
-              <div className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase transition-colors duration-300">{t.admin.stats_confirmed}</div>
-              <div className="mt-2 text-3xl font-bold text-green-600 dark:text-green-400 transition-colors duration-300">
+              <div className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase transition-colors duration-300">{language === 'tr' ? 'Bugün Onaylananlar' : "Today's Confirmed"}</div>
+              <div className="mt-2 text-3xl font-bold text-blue-600 dark:text-blue-400 transition-colors duration-300">
                 {appointments.filter(a => a.date === new Date().toISOString().split('T')[0] && a.status === 'confirmed').length}
               </div>
             </div>
-            <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm p-6 border border-gray-100 dark:border-slate-700 transition-colors duration-300">
-              <div className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase transition-colors duration-300">{t.admin.stats_pending}</div>
-              <div className="mt-2 text-3xl font-bold text-accent dark:text-blue-400 transition-colors duration-300">0</div> 
-              <span className="text-xs text-gray-400 dark:text-gray-500 transition-colors duration-300">({t.admin.synced} via API)</span>
+            <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm p-6 border border-gray-100 dark:border-slate-700 transition-colors duration-300 cursor-pointer" onClick={() => setActiveTab('appointments')}>
+              <div className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase transition-colors duration-300">{language === 'tr' ? 'Tamamlanan Görüşmeler' : 'Completed'}</div>
+              <div className="mt-2 text-3xl font-bold text-green-600 dark:text-green-400 transition-colors duration-300">
+                {appointments.filter(a => a.status === 'completed').length}
+              </div> 
+              <span className="text-xs text-gray-400 dark:text-gray-500 transition-colors duration-300">{language === 'tr' ? 'Tüm zamanlar' : 'All time'}</span>
             </div>
           </div>
         </div>
@@ -639,7 +654,8 @@ const AdminPage: React.FC = () => {
                           </button>
                           <div className="flex flex-col items-end gap-1">
                             <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                              apt.status === 'confirmed' ? 'bg-green-100 text-green-800' : 
+                              apt.status === 'confirmed' ? 'bg-blue-100 text-blue-800' : 
+                              apt.status === 'completed' ? 'bg-green-100 text-green-800' : 
                               apt.status.includes('cancel') ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'
                             }`}>
                               {t.customer_portal?.[`status_${apt.status}`] || apt.status}
@@ -651,12 +667,26 @@ const AdminPage: React.FC = () => {
                             )}
                           </div>
                           {apt.status === 'confirmed' && (
-                            <button
-                              onClick={() => handleCancel(apt.id)}
-                              className="text-red-600 hover:text-red-900 text-sm font-medium"
-                            >
-                              {t.admin.cancel}
-                            </button>
+                            <div className="flex flex-col sm:flex-row items-center gap-2">
+                              <button
+                                onClick={() => handleComplete(apt.id)}
+                                className="text-green-600 hover:text-green-900 text-xs font-semibold px-2 py-1 bg-green-50 rounded"
+                              >
+                                {language === 'tr' ? 'Tamamlandı' : 'Complete'}
+                              </button>
+                              <button
+                                onClick={() => handleNoShow(apt.id)}
+                                className="text-orange-600 hover:text-orange-900 text-xs font-semibold px-2 py-1 bg-orange-50 rounded"
+                              >
+                                {language === 'tr' ? 'Gelmedi' : 'No Show'}
+                              </button>
+                              <button
+                                onClick={() => handleCancel(apt.id)}
+                                className="text-red-600 hover:text-red-900 text-xs font-semibold px-2 py-1 bg-red-50 rounded"
+                              >
+                                {t.admin.cancel}
+                              </button>
+                            </div>
                           )}
                         </div>
                       </div>

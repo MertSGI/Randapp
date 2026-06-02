@@ -34,7 +34,12 @@ A script (`scripts/verify-product-flow.mjs`) actively tests the core product wor
 - Ensure the booking flow renders clean appointment summaries upon success and does not expose internal system logs or AI preparation output.
 - Validate optional referral input fields are unintrusive.
 
-**6. Admin Continuity**
+**6. Appointment Operations & Lifecycle**
+- Admins can manage 'confirmed', 'completed', 'cancelled', and 'no_show' states.
+- Admin dashboard safely splits these views matching correct mathematical sums.
+- Validates the referral reward hook works correctly behind completion status events without double counting.
+
+**7. Admin Continuity**
 - Ensures that when a new tenant registers, `TenantService` resolves the hostname fallback logic strictly to the newly generated `lari_active_tenant_id` to provide immediate "preview" consistency.
 
 ## Execution
