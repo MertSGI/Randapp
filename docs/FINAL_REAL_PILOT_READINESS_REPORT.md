@@ -27,7 +27,7 @@ This report provides a realistic assessment of the LARİ platform's readiness fo
 - **Risk**: These documents must be reviewed by legal counsel before operating on a `.com.tr` production domain to ensure complete compliance.
 
 ## 5. First Customer Pilot Checklist (Top 10 Risks)
-1. **Data Loss Risk**: Operating a real pilot on localStorage (`VITE_DATA_MODE=mock`) will cause complete data loss when the user changes devices or clears cache, unless mitigated strictly by routine SuperAdmin `.json` Data Exports.
+1. **Data Loss Risk**: Operating a real pilot on localStorage (`VITE_DATA_MODE=mock`) will cause complete data loss when the user changes devices or clears cache, unless mitigated strictly by routine SuperAdmin `.json` Data Exports. For live deployment, follow `LIVE_CUTOVER_EXECUTION_RUNBOOK.md`.
 2. **Notification Reliability**: SMS/WhatsApp reminders will silently fail until external APIs are configured.
 3. **Payment Failure**: Subscription trials will fail if Iyzico Edge Functions are not deployed.
 4. **Legal Compliance**: Untested KVKK documents.

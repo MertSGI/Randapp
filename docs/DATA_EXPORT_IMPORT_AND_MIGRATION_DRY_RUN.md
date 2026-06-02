@@ -63,3 +63,4 @@ To solve multi-device access, we must:
 ### 8. Strict Guidelines
 - **Do not commit these exported pilot .json files to Git.** They contain real phone numbers and names.
 - **Do not mix scopes.** `importTenantSnapshot()` validates inputs, but you should not import `tenant A`'s JSON while logged in actively processing `tenant B`'s appointments via other tabs.
+- **Runbooks:** Refer to `LIVE_CUTOVER_EXECUTION_RUNBOOK.md`, `GO_NO_GO_LIVE_CHECKLIST.md`, and `LIVE_SMOKE_TEST_SCRIPT.md` prior to actual cutover operations.
