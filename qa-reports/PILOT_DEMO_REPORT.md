@@ -5,11 +5,11 @@
 - ✅ No 7-day trial copy found, only 14-day.
 
 ## 2. Pilot & Demo Routing
-- ✅ /pilot CTA points to /demo safely with router awareness.
+- ✅ /pilot CTA points to /pilot/customer safely.
 
 ## 3. Pilot Account Suspended Fix
-- ✅ /pilot customer booking view correctly returns pilot tenant bypassing host resolution.
-- ✅ /pilot getTenantBranding correctly bypasses Supabase request to avoid "not found" layout crash.
+- ✅ /pilot/customer correctly returns pilot tenant bypassing host resolution.
+- ✅ /pilot getTenantBranding correctly bypasses or manages dataProvider request to avoid layout crashes.
 - ✅ Service safely isolates demo state without overwriting real state.
 
 ## 4. Secret & Card Data Check

@@ -74,7 +74,8 @@ async function run() {
       { path: '/#/register?planId=professional', expected: ['Hesap Bilgileri', 'Account'] },
       { path: '/#/book', expected: ['Randevu', 'Service', 'Yükleniyor', 'Loading'] },
       { path: '/#/super-admin/go-live', expected: ['Sandbox', 'Hazırlığı'] },
-      { path: '/#/tenant_pilot_demo', expected: ['Lumina'] }
+      { path: '/#/tenant_pilot_demo', expected: ['Lumina'] },
+      { path: '/#/pilot/customer', expected: ['Lumina'] }
     ];
 
     let oldBrandFound = [];

@@ -2,7 +2,7 @@
 # Product Flow QA Report
 
 ## Run Metadata
-- Timestamp: 2026-06-02T05:37:06.640Z
+- Timestamp: 2026-06-02T06:01:32.762Z
 - Viewports: Mobile(390), Desktop(1440)
 - Roles: guest, admin, superadmin
 - Status: **FAIL**
@@ -15,6 +15,7 @@
 - [x] `/#/book` - Found expected text
 - [ ] `/#/super-admin/go-live` - Missing typical terms
 - [ ] `/#/tenant_pilot_demo` - Missing typical terms
+- [ ] `/#/pilot/customer` - Missing typical terms
 
 ## Flow Matrix
 - **Registration → tenant shell created → checkout handoff**: PASS

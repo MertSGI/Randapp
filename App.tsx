@@ -82,6 +82,8 @@ const AppFlowSwitcher: React.FC = () => {
       {/* 2. Salon Booking Routes */}
       <Route element={<SalonBookingLayout />}>
         <Route path="/book" element={<BookingPage />} />
+        {/* Dedicated Pilot Customer route */}
+        <Route path="/pilot/customer" element={<BookingPage />} />
         {/* Dynamic Tenant Routing */}
         <Route path="/:tenantSlug" element={<BookingPage />} />
         {/* AI Tool - Now part of the salon booking flow */}

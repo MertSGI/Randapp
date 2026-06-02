@@ -72,9 +72,21 @@ export const tenantService = {
     // In all modes, if we are specifically previewing pilot demo, return it.
     // This allows /pilot -> /#/tenant_pilot_demo flow to work even in production/supabase mode without breaking the publish gate.
     const activeTenantId = localStorage.getItem('lari_active_tenant_id');
-    const isPilotDemoRoute = window.location.hash.includes('#/tenant_pilot_demo') || window.location.pathname.includes('/tenant_pilot_demo');
+    const isPilotDemoRoute = window.location.hash.includes('#/tenant_pilot_demo') || 
+                             window.location.pathname.includes('/tenant_pilot_demo') ||
+                             window.location.hash.includes('/pilot/customer') ||
+                             window.location.pathname.includes('/pilot/customer');
     
     if (isPilotDemoRoute || activeTenantId === 'tenant_pilot_demo') {
+        try {
+          // Dynamically import and seed if not already done or explicitly on route
+          import('./pilotDemoService').then(({ pilotDemoService }) => {
+            pilotDemoService.seedAndEnterDemoContext();
+          });
+        } catch (e) {
+          console.error("Dynamic seed failed", e);
+        }
+
         return {
              id: 'tenant_pilot_demo',
              slug: 'tenant_pilot_demo',
@@ -115,8 +127,13 @@ export const tenantService = {
 
   async getTenantBranding(tenantId: string): Promise<TenantBranding | null> {
     if (tenantId === 'tenant_pilot_demo') {
-      const key = `randapp:${tenantId}:branding`;
-      return dataProvider.get<TenantBranding>(key);
+      return {
+        tenantId: 'tenant_pilot_demo',
+        businessName: 'Lumina Güzellik & Kuaför',
+        tagline: 'Kendinizi özel hissedeceğiniz o yer',
+        footerText: 'Lumina Güzellik. Tüm hakları saklıdır.',
+        primaryColor: '#8b5cf6',
+      } as TenantBranding;
     }
     
     const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
