@@ -1,0 +1,35 @@
+# LARİ Public Links & Custom Domains
+
+This document tracks the capabilities of the LARİ app generating shareable booking links, verifying slugs, and planning custom domain resolutions.
+
+## 1. Slugs & Normalization
+
+All tenants are required to have a `slug`. Slugs are automatically:
+- Lowercased
+- Stripped of special chars
+- Replaced with hyphens instead of spaces
+- Transliterated from Turkish characters (e.g. `ğ` -> `g`, `ş` -> `s`)
+
+### Reserved Slugs
+The platform prevents registration or renaming onto reserved keywords.
+Examples: `admin, login, register, pricing, demo, pilot, book, api, super-admin, settings, checkout, payment, help, support, randevu, lari, app, www, mail, ftp`.
+
+## 2. Public Link Architecture
+
+`publicLinkService` orchestrates link generation:
+- `getTenantPublicUrl`: The core canonical link (e.g., `https://lari.app/#/book?tenant=guzel-kuafor`)
+- `getBranchBookingUrl`: For multi-branch tenants, adds the `&branch=<slug/id>` to preselect the step.
+- `getAdminPreviewUrl`: Bypasses "Publish Check" using `&preview=true`, readable only by authenticated tenant owners.
+
+## 3. Branch Mapping
+Since Enterprise (Kurumsal) businesses carry multiple active branches, the system maps out an "All Branches" root URL (which triggers `Step 0.5 Branch Selection` in the Booking Page) and optionally presents localized links that silently pre-load `selectedBranch` to skip this step for users sent from the localized Instagram or Google Profile of that specific branch.
+
+## 4. QR Configuration
+Instead of bloating the frontend build with heavy QR libraries at this stage, LARİ uses standard reliable integration mapping `api.qrserver.com` passing the fully URI string.
+
+## 5. Custom Domain Readiness
+A visual placeholder and service status check evaluates custom domain entitlements:
+- **Free/Intro/Pro:** Warns the owner that custom domains are exclusive.
+- **Enterprise (Kurumsal) & Premium:** Unlocks "Under Review" flags or "Active" rendering.
+
+DNS automated provisioning will be handed over to infrastructure logic upon complete scale.

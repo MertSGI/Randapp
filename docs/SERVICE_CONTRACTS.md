@@ -33,6 +33,15 @@ To facilitate the backend migration, our service layer must act through standard
 - `updatePreferences(customerId: string, prefs: any): Promise<void>`
 - `addNote(customerId: string, note: string): Promise<void>`
 
+### PublicLinkService
+- `normalizeSlug(input: string): string`
+- `validateSlug(slug: string, currentTenantId?: string): Promise<{ isValid: boolean; error?: string }>`
+- `getTenantBookingUrl(tenant: Tenant): string`
+- `getBranchBookingUrl(tenant: Tenant, branchSlugOrId: string): string`
+- `getShareText(tenant: Tenant, context: string, branchSlugOrId?: string): string`
+- `getQrPayload(url: string): string`
+- `canUseCustomDomain(tenant: Tenant): boolean`
+
 ### SubscriptionService
 - `createPendingCheckout(tenantId: string, planId: string): Promise<CheckoutSession>`
 - `markTrialing(tenantId: string): Promise<void>`

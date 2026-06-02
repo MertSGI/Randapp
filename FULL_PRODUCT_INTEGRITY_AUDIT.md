@@ -50,6 +50,12 @@ The core objective was to finalize feature entitlement enforcement and ensure th
 *   **Public Booking Branch Selector:** Intercepts multi-branch booking flows with `Step 0.5`, allowing the customer to select a branch, subsequently filtering the available staff and services specific to that branch.
 *   **Admin Branch Awareness:** The `AdminPage` displays "Tüm Şubeler" vs specific branch views in the Appointments tab if the tenant controls multiple operational nodes.
 
+### 1.7 Public Links & Custom Domains Management
+*   **Centralized URL Utility:** Added `publicLinkService.ts` for safe slug normalization, reserved word protection, QR data encoding, and context-aware URL outputs (e.g. preview vs live).
+*   **Branch Booking Links:** Added deep-link parameter (`&branch=`) parsing in `BookingPage` that directly populates `selectedBranch` to skip multi-branch selection menus for specifically targeted localized traffic.
+*   **Admin Sharing UI:** Shipped `PublicLinkSection` presenting owners with 1-click URL copies and QR shortcuts to safely bridge their physical and digital booking footprint.
+*   **Custom Domain Gating:** Established UI/UX boundary logic for Premium/Kurumsal custom domain onboarding requests without over-engineering DNS automation before necessary.
+
 ## 2. Security & Data Integrity Readiness
 
 *   **Trial Isolation:** The 14-day rule logic stands firm. No features activate beyond registration without passing through the mock paywall/subscription logic.

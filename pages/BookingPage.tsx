@@ -80,7 +80,18 @@ const BookingPage: React.FC = () => {
       getStaffList(tenant.id, { activeOnly: true }).then(setStaffList);
       getServices(tenant.id, { activeOnly: true }).then(setServicesList);
       businessProfileService.getPublicBusinessProfile(tenant.id).then(setBusinessProfile);
-      branchService.listBranches(tenant.id).then(setBranches);
+      
+      const requestedBranchSlug = new URLSearchParams(window.location.hash.split('?')[1]).get('branch');
+      branchService.listBranches(tenant.id).then(branches => {
+         setBranches(branches);
+         if (requestedBranchSlug) {
+            const b = branches.find(br => br.slug === requestedBranchSlug || br.id === requestedBranchSlug);
+            if (b) {
+               setSelectedBranch(b);
+               // step skip logic is handled down below where step starts at 0 
+            }
+         }
+      });
       
       import('../services/goLiveService').then(({ goLiveService }) => {
         goLiveService.canTenantAcceptBookings(tenant.id).then((status) => {
@@ -148,15 +159,17 @@ const BookingPage: React.FC = () => {
   const onStartBooking = () => {
     setSelectedService(null);
     setSelectedStaff(null);
-    setSelectedBranch(null);
     setIsAnyStaffPreselected(false);
     setSelectedDate(new Date().toISOString().split('T')[0]);
     setSelectedTime('');
     
-    if (isMultiBranchEnabled && branches.length > 1) {
+    // Check if we should skip branch selection because a valid branch is already selected
+    const branchAlreadySelectedAndValid = isMultiBranchEnabled && selectedBranch && branches.find(b => b.id === selectedBranch.id);
+    
+    if (isMultiBranchEnabled && branches.length > 1 && !branchAlreadySelectedAndValid) {
        setStep(0.5);
     } else {
-       if (branches.length === 1) setSelectedBranch(branches[0]);
+       if (branches.length === 1 && !selectedBranch) setSelectedBranch(branches[0]);
        setStep(1);
     }
   };

@@ -66,6 +66,51 @@ export const tenantService = {
     return DEMO_TENANT;
   },
 
+  async getTenantById(tenantId: string): Promise<Tenant | null> {
+    const raw = typeof window !== 'undefined' ? localStorage.getItem('lari_registered_tenants') : null;
+    if (raw) {
+      try {
+        const tenants = JSON.parse(raw);
+        const t = tenants.find((x: any) => x.id === tenantId);
+        if (t) return t as Tenant;
+      } catch (e) {}
+    }
+    return null;
+  },
+
+  async getTenantBySlug(slug: string): Promise<Tenant | null> {
+    const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
+    if (mode === 'supabase') {
+      const { data, error } = await supabase
+        .from('tenants')
+        .select('*')
+        .eq('slug', slug)
+        .single();
+      if (data) {
+        return {
+          id: data.id,
+          slug: data.slug,
+          name: data.name,
+          status: data.status,
+          createdAt: data.created_at,
+          updatedAt: data.updated_at,
+        } as Tenant;
+      }
+      return null;
+    }
+    
+    // local mock
+    const raw = localStorage.getItem('lari_registered_tenants');
+    if (raw) {
+      try {
+        const tenants = JSON.parse(raw);
+        const tenant = tenants.find((t: any) => t.slug === slug);
+        if (tenant) return tenant;
+      } catch(e) {}
+    }
+    return null;
+  },
+
   async getCurrentTenant(): Promise<Tenant | null> {
     const hostname = window.location.hostname;
     

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDialog } from '../contexts/DialogContext';
 import { useTenant } from '../contexts/TenantContext';
 import BranchManagementSection from './BranchManagementSection';
+import PublicLinkSection from './PublicLinkSection';
 
 const AdminSettingsTab: React.FC = () => {
   const { alert: showAlert } = useDialog();
@@ -55,6 +56,7 @@ const AdminSettingsTab: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {tenant && <PublicLinkSection tenant={tenant} />}
         {tenant && <BranchManagementSection tenantId={tenant.id} planId={tenant.planId} />}
         
         {/* İşletme Hesap Ayarları */}
