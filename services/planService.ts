@@ -15,6 +15,8 @@ export interface PricingPlan {
   customDomainEnabled: boolean;
   includedSubdomain: boolean;
   customComDomainIncluded: boolean;
+  multiBranchEnabled: boolean;
+  maxBranches: number;
   aiRecommendationsEnabled: boolean;
   aiVisualizationEnabled: boolean;
   aiMonthlyQuota: number;
@@ -49,6 +51,8 @@ export const DEFAULT_PLANS: Record<string, PricingPlan> = {
     customDomainEnabled: false,
     includedSubdomain: true,
     customComDomainIncluded: false,
+    multiBranchEnabled: false,
+    maxBranches: 1,
     aiRecommendationsEnabled: false,
     aiVisualizationEnabled: false,
     aiMonthlyQuota: 0,
@@ -79,6 +83,8 @@ export const DEFAULT_PLANS: Record<string, PricingPlan> = {
     customDomainEnabled: false,
     includedSubdomain: true,
     customComDomainIncluded: false,
+    multiBranchEnabled: false,
+    maxBranches: 1,
     aiRecommendationsEnabled: true, // basic
     aiVisualizationEnabled: false,
     aiMonthlyQuota: 100,
@@ -109,6 +115,8 @@ export const DEFAULT_PLANS: Record<string, PricingPlan> = {
     customDomainEnabled: false,
     includedSubdomain: true,
     customComDomainIncluded: false,
+    multiBranchEnabled: false,
+    maxBranches: 1,
     aiRecommendationsEnabled: true, // full
     aiVisualizationEnabled: true,
     aiMonthlyQuota: 500,
@@ -139,6 +147,8 @@ export const DEFAULT_PLANS: Record<string, PricingPlan> = {
     customDomainEnabled: true, // manual add-on
     includedSubdomain: true,
     customComDomainIncluded: false,
+    multiBranchEnabled: false,
+    maxBranches: 1,
     aiRecommendationsEnabled: true,
     aiVisualizationEnabled: true,
     aiMonthlyQuota: 2000,
@@ -169,6 +179,8 @@ export const DEFAULT_PLANS: Record<string, PricingPlan> = {
     customDomainEnabled: true,
     includedSubdomain: true,
     customComDomainIncluded: true,
+    multiBranchEnabled: true,
+    maxBranches: 999,
     aiRecommendationsEnabled: true,
     aiVisualizationEnabled: true,
     aiMonthlyQuota: 9999,

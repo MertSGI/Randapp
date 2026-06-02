@@ -42,6 +42,12 @@ The core objective was to finalize feature entitlement enforcement and ensure th
 *   **Dashboard Stats Accuracy:** Segregated Total, "Today's Confirmed", and "Completed" stats on the dashboard to reflect business operations correctly.
 *   **Customer Memory Integrations:** Validated that completing or cancelling appointments interacts appropriately with `customerCampaignService` to mark rewarded states, and correctly leaves a localized trace on the customer's history.
 
+### 1.6 Multi-Branch Foundation
+*   **Architectural Modeling:** Expanded the schema types (`types.ts`) to cleanly include the `BusinessBranch` interface, establishing a relational foundation mapping Services, Staff, and Appointments back to individual branches.
+*   **Entitlement Gating:** Secured multi-branch functionality (`maxBranches`, `multi_branch`) exclusively around the Kurumsal (Enterprise) pricing plan within `entitlementService.ts`.
+*   **Primary Branch Auto-Recovery:** Developed `branchService.ts` assuring zero downtime or breakage for existing singleton merchants, dynamically simulating a "Merkez Şube" whenever `branchLoad` triggers.
+*   **Admin Configuration:** Added `BranchManagementSection` to `AdminSettingsTab` permitting easy location onboarding and visual cross-selling to non-enterprise merchants without overloading the single-branch booking experience.
+
 ## 2. Security & Data Integrity Readiness
 
 *   **Trial Isolation:** The 14-day rule logic stands firm. No features activate beyond registration without passing through the mock paywall/subscription logic.

@@ -1,6 +1,6 @@
 # LARİ Platform Referral Program QA Report
 
-Generated on: 2026-06-02T10:30:51.980Z
+Generated on: 2026-06-02T10:39:09.935Z
 
 ## 1. Structural File Checks
 - ✅ **types.ts** contains all verified contracts, methods, and UI mappings.

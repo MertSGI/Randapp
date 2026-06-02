@@ -6,6 +6,7 @@ This document describes the mapping of application entities into Supabase tables
 
 - **Auth Session (auth.users)**: Represents a physical identity authenticated via Supabase Auth.
 - **Tenants (tenants)**: The root boundary for an establishment (salon, spa). All business data flows down from a Tenant UUID.
+- **Business Branches (business_branches)**: (Foundation Phase) Locations belonging to a tenant. Services, Staff, and Appointments will eventually partition through Branch IDs for Enterprise-tier merchants. Primary fallback Branch generates dynamically for single-location usage.
 - **Business Profiles (tenant_business_profiles / business_profiles)**: The public representation, containing visual configurations, opening hours, descriptions, and location details.
 
 ## Resource Entities

@@ -1,5 +1,25 @@
 export type Role = 'super_admin' | 'salon_owner' | 'staff' | 'customer';
 
+export interface BusinessBranch {
+  id: string;
+  tenantId: string;
+  name: string;
+  slug: string;
+  phone?: string;
+  address?: string;
+  city?: string;
+  district?: string;
+  latitude?: number;
+  longitude?: number;
+  workingHours?: any;
+  isPrimary: boolean;
+  isActive: boolean;
+  publicSiteStatus?: 'draft' | 'published' | 'paused';
+  verificationStatus?: 'not_submitted' | 'under_review' | 'approved' | 'rejected';
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface TenantBranding {
   tenantId: string;
   logoUrl?: string;
@@ -69,6 +89,7 @@ export interface Tenant {
 export interface Staff {
   id: string;
   tenantId?: string;
+  branchId?: string;
   name: string;
   title: string;
   calendarEmail?: string;
@@ -92,6 +113,7 @@ export interface User {
 export interface Service {
   id: string;
   tenantId?: string;
+  branchId?: string;
   name: string;
   name_tr: string; // Turkish name
   duration: number; // in minutes
@@ -214,6 +236,7 @@ export interface AuditLog {
 export interface Appointment {
   id: string;
   tenantId?: string;
+  branchId?: string;
   userId?: string;
   customerId?: string;
   user_name: string;
@@ -253,6 +276,8 @@ export interface Plan {
   providerPlanReferenceCodeMonthly?: string;
   providerPlanReferenceCodeAnnual?: string;
   features: {
+    multi_branch: boolean;
+    maxBranches: number;
     customerMemory: boolean;
     customerPortal: boolean;
     referralCampaigns: boolean;

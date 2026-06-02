@@ -15,6 +15,14 @@ To facilitate the backend migration, our service layer must act through standard
 - `submitForReview(tenantId: string): Promise<void>`
 - `publishStatus(tenantId: string): Promise<PublishStatusRecord>`
 
+### BranchService
+- `getStoredBranches(tenantId: string): BusinessBranch[]`
+- `ensurePrimaryBranchForTenant(tenantId: string): Promise<BusinessBranch>`
+- `listBranches(tenantId: string): Promise<BusinessBranch[]>`
+- `createBranch(tenantId: string, input: Partial<BusinessBranch>): Promise<BusinessBranch>`
+- `updateBranch(tenantId: string, branchId: string, patch: Partial<BusinessBranch>): Promise<BusinessBranch | null>`
+- `deactivateBranch(tenantId: string, branchId: string): Promise<void>`
+
 ### BookingService
 - `listPublicServices(tenantId: string): Promise<Service[]>`
 - `listAvailability(tenantId: string, staffId?: string, date?: string): Promise<TimeSlot[]>`
