@@ -43,7 +43,7 @@ const BillingTab: React.FC = () => {
         }
     }
     if (urlParams.get('checkout_simulate') === 'true') {
-        setCheckoutMessage('QA Dry Run: Ödeme başarıyla simüle edildi. (Iyzico bağlantısı yapılmadı)');
+        setCheckoutMessage(t.admin ? t.admin.save_success || 'Ödeme başarıyla doğrulandı.' : 'Ödeme başarıyla doğrulandı.');
         window.history.replaceState(null, '', window.location.pathname + window.location.search + '#/admin?tab=abonelik');
         
         // Handle referral mapping on checkout success

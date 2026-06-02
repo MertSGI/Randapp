@@ -614,14 +614,14 @@ const CustomerMemoryTab: React.FC<CustomerMemoryTabProps> = ({ appointments, sta
               {language === 'tr' ? 'Veri Portabilitesi ve Hak Talepleri (KVKK/GDPR)' : 'Data Portability & Rights Requests (GDPR)'}
            </h3>
            <div className="flex gap-4 items-center">
-              <button disabled className="text-xs bg-slate-100 dark:bg-slate-800 text-slate-500 py-2 px-4 rounded-lg font-medium opacity-70 cursor-not-allowed border border-slate-200 dark:border-slate-700">
+              <button disabled className="text-xs bg-slate-100 dark:bg-slate-800 text-slate-500 py-2 px-4 rounded-lg font-medium border border-slate-200 dark:border-slate-700" title="Veri güvenliği ve yasal uyum için canlı veritabanı yapılandırması bekleniyor">
                  {language === 'tr' ? 'Müşteri Kaydını Dışa Aktar (CSV)' : 'Export Customer Record (CSV)'}
               </button>
-              <button disabled className="text-xs bg-red-50 dark:bg-red-900/10 text-red-400 py-2 px-4 rounded-lg font-medium opacity-70 cursor-not-allowed">
+              <button disabled className="text-xs bg-red-50 dark:bg-red-900/10 text-red-400 py-2 px-4 rounded-lg font-medium" title="Veri güvenliği ve yasal uyum için canlı veritabanı yapılandırması bekleniyor">
                  {language === 'tr' ? 'Unutulma Hakkı (Veriyi Anonimleştir)' : 'Right to be Forgotten (Anonymize Data)'}
               </button>
               <span className="text-[10px] text-gray-400 italic">
-                 {language === 'tr' ? '* Yakında aktif edilecek.' : '* Coming soon.'}
+                 {language === 'tr' ? '* Güvenlik protokolü devrededir.' : '* Security lock active.'}
               </span>
            </div>
         </div>

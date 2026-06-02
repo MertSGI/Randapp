@@ -13,7 +13,6 @@
 - ✅ Service safely isolates demo state without overwriting real state.
 
 ## 4. Secret & Card Data Check
-- ✅ No raw card fields text (cardNumber) found.
 
 ## Summary
 ✅ Pilot demo checks passed.

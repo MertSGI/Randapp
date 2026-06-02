@@ -27,19 +27,15 @@ export class AppErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 text-gray-900 p-4">
-          <div className="bg-white p-6 rounded shadow-md max-w-lg w-full text-center">
-            <h1 className="text-2xl font-bold text-red-600 mb-4">Something went wrong while loading the app.</h1>
-            <p className="mb-4">An unexpected error occurred.</p>
-            {(import.meta as any).env.MODE !== 'production' && this.state.error && (
-              <pre className="text-left bg-gray-100 p-4 rounded text-sm overflow-auto mb-4">
-                {this.state.error.toString()}
-              </pre>
-            )}
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 max-w-lg w-full text-center">
+            <div className="text-4xl mb-4">⚠️</div>
+            <h1 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Bir şey ters gitti. Lütfen tekrar deneyin.</h1>
+            <p className="text-sm text-slate-500 mb-6">Bilgiler yüklenemedi. Sayfayı yenileyebilirsiniz.</p>
             <button 
               onClick={() => window.location.reload()} 
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+              className="px-6 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition font-medium"
             >
-              Reload Page
+              Sayfayı Yenile
             </button>
           </div>
         </div>
