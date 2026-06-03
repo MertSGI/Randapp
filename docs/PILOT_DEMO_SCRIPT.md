@@ -8,6 +8,20 @@ This guide provides a structured presentation script for demonstrating the LARİ
 - Focus strictly on business value: Time saved, automated calendar, professional appearance, and AI support.
 - If they ask about payments, confidently explain our Iyzico integration provides "secure, compliant card processing," and that it gets connected automatically upon onboarding.
 
+## Demo Data Profile: Lumina Güzellik & Kuaför
+
+When demonstrating the `/pilot` environment, the agent will load a pre-seeded, rich dataset that represents a high-performing salon called "Lumina Güzellik & Kuaför":
+
+- **Services**: 7 realistic services priced appropriately for a mid-to-high end salon (e.g. Saç Kesimi, Dip Boya, Kalıcı Oje, Cilt Bakımı, Lazer).
+- **Staff**: 4 distinct staff members mapped logically to services (e.g. Nail Artist handles Kalıcı Oje, Master Saç Stilisti handles kesim & boya).
+- **Appointments**: 8 contextual appointments spanning across history, today, and tomorrow. Includes mixed statuses: confirmed, pending, cancelled (with a realistic reason), and no_show.
+- **Customers**: 6 pre-seeded customers with CRM notes (e.g., beverage preferences, allergies, referral history).
+- **Campaigns**: 1 active "Arkadaşını Getir" campaign with pre-loaded rewarded and booked referrals to show off the CRM tab.
+- **Reporting**: Appointments contain source tracking tags (WhatsApp, Instagram, Web, Google Maps, QR) so the Reporting tab looks populated.
+- **Visuals**: Realistic placeholder covers and category thumbnails for a professional appearance.
+
+This setup prevents the demo from looking empty and shows the full power of LARİ directly on first load without manual data entry during the pitch.
+
 ## Step 1: The Initial Hook
 - **Start at Homepage (`/`)**
 - Point to the value proposition: "LARİ creates your digital storefront, online booking, and AI assistant instantly."

@@ -124,12 +124,12 @@ export const PilotAdminPreviewPage: React.FC = () => {
                           <div className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">{appointments.length}</div>
                        </div>
                        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-slate-700">
-                          <div className="text-sm font-medium text-gray-400 uppercase">Bugün Onaylananlar</div>
-                          <div className="mt-2 text-3xl font-bold text-blue-600 dark:text-blue-400">{todayApts.filter(a => a.status === 'confirmed').length}</div>
+                          <div className="text-sm font-medium text-gray-400 uppercase">Bugün Olanlar</div>
+                          <div className="mt-2 text-3xl font-bold text-indigo-600 dark:text-indigo-400">{todayApts.length}</div>
                        </div>
                        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-slate-700">
                           <div className="text-sm font-medium text-gray-400 uppercase">Uzman Sayısı</div>
-                          <div className="mt-2 text-3xl font-bold text-green-600 dark:text-green-400">{staffList.length}</div>
+                          <div className="mt-2 text-3xl font-bold text-emerald-600 dark:text-emerald-400">{staffList.length}</div>
                        </div>
                      </div>
         
@@ -138,20 +138,20 @@ export const PilotAdminPreviewPage: React.FC = () => {
                             <h2 className="text-lg font-bold text-gray-900 dark:text-white">Yaklaşan Randevular</h2>
                         </div>
                         <div className="divide-y divide-gray-100 dark:divide-slate-700">
-                            {appointments.slice(0, 5).map(apt => {
+                            {appointments.filter(a => a.status === 'confirmed' || a.status === 'pending').slice(0, 5).map(apt => {
                                const assignedStaff = staffList.find(s => s.id === apt.staffId);
                                const assignedService = servicesList.find(s => s.id === apt.serviceId);
                                return (
                                    <div key={apt.id} className="p-6 hover:bg-gray-50 dark:hover:bg-slate-700/50 transition">
                                        <div className="flex flex-col sm:flex-row justify-between gap-4">
                                            <div>
-                                               <h4 className="text-base font-bold text-gray-900 dark:text-white">{apt.user_name}</h4>
+                                               <h4 className="text-base font-bold text-gray-900 dark:text-white">{apt.customerName}</h4>
                                                <p className="text-sm text-gray-500 mt-1">{apt.date} • {apt.time} • {assignedService?.name || 'Servis'}</p>
                                                <p className="text-sm text-gray-400 mt-0.5">Uzman: {assignedStaff?.name || 'Seçilmedi'}</p>
                                            </div>
                                            <div className="flex flex-col items-end gap-2">
-                                                <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${apt.status === 'confirmed' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700'}`}>
-                                                    {apt.status === 'confirmed' ? 'ONAYLI' : apt.status}
+                                                <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${apt.status === 'confirmed' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'}`}>
+                                                    {apt.status === 'confirmed' ? 'ONAYLI' : 'BEKLEYEN'}
                                                 </span>
                                            </div>
                                        </div>
@@ -163,21 +163,165 @@ export const PilotAdminPreviewPage: React.FC = () => {
                  </>
              )}
 
-             {activeTab !== 'dashboard' && (
-                 <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-12 text-center">
-                    <div className="w-16 h-16 mx-auto bg-indigo-50 dark:bg-indigo-900/30 rounded-full flex items-center justify-center mb-4 text-indigo-500 dark:text-indigo-400">
-                        <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+             {activeTab === 'appointments' && (
+                 <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden">
+                    <div className="px-6 py-5 border-b border-gray-200 dark:border-slate-700">
+                        <h2 className="text-lg font-bold text-gray-900 dark:text-white">Tüm Randevu Geçmişi (Örnek)</h2>
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Örnek Gösterim Alanı</h3>
-                    <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto mb-6">
-                        Bu ekran, LARİ'de işletme sahibinin göreceği yönetim deneyimini temsil eder. İçerikler salt okunurdur. Kendi verilerinizi incelemek için bir hesap oluşturabilirsiniz.
+                    <div className="divide-y divide-gray-100 dark:divide-slate-700">
+                        {appointments.map(apt => {
+                           const assignedStaff = staffList.find(s => s.id === apt.staffId);
+                           const assignedService = servicesList.find(s => s.id === apt.serviceId);
+                           return (
+                               <div key={apt.id} className="p-6 hover:bg-gray-50 dark:hover:bg-slate-700/50 transition opacity-80">
+                                   <div className="flex flex-col sm:flex-row justify-between gap-4">
+                                       <div>
+                                           <h4 className="text-sm font-bold text-gray-900 dark:text-white">{apt.customerName} - {apt.customerPhone}</h4>
+                                           <p className="text-sm text-gray-500 mt-1">{apt.date} • {apt.time} • {assignedService?.name || 'Servis'}</p>
+                                           <p className="text-xs text-gray-400 mt-0.5">Kanal: {apt.source || 'Bilinmiyor'} {apt.notes && `| Not: ${apt.notes}`}</p>
+                                       </div>
+                                       <div className="flex flex-col items-end gap-2">
+                                            <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${apt.status === 'confirmed' ? 'bg-blue-100 text-blue-700' : apt.status === 'cancelled' ? 'bg-red-100 text-red-700' : apt.status === 'no_show' ? 'bg-gray-200 text-gray-700' : 'bg-amber-100 text-amber-700'}`}>
+                                                {apt.status === 'confirmed' ? 'ONAYLI' : apt.status === 'cancelled' ? 'İPTAL' : apt.status === 'no_show' ? 'GELMEDİ' : 'BEKLEYEN'}
+                                            </span>
+                                       </div>
+                                   </div>
+                               </div>
+                           );
+                        })}
+                    </div>
+                 </div>
+             )}
+             
+             {activeTab === 'customers' && (
+                 <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-8">
+                     <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Müşteri Hafızası (Örnek CRM)</h2>
+                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {[
+                           { name: 'Ayşe T.', phone: '5551234567', notes: 'Boya sonrası hassasiyet. Papatya çayı tercih ediyor.', count: 6 },
+                           { name: 'Deniz K.', phone: '5559876543', notes: 'Röfle seviyor.', count: 12 },
+                           { name: 'Selim B.', phone: '5554445566', notes: 'Hızlı olmak istiyor, telefonda konuşabilir.', count: 8 },
+                        ].map(c => (
+                            <div key={c.name} className="p-4 border border-gray-100 dark:border-slate-700 rounded-lg">
+                                <div className="flex justify-between items-start mb-2">
+                                    <h4 className="font-bold text-gray-900 dark:text-white">{c.name}</h4>
+                                    <span className="bg-indigo-100 text-indigo-700 text-xs px-2 py-1 rounded-full font-bold">{c.count} Randevu</span>
+                                </div>
+                                <p className="text-sm text-gray-500 mb-2">{c.phone}</p>
+                                <div className="text-xs bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-400 p-2 rounded">
+                                    <strong>Not:</strong> {c.notes}
+                                </div>
+                            </div>
+                        ))}
+                     </div>
+                 </div>
+             )}
+
+             {activeTab === 'services' && (
+                 <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-8">
+                     <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Hizmet Menüsü & Uzmanlar (Örnek)</h2>
+                     <div className="space-y-6">
+                         <div>
+                             <h3 className="font-bold text-gray-700 dark:text-gray-300 mb-3 border-b border-gray-100 dark:border-slate-700 pb-2">Hizmetler ({servicesList.length})</h3>
+                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                 {servicesList.slice(0, 6).map(s => (
+                                     <div key={s.id} className="flex justify-between items-center p-3 bg-gray-50 dark:bg-slate-700/30 rounded-lg">
+                                         <span className="font-medium text-sm text-gray-900 dark:text-white">{s.name} <span className="text-gray-400 block text-xs">{s.duration} dk</span></span>
+                                         <span className="font-bold text-indigo-600 dark:text-indigo-400 text-sm">{s.price} ₺</span>
+                                     </div>
+                                 ))}
+                             </div>
+                         </div>
+                         <div>
+                             <h3 className="font-bold text-gray-700 dark:text-gray-300 mb-3 border-b border-gray-100 dark:border-slate-700 pb-2">Uzmanlar ({staffList.length})</h3>
+                             <div className="flex flex-wrap gap-3">
+                                 {staffList.map(st => (
+                                     <div key={st.id} className="px-4 py-2 bg-slate-100 dark:bg-slate-700 rounded-full text-sm font-medium text-gray-800 dark:text-gray-200">
+                                         {st.name} <span className="text-gray-400 font-normal">({st.role})</span>
+                                     </div>
+                                 ))}
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             )}
+             
+             {activeTab === 'marketing' && (
+                 <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-8">
+                     <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Paylaşım & Kampanyalar (Örnek)</h2>
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                         <div className="border border-indigo-100 dark:border-indigo-900/30 rounded-xl p-5 bg-indigo-50/50 dark:bg-indigo-900/10">
+                            <h3 className="font-bold text-indigo-900 dark:text-indigo-300 mb-2">Arkadaşını Getir Kampanyası</h3>
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Müşteriniz referans olduğunda %15, yeni gelen müşteri %10 indirim kazanır.</p>
+                            <div className="space-y-2">
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-gray-500">Paylaşılan Referans:</span>
+                                    <span className="font-bold">2</span>
+                                </div>
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-gray-500">Kazanılan Yeni Müşteri:</span>
+                                    <span className="font-bold text-green-600">1</span>
+                                </div>
+                            </div>
+                         </div>
+                         <div className="border border-green-100 dark:border-green-900/30 rounded-xl p-5 bg-green-50/50 dark:bg-green-900/10">
+                            <h3 className="font-bold text-green-900 dark:text-green-300 mb-2">Akıllı Paylaşım Linki</h3>
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">İşletmenizin rezervasyon sayfasını tek tıkla Instagram'a veya WhatsApp'a ekleyin.</p>
+                            <div className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 p-2 rounded flex items-center text-xs text-gray-500 font-mono overflow-hidden">
+                                {window.location.origin}/#/booking/demo
+                            </div>
+                         </div>
+                     </div>
+                 </div>
+             )}
+
+             {activeTab === 'reports' && (
+                 <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-8">
+                     <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Finansal ve Ciro Raporları (Örnek)</h2>
+                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+                        <div className="bg-gray-50 dark:bg-slate-700/30 p-4 rounded-xl">
+                            <div className="text-xs text-gray-500 uppercase font-medium">Öngörülen Ciro</div>
+                            <div className="text-xl font-bold text-gray-900 dark:text-white mt-1">4.050 ₺</div>
+                        </div>
+                        <div className="bg-gray-50 dark:bg-slate-700/30 p-4 rounded-xl">
+                            <div className="text-xs text-gray-500 uppercase font-medium">Yeni Müşteri Oranı</div>
+                            <div className="text-xl font-bold text-green-600 dark:text-green-400 mt-1">% 25</div>
+                        </div>
+                        <div className="bg-gray-50 dark:bg-slate-700/30 p-4 rounded-xl">
+                            <div className="text-xs text-gray-500 uppercase font-medium">En Popüler Saatler</div>
+                            <div className="text-xl font-bold text-indigo-600 dark:text-indigo-400 mt-1">14:00 - 16:00</div>
+                        </div>
+                     </div>
+                     <div>
+                         <h3 className="font-bold text-gray-700 dark:text-gray-300 mb-4">Randevu Kaynakları</h3>
+                         <div className="flex gap-2">
+                             <div className="flex-1 bg-indigo-500 h-4 rounded-full" title="Web (3)"></div>
+                             <div className="w-1/4 bg-green-500 h-4 rounded-full" title="WhatsApp (2)"></div>
+                             <div className="w-1/6 bg-pink-500 h-4 rounded-full" title="Instagram (1)"></div>
+                             <div className="w-1/12 bg-blue-500 h-4 rounded-full" title="Google Haritalar (1)"></div>
+                             <div className="w-1/12 bg-gray-500 h-4 rounded-full" title="QR Tasarım (1)"></div>
+                         </div>
+                         <div className="flex gap-4 mt-2 text-xs text-gray-500">
+                             <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-indigo-500"></span> Bio / Web</span>
+                             <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-green-500"></span> WhatsApp</span>
+                             <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-pink-500"></span> Instagram</span>
+                         </div>
+                     </div>
+                 </div>
+             )}
+             
+             {activeTab !== 'dashboard' && (
+                 <div className="bg-indigo-50 dark:bg-indigo-900/20 rounded-xl p-6 text-center border border-indigo-100 dark:border-indigo-800">
+                    <h3 className="text-lg font-bold text-indigo-900 dark:text-indigo-300 mb-2">Bu ekran salt okunur bir tanıtım kopyasıdır.</h3>
+                    <p className="text-sm text-indigo-700 dark:text-indigo-400 max-w-lg mx-auto mb-4">
+                        Kendi işletme verilerinizi sisteme yükleyip tam performansı görebilmek için şimdi LARİ'yi ücretsiz denemeye başlayabilirsiniz.
                     </p>
-                    <div className="flex justify-center gap-4">
-                       <button onClick={() => navigate('/demo')} className="px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white font-medium rounded-lg shadow-sm transition">
+                    <div className="flex justify-center gap-3">
+                       <button onClick={() => navigate('/demo')} className="px-5 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 font-medium rounded-lg shadow-sm transition text-sm">
                            Kendi İşletmeni Önizle
                        </button>
-                       <button onClick={() => navigate('/register')} className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg shadow-sm transition">
-                           14 Gün Ücretsiz Başla
+                       <button onClick={() => navigate('/register')} className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg shadow-sm transition text-sm">
+                           Ücretsiz Başla
                        </button>
                     </div>
                  </div>
