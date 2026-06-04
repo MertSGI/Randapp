@@ -88,23 +88,43 @@ const PilotDemoEntryPage: React.FC = () => {
              </button>
            </div>
            
-           <div className="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-sm border border-slate-200 dark:border-slate-700 text-left flex flex-col h-full md:col-span-2 md:max-w-xl md:mx-auto w-full">
-             <div className="w-12 h-12 bg-pink-100 dark:bg-pink-900/30 text-pink-600 rounded-xl flex items-center justify-center mb-6 mx-auto">
+           <div className="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-sm border border-slate-200 dark:border-slate-700 text-left flex flex-col h-full w-full">
+             <div className="w-12 h-12 bg-pink-100 dark:bg-pink-900/30 text-pink-600 rounded-xl flex items-center justify-center mb-6">
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
                 </svg>
              </div>
-             <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-3 text-center">Hazır Şablonlar Yerine Kendini Gör</h2>
-             <p className="text-slate-600 dark:text-slate-400 mb-8 text-center">
-                LARİ'nin işletmeniz için nasıl bir dijital vitrin ve sayfa oluşturacağını kendi görselleriniz ve bilgilerinizle hemen önizleyin.
+             <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">Hazır Şablonlar Yerine Kendini Gör</h2>
+             <p className="text-slate-600 dark:text-slate-400 flex-1 mb-8">
+                LARİ'nin işletmeniz için nasıl bir dijital vitrin oluşturacağını kendi bilgilerinizle önizleyin.
              </p>
              <button 
                 onClick={() => {
                    openInNewTab('/demo');
                 }}
-                className="w-full py-4 px-6 bg-pink-600 hover:bg-pink-700 text-white font-bold rounded-xl transition-colors shadow-lg shadow-pink-600/20 text-center"
+                className="w-full py-4 px-6 bg-pink-600 hover:bg-pink-700 text-white font-bold rounded-xl transition-colors shadow-lg shadow-pink-600/20 text-center mt-auto"
              >
                 Kendi İşletmeni Önizle
+             </button>
+           </div>
+
+           <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/10 dark:to-indigo-900/10 rounded-2xl p-8 shadow-sm border border-blue-100 dark:border-blue-900/30 text-left flex flex-col h-full w-full">
+             <div className="w-12 h-12 bg-blue-600 text-white rounded-xl flex items-center justify-center mb-6 shadow-md shadow-blue-500/20">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+             </div>
+             <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">Sistemi Beğendiniz mi?</h2>
+             <p className="text-slate-600 dark:text-slate-400 flex-1 mb-8">
+                LARİ'yi kendi işletmeniz için hemen kullanmaya başlayın. 14 gün boyunca ücretsiz deneyin, iptal etmek isterseniz ücret ödemeyin.
+             </p>
+             <button 
+                onClick={() => {
+                   openInNewTab('/register?planId=professional');
+                }}
+                className="w-full py-4 px-6 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-colors shadow-lg shadow-blue-600/20 text-center mt-auto"
+             >
+                14 Gün Ücretsiz Başla
              </button>
            </div>
 

@@ -250,14 +250,20 @@ export default function RegistrationPage() {
                  {plan.aiRecommendationsEnabled && <li className="flex gap-3 items-start"><span className="text-blue-400 font-bold mt-0.5">✓</span> AI Stil Asistanı</li>}
               </ul>
 
-              <div className="bg-white/5 rounded-xl p-4">
+              <div className="bg-white/5 rounded-xl p-4 mb-4">
                  <p className="text-sm text-slate-300 font-medium mb-1">✅ 14 Gün Ücretsiz Deneme</p>
                  <p className="text-xs text-slate-400">Ücretsiz deneme için kart doğrulaması gerekir. 14 gün boyunca ücret alınmaz ve istediğiniz zaman iptal edebilirsiniz.</p>
+              </div>
+
+              <div className="text-center">
+                 <Link to="/pricing" className="text-xs text-blue-400 hover:text-blue-300 hover:underline transition-colors">
+                    Farklı bir paket mi bakıyorsunuz? Paketleri karşılaştır.
+                 </Link>
               </div>
            </div>
         </div>
       </div>
-      <CheckoutPreviewModal 
+      <CheckoutPreviewModal  
          isOpen={showCheckoutPreview} 
          onClose={() => setShowCheckoutPreview(false)}
          onConfirm={handleCheckoutHandoff}

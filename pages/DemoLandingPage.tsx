@@ -137,7 +137,7 @@ const DemoLandingPage: React.FC = () => {
   };
 
   const handleContinue = () => {
-    navigate('/register');
+    navigate('/register?planId=professional');
   };
 
   return (
@@ -542,7 +542,7 @@ const DemoLandingPage: React.FC = () => {
             onClick={handleContinue}
             className="flex-1 bg-blue-600 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-600/20 active:scale-[0.98] transition-transform text-center"
           >
-            {language === 'tr' ? '14 Gün Ücretsiz Dene' : 'Start 14-Day Free Trial'}
+            {language === 'tr' ? '14 Gün Ücretsiz Başla' : 'Start 14-Day Free'}
           </button>
           <button 
             onClick={() => navigate('/pricing')}

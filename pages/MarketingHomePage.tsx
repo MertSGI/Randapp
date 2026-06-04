@@ -51,16 +51,16 @@ const MarketingHomePage: React.FC = () => {
                 : "Digitize Your Business with LARİ"}
             </div>
 
-            <div className="relative h-[1.3em] mb-4 md:mb-6 text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-extrabold tracking-tight">
+            <div className="relative h-[1.5em] md:h-[1.3em] mb-4 md:mb-6 text-[1.65rem] sm:text-4xl md:text-5xl lg:text-[3.5rem] font-extrabold tracking-tight">
                   <span
                     key={currentPhrase}
-                    className="absolute inset-0 animate-slideUpFade flex items-center justify-center lg:justify-start"
+                    className="absolute inset-0 animate-slideUpFade flex flex-wrap items-center justify-center lg:justify-start leading-tight w-full px-2"
                   >
-                    {language === "en" && <span className="text-slate-800 dark:text-slate-200 mr-3 whitespace-nowrap">For</span>}
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-violet-600 dark:from-blue-400 dark:to-violet-400 whitespace-nowrap">
+                    {language === "en" && <span className="text-slate-800 dark:text-slate-200 mr-2 md:mr-3">For</span>}
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-violet-600 dark:from-blue-400 dark:to-violet-400 text-center lg:text-left">
                       {currentPhrase}
                     </span>
-                    {language === "tr" && <span className="text-slate-800 dark:text-slate-200 ml-3 whitespace-nowrap">için</span>}
+                    {language === "tr" && <span className="text-slate-800 dark:text-slate-200 ml-2 md:ml-3">için</span>}
                   </span>
             </div>
 
@@ -71,20 +71,20 @@ const MarketingHomePage: React.FC = () => {
                 : "Give your business a website, online booking, and AI-powered customer experience."}
             </h1>
             {/* Mobile Headline */}
-            <h1 className="block md:hidden text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-3 leading-tight px-2">
+            <h1 className="block md:hidden text-[1.4rem] xs:text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-3 leading-tight px-2">
               {language === "tr"
                 ? "Web siteniz, randevularınız ve AI asistanınız tek yerde."
                 : "Your website, bookings, and AI assistant in one place."}
             </h1>
 
             {/* Desktop Subtext */}
-            <p className="hidden md:block mt-2 text-lg md:text-xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-xl">
+            <p className="hidden md:block mt-2 text-lg md:text-xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-xl break-words">
               {language === "tr"
                 ? "LARİ; kuaförler, güzellik salonları, klinikler ve randevulu işletmeler için dijital vitrin, online randevu, müşteri hafızası, AI stil asistanı ve kampanya yönetimini tek panelde birleştirir."
                 : "LARİ unifies your digital storefront, online booking, customer memory, AI style assistant, and campaign management in one dashboard."}
             </p>
             {/* Mobile Subtext */}
-            <p className="block md:hidden mt-2 text-[15px] text-slate-600 dark:text-slate-300 mx-auto leading-snug max-w-[320px] px-1">
+            <p className="block md:hidden mt-2 text-[15px] text-slate-600 dark:text-slate-300 mx-auto leading-snug w-full px-4 break-words">
               {language === "tr"
                 ? "LARİ; işletmenize paylaşılabilir bir dijital vitrin, online randevu akışı ve yönetim paneli sunar."
                 : "LARİ offers your business a shareable digital storefront, online booking flow, and management panel."}
@@ -152,7 +152,7 @@ const MarketingHomePage: React.FC = () => {
               <div className="flex items-center gap-1.5">
                 <span className="text-slate-500">✓</span>{" "}
                 {language === "tr"
-                  ? "14 gün ödeme yok"
+                  ? "14 gün ödeme alınmaz"
                   : "14 days no charge"}
               </div>
               <div className="flex items-center gap-1.5">
@@ -191,7 +191,7 @@ const MarketingHomePage: React.FC = () => {
                 <div className="flex items-center justify-start gap-1.5 bg-slate-50 dark:bg-slate-900 px-3 py-2 rounded-lg border border-slate-100 dark:border-slate-800">
                   <span className="text-slate-500 text-sm">✓</span>{" "}
                   <span>
-                    {language === "tr" ? "14 gün ödeme yok" : "14 days free"}
+                    {language === "tr" ? "14 gün ödeme alınmaz" : "14 days free"}
                   </span>
                 </div>
                 <div className="flex items-center justify-start gap-1.5 bg-slate-50 dark:bg-slate-900 px-3 py-2 rounded-lg border border-slate-100 dark:border-slate-800">

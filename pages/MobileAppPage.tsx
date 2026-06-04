@@ -84,17 +84,28 @@ const MobileAppPage: React.FC = () => {
       </div>
       
       {/* CTA Box */}
-      <div className="max-w-4xl mx-auto px-4 mt-4 md:mt-8">
+      <div className="max-w-5xl mx-auto px-4 mt-4 md:mt-8">
          <div className="bg-gradient-to-r from-blue-600 to-accent rounded-3xl p-8 md:p-12 text-center shadow-lg relative overflow-hidden">
              <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-white opacity-10 rounded-full blur-2xl"></div>
              <div className="absolute bottom-0 left-0 -mb-4 -ml-4 w-32 h-32 bg-blue-400 opacity-20 rounded-full blur-3xl"></div>
              
-             <h2 className="text-2xl md:text-4xl font-bold text-white mb-8 relative z-10 leading-tight">
+             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-8 relative z-10 leading-tight">
                  {content.cta}
              </h2>
-             <Link to="/demo" className="inline-block w-full sm:w-auto bg-white text-blue-600 px-8 py-3.5 md:px-10 md:py-4 rounded-full font-bold shadow-md hover:shadow-xl transition transform hover:-translate-y-1 relative z-10 text-sm md:text-base">
-                 {content.btn}
-             </Link>
+             <div className="flex flex-col sm:flex-row justify-center gap-4 relative z-10 flex-wrap">
+                 <Link to="/register?planId=professional" className="inline-block w-full sm:w-auto bg-white text-blue-600 px-8 py-3.5 md:py-4 rounded-xl font-bold shadow-md hover:shadow-xl transition transform hover:-translate-y-1 text-sm md:text-base text-center shrink-0">
+                     {language === 'tr' ? '14 Gün Ücretsiz Başla' : 'Start 14-Day Free'}
+                 </Link>
+                 <Link to="/pilot/customer" className="inline-block w-full sm:w-auto bg-blue-500/30 border border-blue-200/50 text-white hover:bg-blue-500/50 px-8 py-3.5 md:py-4 rounded-xl font-bold shadow-sm transition text-sm md:text-base text-center shrink-0">
+                     {language === 'tr' ? 'Müşteri Deneyimini İncele' : 'View Customer Experience'}
+                 </Link>
+                 <Link to="/pilot/admin" className="inline-block w-full sm:w-auto bg-blue-500/30 border border-blue-200/50 text-white hover:bg-blue-500/50 px-8 py-3.5 md:py-4 rounded-xl font-bold shadow-sm transition text-sm md:text-base text-center shrink-0">
+                     {language === 'tr' ? 'İşletme Panelini İncele' : 'View Admin Panel'}
+                 </Link>
+                 <Link to="/demo" className="inline-block w-full sm:w-auto bg-blue-500/30 border border-blue-200/50 text-white hover:bg-blue-500/50 px-8 py-3.5 md:py-4 rounded-xl font-bold shadow-sm transition text-sm md:text-base text-center shrink-0">
+                     {language === 'tr' ? 'Kendi İşletmeni Önizle' : 'Preview Your Business'}
+                 </Link>
+             </div>
          </div>
       </div>
     </div>

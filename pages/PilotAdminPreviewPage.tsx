@@ -81,7 +81,7 @@ export const PilotAdminPreviewPage: React.FC = () => {
              <button onClick={() => navigate('/pilot/customer')} className="w-full py-2 px-3 bg-white hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 font-medium rounded-lg border border-gray-200 dark:border-slate-600 shadow-sm transition-all text-sm flex items-center justify-center gap-2">
                 Müşteri Deneyimini Gör
              </button>
-             <button onClick={() => navigate('/register')} className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/20 transition-all flex items-center justify-center gap-2">
+             <button onClick={() => navigate('/register?planId=professional')} className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/20 transition-all flex items-center justify-center gap-2">
                 14 Gün Ücretsiz Başla
              </button>
              <p className="text-xs text-gray-500">Bu bir tanıtım önizlemesidir.</p>
@@ -320,8 +320,8 @@ export const PilotAdminPreviewPage: React.FC = () => {
                        <button onClick={() => navigate('/demo')} className="px-5 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 font-medium rounded-lg shadow-sm transition text-sm">
                            Kendi İşletmeni Önizle
                        </button>
-                       <button onClick={() => navigate('/register')} className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg shadow-sm transition text-sm">
-                           Ücretsiz Başla
+                       <button onClick={() => navigate('/register?planId=professional')} className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg shadow-sm transition text-sm">
+                           14 Gün Ücretsiz Başla
                        </button>
                     </div>
                  </div>

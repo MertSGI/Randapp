@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { translations } from '../utils/translations';
 
@@ -69,6 +70,21 @@ const ContactPage: React.FC = () => {
                <p className="text-sm md:text-base text-blue-600 dark:text-blue-400">{t.marketing.contact.support_hours_1}</p>
                <p className="text-sm md:text-base text-blue-600 dark:text-blue-400">{t.marketing.contact.support_hours_2}</p>
             </div>
+         </div>
+      </div>
+
+      <div className="mt-16 text-center">
+         <h4 className="text-lg md:text-xl font-bold mb-6 dark:text-white">{language === 'tr' ? 'Keşfetmeye Devam Edin' : 'Continue Exploring'}</h4>
+         <div className="flex flex-col sm:flex-row justify-center gap-4 flex-wrap">
+            <Link to="/register?planId=professional" className="bg-blue-600 text-white px-8 py-3.5 text-sm md:text-base rounded-xl font-bold shadow-md hover:bg-blue-700 transition shrink-0">
+               {language === 'tr' ? '14 Gün Ücretsiz Başla' : 'Start 14-Day Free'}
+            </Link>
+            <Link to="/pilot" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white px-8 py-3.5 text-sm md:text-base rounded-xl font-bold shadow-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition shrink-0">
+              {language === 'tr' ? 'Örnek İşletmeyi Gör' : 'View Demo Business'}
+            </Link>
+            <Link to="/demo" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white px-8 py-3.5 text-sm md:text-base rounded-xl font-bold shadow-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition shrink-0">
+              {language === 'tr' ? 'Kendi İşletmeni Önizle' : 'Preview Your Business'}
+            </Link>
          </div>
       </div>
     </div>
