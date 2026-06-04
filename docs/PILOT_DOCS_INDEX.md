@@ -39,10 +39,15 @@ Canlıya çıkış öncesi sistemin tüm modüllerinin (Şube, AI, Raporlama, Ka
 
 ---
 
-## 4. Canlıya Geçiş Kılavuzları (Go-Live & Cutover Runbooks)
+## 4. Canlıya Alma ve Operasyon (Live Operations)
 
-Test ortamından gerçek üretim (Supabase, Iyzico, Domain) sunucularına geçiş adımları:
+Test ortamından gerçek üretim (Supabase, Iyzico, Domain) sunucularına geçiş adımları, risk denetimleri ve operasyonel harita:
 
+* **[LARİ Canlıya Alma ve Operasyon Rehberi](./LARI_LIVE_DEPLOYMENT_OPERATIONS_GUIDE.md):** Tüm sistemlerin canlı ortama aktarımını evre evre anlatan ana harita.
+* **[Canlı Sunucu Operasyonları Risk Kayıtları](./LIVE_RISK_REGISTER.md):** Webhook çakışması, RLS hatası veya veri sızıntısı gibi operasyonel riskler ve rollback politikaları.
+* **[Canlı Yönetim Komut Kontrol Listesi](./LIVE_DEPLOYMENT_COMMAND_CHECKLIST.md):** Geliştirici terminalinden çalıştırılacak güvenli ve placeholders ile oluşturulmuş production komut listesi.
+* **[Çevresel Modlar Matrisi](./ENVIRONMENT_MODE_MATRIX.md):** Local Dry Run, Sandbox ve Production Live geçişlerinin env / VITE kuralları tablosu.
 * **[Canlı Kesme ve Planlama El Kitabı (Live Cutover Runbook)](./LIVE_CUTOVER_EXECUTION_RUNBOOK.md):** Teknik ekibin hatasız bir şekilde DNS yönlendirmesi, gerçek veritabanı migrate'i ve üretim anahtarlarının girilmesi için uygulayacağı saatlik cutover planı.
 * **[Canlı Test Senaryosu (Smoke Test Script)](./LIVE_SMOKE_TEST_SCRIPT.md):** Canlı sunucuya geçtikten sonra 5 dakika içinde sistemin çalıştığını holds eden doğrulama adımları.
 * **[Canlı Geçiş Onay Listesi (Go/No-Go Checklist)](./GO_NO_GO_LIVE_CHECKLIST.md):** Canlıya geçiş kararını verecek ana kriterler tablosu.
+* **[Canlıya Çıkış Bloklayıcıları](./PRE_LIVE_HARDENING_AND_CUTOVER_BLOCKERS.md):** Ön canlı sertleştirme denetimi kısıtlamaları ve çözüm rehberi.
