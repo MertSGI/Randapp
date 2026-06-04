@@ -4,6 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useTenant } from '../../contexts/TenantContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { translations } from '../../utils/translations';
+import { marketConfigService } from '../../services/marketConfigService';
 
 const AdminLayout: React.FC = () => {
   const { logout, currentUser } = useAuth();
@@ -23,7 +24,7 @@ const AdminLayout: React.FC = () => {
       <header className="bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 h-16 flex items-center justify-between px-6 flex-shrink-0">
         <div className="flex items-center gap-4">
           <span className="text-xl font-bold text-accent dark:text-blue-400 font-sans tracking-wide">
-            LARİ
+            {marketConfigService.getBrandName()}
           </span>
           <div className="h-6 w-px bg-gray-300 dark:bg-slate-600"></div>
           <span className="text-sm font-medium text-gray-700 dark:text-gray-300">

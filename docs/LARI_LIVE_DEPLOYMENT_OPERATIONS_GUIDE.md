@@ -31,6 +31,7 @@ Aşağıdaki yapı için kararlar alınmalı ve çevresel değişkenler (Environ
 
 **Frontend İçin Güvenli (Public) Çevresel Değişkenler:**
 Sadece `VITE_` veya `PUBLIC_` gibi önekler içeren ve tarayıcıya gitmesi GÜVENLİ olan değişkenler:
+*   `VITE_LARI_MARKET` (Pazar ve Marka hedeflemesi: `tr` veya `global`)
 *   `VITE_SUPABASE_URL` (Supabase proje adresi)
 *   `VITE_SUPABASE_ANON_KEY` (Sadece API iletişim haklarına sahip public anahtar)
 *   `VITE_PUBLIC_APP_URL` (LARİ'nin üretim ortamı alan adı)

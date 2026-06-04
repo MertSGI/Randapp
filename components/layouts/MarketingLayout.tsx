@@ -3,6 +3,7 @@ import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useDialog } from '../../contexts/DialogContext';
+import { marketConfigService } from '../../services/marketConfigService';
 
 const ThemeToggle = () => {
   const { theme, toggleTheme } = useTheme();
@@ -35,8 +36,8 @@ const MarketingLayout: React.FC = () => {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Link to="/" className="flex-shrink-0 flex items-center gap-2">
-                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold tracking-tighter">L</div>
-                <span className="font-semibold text-xl text-primary dark:text-white whitespace-nowrap">LARİ</span>
+                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold tracking-tighter">{marketConfigService.getBrandName().charAt(0)}</div>
+                <span className="font-semibold text-xl text-primary dark:text-white whitespace-nowrap">{marketConfigService.getBrandName()}</span>
               </Link>
               <nav className="hidden md:ml-8 md:flex md:space-x-8">
                 <Link to="/features" className={`border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-1 py-5 border-b-2 text-sm font-medium ${location.pathname === '/features' ? 'text-gray-900 border-blue-500' : ''}`}>{language === 'tr' ? 'Özellikler' : 'Features'}</Link>
@@ -103,8 +104,8 @@ const MarketingLayout: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="col-span-1 md:col-span-2">
                 <div className="flex items-center gap-2 mb-4">
-                   <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">L</div>
-                   <span className="font-semibold text-xl dark:text-white">LARİ</span>
+                   <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">{marketConfigService.getBrandName().charAt(0)}</div>
+                   <span className="font-semibold text-xl dark:text-white">{marketConfigService.getBrandName()}</span>
                 </div>
                 <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xs">{language === 'tr' ? 'Kuaförler, klinikler, stüdyolar ve randevu yönetimine ihtiyaç duyan tüm yerel işletmeler için tasarlanmış profesyonel web sitesi ve akıllı yönetim platformu.' : 'Professional website, smart booking, and customer management platform for any appointment-based business.'}</p>
             </div>
@@ -151,7 +152,7 @@ const MarketingLayout: React.FC = () => {
               </div>
             </div>
           )}
-          &copy; {new Date().getFullYear()} LARİ Software. {language === 'tr' ? 'Tüm hakları saklıdır.' : 'All rights reserved.'}
+          &copy; {new Date().getFullYear()} {marketConfigService.getCurrentMarketConfig().companyName}. {language === 'tr' ? 'Tüm hakları saklıdır.' : 'All rights reserved.'}
         </div>
       </footer>
     </div>

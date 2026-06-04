@@ -5,13 +5,17 @@
 The LARİ platform serves four distinct personas across public, admin, customer, and super-admin boundaries.
 
 ### Public Routes
-* `/`: Main marketing landing page. Safe, no auth, no tenant context.
+* `/`: Main marketing landing page. Safe, no auth, no tenant context. Renders brand dynamically based on `VITE_LARI_MARKET` or host.
 * `/pricing`: Pricing and feature comparison. Safe, no auth.
 * `/pilot`: Read-only example business directory (demo overview). Safe.
 * `/pilot/customer`: Interactive Lumina template preview without triggering an owner session. Safe.
 * `/privacy`, `/terms`, `/support`: Standard legal/help texts. Safe.
 * `/login`: Public login for owners. Safe.
 * `/register`: Central tenant creation. Requires explicitly starting 14-day trial flow.
+
+### Localization & Market Config 
+* Services (`marketConfigService.ts`, `currencyService.ts`, `paymentProviderConfigService.ts`) detect current market (TR vs Global) and resolve Brand Name, default currency, and payment gateway provider dynamically.
+* `i18nLanguageConfig` manages allowed locales, rtl/ltr direction, and persistence via `lari_selected_language`.
 
 ### Public Booking Routes
 * `/#/book?tenant=[ID]`: The main customer-facing widget/website flow. Safe. Reads tenant catalog.

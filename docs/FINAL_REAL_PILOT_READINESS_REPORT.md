@@ -4,6 +4,7 @@
 This report provides a realistic assessment of the LARİ platform's readiness for its very first real pilot customer (a real salon processing real appointments). The system is highly functional, but some critical external dependencies are still being configured.
 
 ## 1. What is Ready for Real Pilot
+- **Market & Global Readiness**: Abstracted configuration services exist for brand identity, language parsing (`i18nLanguageConfig`), currencies, and payment providers so the same code supports both the local "RandevuLari" brand and the global "LARİ" brand.
 - **Public & Booking Infrastructure**: The public facing `/book` routes, Lumina templates, multi-branch logic, and staff/service selections are robust and fully functional.
 - **Admin Dashboard**: The entire salon owner experience (calendar, customer memory, service/staff management, reporting) is production-ready.
 - **Pilot Customer Onboarding Flow**: Sales scripts, onboarding tasks, and first-week follow-up guidelines are documented and integrated into the Super Admin Pilot Tracker.

@@ -4,6 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { translations } from '../../utils/translations';
+import { marketConfigService } from '../../services/marketConfigService';
 
 const ThemeToggle = () => {
   const { theme, toggleTheme } = useTheme();
@@ -54,7 +55,7 @@ const SuperAdminLayout: React.FC = () => {
       {/* Sidebar */}
       <aside className={`fixed inset-y-0 left-0 w-64 bg-slate-900 dark:bg-slate-950 text-white flex flex-col shrink-0 z-50 transform transition-transform duration-300 md:relative md:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="h-16 flex items-center justify-between px-6 border-b border-slate-800">
-          <span className="font-bold text-lg tracking-wide">{t.super_admin.panel_title || 'LARİ Master'}</span>
+          <span className="font-bold text-lg tracking-wide">{t.super_admin.panel_title || 'Master'} ({marketConfigService.getBrandName()})</span>
           <button onClick={() => setIsMobileMenuOpen(false)} className="md:hidden text-gray-400 hover:text-white">
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
           </button>

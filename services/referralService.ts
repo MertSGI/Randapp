@@ -12,7 +12,7 @@ const defaultPlatformCampaigns: ReferralCampaign[] = [
     tenantId: 'global',
     campaignType: 'business_referral',
     title: 'Platform Growth: Refer a Business',
-    description: 'Refer another salon to Randapp and earn a free month!',
+    description: 'Refer another salon to LARİ and earn a free month!',
     rewardType: 'free_month',
     rewardValue: '1', // 1 month
     active: true,
