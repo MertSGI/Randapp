@@ -15,6 +15,22 @@ const REQUIRED_SERVICES = [
 
 let hasErrors = false;
 
+function assertFileIncludes(filePath, str, errorMessage) {
+    const content = fs.readFileSync(path.join(rootDir, filePath), 'utf8');
+    if (!content.includes(str)) {
+        console.error(`\x1b[31m[verify-market-global-readiness] FAILED: ${errorMessage}\x1b[0m`);
+        hasErrors = true;
+    }
+}
+
+function assertFileDoesNotInclude(filePath, str, errorMessage) {
+    const content = fs.readFileSync(path.join(rootDir, filePath), 'utf8');
+    if (content.includes(str)) {
+        console.error(`\x1b[31m[verify-market-global-readiness] FAILED: ${errorMessage}\x1b[0m`);
+        hasErrors = true;
+    }
+}
+
 console.log('🌍 Verifying Multi-Market Global Readiness...');
 
 for (const service of REQUIRED_SERVICES) {
@@ -27,6 +43,17 @@ for (const service of REQUIRED_SERVICES) {
     console.log(`✅ Found ${service}`);
   }
 }
+
+// Brand check
+assertFileIncludes('services/marketConfigService.ts', "brandName: 'LARİ'", "Config must set brandName to LARİ");
+assertFileDoesNotInclude('components/layouts/MarketingLayout.tsx', "RandevuLari", "MarketingLayout should not use RandevuLari");
+assertFileDoesNotInclude('components/layouts/AdminLayout.tsx', "RandevuLari", "AdminLayout should not use RandevuLari");
+assertFileDoesNotInclude('components/layouts/SuperAdminLayout.tsx', "RandevuLari", "SuperAdminLayout should not use RandevuLari");
+assertFileDoesNotInclude('pages/MarketingHomePage.tsx', "Randapp", "No Randapp public references");
+assertFileDoesNotInclude('pages/MarketingHomePage.tsx', "kart gerekmez", "No no-card copy");
+assertFileDoesNotInclude('pages/MarketingHomePage.tsx', "no card", "No no-card copy");
+assertFileDoesNotInclude('pages/MarketingHomePage.tsx', "7 gün", "No 7-day copy");
+assertFileDoesNotInclude('pages/MarketingHomePage.tsx', "7 day", "No 7-day copy");
 
 // Ensure package.json scripts didn't break things
 const packageJson = JSON.parse(fs.readFileSync(path.join(rootDir, 'package.json'), 'utf8'));

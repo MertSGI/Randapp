@@ -2,9 +2,14 @@ export type MarketId = 'tr' | 'global';
 
 export interface MarketConfig {
     marketId: MarketId;
+    marketName: string;
     brandName: string;
     productName: string;
     parentBrand?: string;
+    visibleBrandName: string;
+    domainBrandName: string;
+    seoProductName: string;
+    localizedDomainLabel: string;
     companyName: string;
     defaultLanguage: 'tr' | 'en';
     supportedLanguages: string[];
@@ -23,13 +28,19 @@ export interface MarketConfig {
     requiresPaymentMethod: boolean;
     publicBrandTagline: string;
     logoText: string;
+    visibleLogoText: string;
 }
 
 export const marketConfigs: Record<MarketId, MarketConfig> = {
     tr: {
         marketId: 'tr',
-        brandName: 'RandevuLari',
-        productName: 'RandevuLari',
+        marketName: 'Türkiye',
+        brandName: 'LARİ',
+        productName: 'LARİ',
+        visibleBrandName: 'LARİ',
+        domainBrandName: 'randevulari',
+        seoProductName: 'RandevuLari',
+        localizedDomainLabel: 'randevulari.com',
         parentBrand: 'LARİ',
         companyName: 'Lari Teknoloji',
         defaultLanguage: 'tr',
@@ -48,12 +59,18 @@ export const marketConfigs: Record<MarketId, MarketConfig> = {
         trialDayCount: 14,
         requiresPaymentMethod: true,
         publicBrandTagline: 'İşletmeniz için akıllı randevu sistemi.',
-        logoText: 'RandevuLari'
+        logoText: 'LARİ',
+        visibleLogoText: 'LARİ'
     },
     global: {
         marketId: 'global',
+        marketName: 'Global',
         brandName: 'LARİ',
         productName: 'LARİ',
+        visibleBrandName: 'LARİ',
+        domainBrandName: 'lari',
+        seoProductName: 'LARİ',
+        localizedDomainLabel: 'lari.app',
         companyName: 'Lari Global',
         defaultLanguage: 'en',
         supportedLanguages: ['en', 'tr'],
@@ -71,7 +88,8 @@ export const marketConfigs: Record<MarketId, MarketConfig> = {
         trialDayCount: 14,
         requiresPaymentMethod: true,
         publicBrandTagline: 'Smart booking engine for service businesses.',
-        logoText: 'LARİ'
+        logoText: 'LARİ',
+        visibleLogoText: 'LARİ'
     }
 };
 

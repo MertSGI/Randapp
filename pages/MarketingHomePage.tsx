@@ -54,13 +54,13 @@ const MarketingHomePage: React.FC = () => {
             <div className="relative h-[1.5em] md:h-[1.3em] mb-4 md:mb-6 text-[1.65rem] sm:text-4xl md:text-5xl lg:text-[3.5rem] font-extrabold tracking-tight">
                   <span
                     key={currentPhrase}
-                    className="absolute inset-0 animate-slideUpFade flex flex-wrap items-center justify-center lg:justify-start leading-tight w-full px-2"
+                    className="absolute inset-0 animate-slideUpFade flex items-center justify-center lg:justify-start leading-tight w-full px-2"
                   >
                     {language === "en" && <span className="text-slate-800 dark:text-slate-200 mr-2 md:mr-3">For</span>}
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-violet-600 dark:from-blue-400 dark:to-violet-400 text-center lg:text-left">
                       {currentPhrase}
                     </span>
-                    {language === "tr" && <span className="text-slate-800 dark:text-slate-200 ml-2 md:ml-3">için</span>}
+                    {language === "tr" && <span className="text-slate-800 dark:text-slate-200 ml-3 whitespace-nowrap">için</span>}
                   </span>
             </div>
 
@@ -979,6 +979,16 @@ const MarketingHomePage: React.FC = () => {
               : "14 days free trial; secure card verification required to start."}
           </p>
         </div>
+      </section>
+
+      {/* Expanded Features CTA */}
+      <section className="px-4 py-8 max-w-6xl mx-auto text-center border-t border-slate-200 dark:border-slate-800">
+        <p className="text-slate-600 dark:text-slate-400 mb-4 font-medium">
+          {language === "tr" ? "Platformun sunduğu 40'tan fazla modülü merak ediyor musunuz?" : "Curious about the 40+ modules our platform offers?"}
+        </p>
+        <Link to="/features" className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-bold transition-colors">
+          {language === "tr" ? "Tüm Özellikleri İncele →" : "View All Features →"}
+        </Link>
       </section>
     </div>
   );
