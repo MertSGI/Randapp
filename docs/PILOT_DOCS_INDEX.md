@@ -8,6 +8,7 @@ Bu dizin, LARİ'nin ilk saha pilot çalışmalarını yönetmek, potansiyel salo
 
 En etkileyici, tutarlı ve profesyonel müşteri sunumları için bu dökümanları kullanın:
 
+* **[Halka Açık Satış Hunisi Stratejisi](./PUBLIC_SALES_FUNNEL_STRATEGY.md):** Pazarlama sayfalarındaki yönlendirmeler ve ziyaretçi niyeti haritası.
 * **[Manuel Satış Demosu Checklist](./MANUAL_SALES_DEMO_REHEARSAL_CHECKLIST.md):** Demodan hemen önce yapılması gereken teknik doğrulamalar ve adım adım sunum akışı.
 * **[Saha İtiraz Yönetimi Kilavuzu](./SALES_DEMO_OBJECTION_CHEAT_SHEET.md):** Salon sahiplerinin en sık sorduğu zor sorulara karşı dürüst, profesyonel ve gerçekçi cevap anahtarı.
 * **[Müşteri Geri Bildirim Formu](./FIRST_DEMO_FEEDBACK_SCORECARD.md):** Yapılan her demodan sonra müşteri heyecan seviyesini, itirazlarını ve ilerleme durumunu kaydetmek için puan kartı.

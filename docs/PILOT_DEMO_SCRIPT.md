@@ -2,6 +2,8 @@
 
 This guide provides a structured presentation script for demonstrating the LARİ platform to a salon, barber, or clinic owner.
 
+*For automated sales routing strategy and page tracking on public pages, refer to the [Public Sales Funnel Strategy](./PUBLIC_SALES_FUNNEL_STRATEGY.md).*
+
 ## Principles for Demoing
 
 - Do NOT mention "mock", "sandbox", "dry run" or any internal development terms to the customer.

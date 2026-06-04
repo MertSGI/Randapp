@@ -531,6 +531,27 @@ const DemoLandingPage: React.FC = () => {
         </div>
       </div>
       
+      {/* Bottom CTA Block */}
+      <div className="mt-16 text-center px-4 max-w-3xl mx-auto mb-16 sm:mb-0">
+          <h4 className="text-xl md:text-2xl font-bold mb-6 dark:text-white leading-tight">
+              {language === 'tr' ? 'Bu görünümü gerçek işletme paneline taşımak ister misiniz?' : 'Do you want to turn this preview into a real admin panel?'}
+          </h4>
+          <div className="flex flex-col sm:flex-row justify-center gap-4 flex-wrap">
+              <button 
+                  onClick={handleContinue}
+                  className="bg-blue-600 text-white px-8 py-3.5 rounded-xl font-bold border-transparent shadow-md hover:bg-blue-700 transition shrink-0"
+              >
+                  {language === 'tr' ? '14 Gün Ücretsiz Başla' : 'Start 14-Day Free'}
+              </button>
+              <button 
+                  onClick={() => navigate('/pricing')}
+                  className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white px-8 py-3.5 rounded-xl font-bold border border-slate-200 dark:border-slate-700 shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition shrink-0"
+              >
+                  {language === 'tr' ? 'Paketleri Karşılaştır' : 'Compare Pricing'}
+              </button>
+          </div>
+      </div>
+
       {/* Smart Sticky Mobile CTA */}
       <div 
         className={`fixed bottom-0 left-0 right-0 z-[100] sm:hidden bg-white/85 dark:bg-slate-900/85 backdrop-blur-md border-t border-gray-200/50 dark:border-slate-700/50 p-4 pb-[max(env(safe-area-inset-bottom),_1rem)] transition-transform duration-300 ${

@@ -314,18 +314,25 @@ export const PilotAdminPreviewPage: React.FC = () => {
                  <div className="bg-indigo-50 dark:bg-indigo-900/20 rounded-xl p-6 text-center border border-indigo-100 dark:border-indigo-800">
                     <h3 className="text-lg font-bold text-indigo-900 dark:text-indigo-300 mb-2">Bu ekran salt okunur bir tanıtım kopyasıdır.</h3>
                     <p className="text-sm text-indigo-700 dark:text-indigo-400 max-w-lg mx-auto mb-4">
-                        Kendi işletme verilerinizi sisteme yükleyip tam performansı görebilmek için şimdi LARİ'yi ücretsiz denemeye başlayabilirsiniz.
+                        Tüm modüller özellik setinize göre açılacaktır. Gerçek verilerinizle görmek için kaydolun.
                     </p>
-                    <div className="flex justify-center gap-3">
-                       <button onClick={() => navigate('/demo')} className="px-5 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 font-medium rounded-lg shadow-sm transition text-sm">
-                           Kendi İşletmeni Önizle
-                       </button>
-                       <button onClick={() => navigate('/register?planId=professional')} className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg shadow-sm transition text-sm">
-                           14 Gün Ücretsiz Başla
-                       </button>
-                    </div>
                  </div>
              )}
+
+             <div className="mt-12 bg-white dark:bg-slate-800 rounded-xl p-8 text-center border border-gray-200 dark:border-slate-700 shadow-sm">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">Bu paneli kendi işletmeniz için kurabilirsiniz.</h3>
+                <p className="text-gray-600 dark:text-gray-400 max-w-lg mx-auto mb-6">
+                    Kendi işletme verilerinizi sisteme yükleyip tam performansı görebilmek için şimdi LARİ'yi ücretsiz denemeye başlayabilirsiniz.
+                </p>
+                <div className="flex justify-center gap-4 flex-wrap">
+                   <button onClick={() => navigate('/demo')} className="px-6 py-3 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 font-bold rounded-xl shadow-sm transition text-sm">
+                       Kendi İşletmeni Önizle
+                   </button>
+                   <button onClick={() => navigate('/register?planId=professional')} className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-md transition text-sm">
+                       14 Gün Ücretsiz Başla
+                   </button>
+                </div>
+             </div>
 
           </div>
        </div>

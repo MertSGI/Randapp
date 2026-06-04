@@ -89,9 +89,12 @@ const MobileAppPage: React.FC = () => {
              <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-white opacity-10 rounded-full blur-2xl"></div>
              <div className="absolute bottom-0 left-0 -mb-4 -ml-4 w-32 h-32 bg-blue-400 opacity-20 rounded-full blur-3xl"></div>
              
-             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-8 relative z-10 leading-tight">
-                 {content.cta}
+             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4 relative z-10 leading-tight">
+                 {language === 'tr' ? 'Müşterinizin telefonda yaşayacağı deneyimi inceleyin.' : 'Examine the experience your customers will have on mobile.'}
              </h2>
+             <p className="text-blue-100 mb-8 relative z-10 text-lg">
+                 {language === 'tr' ? 'Örnek ekranları test edebilir veya ücretsiz denemeye başlayabilirsiniz.' : 'You can test sample screens or start a free trial.'}
+             </p>
              <div className="flex flex-col sm:flex-row justify-center gap-4 relative z-10 flex-wrap">
                  <Link to="/register?planId=professional" className="inline-block w-full sm:w-auto bg-white text-blue-600 px-8 py-3.5 md:py-4 rounded-xl font-bold shadow-md hover:shadow-xl transition transform hover:-translate-y-1 text-sm md:text-base text-center shrink-0">
                      {language === 'tr' ? '14 Gün Ücretsiz Başla' : 'Start 14-Day Free'}

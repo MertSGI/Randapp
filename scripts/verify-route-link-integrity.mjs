@@ -21,7 +21,7 @@ try {
     const pilotAdminContent = fs.readFileSync(pilotAdminPath, 'utf8');
     assert(pilotAdminContent.includes('navigate(\'/pilot/customer\')'), 'PilotAdminPreviewPage must link to /pilot/customer');
     assert(pilotAdminContent.includes('navigate(\'/demo\')'), 'PilotAdminPreviewPage must link to /demo');
-    assert(pilotAdminContent.includes('navigate(\'/register\')'), 'PilotAdminPreviewPage must link to /register');
+    assert(pilotAdminContent.includes('navigate(\'/register\')') || pilotAdminContent.includes('navigate(\'/register?planId='), 'PilotAdminPreviewPage must link to /register');
     assert(!pilotAdminContent.includes('navigate(\'/admin\')'), 'PilotAdminPreviewPage must NOT link directly to /admin protected content');
 
     // Check PilotDemoEntryPage

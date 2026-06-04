@@ -343,18 +343,18 @@ const FeaturesPage: React.FC = () => {
       </div>
 
       <div className="mt-24 md:mt-32 text-center px-4 max-w-3xl mx-auto">
-         <h2 className="text-3xl md:text-5xl font-bold mb-8 dark:text-white leading-tight">
-            {language === 'tr' ? 'İşletmenizi bir üst seviyeye taşıyın.' : 'Elevate your business to the next level.'}
+         <h2 className="text-2xl md:text-4xl font-bold mb-4 dark:text-white leading-tight">
+            {language === 'tr' ? 'Önce sistemi örnek işletme üzerinden görün.' : 'See the system in action first with our demo business.'}
          </h2>
          <div className="flex flex-col sm:flex-row justify-center gap-4 mt-8 flex-wrap">
-           <Link to="/register?planId=professional" className="bg-blue-600 text-white px-8 py-4 rounded-xl font-bold shadow-lg hover:bg-blue-700 transition w-full sm:w-auto text-center shrink-0">
-             {language === 'tr' ? '14 Gün Ücretsiz Başla' : 'Start 14-Day Free'}
-           </Link>
-           <Link to="/pilot" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white px-8 py-4 rounded-xl font-bold shadow-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition w-full sm:w-auto text-center shrink-0">
+           <Link to="/pilot" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white px-8 py-3.5 rounded-xl font-bold border border-slate-200 dark:border-slate-700 shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition w-full sm:w-auto text-center shrink-0">
              {language === 'tr' ? 'Örnek İşletmeyi Gör' : 'View Demo Business'}
            </Link>
-           <Link to="/demo" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white px-8 py-4 rounded-xl font-bold shadow-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition w-full sm:w-auto text-center shrink-0">
+           <Link to="/demo" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white px-8 py-3.5 rounded-xl font-bold border border-slate-200 dark:border-slate-700 shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition w-full sm:w-auto text-center shrink-0">
              {language === 'tr' ? 'Kendi İşletmeni Önizle' : 'Preview Your Business'}
+           </Link>
+           <Link to="/register?planId=professional" className="bg-blue-600 text-white px-8 py-3.5 rounded-xl font-bold shadow-md hover:bg-blue-700 transition w-full sm:w-auto text-center shrink-0">
+             {language === 'tr' ? '14 Gün Ücretsiz Başla' : 'Start 14-Day Free'}
            </Link>
          </div>
       </div>

@@ -167,7 +167,7 @@ const PricingPage: React.FC = () => {
       </div>
 
       <div className="mt-16 text-center">
-         <h4 className="text-lg md:text-xl font-bold mb-6 dark:text-white">{language === 'tr' ? 'Hemen karar vermek zorunda değilsiniz.' : 'You don\'t have to decide right now.'}</h4>
+         <h4 className="text-lg md:text-xl font-bold mb-6 dark:text-white">{language === 'tr' ? 'Hangi paketin uygun olduğundan emin değil misiniz?' : 'Not sure which package is right?'}</h4>
          <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link to="/pilot" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white px-8 py-3.5 text-sm md:text-base rounded-xl font-bold shadow-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition">
               {language === 'tr' ? 'Örnek İşletmeyi Gör' : 'View Demo Business'}
