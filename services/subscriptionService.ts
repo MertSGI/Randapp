@@ -2,7 +2,18 @@ import { supabase } from './supabaseClient';
 import { dataProvider } from './dataProvider';
 import { planService, PricingPlan } from './planService';
 
-export type SubscriptionStatus = 'pending_checkout' | 'trialing' | 'active' | 'past_due' | 'cancelled' | 'expired' | 'none';
+export type SubscriptionStatus = 
+  | 'pending_checkout' 
+  | 'trialing' 
+  | 'active' 
+  | 'past_due' 
+  | 'cancelled' 
+  | 'paused' 
+  | 'suspended' 
+  | 'comped' 
+  | 'manual_active' 
+  | 'expired' 
+  | 'none';
 
 export interface TenantSubscription {
   tenantId: string;
@@ -16,6 +27,12 @@ export interface TenantSubscription {
   paymentProvider?: string;
   providerSubscriptionId?: string;
   lastPaymentStatus?: string;
+  discountType?: 'percentage' | 'fixed';
+  discountValue?: number;
+  setupNotes?: string;
+  referralCredits?: number;
+  planChangeStatus?: 'none' | 'upgrade_pending' | 'downgrade_scheduled' | 'cancelled_at_period_end' | 'manual_review_required';
+  scheduledPlanId?: string;
 }
 
 export interface TenantUsage {
@@ -290,5 +307,205 @@ export const subscriptionService = {
     // Mock Mode
     console.log(`[Mock Mode] Opening billing portal for ${tenantId}`);
     alert(`[Demo] Fatura portalı açılıyor. Geçmiş faturalarınız listelenebilir.`);
+  },
+
+  async getSubscriptionState(tenantId: string): Promise<TenantSubscription | null> {
+    return this.getCurrentSubscription(tenantId);
+  },
+
+  async canTenantPublish(tenantId: string): Promise<boolean> {
+    const sub = await this.getCurrentSubscription(tenantId);
+    if (!sub) return false;
+    return ['active', 'trialing', 'manual_active', 'comped'].includes(sub.status);
+  },
+
+  async canTenantAcceptBookings(tenantId: string): Promise<boolean> {
+    const sub = await this.getCurrentSubscription(tenantId);
+    if (!sub) return false;
+    if (['paused', 'suspended', 'expired', 'none', 'pending_checkout'].includes(sub.status)) {
+      return false;
+    }
+    return true;
+  },
+
+  async startTrialAfterCheckout(tenantId: string): Promise<TenantSubscription> {
+    const sub = await this.getCurrentSubscription(tenantId) || {
+      tenantId,
+      planId: 'professional',
+      status: 'pending_checkout',
+      cancelAtPeriodEnd: false
+    };
+    sub.status = 'trialing';
+    sub.trialStart = new Date().toISOString();
+    sub.trialEnd = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
+    sub.currentPeriodStart = new Date().toISOString();
+    sub.currentPeriodEnd = sub.trialEnd;
+    localStorage.setItem(`mock_subscription_${tenantId}`, JSON.stringify(sub));
+    await dataProvider.set(`randapp:${tenantId}:subscription`, sub);
+    return sub;
+  },
+
+  async activateManualSubscription(tenantId: string, options: Partial<TenantSubscription>): Promise<TenantSubscription> {
+    const sub: TenantSubscription = {
+      tenantId,
+      planId: options.planId || 'standart',
+      status: (options.status as any) || 'manual_active',
+      currentPeriodStart: new Date().toISOString(),
+      currentPeriodEnd: options.currentPeriodEnd || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+      cancelAtPeriodEnd: options.cancelAtPeriodEnd || false,
+      paymentProvider: options.paymentProvider || 'offline_payment',
+      discountType: options.discountType,
+      discountValue: options.discountValue,
+      setupNotes: options.setupNotes,
+      referralCredits: options.referralCredits
+    };
+    localStorage.setItem(`mock_subscription_${tenantId}`, JSON.stringify(sub));
+    await dataProvider.set(`randapp:${tenantId}:subscription`, sub);
+    return sub;
+  },
+
+  async applyReferralCredit(tenantId: string, months: number): Promise<TenantSubscription> {
+    const sub = await this.getCurrentSubscription(tenantId);
+    if (sub) {
+      sub.referralCredits = (sub.referralCredits || 0) + months;
+      const currentEnd = sub.currentPeriodEnd ? new Date(sub.currentPeriodEnd) : new Date();
+      currentEnd.setMonth(currentEnd.getMonth() + months);
+      sub.currentPeriodEnd = currentEnd.toISOString();
+      localStorage.setItem(`mock_subscription_${tenantId}`, JSON.stringify(sub));
+      await dataProvider.set(`randapp:${tenantId}:subscription`, sub);
+      return sub;
+    }
+    throw new Error('Subscription not found');
+  },
+
+  async applyManualDiscount(tenantId: string, discount: { type: 'percentage' | 'fixed'; value: number }): Promise<TenantSubscription> {
+    const sub = await this.getCurrentSubscription(tenantId);
+    if (sub) {
+      sub.discountType = discount.type;
+      sub.discountValue = discount.value;
+      localStorage.setItem(`mock_subscription_${tenantId}`, JSON.stringify(sub));
+      await dataProvider.set(`randapp:${tenantId}:subscription`, sub);
+      return sub;
+    }
+    throw new Error('Subscription not found');
+  },
+
+  async schedulePlanChange(tenantId: string, targetPlanId: string, timing: 'immediate' | 'period_end'): Promise<TenantSubscription> {
+    if (timing === 'immediate') {
+      return this.upgradePlanNow(tenantId, targetPlanId);
+    } else {
+      return this.scheduleDowngradeAtPeriodEnd(tenantId, targetPlanId);
+    }
+  },
+
+  async upgradePlanNow(tenantId: string, targetPlanId: string): Promise<TenantSubscription> {
+    const sub = await this.getCurrentSubscription(tenantId);
+    if (sub) {
+      sub.planId = targetPlanId;
+      sub.planChangeStatus = 'none';
+      sub.scheduledPlanId = undefined;
+      localStorage.setItem(`mock_subscription_${tenantId}`, JSON.stringify(sub));
+      await dataProvider.set(`randapp:${tenantId}:subscription`, sub);
+      return sub;
+    }
+    throw new Error('Subscription not found');
+  },
+
+  async scheduleDowngradeAtPeriodEnd(tenantId: string, targetPlanId: string): Promise<TenantSubscription> {
+    const sub = await this.getCurrentSubscription(tenantId);
+    if (sub) {
+      sub.planChangeStatus = 'downgrade_scheduled';
+      sub.scheduledPlanId = targetPlanId;
+      localStorage.setItem(`mock_subscription_${tenantId}`, JSON.stringify(sub));
+      await dataProvider.set(`randapp:${tenantId}:subscription`, sub);
+      return sub;
+    }
+    throw new Error('Subscription not found');
+  },
+
+  async cancelAtPeriodEnd(tenantId: string): Promise<TenantSubscription> {
+    const sub = await this.getCurrentSubscription(tenantId);
+    if (sub) {
+      sub.cancelAtPeriodEnd = true;
+      sub.planChangeStatus = 'cancelled_at_period_end';
+      localStorage.setItem(`mock_subscription_${tenantId}`, JSON.stringify(sub));
+      await dataProvider.set(`randapp:${tenantId}:subscription`, sub);
+      return sub;
+    }
+    throw new Error('Subscription not found');
+  },
+
+  async cancelImmediately(tenantId: string): Promise<TenantSubscription> {
+    const sub = await this.getCurrentSubscription(tenantId);
+    if (sub) {
+      sub.status = 'cancelled';
+      sub.cancelAtPeriodEnd = false;
+      sub.planChangeStatus = 'none';
+      localStorage.setItem(`mock_subscription_${tenantId}`, JSON.stringify(sub));
+      await dataProvider.set(`randapp:${tenantId}:subscription`, sub);
+      return sub;
+    }
+    throw new Error('Subscription not found');
+  },
+
+  async pauseSubscription(tenantId: string, reason?: string): Promise<TenantSubscription> {
+    const sub = await this.getCurrentSubscription(tenantId);
+    if (sub) {
+      sub.status = 'paused';
+      sub.setupNotes = reason || 'User paused';
+      localStorage.setItem(`mock_subscription_${tenantId}`, JSON.stringify(sub));
+      await dataProvider.set(`randapp:${tenantId}:subscription`, sub);
+      return sub;
+    }
+    throw new Error('Subscription not found');
+  },
+
+  async resumeSubscription(tenantId: string): Promise<TenantSubscription> {
+    const sub = await this.getCurrentSubscription(tenantId);
+    if (sub) {
+      sub.status = 'active';
+      localStorage.setItem(`mock_subscription_${tenantId}`, JSON.stringify(sub));
+      await dataProvider.set(`randapp:${tenantId}:subscription`, sub);
+      return sub;
+    }
+    throw new Error('Subscription not found');
+  },
+
+  async markPastDue(tenantId: string): Promise<TenantSubscription> {
+    const sub = await this.getCurrentSubscription(tenantId);
+    if (sub) {
+      sub.status = 'past_due';
+      localStorage.setItem(`mock_subscription_${tenantId}`, JSON.stringify(sub));
+      await dataProvider.set(`randapp:${tenantId}:subscription`, sub);
+      return sub;
+    }
+    throw new Error('Subscription not found');
+  },
+
+  async expireSubscription(tenantId: string): Promise<TenantSubscription> {
+    const sub = await this.getCurrentSubscription(tenantId);
+    if (sub) {
+      sub.status = 'expired';
+      localStorage.setItem(`mock_subscription_${tenantId}`, JSON.stringify(sub));
+      await dataProvider.set(`randapp:${tenantId}:subscription`, sub);
+      return sub;
+    }
+    throw new Error('Subscription not found');
+  },
+
+  async getEffectiveEntitlements(tenantId: string): Promise<any> {
+    const sub = await this.getCurrentSubscription(tenantId);
+    const planId = sub ? sub.planId : 'baslangic';
+    const { entitlementService } = await import('./entitlementService');
+    const entitlements = entitlementService.getPlanEntitlements(planId);
+    const isActive = sub ? ['active', 'trialing', 'manual_active', 'comped'].includes(sub.status) : false;
+    return {
+      ...entitlements,
+      features: {
+        ...entitlements.features,
+        website_publication: isActive && entitlements.features.website_publication,
+        online_booking: isActive && entitlements.features.online_booking,
+      }
+    };
   }
 };

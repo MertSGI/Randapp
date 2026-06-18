@@ -115,6 +115,75 @@ const BillingTab: React.FC = () => {
     await subscriptionService.openBillingPortal(tenant.id);
   };
 
+  const handleConfirmMockCheckout = async () => {
+    if (!tenant || !previewPlan) return;
+    try {
+      await subscriptionService.startTrialAfterCheckout(tenant.id);
+      const updated = await subscriptionService.upgradePlanNow(tenant.id, previewPlan.id);
+      setSubscription(updated);
+      setCurrentPlan(previewPlan);
+      setCheckoutMessage(language === 'tr' 
+        ? `Kart doğrulama adımı başarıyla tamamlandı. ${previewPlan.name} planı için 14 günlük deneme süreniz aktiftir.` 
+        : `Verification successful. Your 14-day trial of ${previewPlan.name} is now active.`);
+      setPreviewPlan(null);
+    } catch (e: any) {
+      setCheckoutError(e.message);
+      setPreviewPlan(null);
+    }
+  };
+
+  const handlePause = async () => {
+    if (!tenant) return;
+    try {
+      const updated = await subscriptionService.pauseSubscription(tenant.id, "Kullanıcı talebiyle duraklatıldı");
+      setSubscription(updated);
+      setCheckoutMessage(language === 'tr'
+        ? "Online randevularınız geçici olarak dondurulmuştur."
+        : "Online booking is temporarily paused.");
+    } catch (e: any) {
+      setCheckoutError(e.message);
+    }
+  };
+
+  const handleResume = async () => {
+    if (!tenant) return;
+    try {
+      const updated = await subscriptionService.resumeSubscription(tenant.id);
+      setSubscription(updated);
+      setCheckoutMessage(language === 'tr'
+        ? "Aboneliğiniz yeniden aktif edilmiştir. Rezervasyon sayfanız yayındadır."
+        : "Subscription has been resumed. Your public page is live.");
+    } catch (e: any) {
+      setCheckoutError(e.message);
+    }
+  };
+
+  const handleCancelAtPeriodEnd = async () => {
+    if (!tenant) return;
+    try {
+      const updated = await subscriptionService.cancelAtPeriodEnd(tenant.id);
+      setSubscription(updated);
+      setCheckoutMessage(language === 'tr'
+        ? "İptal talebi oluşturuldu. Mevcut fatura dönemi bitene kadar özellikleri kullanmaya devam edebilirsiniz."
+        : "Cancellation scheduled for period end. Features remain active until then.");
+    } catch (e: any) {
+      setCheckoutError(e.message);
+    }
+  };
+
+  const handleCancelImmediately = async () => {
+    if (!tenant) return;
+    try {
+      const updated = await subscriptionService.cancelImmediately(tenant.id);
+      setSubscription(updated);
+      setCheckoutMessage(language === 'tr'
+        ? "Aboneliğiniz anında kapatılmış/sonlandırılmıştır."
+        : "Subscription has been terminated immediately.");
+    } catch (e: any) {
+      setCheckoutError(e.message);
+    }
+  };
+
   if (loading) {
     return <div className="p-8 text-center text-gray-500">{translations[language || 'tr']?.billing?.loading || 'Yükleniyor...'}</div>;
   }
@@ -139,56 +208,128 @@ const BillingTab: React.FC = () => {
           </div>
         )}
 
-        {subscription?.status === 'past_due' && (
-          <div className="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded-r-md">
-            <h3 className="text-red-800 font-medium">{t.billing.past_due_title}</h3>
-            <p className="text-red-700 text-sm mt-1">{t.billing.past_due_desc}</p>
-          </div>
-        )}
-
-        {subscription?.status === 'expired' && (
-          <div className="mb-6 bg-red-100 border border-red-500 p-4 rounded-md">
-            <h3 className="text-red-900 font-bold">{t.billing.expired_title}</h3>
-            <p className="text-red-800 text-sm mt-1">{t.billing.expired_desc}</p>
-          </div>
-        )}
-
-        {subscription?.status === 'cancelled' && (
-          <div className="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded-r-md">
-            <h3 className="text-red-800 font-medium">{t.billing.cancelled_title}</h3>
-            <p className="text-red-700 text-sm mt-1">{t.billing.cancelled_desc}</p>
-          </div>
-        )}
-
+        {/* Dynamic State Banners */}
         {subscription?.status === 'pending_checkout' && (
-          <div className="mb-6 bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-md">
-            <h3 className="text-yellow-800 font-medium">
-              {language === 'tr' ? 'Ödeme Adımı Bekleniyor' : 'Checkout Pending'}
+          <div className="mb-6 bg-amber-50 dark:bg-amber-950/20 border-l-4 border-amber-500 p-4 rounded-r-md">
+            <h3 className="text-amber-800 dark:text-amber-300 font-medium text-sm md:text-base">
+              {language === 'tr' ? 'Kart Doğrulaması Bekleniyor' : 'Card Verification Pending'}
             </h3>
-            <p className="text-yellow-700 text-sm mt-1 mb-3">
-              {language === 'tr' ? '14 günlük denemeyi başlatmak için güvenli ödeme adımını tamamlayın.' : 'Complete secure checkout to start your 14-day free trial.'}
+            <p className="text-amber-700 dark:text-amber-400 text-xs md:text-sm mt-1">
+              {language === 'tr' ? '14 günlük denemenizi başlatmak ve sayfanızı yayına hazırlamak için lütfen güvenli kart doğrulama adımını tamamlayın.' : 'Please complete the secure card verification step to start your 14-day free trial.'}
             </p>
-            <div className="bg-yellow-100/50 p-3 rounded text-xs text-yellow-800 mb-3 font-mono">
-              <span className="font-bold border-b border-yellow-800/20 mb-1 inline-block pb-0.5">Sistem Bildirimi (checkout_pending)</span><br />
-              Denemenizi başlatmak için güvenli ödeme doğrulama adımını tamamlayın. Kart bilgileriniz LARİ tarafından alınmaz.
-            </div>
+            <p className="text-xs text-amber-600 dark:text-amber-500 mt-2 italic">
+              {language === 'tr' ? 'Güvenli ödeme sağlayıcısı üzerinden doğrulama yapılır.' : 'Verification is performed securely through our checkout provider.'}
+            </p>
             <button 
-                onClick={handleBillingPortal}
-                className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-md font-medium text-sm transition-colors"
-              >
-                {language === 'tr' ? 'Güvenli Ödeme Adımına Devam Et' : 'Proceed to Secure Checkout'}
+              onClick={handleBillingPortal}
+              className="mt-3 bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-md font-medium text-xs transition-colors"
+            >
+              {language === 'tr' ? 'Kart Doğrulama Adımına Git' : 'Go to Card Auth'}
             </button>
           </div>
         )}
 
         {subscription?.status === 'trialing' && subscription?.trialEnd && (
-          <div className="mb-6 bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-md">
-            <h3 className="text-blue-800 font-medium">{t.billing.trialing_title}</h3>
-            <p className="text-blue-700 text-sm mt-1 mb-2">{t.billing.trialing_desc?.replace('{date}', new Date(subscription.trialEnd).toLocaleDateString(language === 'en' ? 'en-US' : 'tr-TR'))}</p>
-            <div className="bg-blue-100/50 p-3 rounded text-xs text-blue-800 font-mono">
-              <span className="font-bold border-b border-blue-800/20 mb-1 inline-block pb-0.5">Gelen E-posta Önizlemesi (trial_started)</span><br />
-              14 günlük ücretsiz denemeniz başladı. Deneme süresi boyunca ödeme alınmaz. 14 gün içinde iptal etmezseniz seçtiğiniz plan otomatik olarak başlar.
-            </div>
+          <div className="mb-6 bg-blue-50 dark:bg-blue-950/20 border-l-4 border-blue-500 p-4 rounded-r-md">
+            <h3 className="text-blue-800 dark:text-blue-300 font-medium text-sm md:text-base">
+              {language === 'tr' ? '14 Günlük Deneme Aktif' : '14-Day Free Trial Active'}
+            </h3>
+            <p className="text-blue-700 dark:text-blue-400 text-xs md:text-sm mt-1">
+              {language === 'tr' 
+                ? `Deneme süreniz ${new Date(subscription.trialEnd).toLocaleDateString()} tarihinde sona erecektir. Bu sürenin sonuna kadar herhangi bir kesinti ya da ücretlendirme yapılmaz.` 
+                : `Your trial will end on ${new Date(subscription.trialEnd).toLocaleDateString()}. No charges will be made before this date.`}
+            </p>
+          </div>
+        )}
+
+        {subscription?.status === 'active' && (
+          <div className="mb-6 bg-emerald-50 dark:bg-emerald-950/20 border-l-4 border-emerald-500 p-4 rounded-r-md">
+            <h3 className="text-emerald-800 dark:text-emerald-300 font-medium text-sm md:text-base">
+              {language === 'tr' ? 'Aktif Abonelik (Güvende)' : 'Subscription Active (Secure)'}
+            </h3>
+            <p className="text-emerald-700 dark:text-emerald-400 text-xs md:text-sm mt-1">
+              {language === 'tr' 
+                ? 'Aboneliğiniz başarıyla doğrulanmış ve aktiftir. Tüm sistem özellikleri, randevu entegrasyonu ve rezervasyon sayfası kesintisiz olarak çalışmaktadır.' 
+                : 'Your subscription is successfully verified and active. All services are fully operational.'}
+            </p>
+          </div>
+        )}
+
+        {subscription?.status === 'manual_active' && (
+          <div className="mb-6 bg-indigo-50 dark:bg-indigo-950/20 border-l-4 border-indigo-500 p-4 rounded-r-md">
+            <h3 className="text-indigo-800 dark:text-indigo-300 font-medium text-sm md:text-base">
+              🔒 {language === 'tr' ? 'Manuel Olarak Aktif Edildi' : 'Manually Activated'}
+            </h3>
+            <p className="text-indigo-700 dark:text-indigo-400 text-xs md:text-sm mt-1">
+              {language === 'tr' 
+                ? 'Hesabınız Super Admin tarafından özel bir anlaşma veya manuel ödeme yöntemiyle aktif edilmiştir.' 
+                : 'Your account has been manually activated by the Super Admin.'}
+            </p>
+          </div>
+        )}
+
+        {subscription?.status === 'comped' && (
+          <div className="mb-6 bg-purple-50 dark:bg-purple-950/20 border-l-4 border-purple-500 p-4 rounded-r-md">
+            <h3 className="text-purple-800 dark:text-purple-300 font-medium text-sm md:text-base">
+              🎁 {language === 'tr' ? 'Hediye / Pilot İstisnası Kullanımı' : 'Complimentary / Pilot Access'}
+            </h3>
+            <p className="text-purple-700 dark:text-purple-400 text-xs md:text-sm mt-1">
+              {language === 'tr' 
+                ? 'İşletmeniz destek programımız, pilot ortaklık veya hediye lisans kapsamında değerlendirilmiştir. Tüm paket imkanlarından sınırsızca yararlanabilirsiniz.' 
+                : 'Your business has been designated for our complimentary or pilot group.'}
+            </p>
+          </div>
+        )}
+
+        {subscription?.status === 'past_due' && (
+          <div className="mb-6 bg-rose-50 dark:bg-rose-950/20 border-l-4 border-rose-500 p-4 rounded-r-md">
+            <h3 className="text-rose-800 dark:text-rose-300 font-medium text-sm md:text-base">
+              ⚠️ {language === 'tr' ? 'Ödeme Bekleniyor (Önemli)' : 'Payment Pending / Past Due'}
+            </h3>
+            <p className="text-rose-700 dark:text-rose-400 text-xs md:text-sm mt-1">
+              {language === 'tr' 
+                ? 'Son faturaya ait ödeme tamamlanamamıştır. Randevu alımının aksamaması için lütfen ödeme bilgilerinizi güncelleyin.' 
+                : 'Your last invoice payment is pending. Please update your billing details.'}
+            </p>
+          </div>
+        )}
+
+        {subscription?.status === 'paused' && (
+          <div className="mb-6 bg-slate-100 dark:bg-slate-900 border-l-4 border-slate-500 p-4 rounded-r-md">
+            <h3 className="text-slate-800 dark:text-slate-200 font-medium text-sm md:text-base">
+              ⏸️ {language === 'tr' ? 'Abonelik Duraklatıldı / Donduruldu' : 'Subscription Paused'}
+            </h3>
+            <p className="text-slate-700 dark:text-slate-300 text-xs md:text-sm mt-1">
+              {language === 'tr' 
+                ? 'Talep üzerine online randevu alımı geçici olarak duraklatılmıştır. "Yeniden Aktif Et" butonu ile tekrar rezervasyon alımını açabilirsiniz.' 
+                : 'At your request, online booking services are temporarily frozen.'}
+            </p>
+          </div>
+        )}
+
+        {subscription?.status === 'suspended' && (
+          <div className="mb-6 bg-red-50 dark:bg-red-950/20 border-l-4 border-red-500 p-4 rounded-r-md">
+            <h3 className="text-red-800 dark:text-red-300 font-medium text-sm md:text-base">
+              🚫 {language === 'tr' ? 'Hesap Askıya Alındı' : 'Account Suspended'}
+            </h3>
+            <p className="text-red-700 dark:text-red-400 text-xs md:text-sm mt-1">
+              {language === 'tr' 
+                ? 'Hesabınız güvenlik, risk veya idari değerlendirme sebebiyle askıya alınmıştır. Lütfen destek ekibimizle iletişime geçin.' 
+                : 'Your account has been suspended for risk or compliance reasons. Please contact support.'}
+            </p>
+          </div>
+        )}
+
+        {subscription?.cancelAtPeriodEnd && (
+          <div className="mb-6 bg-orange-50 dark:bg-orange-950/20 border-l-4 border-orange-500 p-4 rounded-r-md">
+            <h3 className="text-orange-800 dark:text-orange-300 font-medium text-sm md:text-base">
+              📅 {language === 'tr' ? 'Dönem Sonunda İptal Edilecek' : 'Cancelled at Period End'}
+            </h3>
+            <p className="text-orange-700 dark:text-orange-400 text-xs md:text-sm mt-1">
+              {language === 'tr' 
+                ? `İptal talebi mevcuttur. Aboneliğiniz ${subscription.currentPeriodEnd ? new Date(subscription.currentPeriodEnd).toLocaleDateString() : 'dönem sonu'} tarihine kadar aktif kalacak, yeni dönemde yenilenmeyecektir.` 
+                : `Your subscription is scheduled for cancellation and remains active until ${subscription.currentPeriodEnd ? new Date(subscription.currentPeriodEnd).toLocaleDateString() : 'period end'}.`}
+            </p>
           </div>
         )}
 
@@ -212,21 +353,57 @@ const BillingTab: React.FC = () => {
                </div>
             )}
 
+            {subscription && (subscription.referralCredits || subscription.discountType) ? (
+              <div className="mb-6 p-4 bg-indigo-50/50 dark:bg-indigo-950/10 border border-indigo-100 dark:border-indigo-900/30 rounded-xl space-y-2">
+                <span className="text-[10px] font-black uppercase text-indigo-600 dark:text-indigo-400 tracking-wider">🌟 Tanımlı İndirimler & Ödüller</span>
+                {subscription.referralCredits && subscription.referralCredits > 0 ? (
+                  <p className="text-xs text-gray-700 dark:text-gray-300 leading-normal">
+                    Referans Ödülü: <strong>{subscription.referralCredits} Ay Ücretsiz Kullanım</strong> {language === 'tr' ? 'tanımlandı.' : 'granted.'}
+                  </p>
+                ) : null}
+                {subscription.discountType ? (
+                  <p className="text-xs text-gray-700 dark:text-gray-300 leading-normal">
+                    Faturadan Düşülecek İndirim: <strong>{subscription.discountType === 'percentage' ? `%${subscription.discountValue}` : `₺${subscription.discountValue}`}</strong>
+                  </p>
+                ) : null}
+              </div>
+            ) : null}
+
             <div className="mb-4">
               <p className="text-sm text-gray-500 dark:text-gray-400">{t.billing.active_plan}</p>
-              <p className="text-lg font-bold text-gray-900 dark:text-white">{currentPlan?.name || t.billing.plan_free_trial}</p>
+              <div className="flex items-center gap-2">
+                <p className="text-lg font-bold text-gray-900 dark:text-white">{currentPlan?.name || t.billing.plan_free_trial}</p>
+                {subscription?.scheduledPlanId && (
+                  <span className="text-xs text-amber-600 bg-amber-50 px-2.5 py-0.5 rounded-full font-medium">
+                    {language === 'tr' ? `Dönem sonu geçiş: ${subscription.scheduledPlanId}` : `Scheduled migration: ${subscription.scheduledPlanId}`}
+                  </span>
+                )}
+              </div>
             </div>
             <div className="mb-4">
               <p className="text-sm text-gray-500 dark:text-gray-400">{t.billing.status}</p>
-              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium uppercase ${
-                subscription?.status === 'active' ? 'bg-green-100 text-green-800' :
-                subscription?.status === 'trialing' ? 'bg-blue-100 text-blue-800' :
-                subscription?.status === 'pending_checkout' ? 'bg-yellow-100 text-yellow-800' :
-                subscription?.status === 'past_due' ? 'bg-red-100 text-red-800' :
-                'bg-gray-100 text-gray-800'
-              }`}>
-                {subscription?.status === 'pending_checkout' ? (language === 'tr' ? 'Doğrulama Bekliyor' : 'Pending Auth') : (subscription ? t.billing[subscription.status] || subscription.status : t.billing.unknown)}
-              </span>
+              <div className="flex items-center gap-2">
+                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium uppercase ${
+                  subscription?.status === 'active' ? 'bg-green-100 text-green-800' :
+                  subscription?.status === 'trialing' ? 'bg-blue-100 text-blue-800' :
+                  subscription?.status === 'pending_checkout' ? 'bg-yellow-101 text-yellow-800 bg-yellow-100' :
+                  subscription?.status === 'past_due' ? 'bg-red-100 text-red-800' :
+                  subscription?.status === 'paused' ? 'bg-slate-100 text-slate-800' :
+                  subscription?.status === 'suspended' ? 'bg-red-200 text-red-900' :
+                  subscription?.status === 'comped' ? 'bg-purple-100 text-purple-800' :
+                  subscription?.status === 'manual_active' ? 'bg-indigo-100 text-indigo-800' :
+                  'bg-gray-100 text-gray-800'
+                }`}>
+                  {subscription?.status === 'pending_checkout' 
+                    ? (language === 'tr' ? 'Doğrulama Bekliyor' : 'Pending Auth') 
+                    : (subscription ? t.billing[subscription.status] || subscription.status : t.billing.unknown)}
+                </span>
+                {subscription?.paymentProvider && (
+                  <span className="text-xs uppercase font-mono text-gray-400">
+                    ({subscription.paymentProvider.replace('_', ' ')})
+                  </span>
+                )}
+              </div>
             </div>
             <div className="mb-4">
               <p className="text-sm text-gray-500 dark:text-gray-400">{t.billing.monthly_amount}</p>
@@ -234,15 +411,57 @@ const BillingTab: React.FC = () => {
               <p className="text-xs text-gray-500">{t.billing.setup_fee_note?.replace('{fee}', String(currentPlan?.setupFee || 0))}</p>
             </div>
 
-            {subscription?.paymentProvider && ['offline_payment', 'complimentary', 'pilot_exception', 'manual_invoice'].includes(subscription.paymentProvider) && (
-              <div className="mt-4 p-4.5 bg-slate-100 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 space-y-2">
-                <span className="text-[10px] font-black uppercase text-indigo-600 tracking-wider">🔒 Super Admin Manuel Aktivasyon</span>
-                <p className="text-xs text-gray-700 dark:text-gray-300 font-medium leading-relaxed">
-                  Ödeme Türü: <strong className="uppercase font-bold text-gray-900 dark:text-white">{subscription.paymentProvider.replace('_', ' ')}</strong>
+            {/* Quick Management Actions for Business Owners */}
+            {subscription && (
+              <div className="mt-6 border-t border-gray-100 dark:border-slate-700 pt-4 space-y-3">
+                <p className="text-xs font-bold uppercase text-gray-400 dark:text-gray-500 tracking-wider">
+                  {language === 'tr' ? 'Abonelik İşlemleri' : 'Subscription Controls'}
                 </p>
-                <p className="text-[11px] text-gray-500 dark:text-gray-400 leading-normal">
-                  Hesabınız Super Admin tarafından özel bir anlaşma, offline ödeme veya pilot program kapsamında yetkilendirilmiştir. Aboneliğiniz ve tüm paket limitleriniz işletmeniz için güvence altındadır. Herhangi bir sorunuz için satış/destek ekibimizle iletişime geçebilirsiniz.
-                </p>
+                <div className="flex flex-wrap gap-2">
+                  {subscription.status === 'paused' ? (
+                    <button
+                      onClick={handleResume}
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-1.5 rounded-md font-medium transition-colors cursor-pointer"
+                    >
+                      {language === 'tr' ? '▶️ Sayfayı Yayına Al' : '▶️ Resume System / Online'}
+                    </button>
+                  ) : (
+                    ['active', 'trialing', 'manual_active', 'comped'].includes(subscription.status) && (
+                      <button
+                        onClick={handlePause}
+                        className="bg-zinc-600 hover:bg-zinc-700 text-white text-xs px-3 py-1.5 rounded-md font-medium transition-colors cursor-pointer"
+                      >
+                        {language === 'tr' ? '⏸️ Rezervasyonu Geçici Durdur' : '⏸️ Freeze Online Booking'}
+                      </button>
+                    )
+                  )}
+
+                  {!subscription.cancelAtPeriodEnd && ['active', 'trialing', 'manual_active', 'comped', 'past_due'].includes(subscription.status) && (
+                    <>
+                      <button
+                        onClick={handleCancelAtPeriodEnd}
+                        className="bg-amber-600 hover:bg-amber-700 text-white text-xs px-3 py-1.5 rounded-md font-medium transition-colors cursor-pointer"
+                      >
+                        {language === 'tr' ? '📅 Dönem Sonunda İptal Et' : '📅 Cancel at Period End'}
+                      </button>
+                      <button
+                        onClick={handleCancelImmediately}
+                        className="bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1.5 rounded-md font-medium transition-colors cursor-pointer"
+                      >
+                        {language === 'tr' ? '📴 Hemen Sonlandır' : '📴 Deactivate Now'}
+                      </button>
+                    </>
+                  )}
+
+                  {subscription.cancelAtPeriodEnd && (
+                    <button
+                      onClick={handleResume}
+                      className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3 py-1.5 rounded-md font-medium transition-colors cursor-pointer"
+                    >
+                      {language === 'tr' ? '🔄 İptali Geri Çek' : '🔄 Recede Cancellation'}
+                    </button>
+                  )}
+                </div>
               </div>
             )}
             
@@ -391,7 +610,7 @@ const BillingTab: React.FC = () => {
           ))}
         </div>
       </div>
-      <CheckoutPreviewModal isOpen={!!previewPlan} onClose={() => setPreviewPlan(null)} plan={previewPlan} />
+      <CheckoutPreviewModal isOpen={!!previewPlan} onClose={() => setPreviewPlan(null)} onConfirm={handleConfirmMockCheckout} plan={previewPlan} />
     </div>
   );
 };

@@ -70,7 +70,8 @@ export const goLiveService = {
 
     const blockingReasons: string[] = [];
     
-    if (sub?.status === 'pending_checkout' || (!sub || (sub.status !== 'active' && sub.status !== 'trialing'))) {
+    const isServiceActive = sub?.status === 'active' || sub?.status === 'trialing' || sub?.status === 'manual_active' || sub?.status === 'comped';
+    if (!isServiceActive) {
       blockingReasons.push('Abonelik veya deneme süresi aktif değil. Lütfen ödeme/doğrulama adımını tamamlayın.');
     }
     if (!checklist.servicesCompleted) {
@@ -100,8 +101,15 @@ export const goLiveService = {
     }
 
     const sub = await subscriptionService.getCurrentSubscription(tenantId);
-    if (!sub || sub.status === 'expired' || sub.status === 'cancelled' || sub.status === 'past_due') {
-      return { allowed: false, reason: 'Bu salonun online randevu sistemi geçici olarak kullanılamıyor.' };
+    const isServiceActive = sub?.status === 'active' || sub?.status === 'trialing' || sub?.status === 'manual_active' || sub?.status === 'comped';
+    if (!sub || !isServiceActive) {
+      if (sub?.status === 'paused') {
+        return { allowed: false, reason: 'İşletme sahibi online randevu kabulünü geçici olarak durdurmuştur.' };
+      }
+      if (sub?.status === 'suspended') {
+        return { allowed: false, reason: 'Bu salonun üyeliği geçici olarak askıya alınmıştır.' };
+      }
+      return { allowed: false, reason: 'Bu salonun online randevu sistemi geçici olarak kullanılamıyor. Lütfen ödeme veya deneme adımını tamamlayın.' };
     }
 
     const tenant = await tenantService.getCurrentTenant();
