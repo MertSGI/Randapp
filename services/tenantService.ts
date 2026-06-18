@@ -149,12 +149,12 @@ export const tenantService = {
     const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
     if (mode === 'mock') {
        if (activeTenantId && activeTenantId !== 'tenant_pilot_demo') {
-          const registeredArr = JSON.parse(localStorage.getItem('lari_registered_tenants') || '[]');
+          const registeredArr = JSON.parse(localStorage.getItem('lari_registered_tenants') || localStorage.getItem('randapp_registered_tenants') || '[]');
           const tenantRecord = registeredArr.find((t: any) => t.id === activeTenantId);
           if (tenantRecord) {
              return {
                 id: tenantRecord.id,
-                slug: tenantRecord.id, // simplified slug
+                slug: tenantRecord.slug || tenantRecord.id,
                 name: tenantRecord.businessName,
                 status: 'active',
                 createdAt: tenantRecord.created_at || new Date().toISOString(),
@@ -208,6 +208,61 @@ export const tenantService = {
     
     const key = `randapp:${tenantId}:branding`;
     return dataProvider.get<TenantBranding>(key);
+  },
+
+  async updateTenant(tenantId: string, updates: Partial<Tenant>): Promise<void> {
+    const mode = (import.meta as any).env.VITE_DATA_MODE || 'mock';
+    if (mode === 'supabase') {
+      const { error } = await supabase
+        .from('tenants')
+        .update({
+          slug: updates.slug,
+          name: updates.name,
+          plan_id: updates.planId,
+          custom_domain: updates.customDomain,
+          status: updates.status,
+          public_site_status: updates.publicSiteStatus,
+          is_published: updates.isPublished
+        })
+        .eq('id', tenantId);
+        
+      if (error) {
+        console.error("Error updating tenant in Supabase:", error);
+      }
+      return;
+    }
+
+    let raw = localStorage.getItem('lari_registered_tenants') || localStorage.getItem('randapp_registered_tenants');
+    if (!raw) {
+      raw = '[]';
+    }
+    try {
+      const tenants = JSON.parse(raw);
+      const idx = tenants.findIndex((t: any) => t.id === tenantId);
+      if (idx >= 0) {
+        tenants[idx] = { ...tenants[idx], ...updates };
+        
+        // Sync exact fields
+        if (updates.slug !== undefined) tenants[idx].slug = updates.slug;
+        if (updates.isPublished !== undefined) tenants[idx].isPublished = updates.isPublished;
+        if (updates.publicSiteStatus !== undefined) tenants[idx].publicSiteStatus = updates.publicSiteStatus;
+      } else {
+        const item = {
+          id: tenantId,
+          businessName: updates.name || 'Yeni İşletme',
+          ownerEmail: 'manual@test.com',
+          created_at: new Date().toISOString(),
+          planId: updates.planId || 'free',
+          verificationStatus: 'approved',
+          publicSiteStatus: updates.publicSiteStatus || (updates.isPublished ? 'published' : 'draft'),
+          status: 'active',
+          ...updates
+        };
+        tenants.push(item);
+      }
+      localStorage.setItem('lari_registered_tenants', JSON.stringify(tenants));
+      localStorage.setItem('randapp_registered_tenants', JSON.stringify(tenants));
+    } catch (e) {}
   },
 
   async updateTenantBranding(tenantId: string, updates: Partial<TenantBranding>): Promise<TenantBranding | null> {

@@ -84,6 +84,8 @@ export interface Tenant {
   verificationStatus?: 'not_submitted' | 'submitted' | 'under_review' | 'approved' | 'rejected' | 'suspended';
   publicSiteStatus?: 'draft' | 'preview_ready' | 'pending_review' | 'published' | 'paused' | 'suspended';
   businessRiskStatus?: 'normal' | 'needs_review' | 'prohibited' | 'suspected_impersonation';
+  isPublished?: boolean;
+  setupComplete?: boolean;
 }
 
 export interface Staff {

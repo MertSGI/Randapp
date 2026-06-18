@@ -28,10 +28,10 @@ export const migrationDryRunService = {
     }
     
     // 2. Profile basics
-    if (!snapshot.businessProfile?.name) {
-      result.blockers.push("Business profile lacks a name.");
+    if (!snapshot.businessProfile?.public_display_name && !snapshot.tenantAccount?.name) {
+      result.blockers.push("Business profile lacks a display name.");
     } else {
-       if (!snapshot.businessProfile.slug) {
+       if (!snapshot.tenantAccount?.slug) {
          result.warnings.push("Business profile is missing a public URL slug.");
          result.recommendedFixes.push("Set a public URL slug in the Admin -> Website/Settings tab.");
        }

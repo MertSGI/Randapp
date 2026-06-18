@@ -138,14 +138,14 @@ export const PilotAdminPreviewPage: React.FC = () => {
                             <h2 className="text-lg font-bold text-gray-900 dark:text-white">Yaklaşan Randevular</h2>
                         </div>
                         <div className="divide-y divide-gray-100 dark:divide-slate-700">
-                            {appointments.filter(a => a.status === 'confirmed' || a.status === 'pending').slice(0, 5).map(apt => {
+                            {appointments.filter(a => a.status === 'confirmed' || (a.status as any) === 'pending').slice(0, 5).map(apt => {
                                const assignedStaff = staffList.find(s => s.id === apt.staffId);
                                const assignedService = servicesList.find(s => s.id === apt.serviceId);
                                return (
                                    <div key={apt.id} className="p-6 hover:bg-gray-50 dark:hover:bg-slate-700/50 transition">
                                        <div className="flex flex-col sm:flex-row justify-between gap-4">
                                            <div>
-                                               <h4 className="text-base font-bold text-gray-900 dark:text-white">{apt.customerName}</h4>
+                                               <h4 className="text-base font-bold text-gray-900 dark:text-white">{apt.user_name}</h4>
                                                <p className="text-sm text-gray-500 mt-1">{apt.date} • {apt.time} • {assignedService?.name || 'Servis'}</p>
                                                <p className="text-sm text-gray-400 mt-0.5">Uzman: {assignedStaff?.name || 'Seçilmedi'}</p>
                                            </div>
@@ -176,7 +176,7 @@ export const PilotAdminPreviewPage: React.FC = () => {
                                <div key={apt.id} className="p-6 hover:bg-gray-50 dark:hover:bg-slate-700/50 transition opacity-80">
                                    <div className="flex flex-col sm:flex-row justify-between gap-4">
                                        <div>
-                                           <h4 className="text-sm font-bold text-gray-900 dark:text-white">{apt.customerName} - {apt.customerPhone}</h4>
+                                           <h4 className="text-sm font-bold text-gray-900 dark:text-white">{apt.user_name} - {apt.phone}</h4>
                                            <p className="text-sm text-gray-500 mt-1">{apt.date} • {apt.time} • {assignedService?.name || 'Servis'}</p>
                                            <p className="text-xs text-gray-400 mt-0.5">Kanal: {apt.source || 'Bilinmiyor'} {apt.notes && `| Not: ${apt.notes}`}</p>
                                        </div>
@@ -237,7 +237,7 @@ export const PilotAdminPreviewPage: React.FC = () => {
                              <div className="flex flex-wrap gap-3">
                                  {staffList.map(st => (
                                      <div key={st.id} className="px-4 py-2 bg-slate-100 dark:bg-slate-700 rounded-full text-sm font-medium text-gray-800 dark:text-gray-200">
-                                         {st.name} <span className="text-gray-400 font-normal">({st.role})</span>
+                                         {st.name} <span className="text-gray-400 font-normal">({st.title})</span>
                                      </div>
                                  ))}
                              </div>

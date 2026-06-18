@@ -91,9 +91,13 @@ export const tenantRegistrationService = {
       // Fallback
       localStorage.setItem('randapp_mock_user', JSON.stringify(authPayload));
       
+      const { publicLinkService } = await import('./publicLinkService');
+      const initialSlug = publicLinkService.generateTenantSlug(data.businessDisplayName);
+
       const registered = JSON.parse(localStorage.getItem('lari_registered_tenants') || localStorage.getItem('randapp_registered_tenants') || '[]');
       registered.push({
          id: tenantId,
+         slug: initialSlug,
          businessName: data.businessDisplayName,
          ownerEmail: data.ownerEmail,
          created_at: new Date().toISOString(),

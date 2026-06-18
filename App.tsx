@@ -38,6 +38,7 @@ import SuperAdminReferralsPage from './pages/super-admin/SuperAdminReferralsPage
 import SuperAdminTenantPreviewPage from './pages/super-admin/SuperAdminTenantPreviewPage';
 import SuperAdminGoLivePage from './pages/super-admin/SuperAdminGoLivePage';
 import SuperAdminPilotTrackerPage from './pages/super-admin/SuperAdminPilotTrackerPage';
+import SuperAdminManualProvisioningPage from './pages/super-admin/SuperAdminManualProvisioningPage';
 import SitePreviewPage from './pages/admin/SitePreviewPage';
 
 import CustomerLoginPage from './pages/customer/CustomerLoginPage';
@@ -95,6 +96,7 @@ const AppFlowSwitcher: React.FC = () => {
         <Route path="/pilot/customer" element={<BookingPage />} />
         {/* Dynamic Tenant Routing */}
         <Route path="/:tenantSlug" element={<BookingPage />} />
+        <Route path="/booking/:tenantSlug" element={<BookingPage />} />
         {/* AI Tool - Now part of the salon booking flow */}
         <Route path="/ai-visualizer" element={<AIVisualizerPage />} />
       </Route>
@@ -132,6 +134,7 @@ const AppFlowSwitcher: React.FC = () => {
         <Route path="/super-admin/referrals" element={<SuperAdminReferralsPage />} />
         <Route path="/super-admin/go-live" element={<SuperAdminGoLivePage />} />
         <Route path="/super-admin/pilots" element={<SuperAdminPilotTrackerPage />} />
+        <Route path="/super-admin/provisioning" element={<SuperAdminManualProvisioningPage />} />
       </Route>
       <Route path="/super-admin/tenant-preview/:tenantId" element={
         <ProtectedRoute allowedRoles={['super_admin']}>

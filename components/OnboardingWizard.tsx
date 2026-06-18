@@ -38,6 +38,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   const [profileCategory, setProfileCategory] = useState(() => localStorage.getItem('lari_onboarding_category') || '');
   const [profileCity, setProfileCity] = useState(() => localStorage.getItem('lari_onboarding_city') || 'İstanbul');
   const [profileDistrict, setProfileDistrict] = useState(() => localStorage.getItem('lari_onboarding_district') || '');
+  const [setupSlug, setSetupSlug] = useState(() => localStorage.getItem('lari_onboarding_slug') || tenant?.slug || '');
 
   const [setupWhatsapp, setSetupWhatsapp] = useState(() => localStorage.getItem('lari_onboarding_whatsapp') || tenant?.branding?.whatsappNumber || '');
   const [setupPhone, setSetupPhone] = useState(() => localStorage.getItem('lari_onboarding_phone') || '');
@@ -56,7 +57,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
     return saved ? JSON.parse(saved) : ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'];
   });
   const [startTime, setStartTime] = useState(() => localStorage.getItem('lari_onboarding_startTime') || '09:00');
-  const [endTime, setEndTime] = useState(() => localStorage.getItem('lari_onboarding_endTime') || '20:00');
+  const [endTime, setEndTime] = useState(() => localStorage.getItem('lari_onboarding_endTime') || '20:05');
 
   // Branding states
   const [setupLogoUrl, setSetupLogoUrl] = useState(() => localStorage.getItem('lari_onboarding_logoUrl') || tenant?.branding?.logoUrl || '');
@@ -77,6 +78,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   useEffect(() => {
     if (tenant) {
       if (!setupSalonName) setSetupSalonName(tenant.name || '');
+      if (!setupSlug) setSetupSlug(tenant.slug || '');
       if (!setupWhatsapp) setSetupWhatsapp(tenant.branding?.whatsappNumber || '');
       if (!setupPrimaryColor) setSetupPrimaryColor(tenant.branding?.primaryColor || '#14b8a6');
       if (!profileAddress) setProfileAddress(tenant.branding?.address || '');
@@ -95,11 +97,22 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
     }
   }, [tenant]);
 
+  // Suggest slug dynamically if empty
+  useEffect(() => {
+    if (setupSalonName && !setupSlug) {
+      import('../services/siteProvisioningService').then(({ siteProvisioningService }) => {
+        const suggested = siteProvisioningService.generateTenantSlugFromBusinessName(setupSalonName);
+        setSetupSlug(suggested);
+      });
+    }
+  }, [setupSalonName]);
+
   // Sync draft edits instantly to localStorage
   useEffect(() => { localStorage.setItem('lari_onboarding_salonName', setupSalonName); }, [setupSalonName]);
   useEffect(() => { localStorage.setItem('lari_onboarding_category', profileCategory); }, [profileCategory]);
   useEffect(() => { localStorage.setItem('lari_onboarding_city', profileCity); }, [profileCity]);
   useEffect(() => { localStorage.setItem('lari_onboarding_district', profileDistrict); }, [profileDistrict]);
+  useEffect(() => { localStorage.setItem('lari_onboarding_slug', setupSlug); }, [setupSlug]);
   useEffect(() => { localStorage.setItem('lari_onboarding_whatsapp', setupWhatsapp); }, [setupWhatsapp]);
   useEffect(() => { localStorage.setItem('lari_onboarding_phone', setupPhone); }, [setupPhone]);
   useEffect(() => { localStorage.setItem('lari_onboarding_address', profileAddress); }, [profileAddress]);
@@ -163,11 +176,27 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
       await showAlert("Lütfen ilçe bilgisini doldurun.");
       return;
     }
+    if (!setupSlug) {
+      await showAlert("Özel web adresi (URL Slug) boş bırakılamaz.");
+      return;
+    }
+
     setSetupSaving(true);
     try {
+      const { siteProvisioningService } = await import('../services/siteProvisioningService');
+      const val = await siteProvisioningService.validateTenantSlug(setupSlug, tenant.id);
+      if (!val.isValid) {
+        await showAlert(val.error || "Girdiğiniz web adresi başka bir işletme tarafından kullanılıyor veya geçersiz.");
+        setSetupSaving(false);
+        return;
+      }
+
       const { tenantService } = await import('../services/tenantService');
       await tenantService.updateTenantBranding(tenant.id, {
         businessName: setupSalonName,
+      });
+      await tenantService.updateTenant(tenant.id, {
+        slug: setupSlug
       });
       await businessProfileService.updateBusinessProfile(tenant.id, {
         business_category: profileCategory,
@@ -438,6 +467,27 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     onChange={e => setSetupSalonName(e.target.value)} 
                     className="w-full rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-3 border text-sm" 
                   />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">Özel Web Adresi (URL Slug) <span className="text-red-500">*</span></label>
+                  <div className="flex rounded-lg shadow-sm">
+                    <span className="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-gray-300 dark:border-slate-600 bg-gray-50 dark:bg-slate-700 text-gray-500 dark:text-gray-400 text-xs font-mono select-none">
+                      randevulari.com/
+                    </span>
+                    <input 
+                      type="text" 
+                      required 
+                      placeholder="salon-adi"
+                      value={setupSlug} 
+                      onChange={e => {
+                        const val = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
+                        setSetupSlug(val);
+                      }} 
+                      className="flex-1 min-w-0 block w-full px-3 py-3 rounded-none rounded-r-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white border text-sm font-mono" 
+                    />
+                  </div>
+                  <p className="text-[10px] text-gray-400 dark:text-gray-550 mt-1">Sadece harf, sayı ve tire içerebilir. Siteniz bu web adresi üzerinden yayına alınacaktır.</p>
                 </div>
 
                 <div>
@@ -1091,6 +1141,58 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     <p className="text-[11px] text-gray-500 mt-1">Siteniz artık onaylanmaya ve internet aramalarında görünmeye hazırdır.</p>
                   </div>
                 )}
+              </div>
+
+              {/* Sitenizin Erişim Bağlantıları */}
+              <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 space-y-3">
+                <h4 className="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Web Sitesi ve Erişim Bilgileri</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-3 bg-white dark:bg-slate-800 border border-slate-150 dark:border-slate-700 rounded-lg flex flex-col justify-between">
+                    <div>
+                      <span className="text-[10px] uppercase font-bold text-blue-600 dark:text-blue-400">1. Tasarım Önizleme Bağlantısı</span>
+                      <p className="text-[11px] text-gray-500 mt-1">Kurulum ve şablon durumunu güvenli alanda canlı olarak kontrol edin.</p>
+                    </div>
+                    <a 
+                      href={`#/pilot/admin?tenant=${tenant?.id}`} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="mt-3.5 inline-flex items-center text-xs font-bold text-blue-600 hover:text-blue-750 dark:text-blue-400 hover:underline"
+                    >
+                      Önizleme Sayfasını Aç ↗
+                    </a>
+                  </div>
+
+                  <div className="p-3 bg-white dark:bg-slate-800 border border-slate-150 dark:border-slate-700 rounded-lg flex flex-col justify-between">
+                    <div>
+                      <span className="text-[10px] uppercase font-bold text-indigo-600 dark:text-indigo-400">2. Canlı Rezervasyon Bağlantısı</span>
+                      {tenant?.publicSiteStatus === 'published' ? (
+                        <div className="mt-1">
+                          <p className="text-[11px] font-bold text-green-600 dark:text-green-400">Siteniz artık yayında ve erişilebilir!</p>
+                          <a 
+                            href={`/booking/${setupSlug || tenant?.slug}`} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="mt-1 inline-block text-xs font-mono font-bold text-indigo-600 hover:text-indigo-700 hover:underline"
+                          >
+                            https://{setupSlug || tenant?.slug || tenant?.id}.randevulari.com ↗
+                          </a>
+                        </div>
+                      ) : (
+                        <div className="mt-1 space-y-1">
+                          <div className="text-xs font-mono text-gray-400 line-through select-none">
+                            https://{setupSlug || tenant?.slug || tenant?.id}.randevulari.com
+                          </div>
+                          <span className="inline-block text-[10px] font-bold text-amber-700 dark:text-amber-500 bg-amber-50 dark:bg-amber-950/20 px-1.5 py-0.5 rounded">
+                            ⏳ yayına alındığında kullanılacak bağlantı
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-[9px] text-gray-400 mt-2.5 leading-tight">
+                      * Local/pre-live aşamasında olduğumuz için DNS simüle edilmektedir, gerçek wildcard DNS/SSL canlı sunucu geçişinde aktifleşecektir.
+                    </p>
+                  </div>
+                </div>
               </div>
 
               {tenant?.publicSiteStatus === 'pending_review' ? (

@@ -1,9 +1,4 @@
-import { BusinessProfile } from './repositories/businessProfileRepository';
-import { CatalogConfig } from './repositories/catalogRepository';
-import { Appointment } from './repositories/bookingRepository';
-import { CustomerProfile } from './customerService';
-import { CustomerConsent, ConsentDataRequest } from './consentService';
-import { BusinessBranch } from '../types';
+import { SalonBusinessProfile, Appointment, BusinessBranch, CustomerConsentFlags, CustomerDataRequest } from '../types';
 
 export interface TenantSnapshot {
   snapshotVersion: string;
@@ -13,7 +8,7 @@ export interface TenantSnapshot {
   tenantId: string;
   
   tenantAccount?: any;
-  businessProfile?: BusinessProfile | null;
+  businessProfile?: SalonBusinessProfile | null;
   branches?: BusinessBranch[];
   catalog?: {
     services: any[];
@@ -22,9 +17,9 @@ export interface TenantSnapshot {
     availability: any;
   };
   appointments?: Appointment[];
-  customers?: CustomerProfile[];
-  consents?: CustomerConsent[];
-  dataRequests?: ConsentDataRequest[];
+  customers?: any[];
+  consents?: Record<string, CustomerConsentFlags>;
+  dataRequests?: CustomerDataRequest[];
   shareChecklist?: Record<string, boolean>;
   campaigns?: any[];
   campaignRewards?: any[];
