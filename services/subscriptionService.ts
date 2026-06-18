@@ -493,6 +493,14 @@ export const subscriptionService = {
     throw new Error('Subscription not found');
   },
 
+  async fetchUsageStats(tenantId: string): Promise<TenantUsage> {
+    return this.getTenantUsage(tenantId);
+  },
+
+  async grantFreeDiscountMonths(tenantId: string, months: number, reason?: string): Promise<TenantSubscription> {
+    return this.applyReferralCredit(tenantId, months);
+  },
+
   async getEffectiveEntitlements(tenantId: string): Promise<any> {
     const sub = await this.getCurrentSubscription(tenantId);
     const planId = sub ? sub.planId : 'baslangic';
