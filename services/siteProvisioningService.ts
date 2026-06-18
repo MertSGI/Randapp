@@ -2,6 +2,7 @@ import { publicLinkService } from './publicLinkService';
 import { marketConfigService } from './marketConfigService';
 import { tenantService } from './tenantService';
 import { Tenant } from '../types';
+import { communicationEventService } from './communicationEventService';
 
 export type ProvisioningStepStatus = 
   | 'not_started'
@@ -42,6 +43,23 @@ export const siteProvisioningService = {
     const tenant = await tenantService.getTenantById(tenantId);
     if (tenant) {
       await tenantService.updateTenant(tenantId, { slug: desiredSlug });
+      
+      // Queue preview ready event
+      try {
+        const previewUrl = `https://${desiredSlug}.randevulari.com/preview`;
+        communicationEventService.queueCommunicationEvent({
+          tenantId,
+          audience: 'business_owner',
+          channel: 'in_app',
+          type: 'public_site_preview_ready',
+          contextArgs: {
+            businessName: tenant.branding?.businessName || tenant.name,
+            previewUrl
+          }
+        });
+      } catch (err) {
+        console.error('Slug preview outbox event fail:', err);
+      }
       return true;
     }
     return false;
@@ -56,6 +74,23 @@ export const siteProvisioningService = {
     const tenant = await tenantService.getTenantById(tenantId);
     if (tenant) {
        await tenantService.updateTenant(tenantId, { isPublished: true });
+       
+       const publicUrl = this.getPublicSiteUrl(tenant);
+       
+       try {
+         communicationEventService.queueCommunicationEvent({
+           tenantId,
+           audience: 'business_owner',
+           channel: 'email',
+           type: 'public_site_published',
+           contextArgs: {
+             businessName: tenant.branding?.businessName || tenant.name,
+             publicUrl
+           }
+         });
+       } catch (err) {
+         console.error('Site published outbox event hook error:', err);
+       }
     }
   },
 
@@ -92,6 +127,38 @@ export const siteProvisioningService = {
   // Custom domains dummy state just for reference right now
   async requestCustomDomain(tenantId: string, domain: string): Promise<boolean> {
     console.log(`Requested custom domain ${domain} for tenant ${tenantId}`);
+    
+    try {
+      const tenant = await tenantService.getTenantById(tenantId);
+      
+      communicationEventService.queueCommunicationEvent({
+        tenantId,
+        audience: 'business_owner',
+        channel: 'email',
+        type: 'custom_domain_requested',
+        contextArgs: {
+          ownerName: 'İşletme Yetkilisi',
+          businessName: tenant?.branding?.businessName || tenant?.name || tenantId,
+          domainName: domain
+        }
+      });
+
+      // Simulate automated deployment success in local database mode in 1.5 seconds
+      setTimeout(async () => {
+        communicationEventService.queueCommunicationEvent({
+          tenantId,
+          audience: 'business_owner',
+          channel: 'email',
+          type: 'custom_domain_active',
+          contextArgs: {
+            domainName: domain
+          }
+        });
+      }, 1500);
+
+    } catch (e) {
+      console.error('Custom domain outbox hook error:', e);
+    }
     return true;
   },
 

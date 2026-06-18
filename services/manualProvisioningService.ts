@@ -2,6 +2,7 @@ import { Tenant } from '../types';
 import { tenantService } from './tenantService';
 import { siteProvisioningService } from './siteProvisioningService';
 import { dataProvider } from './dataProvider';
+import { communicationEventService } from './communicationEventService';
 
 export interface ManualProvisioningPayload {
   businessName: string;
@@ -70,6 +71,37 @@ export const manualProvisioningService = {
       // Set in both local storage and dataProvider to ensure perfect retrieval
       localStorage.setItem(`mock_subscription_${tenantId}`, JSON.stringify(subscriptionRecord));
       await dataProvider.set(`randapp:${tenantId}:subscription`, subscriptionRecord);
+
+      // Queue administrative outbox notifications
+      try {
+        communicationEventService.queueCommunicationEvent({
+          tenantId,
+          audience: 'super_admin',
+          channel: 'internal_note',
+          type: 'super_admin_manual_provisioning_completed',
+          internalOnly: true,
+          contextArgs: {
+            ownerName: payload.ownerName,
+            businessName: payload.businessName,
+            slug: payload.publicSlug,
+            billingType: payload.billingSource
+          }
+        });
+
+        communicationEventService.queueCommunicationEvent({
+          tenantId,
+          audience: 'business_owner',
+          channel: 'email',
+          type: 'manual_subscription_activated',
+          contextArgs: {
+            ownerName: payload.ownerName,
+            businessName: payload.businessName,
+            planName: payload.planId.toUpperCase()
+          }
+        });
+      } catch (err) {
+        console.error('Manual provisioning outbox hook error:', err);
+      }
 
       console.log(`[Manual Provisioning] Provisioned tenant ${tenantId} with plan ${payload.planId} via ${payload.billingSource}`);
       return { success: true, tenantId };

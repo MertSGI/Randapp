@@ -1,7 +1,9 @@
-import { Appointment } from '../types';
+import { Appointment, SERVICES } from '../types';
 import { getBookingRepository } from './repositories';
 import { notificationTemplateService } from './notificationTemplateService';
 import { customerCampaignService } from './customerCampaignService';
+import { communicationEventService } from './communicationEventService';
+import { tenantService } from './tenantService';
 
 export const getAppointmentsKey = (tenantId: string) => `randapp:${tenantId}:appointments`;
 
@@ -12,11 +14,46 @@ export const getAppointments = async (tenantId: string): Promise<Appointment[]> 
 export const createAppointment = async (tenantId: string, appointment: Omit<Appointment, 'id' | 'tenantId' | 'createdAt'>): Promise<Appointment> => {
   const newApt = await getBookingRepository().createAppointment(tenantId, appointment);
   
-  // Notification Hook point: Identify appointment_confirmation template to be sent to user later.
-  const template = notificationTemplateService.getTemplates().find(t => t.id === 'appointment_confirmation');
-  if (template) {
-    console.log(`[Notification Hook] Ready to send mapping for appointment: ${newApt.id} using template: ${template.id}`);
-    // In production, this drops onto a pub/sub queue rather than blocking the response.
+  // Create and queue Communication Events safely
+  try {
+    const tObj = await tenantService.getTenantById(tenantId);
+    const bizName = tObj?.branding?.businessName || tObj?.name || 'Güzellik Salonu';
+    const sName = SERVICES.find(s => s.id === newApt.serviceId)?.name_tr || 'Hizmet';
+    
+    // Create customer notification event
+    communicationEventService.queueCommunicationEvent({
+      tenantId,
+      customerId: newApt.id, // using appointment item id as fallback customer mapping
+      appointmentId: newApt.id,
+      audience: 'customer',
+      channel: 'whatsapp',
+      type: 'booking_created',
+      contextArgs: {
+        customerName: newApt.user_name || 'Müşteri',
+        businessName: bizName,
+        serviceName: sName,
+        date: newApt.date || '',
+        time: newApt.time || ''
+      }
+    });
+
+    // Create owner notification event
+    communicationEventService.queueCommunicationEvent({
+      tenantId,
+      appointmentId: newApt.id,
+      audience: 'business_owner',
+      channel: 'in_app',
+      type: 'booking_created',
+      contextArgs: {
+        customerName: newApt.user_name || 'Müşteri',
+        businessName: bizName,
+        serviceName: sName,
+        date: newApt.date || '',
+        time: newApt.time || ''
+      }
+    });
+  } catch (err) {
+    console.error('Failed to create appointment communication events:', err);
   }
 
   // Booking and referral association hook:
@@ -62,16 +99,69 @@ export const updateAppointmentStatus = async (
 ): Promise<Appointment | null> => {
   if (status.includes('cancel')) {
     await getBookingRepository().cancelAppointment(appointmentId, cancelReason, cancelledBy);
-    
-    // Notification Hook point: Identify booking_cancelled template to be sent to user later.
-    const template = notificationTemplateService.getTemplates().find(t => t.id === 'booking_cancelled');
-    if (template) {
-      console.log(`[Notification Hook] Ready to send cancellation for appointment: ${appointmentId} using template: ${template.id}`);
-      // Send async out-of-band via queue
-    }
   }
   
   const updatedApt = await getBookingRepository().updateAppointment(appointmentId, { status });
+
+  // Hook Communication events on successful status transitions
+  if (updatedApt) {
+    try {
+      const tObj = await tenantService.getTenantById(tenantId);
+      const bizName = tObj?.branding?.businessName || tObj?.name || 'Güzellik Salonu';
+      const sName = SERVICES.find(s => s.id === updatedApt.serviceId)?.name_tr || 'Hizmet';
+      const contextArgs = {
+        customerName: updatedApt.user_name || 'Müşteri',
+        businessName: bizName,
+        serviceName: sName,
+        date: updatedApt.date || '',
+        time: updatedApt.time || ''
+      };
+
+      if (status === 'confirmed') {
+        communicationEventService.queueCommunicationEvent({
+          tenantId,
+          customerId: updatedApt.id,
+          appointmentId: updatedApt.id,
+          audience: 'customer',
+          channel: 'whatsapp',
+          type: 'booking_confirmed',
+          contextArgs
+        });
+      } else if (status === 'cancelled') {
+        communicationEventService.queueCommunicationEvent({
+          tenantId,
+          customerId: updatedApt.id,
+          appointmentId: updatedApt.id,
+          audience: 'customer',
+          channel: 'whatsapp',
+          type: 'booking_cancelled',
+          contextArgs
+        });
+      } else if (status === 'completed') {
+        communicationEventService.queueCommunicationEvent({
+          tenantId,
+          customerId: updatedApt.id,
+          appointmentId: updatedApt.id,
+          audience: 'customer',
+          channel: 'whatsapp',
+          type: 'booking_completed',
+          contextArgs
+        });
+      } else if (status === 'no_show') {
+        communicationEventService.queueCommunicationEvent({
+          tenantId,
+          customerId: updatedApt.id,
+          appointmentId: updatedApt.id,
+          audience: 'customer',
+          channel: 'whatsapp',
+          type: 'booking_no_show',
+          contextArgs
+        });
+      }
+    } catch (err) {
+      console.error('Failed to trigger update status communication event:', err);
+    }
+  }
 
   // Completion Hook for referrals and reward ledger triggers:
   if (status === 'completed' || status === 'confirmed') {

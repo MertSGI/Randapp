@@ -1,6 +1,8 @@
 import { supabase } from './supabaseClient';
 import { dataProvider } from './dataProvider';
 import { planService, PricingPlan } from './planService';
+import { communicationEventService } from './communicationEventService';
+
 
 export type SubscriptionStatus = 
   | 'pending_checkout' 
@@ -342,6 +344,25 @@ export const subscriptionService = {
     sub.currentPeriodEnd = sub.trialEnd;
     localStorage.setItem(`mock_subscription_${tenantId}`, JSON.stringify(sub));
     await dataProvider.set(`randapp:${tenantId}:subscription`, sub);
+
+    // Queue Trial Started communication event
+    try {
+      communicationEventService.queueCommunicationEvent({
+        tenantId,
+        subscriptionId: sub.planId,
+        audience: 'business_owner',
+        channel: 'email',
+        type: 'trial_started',
+        contextArgs: {
+          ownerName: 'İşletme Yetkilisi',
+          businessName: tenantId,
+          planName: sub.planId.toUpperCase()
+        }
+      });
+    } catch (e) {
+      console.error('Subscription outbox event hook error:', e);
+    }
+
     return sub;
   },
 
@@ -361,6 +382,25 @@ export const subscriptionService = {
     };
     localStorage.setItem(`mock_subscription_${tenantId}`, JSON.stringify(sub));
     await dataProvider.set(`randapp:${tenantId}:subscription`, sub);
+
+    // Queue Manual Subscriber communication event
+    try {
+      communicationEventService.queueCommunicationEvent({
+        tenantId,
+        subscriptionId: sub.planId,
+        audience: 'business_owner',
+        channel: 'email',
+        type: 'manual_subscription_activated',
+        contextArgs: {
+          ownerName: 'İşletme Yetkilisi',
+          businessName: tenantId,
+          planName: sub.planId.toUpperCase()
+        }
+      });
+    } catch (e) {
+      console.error('Manual activation outbox hook error:', e);
+    }
+
     return sub;
   },
 
@@ -373,6 +413,22 @@ export const subscriptionService = {
       sub.currentPeriodEnd = currentEnd.toISOString();
       localStorage.setItem(`mock_subscription_${tenantId}`, JSON.stringify(sub));
       await dataProvider.set(`randapp:${tenantId}:subscription`, sub);
+
+      // Queue Credit Awarded communication event
+      try {
+        communicationEventService.queueCommunicationEvent({
+          tenantId,
+          audience: 'business_owner',
+          channel: 'in_app',
+          type: 'referral_credit_awarded',
+          contextArgs: {
+            months: months
+          }
+        });
+      } catch (e) {
+        console.error('Referral award outbox hook error:', e);
+      }
+
       return sub;
     }
     throw new Error('Subscription not found');
@@ -406,6 +462,24 @@ export const subscriptionService = {
       sub.scheduledPlanId = undefined;
       localStorage.setItem(`mock_subscription_${tenantId}`, JSON.stringify(sub));
       await dataProvider.set(`randapp:${tenantId}:subscription`, sub);
+
+      // Queue Upgrade Success event
+      try {
+        communicationEventService.queueCommunicationEvent({
+          tenantId,
+          subscriptionId: sub.planId,
+          audience: 'business_owner',
+          channel: 'email',
+          type: 'plan_upgraded',
+          contextArgs: {
+            businessName: tenantId,
+            newPlanName: targetPlanId.toUpperCase()
+          }
+        });
+      } catch (e) {
+        console.error('Plan upgrade outbox hook error:', e);
+      }
+
       return sub;
     }
     throw new Error('Subscription not found');
@@ -418,6 +492,23 @@ export const subscriptionService = {
       sub.scheduledPlanId = targetPlanId;
       localStorage.setItem(`mock_subscription_${tenantId}`, JSON.stringify(sub));
       await dataProvider.set(`randapp:${tenantId}:subscription`, sub);
+
+      // Queue Downgrade Scheduled event
+      try {
+        communicationEventService.queueCommunicationEvent({
+          tenantId,
+          subscriptionId: sub.planId,
+          audience: 'business_owner',
+          channel: 'in_app',
+          type: 'plan_downgrade_scheduled',
+          contextArgs: {
+            newPlanName: targetPlanId.toUpperCase()
+          }
+        });
+      } catch (e) {
+        console.error('Plan downgrade outbox hook error:', e);
+      }
+
       return sub;
     }
     throw new Error('Subscription not found');
@@ -430,6 +521,23 @@ export const subscriptionService = {
       sub.planChangeStatus = 'cancelled_at_period_end';
       localStorage.setItem(`mock_subscription_${tenantId}`, JSON.stringify(sub));
       await dataProvider.set(`randapp:${tenantId}:subscription`, sub);
+
+      // Queue Period End Cancellation event
+      try {
+        communicationEventService.queueCommunicationEvent({
+          tenantId,
+          subscriptionId: sub.planId,
+          audience: 'business_owner',
+          channel: 'email',
+          type: 'subscription_cancelled_period_end',
+          contextArgs: {
+            businessName: tenantId
+          }
+        });
+      } catch (e) {
+        console.error('Period end cancel outbox hook error:', e);
+      }
+
       return sub;
     }
     throw new Error('Subscription not found');
@@ -443,6 +551,21 @@ export const subscriptionService = {
       sub.planChangeStatus = 'none';
       localStorage.setItem(`mock_subscription_${tenantId}`, JSON.stringify(sub));
       await dataProvider.set(`randapp:${tenantId}:subscription`, sub);
+
+      // Queue Immediate Deactivation event
+      try {
+        communicationEventService.queueCommunicationEvent({
+          tenantId,
+          subscriptionId: sub.planId,
+          audience: 'business_owner',
+          channel: 'email',
+          type: 'subscription_cancelled_immediate',
+          contextArgs: {}
+        });
+      } catch (e) {
+        console.error('Immediate cancellation outbox hook error:', e);
+      }
+
       return sub;
     }
     throw new Error('Subscription not found');
@@ -455,6 +578,23 @@ export const subscriptionService = {
       sub.setupNotes = reason || 'User paused';
       localStorage.setItem(`mock_subscription_${tenantId}`, JSON.stringify(sub));
       await dataProvider.set(`randapp:${tenantId}:subscription`, sub);
+
+      // Queue Suspend Paused event
+      try {
+        communicationEventService.queueCommunicationEvent({
+          tenantId,
+          subscriptionId: sub.planId,
+          audience: 'business_owner',
+          channel: 'email',
+          type: 'subscription_paused',
+          contextArgs: {
+            businessName: tenantId
+          }
+        });
+      } catch (e) {
+        console.error('Pause subscription outbox hook error:', e);
+      }
+
       return sub;
     }
     throw new Error('Subscription not found');
@@ -466,6 +606,23 @@ export const subscriptionService = {
       sub.status = 'active';
       localStorage.setItem(`mock_subscription_${tenantId}`, JSON.stringify(sub));
       await dataProvider.set(`randapp:${tenantId}:subscription`, sub);
+
+      // Queue Re-activated active subscription event
+      try {
+        communicationEventService.queueCommunicationEvent({
+          tenantId,
+          subscriptionId: sub.planId,
+          audience: 'business_owner',
+          channel: 'email',
+          type: 'subscription_active',
+          contextArgs: {
+            businessName: tenantId
+          }
+        });
+      } catch (e) {
+        console.error('Resume subscription outbox hook error:', e);
+      }
+
       return sub;
     }
     throw new Error('Subscription not found');
@@ -477,6 +634,24 @@ export const subscriptionService = {
       sub.status = 'past_due';
       localStorage.setItem(`mock_subscription_${tenantId}`, JSON.stringify(sub));
       await dataProvider.set(`randapp:${tenantId}:subscription`, sub);
+
+      // Queue Past Due invoice retry alert
+      try {
+        communicationEventService.queueCommunicationEvent({
+          tenantId,
+          subscriptionId: sub.planId,
+          audience: 'business_owner',
+          channel: 'email',
+          type: 'subscription_past_due',
+          contextArgs: {
+            ownerName: 'İşletme Yetkilisi',
+            businessName: tenantId
+          }
+        });
+      } catch (e) {
+        console.error('Past due subscription outbox hook error:', e);
+      }
+
       return sub;
     }
     throw new Error('Subscription not found');

@@ -503,3 +503,61 @@ export interface ReferralLead {
   status: 'pending' | 'converted';
   createdAt: string;
 }
+
+export type CommunicationChannel = 'in_app' | 'email' | 'whatsapp' | 'sms' | 'internal_note';
+
+export type CommunicationAudience = 'business_owner' | 'customer' | 'super_admin' | 'support_operator';
+
+export type CommunicationEventType =
+  | 'owner_registered'
+  | 'onboarding_started'
+  | 'onboarding_completed'
+  | 'public_site_preview_ready'
+  | 'public_site_published'
+  | 'booking_created'
+  | 'booking_confirmed'
+  | 'booking_cancelled'
+  | 'booking_completed'
+  | 'booking_no_show'
+  | 'booking_reminder'
+  | 'trial_started'
+  | 'trial_ending'
+  | 'subscription_active'
+  | 'subscription_past_due'
+  | 'subscription_paused'
+  | 'subscription_suspended'
+  | 'subscription_cancelled_period_end'
+  | 'subscription_cancelled_immediate'
+  | 'plan_upgraded'
+  | 'plan_downgrade_scheduled'
+  | 'manual_subscription_activated'
+  | 'referral_credit_awarded'
+  | 'custom_domain_requested'
+  | 'custom_domain_active'
+  | 'support_request_created'
+  | 'super_admin_manual_provisioning_completed';
+
+export type CommunicationDeliveryStatus = 'queued' | 'rendered' | 'skipped' | 'sent' | 'failed' | 'cancelled';
+
+export interface CommunicationEvent {
+  id: string;
+  tenantId: string;
+  branchId?: string;
+  customerId?: string;
+  appointmentId?: string;
+  subscriptionId?: string;
+  audience: CommunicationAudience;
+  channel: CommunicationChannel;
+  type: CommunicationEventType;
+  status: CommunicationDeliveryStatus;
+  language: 'tr' | 'en';
+  subject?: string;
+  body: string;
+  metadata?: any;
+  createdAt: string;
+  updatedAt: string;
+  providerMessageId?: string;
+  failureReason?: string;
+  internalOnly: boolean;
+}
+
