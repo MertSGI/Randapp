@@ -201,17 +201,34 @@ export const SuperAdminManualProvisioningPage: React.FC = () => {
 
             {/* Output status boxes */}
             {status.success && (
-              <div className="p-4 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-800 dark:text-emerald-300 rounded-xl border border-emerald-200 dark:border-emerald-900 flex items-start gap-3">
-                <CheckCircle className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
-                <div className="text-xs space-y-1">
-                  <p className="font-bold">Kurulum Başarıyla Tamamlandı!</p>
-                  <p><strong>Tenant ID:</strong> {status.tenantId}</p>
-                  <p><strong>Web Alanı:</strong> <a href={`/booking/${publicSlug}`} target="_blank" rel="noreferrer" className="underline font-mono">https://{publicSlug}.randevulari.com</a></p>
-                  {publishStatus ? (
-                    <p className="text-[10px] text-slate-500">Sistem anında yayına alındı. İşletme sahibi kendi şifresiz geçiş veya email davetiyle giriş yapabilir.</p>
-                  ) : (
-                    <p className="text-[10px] text-slate-500">Sistem 'taslak' aşamasında kuruldu. OnboardingWizard üzerinden yayına gönderilebilir.</p>
-                  )}
+              <div className="p-6 bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+                <div className="flex items-center gap-2 border-b border-slate-250 dark:border-slate-800 pb-3">
+                  <CheckCircle className="w-5 h-5 text-emerald-600 shrink-0" />
+                  <h4 className="text-sm font-black uppercase text-emerald-800 dark:text-emerald-400">LARİ E2E Kurulum Özet Raporu (Internal Only)</h4>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                  <div className="space-y-1.5">
+                    <p><span className="text-slate-500 font-medium">Salon Adı:</span> <strong className="text-slate-950 dark:text-white">{businessName}</strong></p>
+                    <p><span className="text-slate-500 font-medium">Sahibi / Owner Auth:</span> <strong className="text-slate-950 dark:text-white">{ownerName} ({ownerEmail})</strong></p>
+                    <p><span className="text-slate-500 font-medium">Paket Seviyesi:</span> <strong className="text-slate-950 dark:text-white uppercase font-black text-indigo-600">{planId}</strong></p>
+                    <p><span className="text-slate-500 font-medium">Billing Model:</span> <strong className="text-slate-950 dark:text-white uppercase font-bold">{billingSource.replace('_', ' ')}</strong></p>
+                  </div>
+                  <div className="space-y-1.5">
+                    <p><span className="text-slate-500 font-medium font-mono text-[10px]">Tenant ID:</span> <span className="font-mono text-[10px] bg-slate-200 dark:bg-slate-800 p-1 rounded font-bold">{status.tenantId}</span></p>
+                    <p><span className="text-slate-500 font-medium">Slug Değeri:</span> <strong className="text-indigo-600 font-mono">{publicSlug}</strong></p>
+                    <p><span className="text-slate-500 font-medium">Yayın Statüsü:</span> {publishStatus ? <span className="text-emerald-600 font-bold">● PUBLISHED</span> : <span className="text-amber-600 font-bold">● DRAFT</span>}</p>
+                    <p><span className="text-slate-500 font-medium">Grup URL:</span> <a href={`/booking/${publicSlug}`} target="_blank" rel="noreferrer" className="underline font-mono text-[11px] font-bold">https://{publicSlug}.randevulari.com</a></p>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl space-y-2">
+                  <h5 className="text-[10px] font-black uppercase text-slate-500 tracking-wider">Super Admin Operasyonel Yol Haritası (Next Actions)</h5>
+                  <ul className="text-[11px] space-y-1 text-slate-600 dark:text-slate-400 list-disc list-inside">
+                    <li><strong className="text-slate-800 dark:text-slate-200">Onboarding Tamamlama:</strong> İşletme sahibi kendi paneline şifresiz geçiş yaparak şubelerini kurabilir.</li>
+                    <li><strong className="text-slate-800 dark:text-slate-200">Veri Yedekleme:</strong> Snapshot dışa aktarma (dataExportService) ile bu kurulumu lokal olarak saklayabilirsiniz.</li>
+                    <li><strong className="text-slate-800 dark:text-slate-200">Entegrasyon & Paylaşım:</strong> İşletmeye ait randevulari.com/shubeler URL yapısını ve QR kodları Share-Toolkit ile sahibine bildirin.</li>
+                  </ul>
                 </div>
               </div>
             )}

@@ -34,3 +34,21 @@ For `*.randevulari.com` and `*.lari.app` to work in production:
 
 ## Custom Domain Workflows
 When a user requests `booking.myhairsalon.com`, they must point a CNAME to `custom.randevulari.com` (or equivalent). TLS for third-party domains usually requires programmatic SSL certificate generation through the hosting provider's API. This is a manual or semi-automated process outside of the React SPA.
+
+## Core Operational Questions & Answers
+
+### 1. Does `ornekisletme.randevulari.com` open immediately after setup?
+* **In product logic**: Yes. The application is completely designed to support automatic slug generation and subdomain resolution.
+* **In local & pre-live development mode**: The system simulates this with `/booking/ornekisletme` hash-routing fallbacks.
+* **Before live internet usage**: An external **wildcard DNS** (mapping `*.randevulari.com` to the ingress server) and **wildcard SSL/TLS certificates** must be configured on the host server network layer. Real-time wildcard dynamic routing also requires Supabase persistence enabled to query active records globally on ingress.
+
+### 2. Can manual/offline sales be defined?
+* **Yes**. Super Admin manual provisioning is fully active via `SuperAdminManualProvisioningPage` and `manualProvisioningService`. This creates a tenant in-system and sets the subscription plan, billing source (`offline_payment`, `complimentary`, or `pilot_exception`), slug, and publish state.
+
+### 3. Can a customer get a custom .com domain?
+* **Yes, the workflow is mapped**. The product supports custom domain values on the tenant record. Once requested, the owner receives CNAME instructions; real activation and SSL binding are handled asynchronously via the platform's infrastructure operations.
+
+### 4. How do multi-branch URLs work?
+* **Main corporate/general booking page**: `https://{tenant-slug}.randevulari.com` (maps to the tenant's primary hub).
+* **Specific branch booking page**: `https://{tenant-slug}.randevulari.com/{branch-slug}` (or with dynamic route query parameter fallbacks). This routes the user specifically to the selected location, pre-filtering services and staff calendar availability.
+

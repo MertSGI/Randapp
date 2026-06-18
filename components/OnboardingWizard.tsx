@@ -1150,7 +1150,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                   <div className="p-3 bg-white dark:bg-slate-800 border border-slate-150 dark:border-slate-700 rounded-lg flex flex-col justify-between">
                     <div>
                       <span className="text-[10px] uppercase font-bold text-blue-600 dark:text-blue-400">1. Tasarım Önizleme Bağlantısı</span>
-                      <p className="text-[11px] text-gray-500 mt-1">Kurulum ve şablon durumunu güvenli alanda canlı olarak kontrol edin.</p>
+                      <p className="text-[11px] text-gray-500 mt-1">Önizleme bağlantısı, yayına almadan önce sayfanızı kontrol etmeniz içindir.</p>
                     </div>
                     <a 
                       href={`#/pilot/admin?tenant=${tenant?.id}`} 
@@ -1168,6 +1168,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                       {tenant?.publicSiteStatus === 'published' ? (
                         <div className="mt-1">
                           <p className="text-[11px] font-bold text-green-600 dark:text-green-400">Siteniz artık yayında ve erişilebilir!</p>
+                          <p className="text-[10px] text-gray-500">Yayına alındığında müşterileriniz bu bağlantıdan randevu alabilir.</p>
                           <a 
                             href={`/booking/${setupSlug || tenant?.slug}`} 
                             target="_blank" 
@@ -1182,6 +1183,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                           <div className="text-xs font-mono text-gray-400 line-through select-none">
                             https://{setupSlug || tenant?.slug || tenant?.id}.randevulari.com
                           </div>
+                          <p className="text-[10px] text-gray-550">Yayına alındığında müşterileriniz bu bağlantıdan randevu alabilir.</p>
                           <span className="inline-block text-[10px] font-bold text-amber-700 dark:text-amber-500 bg-amber-50 dark:bg-amber-950/20 px-1.5 py-0.5 rounded">
                             ⏳ yayına alındığında kullanılacak bağlantı
                           </span>
@@ -1189,7 +1191,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                       )}
                     </div>
                     <p className="text-[9px] text-gray-400 mt-2.5 leading-tight">
-                      * Local/pre-live aşamasında olduğumuz için DNS simüle edilmektedir, gerçek wildcard DNS/SSL canlı sunucu geçişinde aktifleşecektir.
+                      * Alan adı yönlendirmesi canlı yayın ortamında etkinleştirilir. Standart local/pre-live aşamasında olduğumuz için DNS simüle edilmektedir, gerçek wildcard DNS/SSL canlı sunucu geçişinde aktifleşecektir.
                     </p>
                   </div>
                 </div>
