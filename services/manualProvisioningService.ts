@@ -1,6 +1,7 @@
 import { Tenant } from '../types';
 import { tenantService } from './tenantService';
 import { siteProvisioningService } from './siteProvisioningService';
+import { dataProvider } from './dataProvider';
 
 export interface ManualProvisioningPayload {
   businessName: string;
@@ -50,7 +51,27 @@ export const manualProvisioningService = {
 
       await tenantService.updateTenant(tenantId, newTenant);
 
-      console.log(`[Manual Provisioning] Provisioned tenant ${tenantId} via manual offline process`);
+      // Create and save proper subscription for the manually provisioned tenant
+      const subscriptionRecord = {
+        tenantId,
+        planId: payload.planId,
+        status: payload.subscriptionStatus === 'comped' ? 'active' : payload.subscriptionStatus,
+        trialStart: new Date().toISOString(),
+        trialEnd: payload.freePeriodEndDate || new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+        currentPeriodStart: new Date().toISOString(),
+        currentPeriodEnd: payload.freePeriodEndDate || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        cancelAtPeriodEnd: false,
+        paymentProvider: payload.billingSource,
+        discountType: payload.discountType,
+        discountValue: payload.discountValue,
+        setupNotes: payload.setupNotes
+      };
+
+      // Set in both local storage and dataProvider to ensure perfect retrieval
+      localStorage.setItem(`mock_subscription_${tenantId}`, JSON.stringify(subscriptionRecord));
+      await dataProvider.set(`randapp:${tenantId}:subscription`, subscriptionRecord);
+
+      console.log(`[Manual Provisioning] Provisioned tenant ${tenantId} with plan ${payload.planId} via ${payload.billingSource}`);
       return { success: true, tenantId };
 
     } catch (e: any) {

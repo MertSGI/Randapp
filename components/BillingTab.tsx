@@ -233,6 +233,18 @@ const BillingTab: React.FC = () => {
               <p className="text-lg font-semibold text-gray-900 dark:text-white">₺{currentPlan?.monthlyPrice || 0}</p>
               <p className="text-xs text-gray-500">{t.billing.setup_fee_note?.replace('{fee}', String(currentPlan?.setupFee || 0))}</p>
             </div>
+
+            {subscription?.paymentProvider && ['offline_payment', 'complimentary', 'pilot_exception', 'manual_invoice'].includes(subscription.paymentProvider) && (
+              <div className="mt-4 p-4.5 bg-slate-100 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 space-y-2">
+                <span className="text-[10px] font-black uppercase text-indigo-600 tracking-wider">🔒 Super Admin Manuel Aktivasyon</span>
+                <p className="text-xs text-gray-700 dark:text-gray-300 font-medium leading-relaxed">
+                  Ödeme Türü: <strong className="uppercase font-bold text-gray-900 dark:text-white">{subscription.paymentProvider.replace('_', ' ')}</strong>
+                </p>
+                <p className="text-[11px] text-gray-500 dark:text-gray-400 leading-normal">
+                  Hesabınız Super Admin tarafından özel bir anlaşma, offline ödeme veya pilot program kapsamında yetkilendirilmiştir. Aboneliğiniz ve tüm paket limitleriniz işletmeniz için güvence altındadır. Herhangi bir sorunuz için satış/destek ekibimizle iletişime geçebilirsiniz.
+                </p>
+              </div>
+            )}
             
             <div className="flex gap-4 mt-6">
               <button 

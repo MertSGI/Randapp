@@ -166,7 +166,7 @@ function verify() {
   userFacingFiles.forEach(file => {
     const content = checkFileExists(file);
     if (content) {
-      checkForbiddeCopy(file, content);
+      checkForbiddenCopy(file, content);
     }
   });
 
