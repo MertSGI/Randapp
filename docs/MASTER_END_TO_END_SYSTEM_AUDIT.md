@@ -102,8 +102,13 @@ The LARİ platform serves four distinct personas across public, admin, customer,
 ## 11. Super Admin & Internal Ops
 * `goLiveService` properly queries setup constraints.
 * `SuperAdminPilotTracker` allows pilot oversight.
+* `manualProvisioningService` allows offline sales and pilot deal tracking without exposing internal card collection. Tracks manual discounts and offline payments correctly.
 
-## 12. Documentation Reality Audit
+## 12. Subdomain & Domain Resolver Readiness
+* `domainResolverService` safely identifies `*.randevulari.com` logic versus global landing logic, extracting the tenant slug.
+* `siteProvisioningService` correctly creates URLs matching the resolved market setting.
+
+## 13. Documentation Reality Audit
 * Existing documentation describes the architecture precisely.
 * Distinguishes beautifully between what is "code-ready", "sandbox-ready", and "production-ready".
 

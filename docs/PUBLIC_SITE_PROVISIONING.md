@@ -57,3 +57,15 @@ Public websites respect exactly the tenant's current setup & billing state:
 - **Prohibited Business Policy**: Adult, illegal, or fake business content is automatically flagged. Suspected accounts are assigned a string `businessRiskStatus` (e.g. `prohibited`), which prevents publication.
 - **No Early Access**: `pending_checkout` tenants or those without valid trial entries cannot expose their links or submit for review. 
 
+## 6. Super Admin Manual Provisioning
+
+The `manualProvisioningService.ts` handles offline sales explicitly:
+- Creates a tenant profile manually without card input.
+- Assigns plans, billing status (like `offline_payment`, `complimentary`, or `pilot_exception`).
+- Manages slug reservation.
+- Safe workflow ensures no frontend Supabase secrets are bypassed publicly, retaining the capability for Super Admins to manually verify and launch pilot salons.
+
+## 7. Current Subdomain & Hostname Constraints
+- In pre-live dev mode, routing utilizes `/#/book?tenant=slug` due to `localhost` hostname constraints.
+- In production, wildcard DNS pointing `*.randevulari.com` to the CDN ingress allows `domainResolverService.ts` to decode the subdomain natively and route correctly into the booking engine.
+

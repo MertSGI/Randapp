@@ -19,22 +19,27 @@ This report provides a realistic assessment of the LARİ platform's readiness fo
 ## 3. What Still Needs External Setup
 - **Supabase Backend Cutover**: The database must be deployed and the frontend `VITE_DATA_MODE` changed to `supabase`.
 - **Iyzico Sandbox Transaction**: Webhooks and Edge Functions must be deployed to the Supabase project to process real subscription hooks.
-- **Custom Domain/DNS Status**: The application handles custom domain logic internally, but the external reverse-proxy/nginx setup needed to route wildcard subdomains to the specific Cloud Run container must be finalized by DevOps.
+- **Subdomain Routing & Wildcard DNS**: Subdomain routing (e.g., `tenant.randevulari.com`) requires wildcard DNS routing (`*.randevulari.com`) and wildcard SSL certificates configured at the deployment layer.
+- **Custom Domain/DNS Status**: The application handles custom domain requests internally via the manual and self-serve workflow, but the external reverse-proxy setups require manual hosting intervention.
 - **WhatsApp/Email Automation Status**: No live external CRM/Email/WhatsApp APIs (like Twilio or Resend) are currently hooked up to the frontend API calls.
 
-## 4. Legal / Privacy Status
+## 4. Product Capability Reference
+* A designated `docs/PRODUCT_CAPABILITY_MATRIX.md` exists as the single source of truth defining what works locally vs what requires external hooks. 
+* Manual offline sales are tracked robustly by `manualProvisioningService.ts` directly from Super Admin avoiding frontend checkout flows.
+
+## 5. Legal / Privacy Status
 - Basic templates for KVKK/GDPR and Terms of Service exist on `/privacy` and `/terms`.
 - Consent capture works inside the app.
 - **Risk**: These documents must be reviewed by legal counsel before operating on a `.com.tr` production domain to ensure complete compliance.
 
-## 5. First Customer Pilot Checklist (Top 10 Risks)
+## 6. First Customer Pilot Checklist (Top 10 Risks)
 1. **Data Loss Risk**: Operating a real pilot on localStorage (`VITE_DATA_MODE=mock`) will cause complete data loss when the user changes devices or clears cache, unless mitigated strictly by routine SuperAdmin `.json` Data Exports. For live deployment, follow `LIVE_CUTOVER_EXECUTION_RUNBOOK.md`.
 2. **Notification Reliability**: SMS/WhatsApp reminders will silently fail until external APIs are configured.
 3. **Payment Failure**: Subscription trials will fail if Iyzico Edge Functions are not deployed.
 4. **Legal Compliance**: Untested KVKK documents.
 5. **DNS Propagation**: Delays in custom domain routing.
 
-## 6. Recommended Next 10 Actions
+## 7. Recommended Next 10 Actions
 1. **CRITICAL**: Deploy Supabase database schema and RLS policies.
 2. **CRITICAL**: Set `VITE_DATA_MODE=supabase` to disable localStorage completely.
 3. Deploy Supabase Edge Functions (`create-checkout-session`, `payment-webhook`).

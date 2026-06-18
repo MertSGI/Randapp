@@ -55,6 +55,12 @@ CREATE TABLE public.business_branches (
 -- ALTER TABLE public.appointments ADD COLUMN branch_id UUID REFERENCES public.business_branches(id);
 ```
 
-## 5. Super Admin Visibility
+## 5. Branch URL Strategy
+Multi-branch routing integrates seamlessly with domain configurations via `siteProvisioningService.ts`.
+- **Preferred Path URL Format**: `https://{tenantSlug}.randevulari.com/{branchSlug}`
+- **Fallback URL Format**: `https://{tenantSlug}.randevulari.com?branch={branchSlug}`
+- Users traversing directly to a branch-specific link automatically bypass the "Select Branch" UI prompt in the booking flow.
+
+## 6. Super Admin Visibility
 
 The platform infrastructure correctly isolates tenants but now has the schema headroom to iterate `branchId` rollups across financial reporting and analytics, separating regional performances for top-tier merchants.
