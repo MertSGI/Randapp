@@ -535,7 +535,15 @@ export type CommunicationEventType =
   | 'custom_domain_requested'
   | 'custom_domain_active'
   | 'support_request_created'
-  | 'super_admin_manual_provisioning_completed';
+  | 'super_admin_manual_provisioning_completed'
+  | 'appointment_manage_link_created'
+  | 'cancellation_request_created'
+  | 'cancellation_request_approved'
+  | 'cancellation_request_rejected'
+  | 'reschedule_request_created'
+  | 'reschedule_request_approved'
+  | 'reschedule_request_rejected'
+  | 'appointment_confirmed_by_customer';
 
 export type CommunicationDeliveryStatus = 'queued' | 'rendered' | 'skipped' | 'sent' | 'failed' | 'cancelled';
 
@@ -660,5 +668,62 @@ export interface MediaAsset {
   uploadedBy?: string;
   metadata?: any;
 }
+
+export interface AppointmentAccessToken {
+  id: string;
+  tenantId: string;
+  appointmentId: string;
+  customerId?: string;
+  tokenHash: string;
+  purpose: 'view' | 'cancel' | 'reschedule' | 'confirm';
+  status: 'active' | 'used' | 'expired' | 'revoked';
+  expiresAt: string;
+  createdAt: string;
+  usedAt?: string;
+  metadata?: any;
+}
+
+export type AppointmentChangeRequestType = 'cancellation' | 'reschedule';
+
+export type AppointmentChangeRequestStatus = 
+  | 'requested'
+  | 'approved'
+  | 'rejected'
+  | 'expired'
+  | 'cancelled_by_customer'
+  | 'applied';
+
+export interface AppointmentChangeRequest {
+  id: string;
+  tenantId: string;
+  appointmentId: string;
+  customerId?: string;
+  type: AppointmentChangeRequestType;
+  status: AppointmentChangeRequestStatus;
+  requestedDateTime?: string;
+  reason?: string;
+  customerNote?: string;
+  ownerNote?: string;
+  createdAt: string;
+  updatedAt: string;
+  reviewedAt?: string;
+  reviewedBy?: string;
+}
+
+export interface BookingPolicy {
+  cancellationWindowHours: number;
+  allowCustomerCancellation: boolean;
+  allowCustomerRescheduleRequest: boolean;
+  requireOwnerApprovalForReschedule: boolean;
+  maxAdvanceBookingDays: number;
+  minNoticeHours: number;
+  spamProtectionEnabled: boolean;
+  maxBookingsPerPhonePerDay: number;
+  maxBookingsPerIpPerDay?: number;
+  blockRepeatedNoShowPhone: boolean;
+  noShowThreshold: number;
+  requireContactConsent: boolean;
+}
+
 
 

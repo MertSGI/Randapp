@@ -260,6 +260,32 @@ const BookingPage: React.FC = () => {
 
     setIsSubmitting(true);
     
+    // Anti-Abuse Protection Check
+    try {
+      const { bookingAbuseProtectionService } = await import('../services/bookingAbuseProtectionService');
+      const evaluation = await bookingAbuseProtectionService.evaluateBookingRequest({
+        tenantId: tenant.id,
+        phone: formData.phone,
+        email: formData.email,
+        date: selectedDate,
+        serviceId: selectedService.id
+      });
+
+      if (!evaluation.allowed) {
+        bookingAbuseProtectionService.recordBookingAttempt({
+          tenantId: tenant.id,
+          phone: formData.phone,
+          email: formData.email,
+          success: false
+        });
+        alert(evaluation.reason || 'Rezervasyon talebiniz güvenlik politikaları gereğince onaylanamadı.');
+        setIsSubmitting(false);
+        return;
+      }
+    } catch (err) {
+      console.error('Abuse protection evaluation failed', err);
+    }
+
     // Attempt dynamic import for consent service
     import('../services/consentService').then(({ consentService }) => {
        const customerId = `guest_${Date.now()}`;
@@ -307,6 +333,16 @@ const BookingPage: React.FC = () => {
     };
 
     const newAppointment = await createAppointment(tenant.id, newAppointmentPayload);
+
+    try {
+      const { bookingAbuseProtectionService } = await import('../services/bookingAbuseProtectionService');
+      bookingAbuseProtectionService.recordBookingAttempt({
+        tenantId: tenant.id,
+        phone: formData.phone,
+        email: formData.email,
+        success: true
+      });
+    } catch (err) {}
 
     if (formData.referrerName && tenant) {
       try {

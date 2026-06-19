@@ -427,6 +427,76 @@ const TEMPLATES: Record<string, TemplateDefinition[]> = {
       subject: 'Subscription Renewed Successfully 💳',
       body: 'Hello, your subscription for {businessName} is healthy and active. Renewed invoice successfully verified.'
     }
+  ],
+  appointment_manage_link_created: [
+    {
+      type: 'appointment_manage_link_created',
+      language: 'tr',
+      subject: 'Randevunuz Alındı - Randevu Bağlantısı 🔗',
+      body: 'Merhaba {customerName}, {businessName} adresindeki randevunuz oluşturuldu! Randevunuzu onaylamak, ertelemek veya iptal etmek için şu bağlantıyı kullanabilirsiniz: {appointmentManageUrl}'
+    },
+    {
+      type: 'appointment_manage_link_created',
+      language: 'en',
+      subject: 'Appointment Management Link 🔗',
+      body: 'Hello {customerName}, your appointment at {businessName} was created! You can use this link to confirm, reschedule, or cancel your booking: {appointmentManageUrl}'
+    }
+  ],
+  cancellation_request_created: [
+    {
+      type: 'cancellation_request_created',
+      language: 'tr',
+      subject: 'İptal Talebiniz Alındı 📩',
+      body: 'Merhaba {customerName}, {businessName} randevunuzu iptal etme talebiniz başarıyla alınmıştır. Talebiniz salon onayından geçtikten sonra sizi bilgilendireceğiz.'
+    }
+  ],
+  cancellation_request_approved: [
+    {
+      type: 'cancellation_request_approved',
+      language: 'tr',
+      subject: 'İptal Talebiniz Onaylandı ❌',
+      body: 'Merhaba {customerName}, {businessName} randevu iptal talebiniz onaylanmıştır. Randevunuz iptal edilmiştir. Açıklama: {notes}'
+    }
+  ],
+  cancellation_request_rejected: [
+    {
+      type: 'cancellation_request_rejected',
+      language: 'tr',
+      subject: 'İptal Talebiniz Reddedildi ⚠️',
+      body: 'Merhaba {customerName}, {businessName} randevunuzu iptal etme talebiniz maalesef onaylanamadı. Randevunuz güncel zamanında aktiftir: {date} - {time}. Açıklama: {notes}'
+    }
+  ],
+  reschedule_request_created: [
+    {
+      type: 'reschedule_request_created',
+      language: 'tr',
+      subject: 'Erteleme Talebi Alındı 📅',
+      body: 'Merhaba {customerName}, {businessName} randevunuzu {newDate} - {newTime} tarihine erteleme talebiniz alınmıştır. Salon onayı sonrası bilgilendirileceksiniz.'
+    }
+  ],
+  reschedule_request_approved: [
+    {
+      type: 'reschedule_request_approved',
+      language: 'tr',
+      subject: 'Erteleme Talebiniz Onaylandı! 🎉',
+      body: 'Merhaba {customerName}, {businessName} randevunuz başarıyla ertelenmiştir. Yeni Randevu Zamanı: {date} saat {time}. Görüşmek üzere!'
+    }
+  ],
+  reschedule_request_rejected: [
+    {
+      type: 'reschedule_request_rejected',
+      language: 'tr',
+      subject: 'Erteleme Talebiniz Reddedildi ⚠️',
+      body: 'Merhaba {customerName}, {businessName} randevu erteleme talebiniz yer durumuna bağlı olarak onaylanamadı. Randevunuz orijinal tarihinde aktif kalmıştır: {date} {time}. Açıklama: {notes}'
+    }
+  ],
+  appointment_confirmed_by_customer: [
+    {
+      type: 'appointment_confirmed_by_customer',
+      language: 'tr',
+      subject: 'Randevu Onay Bildirimi 👍',
+      body: 'Merhaba {customerName}, {businessName} randevunuzu onayladığınız için teşekkür ederiz! {date} günü saat {time} görüşmek üzere.'
+    }
   ]
 };
 

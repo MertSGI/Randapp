@@ -22,6 +22,7 @@ import AdminSettingsTab from '../components/AdminSettingsTab';
 import { ImageUpload } from '../components/ImageUpload';
 import { onboardingChecklistService, OnboardingReport } from '../services/onboardingChecklistService';
 import { adminFeatureAvailabilityService, AdminFeatureAvailability } from '../services/adminFeatureAvailabilityService';
+import { appointmentSelfServiceService } from '../services/appointmentSelfServiceService';
 
 const AdminPage: React.FC = () => {
   const navigate = useNavigate();
@@ -49,6 +50,8 @@ const AdminPage: React.FC = () => {
     setActiveTabState(getInitialTab() as any);
   }, [location.pathname]);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [changeRequests, setChangeRequests] = useState<any[]>([]);
+  const [bookingPolicy, setBookingPolicy] = useState<any>(null);
   const [staffList, setStaffList] = useState<Staff[]>([]);
   const [servicesList, setServicesList] = useState<Service[]>([]);
   const [onboardingReport, setOnboardingReport] = useState<OnboardingReport | null>(null);
@@ -126,6 +129,12 @@ const AdminPage: React.FC = () => {
     
     const staffData = await getStaffList(tenant.id);
     setStaffList(staffData);
+
+    const requests = appointmentSelfServiceService.getAllChangeRequests().filter(r => r.tenantId === tenant.id);
+    setChangeRequests(requests);
+    
+    const policy = appointmentSelfServiceService.getBookingPolicy(tenant.id);
+    setBookingPolicy(policy);
 
     const servicesData = await getServices(tenant.id);
     setServicesList(servicesData);
@@ -613,7 +622,79 @@ const AdminPage: React.FC = () => {
       {activeTab === 'appointments' && (
         tabAvailability['appointments']?.isAccessible === false 
           ? renderLockedFeature(tabAvailability['appointments']!.lockReason!, tabAvailability['appointments']!.recommendedAction) 
-          : <div className="bg-white dark:bg-slate-800 shadow overflow-hidden sm:rounded-md transition-colors duration-300">
+          : <div className="space-y-6">
+              {/* Onay Bekleyen Talepler */}
+              {changeRequests.filter((r: any) => r.status === 'requested').length > 0 && (
+                <div className="mb-6 bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/60 rounded-xl p-5 shadow-sm text-left">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="inline-block w-2.5 h-2.5 bg-amber-500 rounded-full animate-ping"></span>
+                    <h4 className="text-md font-bold text-amber-800 dark:text-amber-400">Onay Bekleyen Değişiklik Talepleri ({changeRequests.filter((r: any) => r.status === 'requested').length})</h4>
+                  </div>
+                  <div className="space-y-3">
+                    {changeRequests.filter((r: any) => r.status === 'requested').map((req: any) => {
+                      const relatedApt = appointments.find(a => a.id === req.appointmentId);
+                      const service = servicesList.find(s => s.id === relatedApt?.serviceId);
+                      return (
+                        <div key={req.id} className="bg-white dark:bg-slate-800 p-4 rounded-lg border border-amber-105 dark:border-amber-950/50 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-left">
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2">
+                              <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider ${
+                                req.type === 'cancellation' ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-blue-50 text-blue-600 border border-blue-100'
+                              }`}>
+                                {req.type === 'cancellation' ? 'İptal Talebi' : 'Erteleme Talebi'}
+                              </span>
+                              <span className="text-[10px] text-gray-400 font-mono">ID: {req.id}</span>
+                            </div>
+                            <p className="text-sm font-bold text-gray-800 dark:text-gray-200">
+                              {relatedApt?.user_name || 'Müşteri'} • <span className="text-gray-600 dark:text-gray-400">{language === 'tr' ? (service?.name_tr || service?.name) : service?.name}</span>
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              Mevcut Randevu: <strong className="text-gray-700 dark:text-gray-300">{relatedApt?.date} - {relatedApt?.time}</strong>
+                            </p>
+                            {req.type === 'reschedule' && (
+                              <p className="text-xs text-blue-600 dark:text-blue-400">
+                                İstenen Yeni Zaman: <strong>{req.requestedDateTime}</strong>
+                              </p>
+                            )}
+                            {req.reason && <p className="text-xs text-gray-500 italic">Sebep: "{req.reason}"</p>}
+                            {req.customerNote && <p className="text-xs text-gray-500 italic font-medium">Müşteri Notu: "{req.customerNote}"</p>}
+                          </div>
+                          <div className="flex gap-2 w-full md:w-auto">
+                            <button
+                              onClick={async () => {
+                                const confirmChange = await showConfirm({ message: 'Bu talebi reddetmek istediğinize emin misiniz?' });
+                                if (confirmChange) {
+                                  const note = prompt('Müşteriye iletilecek ret nedeni (isteğe bağlı):') || '';
+                                  await appointmentSelfServiceService.reviewChangeRequest(tenant!.id, req.id, 'rejected', note);
+                                  loadData();
+                                }
+                              }}
+                              className="flex-1 md:flex-none px-3.5 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-gray-700 dark:text-gray-200 rounded-lg text-xs font-semibold"
+                            >
+                              Reddet
+                            </button>
+                            <button
+                              onClick={async () => {
+                                const confirmChange = await showConfirm({ message: 'Bu talebi onaylamak ve randevuyu güncellemek istiyor musunuz?' });
+                                if (confirmChange) {
+                                  const note = prompt('Müşteriye iletilecek onay mesajı (isteğe bağlı):') || '';
+                                  await appointmentSelfServiceService.reviewChangeRequest(tenant!.id, req.id, 'approved', note);
+                                  loadData();
+                                }
+                              }}
+                              className="flex-1 md:flex-none px-3.5 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-xs font-semibold shadow-sm"
+                            >
+                              Talebi Onayla
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              <div className="bg-white dark:bg-slate-800 shadow overflow-hidden sm:rounded-md transition-colors duration-300">
             <div className="px-4 py-5 sm:px-6 bg-gray-50 dark:bg-slate-800/80 border-b border-gray-200 dark:border-slate-700 flex justify-between items-center transition-colors duration-300">
               <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white transition-colors duration-300">{t.admin.recent_title}</h3>
               {branches.length > 1 && (
@@ -715,6 +796,7 @@ const AdminPage: React.FC = () => {
               )}
             </ul>
           </div>
+        </div>
       )}
 
       {activeTab === 'staff' && (

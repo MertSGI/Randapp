@@ -44,6 +44,7 @@ import SitePreviewPage from './pages/admin/SitePreviewPage';
 
 import CustomerLoginPage from './pages/customer/CustomerLoginPage';
 import CustomerPortalPage from './pages/customer/CustomerPortalPage';
+import AppointmentSelfServicePage from './pages/AppointmentSelfServicePage';
 
 import MobileAppPage from './pages/MobileAppPage';
 
@@ -100,6 +101,7 @@ const AppFlowSwitcher: React.FC = () => {
         <Route path="/booking/:tenantSlug" element={<BookingPage />} />
         {/* AI Tool - Now part of the salon booking flow */}
         <Route path="/ai-visualizer" element={<AIVisualizerPage />} />
+        <Route path="/appointment/manage/:token" element={<AppointmentSelfServicePage />} />
       </Route>
 
       {/* 2.5 Customer Routes */}

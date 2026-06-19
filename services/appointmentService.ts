@@ -4,6 +4,8 @@ import { notificationTemplateService } from './notificationTemplateService';
 import { customerCampaignService } from './customerCampaignService';
 import { communicationEventService } from './communicationEventService';
 import { tenantService } from './tenantService';
+import { appointmentSelfServiceService } from './appointmentSelfServiceService';
+import { bookingAbuseProtectionService } from './bookingAbuseProtectionService';
 
 export const getAppointmentsKey = (tenantId: string) => `randapp:${tenantId}:appointments`;
 
@@ -20,6 +22,10 @@ export const createAppointment = async (tenantId: string, appointment: Omit<Appo
     const bizName = tObj?.branding?.businessName || tObj?.name || 'Güzellik Salonu';
     const sName = SERVICES.find(s => s.id === newApt.serviceId)?.name_tr || 'Hizmet';
     
+    // Generate self service token and path
+    const token = appointmentSelfServiceService.createAppointmentAccessToken(tenantId, newApt.id, 'view');
+    const manageUrl = `${window.location.protocol}//${window.location.host}/#/appointment/manage/${token}`;
+
     // Create customer notification event
     communicationEventService.queueCommunicationEvent({
       tenantId,
@@ -33,7 +39,23 @@ export const createAppointment = async (tenantId: string, appointment: Omit<Appo
         businessName: bizName,
         serviceName: sName,
         date: newApt.date || '',
-        time: newApt.time || ''
+        time: newApt.time || '',
+        appointmentManageUrl: manageUrl
+      }
+    });
+
+    // Create custom management link notification event
+    communicationEventService.queueCommunicationEvent({
+      tenantId,
+      customerId: newApt.id,
+      appointmentId: newApt.id,
+      audience: 'customer',
+      channel: 'whatsapp',
+      type: 'appointment_manage_link_created' as any,
+      contextArgs: {
+        customerName: newApt.user_name || 'Müşteri',
+        businessName: bizName,
+        appointmentManageUrl: manageUrl
       }
     });
 
@@ -148,6 +170,11 @@ export const updateAppointmentStatus = async (
           contextArgs
         });
       } else if (status === 'no_show') {
+        // Record abuse protection no show trigger
+        if (updatedApt.phone) {
+          bookingAbuseProtectionService.recordNoShowSignal(tenantId, updatedApt.phone);
+        }
+        
         communicationEventService.queueCommunicationEvent({
           tenantId,
           customerId: updatedApt.id,
