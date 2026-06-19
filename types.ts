@@ -561,3 +561,45 @@ export interface CommunicationEvent {
   internalOnly: boolean;
 }
 
+export type BackgroundJobType =
+  | 'subscription_trial_ending_sweep'
+  | 'subscription_trial_expiration_sweep'
+  | 'subscription_past_due_sweep'
+  | 'subscription_cancel_at_period_end_sweep'
+  | 'subscription_downgrade_at_period_end_sweep'
+  | 'referral_credit_monthly_application'
+  | 'communication_outbox_retry_sweep'
+  | 'communication_failed_delivery_review'
+  | 'custom_domain_verification_poll'
+  | 'booking_availability_refresh'
+  | 'data_export_reminder'
+  | 'migration_snapshot_integrity_check'
+  | 'support_review_queue_digest';
+
+export type BackgroundJobStatus =
+  | 'scheduled'
+  | 'running'
+  | 'completed'
+  | 'completed_with_warnings'
+  | 'failed'
+  | 'skipped'
+  | 'cancelled';
+
+export interface BackgroundJobRun {
+  id: string;
+  jobType: BackgroundJobType;
+  status: BackgroundJobStatus;
+  startedAt: string;
+  finishedAt?: string;
+  durationMs?: number;
+  affectedTenantIds: string[];
+  affectedRecordCount: number;
+  warningCount: number;
+  errorCount: number;
+  summary: string;
+  metadata?: any;
+  createdBy: 'system' | 'super_admin' | 'local_simulation';
+  internalOnly: boolean;
+}
+
+
