@@ -602,4 +602,63 @@ export interface BackgroundJobRun {
   internalOnly: boolean;
 }
 
+export enum MediaAssetType {
+  LOGO = 'logo',
+  COVER = 'cover',
+  GALLERY = 'gallery',
+  STAFF_PHOTO = 'staff_photo',
+  SERVICE_IMAGE = 'service_image',
+  BRANCH_IMAGE = 'branch_image',
+  CAMPAIGN_IMAGE = 'campaign_image',
+  DOCUMENT = 'document',
+  INTERNAL_ATTACHMENT = 'internal_attachment'
+}
+
+export enum MediaVisibility {
+  PUBLIC = 'public',
+  TENANT_PRIVATE = 'tenant_private',
+  SUPER_ADMIN_ONLY = 'super_admin_only'
+}
+
+export enum MediaStorageProvider {
+  LOCAL_PREVIEW = 'local_preview',
+  SUPABASE_STORAGE = 'supabase_storage',
+  S3_COMPATIBLE = 's3_compatible',
+  EXTERNAL_URL = 'external_url'
+}
+
+export enum MediaAssetStatus {
+  DRAFT = 'draft',
+  ACTIVE = 'active',
+  ARCHIVED = 'archived',
+  REJECTED = 'rejected',
+  DELETED = 'deleted'
+}
+
+export interface MediaAsset {
+  id: string;
+  tenantId: string;
+  branchId?: string;
+  ownerType: 'business_profile' | 'staff' | 'service' | 'branch' | 'campaign' | 'tenant' | 'support_case';
+  ownerId?: string;
+  type: MediaAssetType;
+  visibility: MediaVisibility;
+  provider: MediaStorageProvider;
+  status: MediaAssetStatus;
+  fileName: string;
+  originalFileName?: string;
+  mimeType: string;
+  sizeBytes: number;
+  width?: number;
+  height?: number;
+  altText?: string;
+  storagePath?: string;
+  publicUrl?: string;
+  localPreviewUrl?: string;
+  createdAt: string;
+  updatedAt: string;
+  uploadedBy?: string;
+  metadata?: any;
+}
+
 

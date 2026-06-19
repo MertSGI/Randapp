@@ -63,6 +63,8 @@ Test ortamından gerçek üretim (Supabase, Iyzico, Domain) sunucularına geçi�
 * **[Geri Bildirim Webhook ve Teslimat Durum Planı](./COMMUNICATION_WEBHOOK_AND_DELIVERY_STATUS_PLAN.md):** Giden iletilerin harici sağlayıcılardan gelen teslimat durumları ile eşleşmesi ve hata denetimi kuralları.
 * **[İletişim İzni ve KVKK Uyum Kontrol Listesi](./COMMUNICATION_CONSENT_AND_COMPLIANCE_CHECKLIST.md):** İYS, KVKK ve ETK mevzuatları doğrultusunda mesajlaşma rıza sınırları denetimi.
 * **[Zamanlayıcı ve Arka Plan Görevleri Operasyonu](./BACKGROUND_JOBS_AND_SCHEDULER_OPERATIONS.md):** Abonelik sweeps, outbox retry loops ve DNS yoklama arka plan zamanlama kılavuzu.
+* **[Görsel Depolama ve Medya Operasyonları Rehberi](./MEDIA_STORAGE_AND_ASSET_OPERATIONS.md):** Salon logosu, kapak resmi, galeri resimleri ve hassas kurumsal belgeler için bulut kova izolasyonu ve KVKK uyumluluk kılavuzu.
+* **[Medya Sağlayıcıları Sözleşme Matrisi](./MEDIA_STORAGE_PROVIDER_CONTRACT_MATRIX.md):** Açık/kapalı depolama kovaları, signed URL güvenlik süre sınırları ve dışa aktarım entegrasyon kuralları tablosu.
 * **[Canlı Test Senaryosu (Smoke Test Script)](./LIVE_SMOKE_TEST_SCRIPT.md):** Canlı sunucuya geçtikten sonra 5 dakika içinde sistemin çalıştığını holds eden doğrulama adımları.
 * **[Canlı Geçiş Onay Listesi (Go/No-Go Checklist)](./GO_NO_GO_LIVE_CHECKLIST.md):** Canlıya geçiş kararını verecek ana kriterler tablosu.
 * **[Canlıya Çıkış Bloklayıcıları](./PRE_LIVE_HARDENING_AND_CUTOVER_BLOCKERS.md):** Ön canlı sertleştirme denetimi kısıtlamaları ve çözüm rehberi.

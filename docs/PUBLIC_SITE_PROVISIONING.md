@@ -11,7 +11,7 @@ This document describes the intended architecture for generating and managing pu
    - **Hizmet Kataloğu**: En least 1 active service.
    - **Çalışanlar**: En least 1 active staff member.
    - **Çalışma Saatleri**: Configured opening and closing hours.
-   - **Marka & Tasarım**: Accent brand colour, logo, and about description.
+   - **Marka & Tasarım**: Accent brand colour, logo, and about description. (See [Media Operations Guide](MEDIA_STORAGE_AND_ASSET_OPERATIONS.md) for public logo and cover storage constraints).
    - **Randevu Kuralları**: Auto-approval preference and cancellation terms.
    - **Ödeme Doğrulaması**: Valid active or trialing trial subscription. `pending_checkout` is blocked.
    - **Önizleme & Test**: An interactive customer page preview simulator on the dashboard.

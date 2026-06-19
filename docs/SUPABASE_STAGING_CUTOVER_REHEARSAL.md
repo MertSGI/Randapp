@@ -113,3 +113,16 @@ If a staging trial gets stuck, encounters relational errors, or misses target tr
 1.  **Switch Data Mode**: Revert `VITE_LARI_DATA_SOURCE` back to `local` in environment settings or runtime states.
 2.  **Preserve Offline Access**: Ensure the local cache fallback logic processes active read/writes without triggering crash screens.
 3.  **Flush Dirty Rows**: Run standard setup SQL commands to clear transaction history associated with the tested tenant ID on the staging database.
+
+---
+
+## 9. Storage & Bucket Provisioning Rehearsal
+
+To validate full media and asset handling readiness before moving to a production environment:
+1.  **Bucket Creation**: Inside the Supabase Console, provision two buckets:
+    -   `lari-public-media` (Set public access to `true`).
+    -   `lari-private-secure` (Set public access to `false`).
+2.  **Storage RLS Setup**: Configure RLS rules on `storage.objects` to restrict `INSERT`, `UPDATE`, and `DELETE` queries. Ensure tenant users can only affect objects under `tenants/${auth.jwt() -> 'tenant_id'}/` folders.
+3.  **Cross-Origin Policy (CORS)**: Set CORS on both buckets to allow requests from verified Turkey domains (`*.randevulari.com`) and local development URLs, allowing `GET`, `POST`, and `DELETE` operations.
+4.  **Dry Run Media Check**: Run the `qa:media-storage` script to verify that assets validate correctly, size bounds are respected, and no dangerous script extensions bypass filters.
+

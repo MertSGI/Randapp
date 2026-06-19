@@ -240,7 +240,12 @@ const BusinessProfileTab: React.FC = () => {
            </div>
 
            <div>
-              <h3 className="text-md font-semibold text-gray-900 dark:text-white mb-3">Görseller</h3>
+              <h3 className="text-md font-semibold text-gray-900 dark:text-white mb-1">Görseller</h3>
+              <div className="text-[11px] text-gray-500 dark:text-slate-400 space-y-0.5 mb-4 p-3 bg-gray-50 dark:bg-slate-700/50 rounded-md border border-gray-100 dark:border-slate-700/60 transition-colors duration-300">
+                 <p>• Görseller yayın öncesi önizleme için hazırlanır.</p>
+                 <p>• Canlı medya depolama yayın ortamında etkinleştirilir.</p>
+                 <p>• Logo, kapak ve galeri görselleriniz LARİ sayfanızda kullanılabilir.</p>
+              </div>
               <div className="space-y-4">
                  <div>
                     <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Logo Yükle</label>

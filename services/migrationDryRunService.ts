@@ -170,6 +170,60 @@ export const migrationDryRunService = {
        }
     }
 
+    // 9. Media & Asset Storage Validation (Pre-live migration checks)
+    const mediaAssets = snapshot.mediaAssets || [];
+    if (mediaAssets.length === 0) {
+       result.warnings.push("Veri paketi hiç tanımlı görsel veya döküman (media_assets) kaydı barındırmıyor.");
+    } else {
+       mediaAssets.forEach((asset: any) => {
+          // Check tenantId
+          if (!asset.tenantId) {
+             result.blockers.push(`Görsel (${asset.fileName || asset.id}) bağlı bir tenantId bilgisi taşımıyor.`);
+          } else if (asset.tenantId !== tenantIdStr) {
+             result.blockers.push(`Görsel (${asset.fileName || asset.id}) yanlış tenantId ile eşleşmiş: ${asset.tenantId}`);
+          }
+
+          // Validate file size bounds
+          if (asset.sizeBytes && asset.sizeBytes > 5 * 1024 * 1024) {
+             result.blockers.push(`Görsel (${asset.fileName}) boyutu bulut transfer limiti olan 5 MB sınırını aşıyor: ${Math.round(asset.sizeBytes / 1024 / 1024)} MB`);
+          }
+
+          // Validate extension safety
+          const ext = asset.fileName ? asset.fileName.split('.').pop()?.toLowerCase() : '';
+          const unsafeExts = ['js', 'jsx', 'ts', 'tsx', 'exe', 'sh', 'bat', 'cmd', 'html', 'php', 'svg'];
+          if (unsafeExts.includes(ext) || asset.mimeType === 'image/svg+xml') {
+             result.blockers.push(`Görsel (${asset.fileName}) güvenlik filtresine takıldı (SVG, HTML veya çalıştırılabilir betik kısıtlaması).`);
+          }
+
+          // Warn if missing altText for public resources
+          if (asset.visibility === 'public' && !asset.altText) {
+             result.warnings.push(`Erişilebilirlik (SEO) Uyarısı: Genel erişimli görsel (${asset.fileName}) için alternatif (altText) metin girilmemiş.`);
+          }
+
+          // Alert on huge inline base64 data blobs
+          if (asset.localPreviewUrl?.startsWith('data:')) {
+             result.warnings.push(`Optimizasyon Uyarısı: Görsel (${asset.fileName}) ham base64 verisi taşıyor. Canlıya geçiş öncesi fiziksel dosyaya dönüştürülmelidir.`);
+          }
+       });
+
+       // 10. Public profile links validation
+       const bp = snapshot.businessProfile;
+       if (bp && bp.is_public_profile_enabled) {
+          if (bp.logo_url) {
+             const hasLogoAsset = mediaAssets.some((m: any) => m.localPreviewUrl === bp.logo_url || m.publicUrl === bp.logo_url);
+             if (!hasLogoAsset) {
+                result.warnings.push("Profil logosu harici/statik bir URL referansıdır, lari_media_assets kütüphanesine kaydedilerek bulut kovasına taşınması önerilir.");
+             }
+          }
+          if (bp.cover_image_url) {
+             const hasCoverAsset = mediaAssets.some((m: any) => m.localPreviewUrl === bp.cover_image_url || m.publicUrl === bp.cover_image_url);
+             if (!hasCoverAsset) {
+                result.warnings.push("Kapak resmi harici/statik bir URL referansıdır, lari_media_assets kütüphanesine kaydedilerek bulut kovasına taşınması önerilir.");
+             }
+          }
+       }
+    }
+
     // Resolution
     if (result.blockers.length === 0) {
       result.ready = true;

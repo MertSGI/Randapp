@@ -83,6 +83,27 @@ To ensure that the LARİ multi-tenant architecture remains secure and leak-proof
     *   `SELECT / INSERT`: Registered owners wishing to apply their own domain.
     *   `UPDATE / DELETE`: Restricted to Super Admin reviewing certificate logs.
 
+### Media Assets (`media_assets`)
+*   **Purpose**: Manages public/private visual attachments, branding, and billing files.
+*   **Policies**:
+    *   `SELECT`: 
+        *   Public can read only active public files: `status = 'active' AND visibility = 'public'`.
+        *   Authenticated tenant owners can read any files matching their logged `tenant_id`.
+    *   `INSERT / UPDATE`: Only authenticated tenant owners can write or modify documents representing their own `tenant_id`.
+    *   `DELETE`: Blocked; files are archived via status updates. Only the server `service_role` can run hard deletion cleanups.
+
+### Supabase Storage Bucket Policies
+To enforce folder-level access restrictions directly inside our bucket objects:
+
+#### 1. Public Bucket (`lari-public-media`)
+*   **SELECT**: `true` (universal reading access on Edge CDNs for mock/published merchant reservation layout).
+*   **INSERT / UPDATE / DELETE**: Allowed for authenticated users only if the object key begins with `tenants/${auth.jwt() -> 'tenant_id'}/`. This ensures tenants cannot overwrite each other's visual assets.
+
+#### 2. Private Bucket (`lari-private-secure`)
+*   **SELECT**: Denied universally, except through secure signed URLs: `has_valid_signature()`. Authenticated owners with matching `tenant_id` claims can generate short-lived views.
+*   **INSERT / UPDATE**: Restricted strictly to authorized merchant owners saving compliance documents: path prefix must match `tenants/private/${auth.jwt() -> 'tenant_id'}/`.
+*   **DELETE**: Only system administrative processes (`service_role` token) can purge records.
+
 ---
 
 ## 3. Super Admin & Service Role Privileges

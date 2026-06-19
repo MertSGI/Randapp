@@ -1,4 +1,5 @@
 import { SalonBusinessProfile, Appointment, BusinessBranch, CustomerConsentFlags, CustomerDataRequest } from '../types';
+import { mediaAssetService } from './mediaAssetService';
 
 export interface TenantSnapshot {
   snapshotVersion: string;
@@ -25,6 +26,7 @@ export interface TenantSnapshot {
   campaignRewards?: any[];
   referrals?: any[];
   onboardingState?: any;
+  mediaAssets?: any[];
 }
 
 export const dataExportService = {
@@ -118,7 +120,8 @@ export const dataExportService = {
       
       campaigns: globals.campaigns,
       campaignRewards: globals.rewards,
-      referrals: globals.referrals
+      referrals: globals.referrals,
+      mediaAssets: mediaAssetService.listMediaAssetsForTenant(tenantId).map(a => mediaAssetService.mapMediaAssetForExport(a))
     };
   },
 
@@ -192,6 +195,21 @@ export const dataExportService = {
     saveGlobal('lari_customer_campaigns_by_tenant', snapshot.campaigns);
     saveGlobal('lari_customer_campaign_rewards_by_tenant', snapshot.campaignRewards);
     saveGlobal('lari_customer_referrals_by_tenant', snapshot.referrals);
+
+    // 4. Restore Media Asset Records (Safe metadata references, excluding large base64 data payloads)
+    if (snapshot.mediaAssets && snapshot.mediaAssets.length > 0) {
+      const existingMedia = JSON.parse(localStorage.getItem('lari_media_assets') || '[]');
+      snapshot.mediaAssets.forEach((asset: any) => {
+        asset.tenantId = targetTenantId; 
+        const mIdx = existingMedia.findIndex((m: any) => m.id === asset.id);
+        if (mIdx >= 0) {
+          existingMedia[mIdx] = asset;
+        } else {
+          existingMedia.push(asset);
+        }
+      });
+      localStorage.setItem('lari_media_assets', JSON.stringify(existingMedia));
+    }
 
     return true;
   },

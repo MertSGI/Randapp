@@ -127,6 +127,16 @@ Güvenli arka plan işlemleri ve ödeme web kancaları (webhooks) Edge Functions
 
 ---
 
+## Phase 6.5: Görsel ve Belge Depolama Entegrasyonu (Media Storage Integration)
+
+Canlı ortamda salon logoları, kapak fotoğrafları, çalışan portreleri ve yasal beyannameler için depolama kovaları (buckets) kullanılır.
+
+*   **Bucket Tanımlamaları**: `/docs/MEDIA_STORAGE_AND_ASSET_OPERATIONS.md` dokümanına uygun şekilde `lari-public-media` ve `lari-private-secure` kovaları oluşturulmalıdır.
+*   **Güvenlik (RLS)**: Storage RLS politikaları yazılmalı, her salonun yalnızca kendi folders (`tenants/${tenant_id}/*`) altındaki nesneleri değiştirebilmesi sağlanmalıdır.
+*   **Uygulama Kılavuzu & Matris**: İnceleme ve detaylar için mutlaka [Görsel Depolama ve Medya Operasyonları Rehberi](MEDIA_STORAGE_AND_ASSET_OPERATIONS.md) ve [Sözleşme Matrisi](MEDIA_STORAGE_PROVIDER_CONTRACT_MATRIX.md) incelenmelidir.
+
+---
+
 ## Phase 7: Iyzico Korumalı (Sandbox) Ücretlendirmesi Planı
 
 Henüz canlı para tahsilatı YAPILMAMALIDIR! 

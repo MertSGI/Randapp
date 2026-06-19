@@ -39,3 +39,31 @@ This document describes the mapping of application entities into Supabase tables
 
 - **Notification Templates (notification_templates)**: Scaffolding dictating text/email/WhatsApp notifications.
 - **Notification Logs (notification_logs)**: Records of message dispatch statuses.
+
+## Media and Assets Layer
+
+- **Media Assets (media_assets)**: Holds references and metadata for uploaded images, logos, covers, staff portraits, service icons, and attachments. Includes:
+  - `id` (uuid)
+  - `tenant_id` (uuid) REFERENCES tenants(id)
+  - `branch_id` (uuid) REFERENCES business_branches(id) (optional)
+  - `owner_type` (text) (e.g., 'business_profile', 'staff', 'service')
+  - `owner_id` (uuid) (optional)
+  - `type` (text) (logo/cover/gallery/staff_photo/service_image/branch_image/campaign_image/document/internal_attachment)
+  - `visibility` (text) (public/tenant_private/super_admin_only)
+  - `provider` (text) (local_preview/supabase_storage/s3_compatible/external_url)
+  - `status` (text) (draft/active/archived/rejected/deleted)
+  - `file_name` (text)
+  - `original_file_name` (text)
+  - `mime_type` (text)
+  - `size_bytes` (bigint)
+  - `width` (int) (optional)
+  - `height` (int) (optional)
+  - `alt_text` (text) (optional)
+  - `storage_path` (text) (path keys within buckets)
+  - `public_url` (text) (optional)
+  - `local_preview_url` (text) (optional)
+  - `created_at` (timestamp)
+  - `updated_at` (timestamp)
+  - `uploaded_by` (uuid) REFERENCES auth.users(id) (optional)
+  - `metadata` (jsonb) (dimensions, browser, device, backup markers)
+
