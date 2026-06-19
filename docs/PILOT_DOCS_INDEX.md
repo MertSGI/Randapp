@@ -65,4 +65,5 @@ Test ortamından gerçek üretim (Supabase, Iyzico, Domain) sunucularına geçi�
 
 *   **[Supabase Staging Geçiş Prova Kılavuzu](./SUPABASE_STAGING_CUTOVER_REHEARSAL.md):** Local Storage'dan live Supabase Staging veritabanına geçişin teknik simülasyon adımları ve veri yolları.
 *   **[Supabase Bağlayıcı Açık Analizi Raporu](./SUPABASE_ADAPTER_GAP_NOTES.md):** Yerel mock veri katmanı ile gerçek Supabase tabloları arasındaki uyum farkları ve kalan teknik görevler listesi.
+*   **[Supabase Bağlayıcı Uyumluluk Matrisi](./SUPABASE_ADAPTER_PARITY_MATRIX.md):** Prova ve sözleşmeyle belirlenmiş multi-tenant (tenant_id) veritabanı bağlayıcı uyumluluk kılavuzu.
 

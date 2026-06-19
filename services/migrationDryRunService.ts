@@ -124,18 +124,51 @@ export const migrationDryRunService = {
        }
     });
 
-    // 6. Communication Log Validations
+    // 6. Communication Log & Outbox Validations
     const onboarding = snapshot.onboardingState || {};
-    // Mock simulation for message outbox check
     const commEvents = (onboarding.communicationEvents || []) as any[];
     commEvents.forEach((ev, idx) => {
        if (!ev.tenantId) {
           result.warnings.push(`Communication log entry #${idx} is missing a tenant_id.`);
        }
-       if (!ev.audience || !ev.channel || !ev.status) {
-          result.warnings.push(`Communication log entry #${idx} has incomplete tracking fields (audience, channel, status).`);
+       if (!ev.audience || !ev.channel || !ev.status || !ev.type) {
+          result.warnings.push(`Communication log entry #${idx} has incomplete tracking fields (audience, channel, status, type).`);
        }
     });
+
+    // 7. Site Provisioning Validation
+    if (account) {
+       if (account.slug === undefined) {
+         result.blockers.push("Site provisioning is missing slug parameter.");
+       }
+       if (account.isPublished === undefined) {
+         result.warnings.push("Site isPublished status not explicitly captured in snapshot.");
+       }
+       if (account.publicSiteStatus === undefined) {
+         result.warnings.push("Site publicSiteStatus parameter missing in snapshot metadata.");
+       }
+    }
+
+    // 8. Manual Provisioning Bypasses & Setup Validation
+    const mpInfo = onboarding.manualProvisioning || {};
+    if (mpInfo) {
+       // Validate that fields are included or accounted for in staging considerations
+       if (mpInfo.offline_payment === undefined && mpInfo.offlinePayment === undefined) {
+          result.warnings.push("Manual provisioning offline_payment setting is missing or unverified.");
+       }
+       if (mpInfo.complimentary === undefined) {
+          result.warnings.push("Manual provisioning complimentary flag is missing or not provided.");
+       }
+       if (mpInfo.pilot_exception === undefined && mpInfo.pilotException === undefined) {
+          result.warnings.push("Manual provisioning pilot_exception parameter lacks confirmation.");
+       }
+       if (!mpInfo.setupNotes && !mpInfo.notes) {
+          result.warnings.push("Manual provisioning setup notes are missing or empty.");
+       }
+       if (!mpInfo.billingSource && !mpInfo.source) {
+          result.warnings.push("Manual provisioning billing source details are absent.");
+       }
+    }
 
     // Resolution
     if (result.blockers.length === 0) {
