@@ -51,6 +51,7 @@ export const domainResolverService = {
   getMarketFromHostname(hostname: string): string {
     // Already handled globally by marketConfigService, but keeping here for signature compat.
     if (hostname.includes('lari.app')) return 'global';
+    if (hostname.includes('randevulari.com')) return 'tr';
     return 'tr';
   }
 };
