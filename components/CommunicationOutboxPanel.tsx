@@ -148,9 +148,13 @@ export const CommunicationOutboxPanel: React.FC<CommunicationOutboxPanelProps> =
   const getStatusLabel = (status: CommunicationDeliveryStatus) => {
     switch (status) {
       case 'queued': return language === 'tr' ? 'Sırada' : 'Queued';
-      case 'rendered': return language === 'tr' ? 'Şablon Hazır' : 'Rendered';
-      case 'skipped': return language === 'tr' ? 'İzin Yok (Pas geçildi)' : 'Skipped (Consent)';
-      case 'sent': return language === 'tr' ? 'İletildi' : 'Delivered';
+      case 'rendered': return language === 'tr' ? 'Gönderime Hazır Kayıt' : 'Outbox Record (Ready)';
+      case 'skipped': return language === 'tr' ? 'İzin Yok (Pas geçildi)' : 'Skipped (No Consent)';
+      case 'sent': 
+        if (providerConfig.mode === 'local_outbox_only') {
+          return language === 'tr' ? 'Gönderim Simüle Edildi' : 'Sent (Simulated)';
+        }
+        return language === 'tr' ? 'Gönderildi / İletildi' : 'Delivered';
       case 'failed': return language === 'tr' ? 'Hata Oluştu' : 'Failed';
       case 'cancelled': return language === 'tr' ? 'İptal Edildi' : 'Cancelled';
       default: return status;
@@ -185,6 +189,17 @@ export const CommunicationOutboxPanel: React.FC<CommunicationOutboxPanelProps> =
           </span>
         </div>
       </div>
+
+      {providerConfig.mode === 'local_outbox_only' && (
+        <div className="px-6 py-2.5 bg-amber-50/50 border-b border-amber-100 text-[11px] text-amber-800 flex items-center gap-2">
+          <span>⚠️</span>
+          <span>
+            {language === 'tr' 
+              ? 'Mevcut mod: local_outbox_only. Gerçek e-posta, SMS veya WhatsApp mesajı gönderilmez. Kayıtlar yalnızca panelde simüle edilir ve sağlayıcı bağlandığında gönderim kuyruğuna alınabilir.' 
+              : 'Current run mode: local_outbox_only. Real emails, SMS, or WhatsApp alerts are strictly deactivated. Messages are simulated in the outbox.'}
+          </span>
+        </div>
+      )}
 
       {/* Control Filters Row */}
       <div className="p-4 bg-slate-50 border-b border-slate-100 grid grid-cols-1 md:grid-cols-4 gap-3">
@@ -232,10 +247,10 @@ export const CommunicationOutboxPanel: React.FC<CommunicationOutboxPanelProps> =
             onChange={(e) => setStatusFilter(e.target.value)}
           >
             <option value="all">{language === 'tr' ? 'Tüm Durumlar' : 'All Statuses'}</option>
-            <option value="queued">{language === 'tr' ? 'Sıraya Alındı' : 'Queued'}</option>
-            <option value="rendered">{language === 'tr' ? 'Şablon Oluşturuldu' : 'Template Formatted'}</option>
+            <option value="queued">{language === 'tr' ? 'Sırada' : 'Queued'}</option>
+            <option value="rendered">{language === 'tr' ? 'Gönderime Hazır (Outbox)' : 'Outbox (Ready)'}</option>
             <option value="skipped">{language === 'tr' ? 'Pas Geçildi (İzin Yok)' : 'Skipped (No Consent)'}</option>
-            <option value="sent">{language === 'tr' ? 'Gönderildi / İletildi' : 'Sent / Delivered'}</option>
+            <option value="sent">{language === 'tr' ? (providerConfig.mode === 'local_outbox_only' ? 'Simüle Gönderildi' : 'Gönderildi / İletildi') : 'Sent / Delivered'}</option>
             <option value="failed">{language === 'tr' ? 'Hatalı / Başarısız' : 'Failed'}</option>
             <option value="cancelled">{language === 'tr' ? 'İptal Edildi' : 'Cancelled'}</option>
           </select>

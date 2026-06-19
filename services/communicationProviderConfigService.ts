@@ -16,7 +16,7 @@ export interface CommunicationProviderConfig {
 const STORAGE_KEY = 'lari_communication_provider_config';
 
 const DEFAULT_CONFIG: CommunicationProviderConfig = {
-  mode: 'local_outbox_only',
+  mode: (typeof import.meta !== 'undefined' && (import.meta as any).env && (import.meta as any).env.VITE_COMMUNICATION_MODE as any) || 'local_outbox_only',
   emailProvider: 'mock',
   whatsappProvider: 'mock',
   smsProvider: 'mock',
