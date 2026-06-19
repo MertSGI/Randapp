@@ -60,6 +60,14 @@ Events mapped across LARİ's core SaaS layers:
 | | `booking_cancelled` | WhatsApp | Customer |
 | | `booking_completed`| WhatsApp | Customer |
 | | `booking_no_show` | WhatsApp | Customer |
+| | `appointment_manage_link_created` | WhatsApp | Customer |
+| | `cancellation_request_created` | WhatsApp | Customer |
+| | `cancellation_request_approved` | WhatsApp | Customer |
+| | `cancellation_request_rejected` | WhatsApp | Customer |
+| | `reschedule_request_created` | WhatsApp | Customer |
+| | `reschedule_request_approved` | WhatsApp | Customer |
+| | `reschedule_request_rejected` | WhatsApp | Customer |
+| | `appointment_confirmed_by_customer` | WhatsApp | Customer |
 | **Subscription** | `trial_started` | Email | Owner |
 | | `trial_ending` | Email | Owner |
 | | `subscription_active`| Email | Owner |

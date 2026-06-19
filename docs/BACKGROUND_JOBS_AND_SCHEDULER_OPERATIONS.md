@@ -50,6 +50,7 @@ LARİ registers **13 distinct, business-critical background sweeps** crucial for
 | `communication_outbox_retry_sweep` | `*/15 * * * *` | Outbox Hata Yenileme Taraması | Identifies `failed` events and cycles them back to `rendered` state if retryCount < 3. | ✅ Yes |
 | `communication_failed_delivery_review` | `0 18 * * *` | Başarısız İleti Operatör İncelemesi | Summarizes permanent sender bounces or delivery failures for system operator audit. | ✅ Yes (Telemetry logs) |
 | `custom_domain_verification_poll` | `*/30 * * * *` | Özel Alan Adı DNS Doğrulaması | Performs resolver check on pending custom domain queries (CNAME/A records status). | ✅ Yes |
+| `self_service_token_expiry_sweep` | `0 5 * * *` | Kendi Kendine Hizmet Jetonu Temizliği | Sweeps and invalidates expired single-use appointment management link tokens. See [Self-Service Guide](BOOKING_SELF_SERVICE_AND_ABUSE_PREVENTION.md). | ✅ Yes |
 | `booking_availability_refresh` | `0 4 * * *` | Randevu Rezervasyon Takvimi Tazeleme | Prunes past empty slots and updates rolling 30-day availability indices. | ✅ Yes (Console logs only) |
 | `data_export_reminder` | `0 10 * * 0` | Veri Yedekleme Dışa Aktarım Hatırlatıcı | Triggers admin checklist reminders indicating long intervals since last tenant DB export. | ✅ Yes |
 | `migration_snapshot_integrity_check` | `0 3 * * 6` | Gelişmiş Geçiş & Entegrasyon Kontrolü | Verifies schema alignment, client adapters, and RLS policy rules safety under-the-hood. | ✅ Yes (Telemetry verification) |

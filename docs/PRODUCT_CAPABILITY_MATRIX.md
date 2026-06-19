@@ -26,6 +26,8 @@ This matrix outlines the system capabilities as of pre-live phase, detailing wha
 | **Multi-market** | Yes | Yes | No | Platform | Drives currency, defaults, and brand fallback (LARİ vs RandevuLari domain vs lari.app domain). Visible brand is LARİ. |
 | **Super Admin** | Yes | No | No | Super Admin | Has pilot tracker, manual provisioning, etc. |
 | **Media storage & asset gallery**| Simulated (Local) | Yes | Yes (Supabase Storage / S3) | All | Mock uploading processes base64 preview urls; Production transition requires bucket credentials. See [LARİ Media Operations Kılavuzu](MEDIA_STORAGE_AND_ASSET_OPERATIONS.md). |
+| **Customer Self-Service Links** | Yes | Yes | Yes (Comms Gateway) | All | Link dispatching via Outbox. View, confirm, cancel, and reschedule pages. See [Self-Service Guide](BOOKING_SELF_SERVICE_AND_ABUSE_PREVENTION.md). |
+| **Booking Abuse Prevention** | Yes | Yes | No | All | Velocity limiters, duplicate selectors, and no-show blacklisting. See [Anti-Abuse Guide](BOOKING_SELF_SERVICE_AND_ABUSE_PREVENTION.md). |
 
 ## Subdomain & DNS Requirements
 For `*.randevulari.com` and `*.lari.app` to work in production:

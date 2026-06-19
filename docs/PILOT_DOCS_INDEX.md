@@ -40,6 +40,7 @@ Canlıya çıkış öncesi sistemin tüm modüllerinin (Şube, AI, Raporlama, Ka
 
 * **[Güvenli Dışa Aktarım Rehberi (Data Export Docs)](./DATA_EXPORT_IMPORT_AND_MIGRATION_DRY_RUN.md):** Salon verilerinin KVKK uyumlu şekilde yedeklenmesi ve SQL taşıma dökümantasyonu.
 * **[KVKK ve Veri Yönetişimi Rehberi](./DATA_GOVERNANCE_AND_PRIVACY.md):** Müşteri hafızası ve rıza toplama kurgularına ait gizlilik bildirim detayları.
+* **[Müşteri Kendi Kendine Hizmet ve Suistimal Önleme Kılavuzu](./BOOKING_SELF_SERVICE_AND_ABUSE_PREVENTION.md):** Randevu bağlantıları, erteleme/iptal talebi onay akışları, no-show/suistimal bariyerleri ve pre-live token simülasyon kuralları.
 * **[Nihai Pilot Hazırlık Kontrol Listesi](./FINAL_PILOT_READINESS_CHECKLIST.md):** Ürünün ilk pilot müşteriye açılmadan önceki kalite geçidi.
 * **[Kapsamlı Sistem Uçtan Uca Denetim Raporu](./MASTER_END_TO_END_SYSTEM_AUDIT.md):** Ürünün tüm modüllerinin entegrasyon bütünlük raporu.
 * **[Nihai Gerçek Pilot Hazırlık Raporu](./FINAL_REAL_PILOT_READINESS_REPORT.md):** Gerçek pilot salonlara hazır olduğumuzu tescilleyen yönetici özet dökümanı.
