@@ -725,5 +725,171 @@ export interface BookingPolicy {
   requireContactConsent: boolean;
 }
 
+// === OBSERVABILITY & AUDIT LOGS MODEL ===
+export type AuditActorType =
+  | 'customer'
+  | 'tenant_owner'
+  | 'staff'
+  | 'super_admin'
+  | 'system'
+  | 'background_job'
+  | 'provider_webhook'
+  | 'local_simulation';
+
+export type AuditEventCategory =
+  | 'auth'
+  | 'tenant'
+  | 'booking'
+  | 'customer_self_service'
+  | 'anti_abuse'
+  | 'subscription'
+  | 'payment'
+  | 'communication'
+  | 'scheduler'
+  | 'domain'
+  | 'media'
+  | 'data_export'
+  | 'migration'
+  | 'support'
+  | 'security'
+  | 'system';
+
+export type AuditEventSeverity =
+  | 'info'
+  | 'notice'
+  | 'warning'
+  | 'error'
+  | 'critical';
+
+export type AuditEventStatus =
+  | 'recorded'
+  | 'reviewed'
+  | 'escalated'
+  | 'resolved'
+  | 'dismissed';
+
+export interface AuditEvent {
+  id: string;
+  tenantId?: string;
+  actorType: AuditActorType;
+  actorId?: string;
+  category: AuditEventCategory;
+  severity: AuditEventSeverity;
+  action: string;
+  status: AuditEventStatus;
+  entityType?: string;
+  entityId?: string;
+  correlationId?: string;
+  requestId?: string;
+  summary: string;
+  safeDetails?: any;
+  redactionApplied: boolean;
+  createdAt: string;
+  reviewedAt?: string;
+  reviewedBy?: string;
+  metadata?: any;
+}
+
+// === SUPPORT TICKETS MODEL ===
+export type SupportTicketStatus =
+  | 'open'
+  | 'waiting_on_customer'
+  | 'waiting_on_owner'
+  | 'in_review'
+  | 'resolved'
+  | 'closed'
+  | 'escalated';
+
+export type SupportTicketPriority =
+  | 'low'
+  | 'normal'
+  | 'high'
+  | 'urgent';
+
+export type SupportTicketSource =
+  | 'tenant_owner'
+  | 'customer_self_service'
+  | 'super_admin'
+  | 'system'
+  | 'background_job'
+  | 'communication_outbox';
+
+export type SupportTicketCategory =
+  | 'booking'
+  | 'cancellation_reschedule'
+  | 'payment_billing'
+  | 'subscription'
+  | 'domain'
+  | 'media'
+  | 'communication'
+  | 'account_access'
+  | 'data_export'
+  | 'bug'
+  | 'abuse_spam'
+  | 'security'
+  | 'feature_request'
+  | 'other';
+
+export interface SupportTicket {
+  id: string;
+  tenantId?: string;
+  source: SupportTicketSource;
+  category: SupportTicketCategory;
+  priority: SupportTicketPriority;
+  status: SupportTicketStatus;
+  title: string;
+  description: string;
+  requesterName?: string;
+  requesterEmail?: string;
+  requesterPhone?: string;
+  relatedAppointmentId?: string;
+  relatedCustomerId?: string;
+  relatedSubscriptionId?: string;
+  relatedCommunicationEventId?: string;
+  relatedBackgroundJobRunId?: string;
+  relatedAuditEventIds: string[];
+  assignedTo?: string;
+  createdAt: string;
+  updatedAt: string;
+  resolvedAt?: string;
+  internalNotes?: string;
+  publicReply?: string;
+  metadata?: any;
+}
+
+// === INCIDENT RESPONSE MODEL ===
+export type IncidentStatus =
+  | 'detected'
+  | 'investigating'
+  | 'mitigated'
+  | 'resolved'
+  | 'closed';
+
+export type IncidentSeverity =
+  | 'sev4_minor'
+  | 'sev3_moderate'
+  | 'sev2_major'
+  | 'sev1_critical';
+
+export interface Incident {
+  id: string;
+  status: IncidentStatus;
+  severity: IncidentSeverity;
+  title: string;
+  summary: string;
+  affectedTenantIds: string[];
+  affectedCategories: AuditEventCategory[];
+  relatedAuditEventIds: string[];
+  relatedSupportTicketIds: string[];
+  startedAt: string;
+  detectedAt: string;
+  resolvedAt?: string;
+  owner?: string;
+  mitigationNotes?: string;
+  postmortemNotes?: string;
+  metadata?: any;
+}
+
+
 
 

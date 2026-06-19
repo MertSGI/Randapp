@@ -3,10 +3,11 @@ import {
   AppointmentAccessToken, 
   AppointmentChangeRequest, 
   BookingPolicy 
-} from '../types';
+ } from '../types';
 import { getBookingRepository } from './repositories';
 import { communicationEventService } from './communicationEventService';
 import { tenantService } from './tenantService';
+import { auditLogService } from './auditLogService';
 
 const TOKENS_STORAGE_KEY = 'lari_appointment_tokens';
 const REQUESTS_STORAGE_KEY = 'lari_appointment_change_requests';
@@ -119,6 +120,27 @@ export const appointmentSelfServiceService = {
 
     tokens.push(newToken);
     this.saveAllTokens(tokens);
+
+    try {
+      auditLogService.logAuditEvent({
+        tenantId,
+        actorType: 'system',
+        category: 'customer_self_service',
+        severity: 'info',
+        action: 'self_service_token_created',
+        entityType: 'AppointmentAccessToken',
+        entityId: id,
+        summary: `Hizmet erişim bağlantı belirteci oluşturuldu: [Amaç: ${purpose}]`,
+        safeDetails: {
+          tokenId: id,
+          appointmentId,
+          purpose,
+          expiresAt
+        }
+      });
+    } catch (e) {
+      console.error('Audit logging for token creation failed:', e);
+    }
 
     return token;
   },
@@ -267,6 +289,29 @@ export const appointmentSelfServiceService = {
     requests.push(newRequest);
     this.saveAllChangeRequests(requests);
 
+    try {
+      auditLogService.logAuditEvent({
+        tenantId: tokenObj.tenantId,
+        actorType: 'customer',
+        category: 'customer_self_service',
+        severity: autoApplied ? 'warning' : 'notice',
+        action: autoApplied ? 'appointment_cancelled' : 'appointment_cancellation_requested',
+        entityType: 'AppointmentChangeRequest',
+        entityId: id,
+        summary: autoApplied 
+          ? `Müşteri randevuyu kendi iptal etti (${appointment.user_name || 'Müşteri'})`
+          : `Müşteri randevu iptal talebi oluşturdu (${appointment.user_name || 'Müşteri'})`,
+        safeDetails: {
+          requestId: id,
+          appointmentId: appointment.id,
+          reason,
+          autoApplied
+        }
+      });
+    } catch (e) {
+      console.error('Audit logging for cancellation request failed:', e);
+    }
+
     // Queue communications outbox events
     try {
       const tenant = await tenantService.getTenantById(tokenObj.tenantId);
@@ -333,6 +378,27 @@ export const appointmentSelfServiceService = {
     requests.push(newRequest);
     this.saveAllChangeRequests(requests);
 
+    try {
+      auditLogService.logAuditEvent({
+        tenantId: tokenObj.tenantId,
+        actorType: 'customer',
+        category: 'customer_self_service',
+        severity: 'notice',
+        action: 'appointment_reschedule_requested',
+        entityType: 'AppointmentChangeRequest',
+        entityId: id,
+        summary: `Müşteri randevu erteleme talebi oluşturdu (${appointment.user_name || 'Müşteri'})`,
+        safeDetails: {
+          requestId: id,
+          appointmentId: appointment.id,
+          requestedDateTime,
+          note
+        }
+      });
+    } catch (e) {
+      console.error('Audit logging for reschedule request failed:', e);
+    }
+
     // Queue communications outbox
     try {
       const tenant = await tenantService.getTenantById(tokenObj.tenantId);
@@ -385,6 +451,25 @@ export const appointmentSelfServiceService = {
       const tokens = this.getAllTokens();
       const updatedTokens = tokens.map(t => t.id === tokenObj.id ? tokenObj : t);
       this.saveAllTokens(updatedTokens);
+
+      try {
+        auditLogService.logAuditEvent({
+          tenantId: tokenObj.tenantId,
+          actorType: 'customer',
+          category: 'customer_self_service',
+          severity: 'info',
+          action: 'appointment_confirmed_by_customer',
+          entityType: 'Appointment',
+          entityId: appointment.id,
+          summary: `Randevu müşteri tarafından bağlantı uyarısıyla onaylandı: (${appointment.user_name || 'Müşteri'})`,
+          safeDetails: {
+            appointmentId: appointment.id,
+            tokenId: tokenObj.id
+          }
+        });
+      } catch (ae) {
+        console.error('Audit logging for customer confirm failed:', ae);
+      }
 
       const tenant = await tenantService.getTenantById(tokenObj.tenantId);
       const bizName = tenant?.branding?.businessName || tenant?.name || 'Güzellik Salonu';

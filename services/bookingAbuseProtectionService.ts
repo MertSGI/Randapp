@@ -1,5 +1,7 @@
 import { getBookingRepository } from './repositories';
 import { appointmentSelfServiceService } from './appointmentSelfServiceService';
+import { auditLogService } from './auditLogService';
+import { supportTicketService } from './supportTicketService';
 
 const ATTEMPTS_STORAGE_KEY = 'lari_booking_attempts';
 const NOSHOW_STORAGE_KEY = 'lari_noshow_signals';
@@ -125,6 +127,31 @@ export const bookingAbuseProtectionService = {
     });
 
     if (phoneAttemptsToday.length >= policy.maxBookingsPerPhonePerDay) {
+      try {
+        const ev = auditLogService.logAuditEvent({
+          tenantId: input.tenantId,
+          actorType: 'customer',
+          category: 'anti_abuse',
+          severity: 'warning',
+          action: 'booking_blocked_rate_limit',
+          summary: `Rezervasyon engellendi: Telefon günlük limit aşımı (${cleanPhone})`,
+          safeDetails: { phone: cleanPhone }
+        });
+        
+        supportTicketService.createSupportTicket({
+          tenantId: input.tenantId,
+          source: 'system',
+          category: 'abuse_spam',
+          priority: 'normal',
+          title: `Olası Spam Engel: Telefon Günlük Oda Limiti (#${cleanPhone})`,
+          description: `Sistem, ${cleanPhone} telefon numarasını günlük maksimum online randevu limitine (${policy.maxBookingsPerPhonePerDay}) ulaştığı için engelledi.`,
+          requesterPhone: cleanPhone,
+          relatedAuditEventIds: [ev.id]
+        });
+      } catch (e) {
+        console.error('Anti-abuse logging failed:', e);
+      }
+
       return { 
         block: true, 
         reason: 'Günlük maksimum online randevu limitine ulaştınız. Lütfen yarın tekrar deneyin veya işletmeyle iletişime geçin.' 
@@ -135,6 +162,31 @@ export const bookingAbuseProtectionService = {
     if (policy.blockRepeatedNoShowPhone) {
       const riskCount = this.getNoShowRiskCountForCustomer(input.tenantId, cleanPhone);
       if (riskCount >= policy.noShowThreshold) {
+        try {
+          const ev = auditLogService.logAuditEvent({
+            tenantId: input.tenantId,
+            actorType: 'customer',
+            category: 'anti_abuse',
+            severity: 'critical',
+            action: 'booking_blocked_no_show',
+            summary: `Rezervasyon engellendi: No-Show Kara Liste (${cleanPhone})`,
+            safeDetails: { phone: cleanPhone, noShowCount: riskCount }
+          });
+          
+          supportTicketService.createSupportTicket({
+            tenantId: input.tenantId,
+            source: 'system',
+            category: 'abuse_spam',
+            priority: 'high',
+            title: `Otomatik No-Show Blokajı Escalesi: ${cleanPhone}`,
+            description: `Sistem, ${cleanPhone} numarasını geçmiş limit üstü no-show sayısından (${riskCount} >= ${policy.noShowThreshold}) ötürü kara listeye aldı.`,
+            requesterPhone: cleanPhone,
+            relatedAuditEventIds: [ev.id]
+          });
+        } catch (e) {
+          console.error('No-show logging failed:', e);
+        }
+
         return {
           block: true,
           reason: 'Geçmiş randevularınıza defalarca katılmadığınız (no-show) saptandığı için online rezervasyon sistemimiz kullanımınıza kapatılmıştır. Lütfen işletmeyle doğrudan iletişime geçin.'
@@ -181,6 +233,20 @@ export const bookingAbuseProtectionService = {
     
     signals.push(newSignal);
     this.saveAllNoShowSignals(signals);
+
+    try {
+      auditLogService.logAuditEvent({
+        tenantId,
+        actorType: 'staff',
+        category: 'anti_abuse',
+        severity: 'notice',
+        action: 'customer_no_show_recorded',
+        summary: `No-Show Sinyali Kaydedildi: ${cleanPhone}`,
+        safeDetails: { phone: cleanPhone }
+      });
+    } catch (e) {
+      console.error('No-show audit logging failed:', e);
+    }
   },
 
   // Helper inside risk calculation

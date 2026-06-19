@@ -6,6 +6,7 @@ import { communicationEventService } from './communicationEventService';
 import { tenantService } from './tenantService';
 import { appointmentSelfServiceService } from './appointmentSelfServiceService';
 import { bookingAbuseProtectionService } from './bookingAbuseProtectionService';
+import { auditLogService } from './auditLogService';
 
 export const getAppointmentsKey = (tenantId: string) => `randapp:${tenantId}:appointments`;
 
@@ -109,6 +110,27 @@ export const createAppointment = async (tenantId: string, appointment: Omit<Appo
     console.error('Error auto-associated referral with booking:', err);
   }
 
+  try {
+    auditLogService.logAuditEvent({
+      tenantId,
+      actorType: 'customer',
+      category: 'booking',
+      severity: 'info',
+      action: 'appointment_created',
+      entityType: 'Appointment',
+      entityId: newApt.id,
+      summary: `Randevu başarıyla oluşturuldu: ${newApt.user_name} - ${newApt.date} saat ${newApt.time}`,
+      safeDetails: {
+        appointmentId: newApt.id,
+        customerName: newApt.user_name,
+        date: newApt.date,
+        time: newApt.time
+      }
+    });
+  } catch (auditErr) {
+    console.error('Audit logging for create appointment failed', auditErr);
+  }
+
   return newApt;
 };
 
@@ -127,6 +149,27 @@ export const updateAppointmentStatus = async (
 
   // Hook Communication events on successful status transitions
   if (updatedApt) {
+    try {
+      auditLogService.logAuditEvent({
+        tenantId,
+        actorType: status === 'cancelled' && cancelledBy === 'customer' ? 'customer' : 'tenant_owner',
+        category: 'booking',
+        severity: status === 'cancelled' || status === 'no_show' ? 'warning' : 'info',
+        action: `appointment_${status}`,
+        entityType: 'Appointment',
+        entityId: appointmentId,
+        summary: `Randevu durumu güncellendi: ${status} (${updatedApt.user_name || 'Müşteri'})`,
+        safeDetails: {
+          appointmentId,
+          status,
+          cancelReason,
+          cancelledBy
+        }
+      });
+    } catch (e) {
+      console.error('Audit log for update status failed:', e);
+    }
+
     try {
       const tObj = await tenantService.getTenantById(tenantId);
       const bizName = tObj?.branding?.businessName || tObj?.name || 'Güzellik Salonu';
