@@ -89,3 +89,10 @@ To ensure that the LARİ multi-tenant architecture remains secure and leak-proof
 
 *   **Super Admin Override**: Super Admins override isolation filters. A custom database security rule or user attribute flag (`role = 'super_admin'`) bypasses basic `tenant_id` scopes to support customer diagnostics and configuration fixes.
 *   **Service Role Safeguards**: The database `service_role` key passes all RLS barriers. It is strictly secluded inside secure cloud runtime contexts (Edge, Express services) and must never be exposed or referenced in client-facing frontend files. All user audit entries must record `updated_by` context to guarantee traceability.
+
+---
+
+## 4. Derived Security Artifacts & Resources
+*   **[Göç Taslağı - RLS SQL Migration Draft](../supabase/migrations/20260619_lari_rls_policy_draft.sql):** SQL-ready idempotent RLS policy draft covering core multi-tenant tables.
+*   **[İzolasyon Test Senaryoları - RLS Tenant Isolation Scenarios](../supabase/tests/rls_tenant_isolation_scenarios.sql):** Transaksiyonel test gövdesi ve simüle edilmiş rol sorgulamaları.
+*   **[Uygulama Kontrol Listesi - Supabase RLS Execution Checklist](./SUPABASE_RLS_EXECUTION_CHECKLIST.md):** Canlı staging aşamasında politikaların uygulanma, test edilme ve acil rollback kılavuzu.
