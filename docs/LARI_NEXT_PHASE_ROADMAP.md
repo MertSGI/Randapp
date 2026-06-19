@@ -12,6 +12,11 @@ An operational playbook guiding the commercial and technical scaling of LARİ fr
 *   **Exact Deliverables**:
     *   Completed local system audit.
     *   No-show, staff calendar overrides and customer booking links are fully functional on mobile viewports.
+    *   Manual Pilot Operating Pack (`docs/FIRST_MANUAL_PILOT_OPERATING_PACK.md`) implemented.
+    *   Pilot Salon Intake Form (`docs/PILOT_SALON_INTAKE_FORM.md`) implemented.
+    *   Manual Pilot Setup Checklist (`docs/MANUAL_PILOT_SETUP_CHECKLIST.md`) implemented.
+    *   Saha Tanıtım ve Satış Betiği (`docs/FIRST_REAL_SALON_DEMO_SCRIPT.md`) implemented.
+    *   Pilot Geri Bildirim Skor Kartı (`docs/FIRST_MANUAL_PILOT_FEEDBACK_SCORECARD.md`) implemented.
 *   **Risks**: Minor UI quirks on older tablets or safari webviews.
 *   **QA Scripts to Run**: `npm run qa:all-communication-notifications`, `npm run qa:site-provisioning`.
 *   **Go/No-Go Criteria**: **Go** if the mock booking sheet renders in <500ms on a standard mobile device.

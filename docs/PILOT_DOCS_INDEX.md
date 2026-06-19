@@ -15,6 +15,7 @@ En etkileyici, tutarlı ve profesyonel müşteri sunumları için bu dökümanla
 * **[Müşteri Geri Bildirim Formu](./FIRST_DEMO_FEEDBACK_SCORECARD.md):** Yapılan her demodan sonra müşteri heyecan seviyesini, itirazlarını ve ilerleme durumunu kaydetmek için puan kartı.
 * **[Pilot Sunum Senaryosu (Demo Script)](./PILOT_DEMO_SCRIPT.md):** Demo esnasında salon sahibine anlatılacak ana hikaye, görsel detaylar ve fayda odaklı Türkçe sunum metni.
 * **[İlk Satış Sunumu Taslağı](./FIRST_SALES_DEMO_SCRIPT.md):** Erken aşama ürün teklifi ve değer önerisini açıklayan ana satış taslağı.
+* **[İlk Gerçek Salon Tanıtım Senaryosu (Pilot Demo Script)](./FIRST_REAL_SALON_DEMO_SCRIPT.md):** İlk gerçek pilot saha ziyareti için doğal, ikna edici Türkçe sunum ve detaylandırılmış itiraz yönetim diyalogları.
 
 ---
 
@@ -22,6 +23,10 @@ En etkileyici, tutarlı ve profesyonel müşteri sunumları için bu dökümanla
 
 Yeni bir salonu sisteme alırken izlenecek adımlar ve kriz anında hazır iletişim şablonları:
 
+* **[İlk Manuel Pilot Operasyon Paketi](./FIRST_MANUAL_PILOT_OPERATING_PACK.md):** Saha ziyareti, iletişim sınırları dürüst bilgilendirmeleri, toplanacak veriler ve takip süreleri kılavuzu.
+* **[Pilot Salon Katılım Formu (Intake Form)](./PILOT_SALON_INTAKE_FORM.md):** Salon kayıt, envanter, uzman, şube ve gelecek döneme ait ödeme/iletişim talepleri veri katalog formu.
+* **[Manuel Pilot Kurulum Kontrol Listesi (Setup Checklist)](./MANUAL_PILOT_SETUP_CHECKLIST.md):** Süper Admin'den başlayıp outbox kayıtlarına, ön izleme doğrulamalarına uzanan 19 maddelik kurulum kontrol listesi.
+* **[İlk Manuel Pilot Geri Bildirim Skor Kartı](./FIRST_MANUAL_PILOT_FEEDBACK_SCORECARD.md):** Salon sahibi algısı, değer, itirazlar ve ödeme yapma eğiliminin değerlendirildiği 1-5 puanlı analiz paneli.
 * **[Pilot Müşteri Kayıt ve İstek Formu](./PILOT_CUSTOMER_INTAKE_FORM.md):** Salonun hizmet, fiyat, uzman ve çalışma saatlerini derlemek için kullanılan veri toplama formu.
 * **[Pilot Kurulum Görüşme Senaryosu](./PILOT_ONBOARDING_CALL_SCRIPT.md):** Kurulum sonrasında salon sahibine panel kullanımını öğretmek için tasarlanan telefon/canlı görüşme akışı.
 * **[İlk Hafta Takip Görüşmesi](./FIRST_WEEK_FOLLOW_UP_SCRIPT.md):** Sisteme geçen salonun ilk haftasındaki performansını ölçmek ve elde ettiği randevu ciro artışını kutlamak için arama senaryosu.

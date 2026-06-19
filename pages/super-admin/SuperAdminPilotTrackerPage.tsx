@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { pilotCustomerOnboardingService, PilotCustomer, PilotStage } from '../../services/pilotCustomerOnboardingService';
 
 const SuperAdminPilotTrackerPage: React.FC = () => {
@@ -93,16 +94,72 @@ const SuperAdminPilotTrackerPage: React.FC = () => {
         </div>
       </div>
       
-      <div className="mt-8 bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800 rounded-xl p-6">
-         <h2 className="text-blue-800 dark:text-blue-400 font-semibold mb-2">Sales & Success Resources</h2>
-         <p className="text-sm text-blue-700 dark:text-blue-300 mb-4">You can consult the internal documentation for standardized pilot onboarding materials.</p>
-         <ul className="list-disc pl-5 space-y-1 text-sm text-blue-700 dark:text-blue-300">
-            <li>docs/PILOT_CUSTOMER_INTAKE_FORM.md</li>
-            <li>docs/FIRST_SALES_DEMO_SCRIPT.md</li>
-            <li>docs/PILOT_ONBOARDING_CALL_SCRIPT.md</li>
-            <li>docs/FIRST_WEEK_FOLLOW_UP_SCRIPT.md</li>
-            <li>docs/SUPPORT_RESPONSE_TEMPLATES.md</li>
-         </ul>
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-xl p-6" id="first-pilot-checklist-card">
+          <h2 className="text-slate-800 dark:text-slate-200 font-semibold mb-3 flex items-center gap-2">
+            <span className="flex items-center justify-center w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 text-xs font-bold">✓</span>
+            First Pilot Checklist & Next Actions
+          </h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
+            Follow this operational pipeline for managing early-adopter manual pilot salons.
+          </p>
+          <ul className="space-y-3">
+            <li className="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-300">
+              <span className="mt-1 text-slate-400">1.</span>
+              <div>
+                <strong className="block font-medium">Create Tenant Manually</strong>
+                <Link to="/super-admin/provisioning" className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-semibold block mt-1">
+                  Go to Manual Provisioning Portal →
+                </Link>
+              </div>
+            </li>
+            <li className="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-300">
+              <span className="mt-1 text-slate-400">2.</span>
+              <div>
+                <strong className="block font-medium">Configure Salon Salon Setup</strong>
+                <span className="text-xs text-slate-500">Add services, staff, working hours, & branch data in workspace.</span>
+              </div>
+            </li>
+            <li className="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-300">
+              <span className="mt-1 text-slate-400">3.</span>
+              <div>
+                <strong className="block font-medium">Test Booking & Outbox Flows</strong>
+                <span className="text-xs text-slate-500">Run a test booking to verify it appears in admin schedule and communication outbox.</span>
+              </div>
+            </li>
+            <li className="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-300">
+              <span className="mt-1 text-slate-400">4.</span>
+              <div>
+                <strong className="block font-medium">Export Workspace Snapshot</strong>
+                <span className="text-xs text-slate-500">Download a secure JSON backup schema before leaving the salon.</span>
+              </div>
+            </li>
+            <li className="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-300">
+              <span className="mt-1 text-slate-400">5.</span>
+              <div>
+                <strong className="block font-medium">Collect Structured Feedback</strong>
+                <span className="text-xs text-slate-500">Score performance, log objection nuances, and plan the 24h follow-up.</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div className="bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800 rounded-xl p-6">
+           <h2 className="text-blue-800 dark:text-blue-400 font-semibold mb-2">Sales & Success Resources</h2>
+           <p className="text-sm text-blue-700 dark:text-blue-300 mb-4">You can consult the internal documentation for standardized pilot onboarding materials.</p>
+           <ul className="list-disc pl-5 space-y-1 text-xs text-blue-700 dark:text-blue-300">
+              <li>docs/FIRST_MANUAL_PILOT_OPERATING_PACK.md</li>
+              <li>docs/PILOT_SALON_INTAKE_FORM.md</li>
+              <li>docs/MANUAL_PILOT_SETUP_CHECKLIST.md</li>
+              <li>docs/FIRST_REAL_SALON_DEMO_SCRIPT.md</li>
+              <li>docs/FIRST_MANUAL_PILOT_FEEDBACK_SCORECARD.md</li>
+              <li>docs/PILOT_CUSTOMER_INTAKE_FORM.md</li>
+              <li>docs/FIRST_SALES_DEMO_SCRIPT.md</li>
+              <li>docs/PILOT_ONBOARDING_CALL_SCRIPT.md</li>
+              <li>docs/FIRST_WEEK_FOLLOW_UP_SCRIPT.md</li>
+              <li>docs/SUPPORT_RESPONSE_TEMPLATES.md</li>
+           </ul>
+        </div>
       </div>
 
     </div>

@@ -10,7 +10,7 @@ Dear Founder: The LARİ core SaaS layer is structurally robust. This document tr
 |:---|:---|:---|
 | **Can I demo it today?** | **YES**. Core visual flows (booking, schedule calendars, pricing tables, super admin panels) are fully responsive, performant, and premium. | **Ready for Staging Demo** |
 | **Can I sell it manually today?** | **YES**. Use the Super Admin portal (`/admin/super-admin`) to immediately provision new salons, assign customized premium plans, record manual offline billing types, and add internal notes. | **Structurally Ready** |
-| **Can I onboard a pilot manually today?** | **YES**. Salons can use their local system console to set branches, create catalogues, and manage client lists. Data is persisted robustly in the local environment. | **Staging Ready** |
+| **Can I onboard a pilot manually today?** | **YES**. Salons can use their local system console to set branches, create catalogues, and manage client lists. Follow the operational guide: `docs/FIRST_MANUAL_PILOT_OPERATING_PACK.md`. | **Staging Ready** |
 | **Can a customer self-register today?** | **YES**. The self-service `/register` page runs perfectly, instantly creating tenant profiles and directing owners to the setup console. | **Structurally Ready**|
 | **Can real payments be charged today?** | **NO**. Live Iyzico API keys are isolated to prevent unsafe card exposure. Staging checkouts use secure mock environments. | **Needs External Setup** |
 | **Can subdomains open on the public internet?** | **NO**. Dynamic subdomains are calculated correctly in code, but require a Wildcard DNS (`*.randevulari.com`) record to resolve dynamically. | **Needs External Setup** |
