@@ -95,4 +95,17 @@ Sistem sağlığı, hata izleme, audit logları, destek biletleri ve acil durum 
 * **[Destek Biletleri ve Incident Response Playbook](./SUPPORT_TICKET_AND_INCIDENT_RESPONSE.md):** Destek talebi ve incident yaşam döngüsü, olay playbooks (ödeme uyuşmazlığı, outbox arızaları) ve kurucu günlük gözden geçirme kontrol listesi.
 * **[Gözlemlenebilirlik Sağlayıcı Sözleşme Matrisi](./OBSERVABILITY_PROVIDER_CONTRACT_MATRIX.md):** Hatalar, blokajlar ve sistem aksiyonlarının KVKK uyumu, PII maskelemesi, Super Admin erişimi ve gelecek production izleme beklentileri matrisi.
 
+---
+
+## 7. Canlıya Hazırlık Duman ve Çevrimdışı Karar Kapıları (Launch Readiness Smoke & Decision Gates)
+
+Saha yayılımı ve pilot lansman öncesinde teknik ve operasyonel duman testleri, karar matrisleri ve çevrimdışı gelir modelleri:
+
+* **[Live Rota ve CTA Duman Test Denetimi](./LIVE_ROUTE_AND_CTA_SMOKE_TEST.md):** Tüm sistem genelindeki buton, rota ve yönlendirmelerin ziyaretçi yetki matrisine göre sağlık denetim tablosu.
+* **[Buton ve Akış Duman Testi Kontrol Listesi](./BUTTON_AND_FLOW_SMOKE_TEST_CHECKLIST.md):** Onboarding'den müşteri self-servisine, outbox'tan KVKK silme talebine kadar adım adım test adımları kılavuzu.
+* **[Görsel ve Resim Uygunluk Denetimi](./VISUAL_AND_IMAGE_RELEVANCE_AUDIT.md):** Sistemde kullanılan resimlerin kalitesi, sektör uyumluluğu, fallback şablonları ve telif koruma politikası.
+* **[Çevrimdışı Ödeme ile Canlıya Geçiş Kılavuzu](./OFFLINE_PAYMENT_LAUNCH_READINESS.md):** Online POS bağlanmadan önce şirket kurma, elden/EFT ödeme alma ve manuel aktivasyon operasyonel yol haritası.
+* **[Pilot ve Canlı Sürüm Karar Kapısı (Decision Gate)](./PILOT_LAUNCH_DECISION_GATE.md):** Dahili demo, ücretsiz pilot, ücretli çevrimdışı ve tam bulut SaaS aşamalarının Go/No-Go kriterleri ve kurucu kontrol listesi.
+
+
 
