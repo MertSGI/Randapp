@@ -115,6 +115,10 @@ Saha yayılımı ve pilot lansman öncesinde teknik ve operasyonel duman testler
 * **[MANUAL BILLING TENANT OPERATIONS](./MANUAL_BILLING_TENANT_OPERATIONS.md):** Kiracı hesaplarının manuel aktivasyonu, askıya alınması ve haftalık operasyonel denetim kılavuzu.
 * **[LIMITED LIVE MINIMUM INFRASTRUCTURE CHECKLIST](./LIMITED_LIVE_MINIMUM_INFRASTRUCTURE_CHECKLIST.md):** Minimum sunucu, veritabanı (Supabase RLS), wildcard alan adı ve duman testleri canlıya geçiş kontrol listesi.
 * **[ONLINE PAYMENT ENABLEMENT LATER PLAN](./ONLINE_PAYMENT_ENABLEMENT_LATER_PLAN.md):** Manuel aboneleri bozmadan ve veri kaybı yaşamadan tam otomatik kredi kartlı sanal POS altyapısına geçiş yol haritası.
+* **[PAYMENTLESS PRODUCTION CUTOVER PLAN](./PAYMENTLESS_PRODUCTION_CUTOVER_PLAN.md):** Online ödeme kapalıyken elden/havale ödeme tahsilatı ile kısıtlı gerçek canlıya geçiş (production cutover) stratejik planı.
+* **[PERSISTENT DATABASE REQUIRED FOR LIVE](./PERSISTENT_DATABASE_REQUIRED_FOR_LIVE.md):** Canlı salonlarda neden localStorage kullanılamayacağı ve Supabase kalıcı veritabanı gereksinimleri.
+* **[MANUAL TENANT ACTIVATION LIVE RUNBOOK](./MANUAL_TENANT_ACTIVATION_LIVE_RUNBOOK.md):** Kurucular tarafından yeni salon kiracısı aktivasyon adımları, lisanslama ve operasyon rehberi.
+* **[MANUAL TO ONLINE PAYMENT MIGRATION RUNBOOK](./MANUAL_TO_ONLINE_PAYMENT_MIGRATION_RUNBOOK.md):** Manuel aboneleri bozmadan kredi kartlı sanal POS altyapısına veri kaybı yaşamadan kesintisiz geçiş kılavuzu.
 
 
 

@@ -430,6 +430,42 @@ const BillingTab: React.FC = () => {
               <p className="text-xs text-gray-500">{t.billing.setup_fee_note?.replace('{fee}', String(currentPlan?.setupFee || 0))}</p>
             </div>
 
+            {!launchModeService.isOnlinePaymentEnabled() && (
+              <div className="mt-4 pt-4 border-t border-gray-100 dark:border-slate-700 space-y-3">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                  {language === 'tr' ? '✍️ Çevrimdışı Aktivasyon & Manuel Raporlama' : '✍️ Offline Activation & Manual Reports'}
+                </span>
+                
+                {subscription?.paidThroughDate && (
+                  <div className="text-xs">
+                    <span className="text-gray-500">{language === 'tr' ? 'Ödenen Son Tarih: ' : 'Paid Through Date: '}</span>
+                    <strong className="text-gray-800 dark:text-slate-200">{new Date(subscription.paidThroughDate).toLocaleDateString()}</strong>
+                  </div>
+                )}
+                
+                {subscription?.manualActivationReason && (
+                  <div className="text-xs">
+                    <span className="text-gray-500">{language === 'tr' ? 'Aktivasyon Gerekçesi: ' : 'Activation Reason: '}</span>
+                    <strong className="text-gray-800 dark:text-slate-200">{subscription.manualActivationReason}</strong>
+                  </div>
+                )}
+
+                {subscription?.paymentReferenceNote && (
+                  <div className="text-xs">
+                    <span className="text-gray-500">{language === 'tr' ? 'Ödeme / Dekont Referansı: ' : 'Payment / Slip Ref: '}</span>
+                    <strong className="text-gray-800 dark:text-slate-200">{subscription.paymentReferenceNote}</strong>
+                  </div>
+                )}
+
+                {subscription?.nextManualReviewAt && (
+                  <div className="text-xs">
+                    <span className="text-gray-500">{language === 'tr' ? 'Sonraki Manuel Kontrol: ' : 'Next Manual Review: '}</span>
+                    <strong className="text-gray-800 dark:text-slate-200">{new Date(subscription.nextManualReviewAt).toLocaleDateString()}</strong>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Quick Management Actions for Business Owners */}
             {subscription && (
               <div className="mt-6 border-t border-gray-100 dark:border-slate-700 pt-4 space-y-3">

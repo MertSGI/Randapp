@@ -177,6 +177,24 @@ export const policyAcceptanceService = {
   },
 
   /**
+   * Alias method for verifying required policies (for QA contract compliance).
+   */
+  checkMandatoryAcceptances(
+    actorType: PolicyAcceptanceActorType,
+    actorId: string,
+    requiredDocuments: LegalDocumentType[]
+  ): boolean {
+    return this.hasAcceptedRequiredPolicies(actorType, actorId, requiredDocuments);
+  },
+
+  /**
+   * Alias method for listing previous policy acceptances (for QA contract compliance).
+   */
+  getAcceptanceHistory(filters?: any): PolicyAcceptanceRecord[] {
+    return this.listPolicyAcceptances(filters);
+  },
+
+  /**
    * Summarizes the status of acceptances for system diagnostics.
    */
   getPolicyAcceptanceReadinessSummary() {

@@ -176,6 +176,22 @@ export const consentLedgerService = {
   },
 
   /**
+   * Alias method for checking active consent state (for QA contract compliance).
+   */
+  getConsentState(actorId: string, consentType: string): ConsentStatusType | null {
+    const ledger = this._getLedgerFromStore();
+    const match = ledger.find(r => r.actorId === actorId && r.consentType === consentType);
+    return match ? match.status : null;
+  },
+
+  /**
+   * Alias method for listing consent history (for QA contract compliance).
+   */
+  getConsentHistory(filters?: any): ConsentLedgerRecord[] {
+    return this.listConsentLedger(filters);
+  },
+
+  /**
    * Returns a ledger count summary.
    */
   getConsentLedgerSummary() {

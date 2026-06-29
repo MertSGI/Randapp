@@ -249,7 +249,7 @@ const SuperAdminLegalPage: React.FC = () => {
         </div>
 
         <div className="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-gray-100 dark:border-slate-700/50 shadow-sm">
-          <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider block">Rıza Defteri (Ledger)</span>
+          <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider block">Değiştirilemez Rıza Defteri (Ledger)</span>
           <div className="flex items-baseline gap-2 mt-2">
             <span className="text-2xl font-bold text-gray-900 dark:text-white">{ledgerSummary?.totalRecords || 0}</span>
             <span className="text-xs text-emerald-500 font-medium">{ledgerSummary?.grantedCount || 0} İzin</span>

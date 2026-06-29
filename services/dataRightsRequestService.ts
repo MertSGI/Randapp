@@ -123,6 +123,13 @@ export const dataRightsRequestService = {
   },
 
   /**
+   * Alias method for listing requests (for QA contract compliance).
+   */
+  listRequests(filters?: any): DataRightsRequest[] {
+    return this.listDataRightsRequests(filters);
+  },
+
+  /**
    * Updates status of a data rights request.
    */
   updateDataRightsRequestStatus(id: string, status: DataRightsRequestStatus, internalNotes?: string): DataRightsRequest | null {
@@ -165,6 +172,13 @@ export const dataRightsRequestService = {
       return request;
     }
     return null;
+  },
+
+  /**
+   * Alias method for updating request status (for QA contract compliance).
+   */
+  updateRequestStatus(id: string, status: DataRightsRequestStatus, internalNotes?: string): DataRightsRequest | null {
+    return this.updateDataRightsRequestStatus(id, status, internalNotes);
   },
 
   /**
