@@ -148,10 +148,17 @@ const SuperAdminLegalPage: React.FC = () => {
   };
 
   const handlePublishDocument = (id: string) => {
-    const reviewer = prompt('Lütfen incelemeyi gerçekleştiren hukuk danışmanının ismini/imzasını giriniz:', 'Av. Mert Özçelikbaş');
+    const reviewer = prompt(
+      'LARI PRE-LIVE İNCELEME NOTU:\nBu işlem resmi bir avukat dijital imzası değildir ve dökümanın hukuki uyumluluğunu taahhüt etmez. Sadece yerel pre-live hazırlık ve taslak takibi içindir.\n\nLütfen yerel gözden geçirme yapan kişinin adını/unvanını giriniz:',
+      'Hukuk Danışmanı İncelemesi Bekliyor'
+    );
     if (reviewer !== null) {
-      legalDocumentService.publishLegalDocumentVersion(id, reviewer);
-      triggerToast('Döküman başarıyla yayına alındı ve aktif edildi.');
+      const reviewNote = prompt(
+        'Lütfen varsa yerel inceleme notunu ekleyiniz (Canlı kullanım öncesi profesyonel hukuk incelemesi gerekir):',
+        'Taslak metin pre-live hazırlık aşamasındadır.'
+      );
+      legalDocumentService.publishLegalDocumentVersion(id, reviewer, reviewNote || undefined);
+      triggerToast('Döküman pre-live hazırlık olarak yayına alındı.');
       loadData();
     }
   };
@@ -198,10 +205,10 @@ const SuperAdminLegalPage: React.FC = () => {
           <ShieldAlert className="w-8 h-8 text-amber-500 shrink-0 mt-0.5 animate-pulse" />
           <div>
             <h1 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-              <Scale className="w-5 h-5" /> LARİ Hukuk & KVKK Hazırlık Paneli
+              <Scale className="w-5 h-5" /> Hukuk & Mevzuat Uyumluluk (LARİ Pre-live Hazırlık Paneli)
             </h1>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-2xl leading-relaxed">
-              <strong>ÖNEMLİ PRE-LIVE UYARISI:</strong> Bu panel, pilot salon öncesi hukuk danışmanının dökümanları gözden geçirebilmesi ve rıza loglarını simüle edebilmesi için hazırlanmıştır. Metinler taslaktır ve avukat onayı almadan canlı kullanıma açılmamalıdır.
+              <strong>ÖNEMLİ PRE-LIVE UYARISI:</strong> Bu panel, pilot salon öncesi hukuk danışmanının dökümanları gözden geçirebilmesi ve rıza loglarını simüle edebilmesi için hazırlanmıştır. Metinler taslaktır ve avukat onayı almadan canlı kullanıma açılmamalıdır. Canlı kullanım öncesi profesyonel hukuk incelemesi gerekir.
             </p>
           </div>
         </div>
@@ -365,11 +372,16 @@ const SuperAdminLegalPage: React.FC = () => {
                         <td className="p-3 font-medium">{doc.requiresAcceptance ? 'Evet (Checkbox)' : 'Hayır'}</td>
                         <td className="p-3 text-gray-600 dark:text-gray-300">
                           {doc.reviewedBy ? (
-                            <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1 font-medium">
-                              <FileCheck className="w-3.5 h-3.5" /> {doc.reviewedBy}
-                            </span>
+                            <div className="flex flex-col gap-0.5">
+                              <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1 font-medium text-xs">
+                                <FileCheck className="w-3.5 h-3.5 shrink-0 text-emerald-500" /> {doc.reviewedBy}
+                              </span>
+                              {doc.reviewNote && (
+                                <span className="text-[10px] text-gray-400 italic block leading-tight">Gözden Geçirme Notu: {doc.reviewNote}</span>
+                              )}
+                            </div>
                           ) : (
-                            <span className="text-gray-400 italic">İnceleme Yapılmadı</span>
+                            <span className="text-gray-400 italic text-xs block leading-tight">Hukuki inceleme bekliyor<br/><span className="text-[9px] text-amber-500 font-semibold">(Pre-live hazırlık)</span></span>
                           )}
                         </td>
                         <td className="p-3 text-gray-400">{doc.updatedAt.slice(0, 10)}</td>
@@ -561,7 +573,7 @@ const SuperAdminLegalPage: React.FC = () => {
         {/* TAB 4: REQUESTS */}
         {activeTab === 'requests' && (
           <div className="p-6 space-y-4">
-            <span className="text-sm font-bold text-gray-900 dark:text-white block">Kişisel Veri Sahibi Hak Talepleri (KVKK Başvuruları)</span>
+            <span className="text-sm font-bold text-gray-900 dark:text-white block">KVKK Veri Sahibi Başvuruları (Kişisel Veri Sahibi Hak Talepleri)</span>
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse text-xs">
                 <thead>

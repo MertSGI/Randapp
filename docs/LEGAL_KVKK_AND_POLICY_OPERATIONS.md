@@ -1,5 +1,8 @@
 # LARİ Hukuki Metin ve Politika Sürüm Yönetimi Kılavuzu
 
+> **⚠️ ÖNEMLİ HUKUKİ UYARI / DISCLAIMER:**
+> Bu döküman, LARİ platformunun pre-live hazırlık süreci için hazırlanmış bir kılavuzdur ve kesinlikle **profesyonel hukuki tavsiye (legal advice) niteliği taşımaz**. İçeriklerin tamamı canlı kullanıma geçilmeden önce nitelikli ve yetkili bir **hukuk danışmanı / şirket avukatı** tarafından incelenmeli, yerel mevzuata göre özelleştirilmeli ve onaylanmalıdır. Yasal uyumluluk sorumluluğu tamamen platformu işleten kuruluşa aittir.
+
 Bu kılavuz, LARİ platformu bünyesindeki hukuki metinlerin (Kullanım Şartları, Gizlilik Politikası, KVKK Aydınlatma Metni vb.) çoklu sürüm (multi-version) yönetimi, hukuk onay süreçleri ve yayına alma aşamalarını detaylandırır.
 
 ---

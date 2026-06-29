@@ -1,5 +1,8 @@
 # Kişisel Veri Sahibi Hak Talepleri (KVKK Başvuru Süreçleri)
 
+> **⚠️ ÖNEMLİ HUKUKİ UYARI / DISCLAIMER:**
+> Bu döküman, LARİ platformunun pre-live hazırlık süreci için hazırlanmış bir taslaktır ve kesinlikle **profesyonel hukuki tavsiye (legal advice) niteliği taşımaz**. İçeriklerin tamamı canlı kullanıma geçilmeden önce nitelikli ve yetkili bir **hukuk danışmanı / şirket avukatı** tarafından incelenmeli, yerel mevzuata göre özelleştirilmeli ve onaylanmalıdır. Yasal uyumluluk sorumluluğu tamamen platformu işleten kuruluşa aittir.
+
 6698 sayılı KVKK m.11 uyarınca kişisel veri sahipleri, veri sorumlularına başvurarak kendileriyle ilgili bilgilerin işlenip işlenmediğini öğrenme, erişim, düzeltme, silinmesini isteme (unutulma hakkı) ve verilerin kopyasını talep etme haklarına sahiptir. Bu döküman, LARİ platformunda veri hakkı taleplerinin nasıl işlendiğini ve operasyonel akışını tarif eder.
 
 ---

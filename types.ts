@@ -926,6 +926,12 @@ export interface LegalDocumentVersion {
   createdAt: string;
   updatedAt: string;
   reviewedBy?: string;
+  reviewedAt?: string;
+  legalReviewStatus?: 'pending_review' | 'under_review' | 'reviewed' | 'external_review_required';
+  externalLegalReviewRequired?: boolean;
+  reviewNote?: string;
+  complianceFinalized?: boolean;
+  legalApprovalClaim?: string;
   metadata?: any;
 }
 

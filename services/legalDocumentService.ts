@@ -148,7 +148,7 @@ export const legalDocumentService = {
   /**
    * Publishes a document version, transitioning it to active. It archives previous active versions of the same type and locale.
    */
-  publishLegalDocumentVersion(id: string, reviewedBy?: string): LegalDocumentVersion | null {
+  publishLegalDocumentVersion(id: string, reviewedBy?: string, reviewNote?: string): LegalDocumentVersion | null {
     const docs = this._getDocumentsFromStore();
     const docIndex = docs.findIndex(d => d.id === id);
     if (docIndex !== -1) {
@@ -166,9 +166,18 @@ export const legalDocumentService = {
       doc.status = 'active';
       doc.effectiveAt = new Date().toISOString();
       doc.updatedAt = new Date().toISOString();
+      doc.reviewedAt = new Date().toISOString();
       if (reviewedBy) {
         doc.reviewedBy = reviewedBy;
       }
+      if (reviewNote) {
+        doc.reviewNote = reviewNote;
+      }
+      doc.legalReviewStatus = 'reviewed';
+      doc.externalLegalReviewRequired = true; // Every pre-live document requires actual external professional review before live
+      doc.complianceFinalized = false; // Always false in pre-live simulation
+      doc.legalApprovalClaim = "Taslak Gözden Geçirme - Canlı kullanım öncesi profesyonel hukuk incelemesi gerekir.";
+      
       this._saveDocumentsToStore(docs);
 
       auditLogService.logAuditEvent({
@@ -228,8 +237,37 @@ export const legalDocumentService = {
       allRequiredCategoriesDrafted: missingTypes.length === 0,
       missingCategories: missingTypes,
       lawyerReviewApproved: docs.every(d => d.status === 'active' ? !!d.reviewedBy : true) && activeCount > 0,
+      legalReviewStatus: docs.every(d => d.status === 'active' ? d.legalReviewStatus === 'reviewed' : true) ? 'reviewed' : 'pending_review',
+      externalLegalReviewRequired: true,
+      complianceFinalized: false, // Always false in pre-live preview to avoid false compliance claims
+      legalApprovalClaim: "Pre-live draft readiness check only - No formal legal compliance is certified",
       localMode: true
     };
+  },
+
+  // --- QA Verification Script Contract Aliases ---
+  createDraftDocument(input: CreateLegalDocumentInput): LegalDocumentVersion {
+    return this.createLegalDocumentVersion(input);
+  },
+
+  submitForReview(id: string): LegalDocumentVersion | null {
+    return this.markLegalDocumentReviewRequired(id);
+  },
+
+  publishDocumentVersion(id: string, reviewedBy?: string, reviewNote?: string): LegalDocumentVersion | null {
+    return this.publishLegalDocumentVersion(id, reviewedBy, reviewNote);
+  },
+
+  archiveDocumentVersion(id: string): LegalDocumentVersion | null {
+    return this.archiveLegalDocumentVersion(id);
+  },
+
+  getLatestActiveDocument(type: LegalDocumentType, locale: string = 'tr'): LegalDocumentVersion | null {
+    return this.getActiveLegalDocument(type, locale);
+  },
+
+  seedInitialDocuments(): LegalDocumentVersion[] {
+    return this._seedDefaultDocuments();
   },
 
   // Helper storage routines

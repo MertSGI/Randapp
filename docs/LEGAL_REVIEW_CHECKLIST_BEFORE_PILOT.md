@@ -1,5 +1,8 @@
 # LARİ Pilot Salonu Öncesi Hukuki İnceleme Kontrol Listesi (Legal Review Checklist)
 
+> **⚠️ ÖNEMLİ HUKUKİ UYARI / DISCLAIMER:**
+> Bu döküman, LARİ platformunun pre-live hazırlık süreci için hazırlanmış bir taslaktır ve kesinlikle **profesyonel hukuki tavsiye (legal advice) niteliği taşımaz**. İçeriklerin tamamı canlı kullanıma geçilmeden önce nitelikli ve yetkili bir **hukuk danışmanı / şirket avukatı** tarafından incelenmeli, yerel mevzuata göre özelleştirilmeli ve onaylanmalıdır. Yasal uyumluluk sorumluluğu tamamen platformu işleten kuruluşa aittir.
+
 Bu kontrol listesi, LARİ platformunun ilk gerçek pilot salonunda (Pilot Rehearsal) ve sonrasında ticari canlı kullanıma geçmesinden önce şirket avukatları ve uyumluluk danışmanları tarafından tamamlanması gereken yasal ve idari adımları içerir.
 
 ---

@@ -1,5 +1,8 @@
 # Değiştirilemez Rıza Defteri (Consent Ledger) ve Politika Onay Altyapısı
 
+> **⚠️ ÖNEMLİ HUKUKİ UYARI / DISCLAIMER:**
+> Bu döküman, LARİ platformunun pre-live hazırlık süreci için hazırlanmış bir taslaktır ve kesinlikle **profesyonel hukuki tavsiye (legal advice) niteliği taşımaz**. İçeriklerin tamamı canlı kullanıma geçilmeden önce nitelikli ve yetkili bir **hukuk danışmanı / şirket avukatı** tarafından incelenmeli, yerel mevzuata göre özelleştirilmeli ve onaylanmalıdır. Yasal uyumluluk sorumluluğu tamamen platformu işleten kuruluşa aittir.
+
 LARİ, kişisel veri sahiplerinin (müşteri, personel, salon sahibi) rızalarını ve onayladıkları yasal metinleri ispatlanabilir, değiştirilemez bir yapıda kayıt altında tutar. Bu döküman, sistemin onay ve rıza saklama mimarisini açıklar.
 
 ---
