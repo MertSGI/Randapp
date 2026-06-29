@@ -21,8 +21,12 @@ En etkileyici, tutarlı ve profesyonel müşteri sunumları için bu dökümanla
 
 ## 2. Onboarding ve Pilot Müşteri Yönetimi (Onboarding & Customer Care)
 
-Yeni bir salonu sisteme alırken izlenecek adımlar ve kriz anında hazır iletişim şablonları:
+Yeni bir salonu sisteme alırken izlenecek adımlar, kurgusal simülasyon planları ve kriz anında hazır iletişim şablonları:
 
+* **[Uçtan Uca Pilot Prova Kılavuzu](./FIRST_REAL_SALON_END_TO_END_REHEARSAL.md):** Kurucu ekibin sahaya inmeden önce 19 adımda gerçekleştireceği tam simülasyon senaryosu.
+* **[İlk Pilot Kabul Kriterleri](./FIRST_PILOT_ACCEPTANCE_CRITERIA.md):** Pilot salonlarda canlıya çıkış öncesi başarı/başarısızlık ve önem derecesi geçiş sınırları.
+* **[Kurucu Saha Operasyon Kılavuzu](./FOUNDER_PILOT_REHEARSAL_CHECKLIST.md):** Kurucunun saha görüşmesi, kurulum aşamaları, 24h/3d/7d takipleri ve dürüst iletişim dökümanı.
+* **[İlk Pilot Test Veri Seti Planı](./FIRST_PILOT_FIXTURE_DATA_PLAN.md):** Yerel veritabanında test amaçlı kullanılacak tamamen kurgusal, güvenli ve gerçekçi test veri setleri (fixtures).
 * **[İlk Manuel Pilot Operasyon Paketi](./FIRST_MANUAL_PILOT_OPERATING_PACK.md):** Saha ziyareti, iletişim sınırları dürüst bilgilendirmeleri, toplanacak veriler ve takip süreleri kılavuzu.
 * **[Pilot Salon Katılım Formu (Intake Form)](./PILOT_SALON_INTAKE_FORM.md):** Salon kayıt, envanter, uzman, şube ve gelecek döneme ait ödeme/iletişim talepleri veri katalog formu.
 * **[Manuel Pilot Kurulum Kontrol Listesi (Setup Checklist)](./MANUAL_PILOT_SETUP_CHECKLIST.md):** Süper Admin'den başlayıp outbox kayıtlarına, ön izleme doğrulamalarına uzanan 19 maddelik kurulum kontrol listesi.
