@@ -216,6 +216,93 @@ const SuperAdminPilotTrackerPage: React.FC = () => {
         </div>
       </div>
 
+      <div className="mt-8 bg-amber-50 dark:bg-amber-950/10 border border-amber-200 dark:border-amber-900/30 rounded-xl p-6" id="live-pilot-execution-card">
+        <h2 className="text-amber-900 dark:text-amber-400 font-bold mb-3 flex items-center gap-2 text-lg">
+          <span className="flex items-center justify-center w-7 h-7 rounded-full bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 text-sm font-bold">🚀</span>
+          First Live Pilot Execution Hub
+        </h2>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="space-y-3">
+            <h3 className="font-semibold text-sm text-slate-800 dark:text-slate-200">Operational Links</h3>
+            <div className="flex flex-col gap-2">
+              <Link to="/super-admin/provisioning" className="text-xs px-3 py-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded font-medium transition block">
+                👥 Manual Provisioning Portal
+              </Link>
+              <Link to="/super-admin/pilots" className="text-xs px-3 py-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded font-medium transition block">
+                📊 Onboarding & Pilot Tracker
+              </Link>
+              <Link to="/super-admin/scheduler" className="text-xs px-3 py-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded font-medium transition block">
+                ⏰ Background Jobs Scheduler
+              </Link>
+              <Link to="/super-admin/observability" className="text-xs px-3 py-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded font-medium transition block">
+                🔍 System Observability Logs
+              </Link>
+              <Link to="/super-admin/legal" className="text-xs px-3 py-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded font-medium transition block">
+                ⚖️ Legal Consent & Policy Ledger
+              </Link>
+            </div>
+          </div>
+
+          <div className="lg:col-span-2">
+            <h3 className="font-semibold text-sm text-slate-800 dark:text-slate-200 mb-3">Live Pilot Step-by-Step Checklist</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 text-xs text-slate-600 dark:text-slate-300">
+              <div className="flex items-center gap-2">
+                <input type="checkbox" readOnly checked className="rounded text-amber-600 focus:ring-amber-500" />
+                <span>Contact potential salon using outreach pack</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <input type="checkbox" readOnly checked className="rounded text-amber-600 focus:ring-amber-500" />
+                <span>Qualify salon criteria and tech-readiness</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <input type="checkbox" readOnly checked className="rounded text-amber-600 focus:ring-amber-500" />
+                <span>Complete intake questionnaire / salon data</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <input type="checkbox" readOnly checked className="rounded text-amber-600 focus:ring-amber-500" />
+                <span>Provision pilot tenant in Super Admin</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <input type="checkbox" readOnly checked className="rounded text-amber-600 focus:ring-amber-500" />
+                <span>Configure public page (services, staff, hours)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <input type="checkbox" readOnly checked className="rounded text-amber-600 focus:ring-amber-500" />
+                <span>Run first dummy booking validation</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <input type="checkbox" readOnly checked className="rounded text-amber-600 focus:ring-amber-500" />
+                <span>Check Outbox log for communication simulation</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <input type="checkbox" readOnly checked className="rounded text-amber-600 focus:ring-amber-500" />
+                <span>Test self-service customer portal link</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <input type="checkbox" readOnly checked className="rounded text-amber-600 focus:ring-amber-500" />
+                <span>Run scheduler daily sweep simulations</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <input type="checkbox" readOnly checked className="rounded text-amber-600 focus:ring-amber-500" />
+                <span>Review system audit trials and logs</span>
+              </div>
+              <div className="flex items-center gap-2 col-span-2 mt-1">
+                <input type="checkbox" readOnly checked className="rounded text-amber-600 focus:ring-amber-500" />
+                <span className="font-semibold text-amber-900 dark:text-amber-400">Complete day 7 scorecard and convert / extend / terminate</span>
+              </div>
+            </div>
+
+            <div className="mt-4 p-3 bg-amber-100 dark:bg-amber-950/40 rounded border border-amber-200 dark:border-amber-900/50 text-xs text-amber-900 dark:text-amber-300 flex items-start gap-2">
+              <span className="text-sm">⚠️</span>
+              <div>
+                <strong>Güvenli Ödeme Uyarısı:</strong> Ücretli manuel pilot için şirket, fatura ve hukuki/mali inceleme tamamlanmalıdır. Sanal POS entegrasyonu tamamen devreye alınana kadar otomatik kart çekimleri aktif edilemez.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 };

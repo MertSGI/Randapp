@@ -106,6 +106,11 @@ Saha yayılımı ve pilot lansman öncesinde teknik ve operasyonel duman testler
 * **[Görsel ve Resim Uygunluk Denetimi](./VISUAL_AND_IMAGE_RELEVANCE_AUDIT.md):** Sistemde kullanılan resimlerin kalitesi, sektör uyumluluğu, fallback şablonları ve telif koruma politikası.
 * **[Çevrimdışı Ödeme ile Canlıya Geçiş Kılavuzu](./OFFLINE_PAYMENT_LAUNCH_READINESS.md):** Online POS bağlanmadan önce şirket kurma, elden/EFT ödeme alma ve manuel aktivasyon operasyonel yol haritası.
 * **[Pilot ve Canlı Sürüm Karar Kapısı (Decision Gate)](./PILOT_LAUNCH_DECISION_GATE.md):** Dahili demo, ücretsiz pilot, ücretli çevrimdışı ve tam bulut SaaS aşamalarının Go/No-Go kriterleri ve kurucu kontrol listesi.
+* **[Controlled First Pilot Execution Playbook](./CONTROLLED_FIRST_PILOT_EXECUTION_PLAYBOOK.md):** Birinci gerçek salon pilotunun saha uygulaması, ideal profil seçimi, kurulum ve 7 günlük izleme kılavuzu.
+* **[Founder Salon Outreach Message Pack](./FOUNDER_SALON_OUTREACH_MESSAGE_PACK.md):** Kurucular için Instagram, WhatsApp, telefon araması ve takip aşamaları dürüst ve samimi Türkçe mesaj şablonları.
+* **[Manual Pilot Commercial Operations Checklist](./MANUAL_PILOT_COMMERCIAL_OPERATIONS_CHECKLIST.md):** Mali ve yasal uyarılar, ücretsiz/ücretli manuel pilot muhasebe süreçleri ve taahhüt edilmeyecekler listesi.
+* **[First 7-Day Pilot Monitoring Scorecard](./FIRST_7_DAY_PILOT_MONITORING_SCORECARD.md):** Pilot salonun haftalık sayısal ve niteliksel metrikleri, yeşil/sarı/kırmızı başarı skorları değerlendirme tablosu.
+* **[First Pilot Issue Triage Board](./FIRST_PILOT_ISSUE_TRIAGE_BOARD.md):** Saha denemelerinde karşılaşılan hata ve taleplerin Blocker/Major/Minor/Improvement olarak sınıflandırılması ve çözüme kavuşturulma panosu.
 
 
 
