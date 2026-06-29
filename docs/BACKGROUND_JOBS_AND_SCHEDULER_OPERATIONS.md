@@ -109,3 +109,11 @@ If an automated job causes abnormal state cascades or loops:
 * **Manual Emergency Disable**: Super Admins can instantly toggle specific job lines on/off.
 * **Storage Wipe**: If a run state gets corrupted during local testing, clicking **"Reset Storage"** inside the Super Admin Diagnostic panel restores the initial system baseline instantly.
 * **Logging**: Detailed failure reasons are stored on each `BackgroundJobRun` object, rendering full audit traces directly under the Super Admin history table.
+
+---
+
+## 6. Related Documents
+* [Gözlemlenebilirlik, Audit ve Destek Operasyonları Kılavuzu](./OBSERVABILITY_AUDIT_AND_SUPPORT_OPERATIONS.md)
+* [Destek Biletleri ve Incident Response Playbook](./SUPPORT_TICKET_AND_INCIDENT_RESPONSE.md)
+* [Gözlemlenebilirlik Sağlayıcı Sözleşme Matrisi](./OBSERVABILITY_PROVIDER_CONTRACT_MATRIX.md)
+

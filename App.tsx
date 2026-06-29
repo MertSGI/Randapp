@@ -40,6 +40,7 @@ import SuperAdminGoLivePage from './pages/super-admin/SuperAdminGoLivePage';
 import SuperAdminPilotTrackerPage from './pages/super-admin/SuperAdminPilotTrackerPage';
 import SuperAdminManualProvisioningPage from './pages/super-admin/SuperAdminManualProvisioningPage';
 import SuperAdminSchedulerPage from './pages/super-admin/SuperAdminSchedulerPage';
+import SuperAdminObservabilityPage from './pages/super-admin/SuperAdminObservabilityPage';
 import SitePreviewPage from './pages/admin/SitePreviewPage';
 
 import CustomerLoginPage from './pages/customer/CustomerLoginPage';
@@ -59,6 +60,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { DialogProvider } from './contexts/DialogContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import AppErrorBoundary from './components/AppErrorBoundary';
+import SafeErrorBoundary from './components/SafeErrorBoundary';
 
 // Use hash routing for embedded previews and browser routing for production
 const Router = (import.meta as any).env.VITE_ROUTER_MODE === 'browser' 
@@ -139,6 +141,7 @@ const AppFlowSwitcher: React.FC = () => {
         <Route path="/super-admin/pilots" element={<SuperAdminPilotTrackerPage />} />
         <Route path="/super-admin/provisioning" element={<SuperAdminManualProvisioningPage />} />
         <Route path="/super-admin/scheduler" element={<SuperAdminSchedulerPage />} />
+        <Route path="/super-admin/observability" element={<SafeErrorBoundary><SuperAdminObservabilityPage /></SafeErrorBoundary>} />
       </Route>
       <Route path="/super-admin/tenant-preview/:tenantId" element={
         <ProtectedRoute allowedRoles={['super_admin']}>

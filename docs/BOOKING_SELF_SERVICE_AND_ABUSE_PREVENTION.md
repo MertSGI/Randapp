@@ -107,3 +107,11 @@ How the features behave under the simulated workspace:
 *   **Customer Manage Page** (`/appointment/manage/:token`): Completely decoupled from owner sessions. Shows a layout displaying the salon name, customer name, date/time, and actions (Confirm, Request Cancel, Reschedule) without exposing staff internal files or CRM notes.
 *   **Admin review UI**: Shows any active pending cancellation or reschedule request. The owner can click "Approve" or "Reject", include comments (`ownerNote`), and watch calendar/outbox logs shift in real-time.
 *   **Safety Isolation**: No raw credit cards, real credentials, or API secret tokens are exposed in client bundles. Local and pre-live mode remains the default, ensuring existing verification scripts continue to run as expected.
+
+---
+
+## 5. Related Documents
+* [Gözlemlenebilirlik, Audit ve Destek Operasyonları Kılavuzu](./OBSERVABILITY_AUDIT_AND_SUPPORT_OPERATIONS.md)
+* [Destek Biletleri ve Incident Response Playbook](./SUPPORT_TICKET_AND_INCIDENT_RESPONSE.md)
+* [Gözlemlenebilirlik Sağlayıcı Sözleşme Matrisi](./OBSERVABILITY_PROVIDER_CONTRACT_MATRIX.md)
+
