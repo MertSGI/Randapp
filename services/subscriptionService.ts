@@ -35,6 +35,10 @@ export interface TenantSubscription {
   referralCredits?: number;
   planChangeStatus?: 'none' | 'upgrade_pending' | 'downgrade_scheduled' | 'cancelled_at_period_end' | 'manual_review_required';
   scheduledPlanId?: string;
+  paidThroughDate?: string;
+  manualActivationReason?: string;
+  paymentReferenceNote?: string;
+  nextManualReviewAt?: string;
 }
 
 export interface TenantUsage {

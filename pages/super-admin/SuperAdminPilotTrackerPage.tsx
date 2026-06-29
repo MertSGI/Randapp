@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { pilotCustomerOnboardingService, PilotCustomer, PilotStage } from '../../services/pilotCustomerOnboardingService';
 import { launchModeService } from '../../services/launchModeService';
+import { getDataSourceMode } from '../../services/dataSourceConfig';
+import { productionReadinessGateService } from '../../services/productionReadinessGateService';
+import { productionStorageGuardService } from '../../services/productionStorageGuardService';
+import { environmentPreflightService } from '../../services/environmentPreflightService';
 
 const SuperAdminPilotTrackerPage: React.FC = () => {
   const [pilots, setPilots] = useState<PilotCustomer[]>([]);
@@ -27,6 +31,19 @@ const SuperAdminPilotTrackerPage: React.FC = () => {
   };
 
   const currentMode = launchModeService.getLaunchModeReadinessSummary();
+  const launchMode = launchModeService.getCurrentLaunchMode();
+  const dataMode = getDataSourceMode();
+  const gate = productionReadinessGateService.getProductionReadinessGate(launchMode);
+  
+  const cutoverData = {
+    launchMode,
+    dataMode,
+    paymentMode: (import.meta as any).env.VITE_PAYMENT_MODE || 'disabled',
+    communicationMode: (import.meta as any).env.VITE_COMMUNICATION_MODE || 'local_outbox_only',
+    persistentDbRequired: launchModeService.requiresPersistentDatabase(launchMode),
+    onlinePaymentDisabled: !launchModeService.isOnlinePaymentEnabled(),
+    manualBillingEnabled: launchModeService.isManualBillingEnabled(),
+  };
 
   return (
     <div className="p-6 space-y-6">
@@ -83,6 +100,101 @@ const SuperAdminPilotTrackerPage: React.FC = () => {
           <a href="/#/docs?path=docs/LIVE_ROUTE_AND_CTA_SMOKE_TEST.md" target="_blank" className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg font-semibold text-center text-xs transition border border-slate-700">
             🔍 Rota Duman Testi Kılavuzu
           </a>
+        </div>
+      </div>
+
+      {/* Production Cutover Readiness Panel */}
+      <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+        <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-700/50 pb-3">
+          <div className="flex items-center gap-2">
+            <span className="text-xl">🛠️</span>
+            <h3 className="font-bold text-slate-800 dark:text-slate-100 text-lg">Production Cutover Readiness Board</h3>
+          </div>
+          <span className="text-xs text-slate-400 dark:text-slate-500 font-mono">paymentless_limited_production preflight</span>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="p-3 bg-slate-50 dark:bg-slate-900/40 rounded-xl border border-slate-100 dark:border-slate-800">
+            <span className="text-slate-400 text-[10px] uppercase font-bold block mb-1">Launch Mode</span>
+            <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 font-mono">{cutoverData.launchMode}</span>
+          </div>
+          <div className="p-3 bg-slate-50 dark:bg-slate-900/40 rounded-xl border border-slate-100 dark:border-slate-800">
+            <span className="text-slate-400 text-[10px] uppercase font-bold block mb-1">Data Mode</span>
+            <span className={`text-xs font-semibold font-mono ${cutoverData.dataMode === 'local' ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
+              {cutoverData.dataMode} ({cutoverData.persistentDbRequired ? 'DB Required' : 'Local OK'})
+            </span>
+          </div>
+          <div className="p-3 bg-slate-50 dark:bg-slate-900/40 rounded-xl border border-slate-100 dark:border-slate-800">
+            <span className="text-slate-400 text-[10px] uppercase font-bold block mb-1">Payment Mode</span>
+            <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 font-mono">
+              {cutoverData.paymentMode} ({cutoverData.onlinePaymentDisabled ? 'Online Disabled' : 'Online Active'})
+            </span>
+          </div>
+          <div className="p-3 bg-slate-50 dark:bg-slate-900/40 rounded-xl border border-slate-100 dark:border-slate-800">
+            <span className="text-slate-400 text-[10px] uppercase font-bold block mb-1">Communication Mode</span>
+            <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 font-mono">{cutoverData.communicationMode}</span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+          {/* Hard Blockers */}
+          <div className="p-4 bg-red-500/5 dark:bg-red-500/10 rounded-xl border border-red-500/20">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="w-2 h-2 rounded-full bg-red-500"></span>
+              <h4 className="font-bold text-xs uppercase tracking-wider text-red-800 dark:text-red-400 font-sans">Hard Blockers ({gate.hardBlockers.length})</h4>
+            </div>
+            {gate.hardBlockers.length === 0 ? (
+              <p className="text-xs text-slate-500 dark:text-slate-400 italic font-sans">No hard blockers. Safe to execute cutover.</p>
+            ) : (
+              <ul className="space-y-1.5 max-h-[160px] overflow-y-auto pr-1 font-sans">
+                {gate.hardBlockers.map((b, i) => (
+                  <li key={i} className="text-xs text-red-700 dark:text-red-300 leading-relaxed flex items-start gap-1.5">
+                    <span>•</span>
+                    <span>{b}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          {/* Warnings */}
+          <div className="p-4 bg-amber-500/5 dark:bg-amber-500/10 rounded-xl border border-amber-500/20">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+              <h4 className="font-bold text-xs uppercase tracking-wider text-amber-800 dark:text-amber-400 font-sans">Warnings & Constraints ({gate.warnings.length})</h4>
+            </div>
+            {gate.warnings.length === 0 ? (
+              <p className="text-xs text-slate-500 dark:text-slate-400 italic font-sans">No warnings.</p>
+            ) : (
+              <ul className="space-y-1.5 max-h-[160px] overflow-y-auto pr-1 font-sans">
+                {gate.warnings.map((w, i) => (
+                  <li key={i} className="text-xs text-amber-700 dark:text-amber-300 leading-relaxed flex items-start gap-1.5">
+                    <span>•</span>
+                    <span>{w}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+
+        {/* Documentation Links */}
+        <div className="border-t border-slate-100 dark:border-slate-700/50 pt-4">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block mb-2 font-sans">Readiness Runbooks</span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 text-xs font-sans">
+            <a href="/#/docs?path=docs/PAYMENTLESS_PRODUCTION_DATA_CUTOVER_MATRIX.md" target="_blank" className="p-2.5 bg-slate-50 hover:bg-slate-100 dark:bg-slate-900/40 dark:hover:bg-slate-900/80 rounded border border-slate-100 dark:border-slate-800 font-medium text-slate-600 dark:text-slate-300 transition">
+              📊 Data Cutover Matrix
+            </a>
+            <a href="/#/docs?path=docs/PAYMENTLESS_PRODUCTION_HOSTING_DOMAIN_SSL_PREFLIGHT.md" target="_blank" className="p-2.5 bg-slate-50 hover:bg-slate-100 dark:bg-slate-900/40 dark:hover:bg-slate-900/80 rounded border border-slate-100 dark:border-slate-800 font-medium text-slate-600 dark:text-slate-300 transition">
+              🌐 Domain & SSL Preflight
+            </a>
+            <a href="/#/docs?path=docs/PAYMENTLESS_PRODUCTION_BACKUP_RESTORE_RUNBOOK.md" target="_blank" className="p-2.5 bg-slate-50 hover:bg-slate-100 dark:bg-slate-900/40 dark:hover:bg-slate-900/80 rounded border border-slate-100 dark:border-slate-800 font-medium text-slate-600 dark:text-slate-300 transition">
+              💾 Backup & Restore Runbook
+            </a>
+            <a href="/#/docs?path=docs/MANUAL_BILLING_LIVE_SMOKE_TEST.md" target="_blank" className="p-2.5 bg-slate-50 hover:bg-slate-100 dark:bg-slate-900/40 dark:hover:bg-slate-900/80 rounded border border-slate-100 dark:border-slate-800 font-medium text-slate-600 dark:text-slate-300 transition">
+              🧪 Manual Billing Smoke Test
+            </a>
+          </div>
         </div>
       </div>
 
