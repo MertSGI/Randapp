@@ -127,6 +127,7 @@ export const productionReadinessGateService = {
     const warnings: string[] = [];
 
     if (mode === 'paymentless_limited_production') {
+      // Note: offline_payment mode is used to manage subscription statuses manually outside the app
       warnings.push('Online ödemeler (kredi kartı tahsilatları) bu modda tamamen devre dışıdır. Kiracılar yalnızca manuel olarak aktifleştirilebilir.');
       if (!envState.hasSms) {
         warnings.push('Canlı SMS/WhatsApp entegrasyonu kapalıdır. Bildirim kutusu (outbox-only) yerel olarak simüle edilir.');

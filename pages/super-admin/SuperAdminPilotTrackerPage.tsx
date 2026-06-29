@@ -84,8 +84,13 @@ const SuperAdminPilotTrackerPage: React.FC = () => {
         {!currentMode.onlinePaymentEnabled && (
           <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 text-xs md:text-sm text-amber-300 mb-6 flex items-start gap-2.5">
             <span className="text-base">⚠️</span>
-            <div>
-              <strong>Önemli Canlıya Geçiş Kuralı:</strong> Bu modda online ödeme tamamen kapalıdır. Kaydolan tüm kiracıların/salonların abonelik durumları LARİ kurucuları tarafından elden/havale tahsilatına müteakip manuel olarak aktifleştirilir.
+            <div className="space-y-1">
+              <div>
+                <strong>Önemli Canlıya Geçiş Kuralı:</strong> Bu modda online ödeme tamamen kapalıdır. Kaydolan tüm kiracıların/salonların abonelik durumları LARİ kurucuları tarafından elden/havale tahsilatına müteakip manuel olarak aktifleştirilir.
+              </div>
+              <div className="text-amber-400 font-semibold text-xs border-t border-amber-500/20 pt-1">
+                Disiplin & Sınırlar: Bu yönetim arayüzü, altyapı, sunucu kontrolü ve kaynak kodları tamamen LARİ'ye aittir. Salon sahipleri sadece kendi kısıtlı panellerine erişen kiracı müşterilerdir, Super Admin yetkileri kesinlikle paylaşılmaz.
+              </div>
             </div>
           </div>
         )}

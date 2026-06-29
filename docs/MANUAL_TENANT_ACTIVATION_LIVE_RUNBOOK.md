@@ -1,6 +1,9 @@
 # LARI - MANUAL TENANT ACTIVATION LIVE RUNBOOK (MANUEL KİRACI AKTİVASYONU CANLI OPERASYON KILAVUZU)
 
-Bu el kitabı, LARİ kurucu ortaklarının (Super Admin) elden veya havale ile tahsilat yaptıktan sonra, yeni salon kiracılarını sisteme nasıl tanımlayacağını, aboneliklerini nasıl başlatacağını ve operasyonel süreçleri nasıl yöneteceğini adım adım açıklar.
+Bu el kitabı, LARİ kurucu ortaklarının (Super Admin) elden veya havale ile tahsilat yaptıktan sonra, yeni salon kiracılarını (müşterilerini) sisteme nasıl tanımlayacağını, aboneliklerini (hesaplarını) nasıl başlatacağını ve operasyonel süreçleri nasıl yöneteceğini adım adım açıklar.
+
+**ÖNEMLİ KAPSAM SINIRI:**
+Bu süreçte salon sahiplerine herhangi bir altyapı, sunucu, kaynak kodu veya sahiplik devredilmemektedir. Salon sahipleri sadece kendilerine ait kiracı hesabına (tenant workspace) ve kendi müşterileri için rezervasyon bağlantısına erişim hakkı elde eder. Tüm platform kontrolü, kaynak kod mülkiyeti, sunucu yönetimi ve Super Admin paneli strictly (kesin olarak) yalnızca LARİ'ye aittir.
 
 ---
 

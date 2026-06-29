@@ -1,6 +1,11 @@
 # LARİ Manuel Faturalandırma ve Kiracı Yönetim Rehberi (Manual Billing Tenant Operations)
 
-Bu kılavuz, `limited_live_manual_billing` modunda Süper Adminlerin kiracı (tenant) hesaplarını nasıl kuracağını, abonelik sürelerini nasıl yöneteceğini, manuel fatura kayıtlarını nasıl tutacağını ve askıya alma işlemlerini nasıl yapacağını adım adım açıklar.
+Bu kılavuz, `limited_live_manual_billing` modunda Süper Adminlerin kiracı (tenant) müşteri hesaplarını nasıl kuracağını, abonelik sürelerini nasıl yöneteceğini, manuel fatura kayıtlarını nasıl tutacağını ve askıya alma işlemlerini nasıl yapacağını adım adım açıklar.
+
+**YETKİ VE SAHİPLİK SINIRLARI:**
+*   **Sistem Mülkiyeti:** Tüm altyapı, sunucular, veritabanı kontrolü ve kaynak kodları LARİ'ye aittir. Salonlar platform sahibi değil, sadece birer kiracı müşteridir.
+*   **Super Admin Koruması:** Super Admin yetkileri ve yönetim paneli yalnızca LARİ kurucularına özeldir, salon sahipleriyle asla paylaşılmaz.
+*   **Kalıcı Veritabanı:** Canlı ortamdaki salonların randevularının kalıcı veritabanında (Supabase Postgres) saklanması zorunludur. `localStorage` kullanımı sadece local/demo ortamlar için geçici bir seçenek olup canlıda kesinlikle kabul edilemez.
 
 ---
 

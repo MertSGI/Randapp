@@ -1,6 +1,9 @@
 # LARİ Çevrimdışı (Offline/Manual) Ödeme ile Canlıya Geçiş Kılavuzu
 
-Bu döküman, LARİ SaaS platformunun online ödeme entegrasyonu (iyzico vb.) tamamen aktif edilmeden önce, salonlara **manuel/çevrimdışı (offline)** yöntemlerle nasıl satılabileceğini, faturalandırılabileceğini ve Süper Admin tarafından nasıl yönetileceğini açıklayan operasyonel kılavuzdur.
+Bu döküman, LARİ SaaS platformunun online ödeme entegrasyonu (iyzico vb.) tamamen aktif edilmeden önce, salonlara (kiracı müşterilere) **manuel/çevrimdışı (offline)** yöntemlerle nasıl satılabileceğini, faturalandırılabileceğini ve Süper Admin tarafından nasıl yönetileceğini açıklayan operasyonel kılavuzdur.
+
+**KRİTİK HUSUS:**
+Salonlara yapılan satışlarda sistem kurulumu veya kaynak kodu devri söz konusu değildir; salonlar sadece müşteri sıfatıyla kendi kiracı hesaplarına (workspace) erişirler. Tüm sistem kontrolü, veritabanı altyapısı ve Super Admin yetkileri kesin olarak LARİ ekibindedir.
 
 ---
 

@@ -433,11 +433,34 @@ const BillingTab: React.FC = () => {
             {!launchModeService.isOnlinePaymentEnabled() && (
               <div className="mt-4 pt-4 border-t border-gray-100 dark:border-slate-700 space-y-3">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
-                  {language === 'tr' ? '✍️ Çevrimdışı Aktivasyon & Manuel Raporlama' : '✍️ Offline Activation & Manual Reports'}
+                  {language === 'tr' ? '✍️ Çevrimdışı Aktivasyon & Manuel Yönetim Bilgileri' : '✍️ Offline Activation & Manual Management Info'}
                 </span>
+
+                <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/30 rounded-xl p-4 space-y-2 text-xs text-amber-900 dark:text-amber-300">
+                  <p className="font-semibold">
+                    {language === 'tr' ? 'Platform ve Abonelik Yönetim Bildirimi:' : 'Platform and Subscription Notice:'}
+                  </p>
+                  <ul className="list-disc pl-4 space-y-1 leading-relaxed">
+                    {language === 'tr' ? (
+                      <>
+                        <li>Hesabınız LARİ ekibi tarafından manuel aktive edilir.</li>
+                        <li>Online ödeme devreye alınana kadar abonelik yönetimi manuel yürütülür.</li>
+                        <li>Platform altyapısı, kaynak kodları ve Super Admin yönetimi LARİ’ye aittir.</li>
+                        <li>Salon sahibi yalnızca kendi işletme paneline ve müşterileri için rezervasyon sayfasına erişir.</li>
+                      </>
+                    ) : (
+                      <>
+                        <li>Your account is activated manually by the LARİ team.</li>
+                        <li>Until online payments are active, subscription management is handled manually.</li>
+                        <li>The platform infrastructure, source code, and Super Admin control belong to LARİ.</li>
+                        <li>The salon owner only has access to their specific business panel and booking link.</li>
+                      </>
+                    )}
+                  </ul>
+                </div>
                 
                 {subscription?.paidThroughDate && (
-                  <div className="text-xs">
+                  <div className="text-xs pt-1">
                     <span className="text-gray-500">{language === 'tr' ? 'Ödenen Son Tarih: ' : 'Paid Through Date: '}</span>
                     <strong className="text-gray-800 dark:text-slate-200">{new Date(subscription.paidThroughDate).toLocaleDateString()}</strong>
                   </div>
