@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { planService, PricingPlan, BillingPeriod } from '../services/planService';
+import { launchModeService } from '../services/launchModeService';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useDialog } from '../contexts/DialogContext';
 import { translations } from '../utils/translations';
@@ -146,10 +147,16 @@ const PricingPage: React.FC = () => {
                      {ctaConfig.label || (language === 'tr' ? '14 Gün Ücretsiz Başla' : 'Start 14-Day Free Trial')}
                    </Link>
                    <p className="text-center text-[11px] text-gray-500 mt-2">
-                     {language === 'tr' 
-                       ? 'Kart doğrulaması gerekir. 14 gün boyunca ücret alınmaz.'
-                       : 'Card required. No charge for 14 days.'}
-                   </p>
+                      {launchModeService.isOnlinePaymentEnabled() ? (
+                        language === 'tr' 
+                          ? 'Kart doğrulaması gerekir. 14 gün boyunca ücret alınmaz.'
+                          : 'Card required. No charge for 14 days.'
+                      ) : (
+                        language === 'tr'
+                          ? 'Manuel aktivasyon sürecidir. Hesap kurulduktan sonra LARİ ekibi sizinle iletişime geçecektir.'
+                          : 'Manual activation process. The LARİ team will contact you once your account is created.'
+                      )}
+                    </p>
                  </div>
                )}
             </div>

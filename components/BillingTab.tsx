@@ -1,3 +1,4 @@
+import { launchModeService } from '../services/launchModeService';
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { translations } from '../utils/translations';
@@ -190,6 +191,24 @@ const BillingTab: React.FC = () => {
 
   return (
     <div className="space-y-8">
+      {/* Launch Mode Notice */}
+      {!launchModeService.isOnlinePaymentEnabled() && (
+        <div className="bg-indigo-50 dark:bg-indigo-950/20 border-l-4 border-indigo-500 p-5 rounded-r-xl shadow-sm">
+          <div className="flex gap-3">
+            <span className="text-xl">ℹ️</span>
+            <div>
+              <h4 className="font-bold text-indigo-900 dark:text-indigo-300 text-sm md:text-base">
+                {language === 'tr' ? 'Çevrimdışı Faturalandırma Aktif' : 'Offline Billing Active'}
+              </h4>
+              <p className="text-indigo-700 dark:text-indigo-400 text-xs md:text-sm mt-1">
+                {language === 'tr' 
+                  ? 'LARİ şu anda çevrimdışı ve manuel faturalandırma modundadır (limited_live_manual_billing). Aylık paket yenilemeleri, elden tahsilat veya banka havalesi sonrasında Süper Admin tarafından gerçekleştirilir. Online ödeme altyapısı daha sonra entegre edilecektir.'
+                  : 'LARİ is currently in offline and manual billing mode. Monthly renewals are performed by the Super Admin after cash or bank transfer confirmation. Online payments will be enabled later.'}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Current Status */}
       <div className="bg-white dark:bg-slate-800 shadow-sm rounded-lg border border-gray-200 dark:border-slate-700 p-6">
         <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">{t.billing.current_subscription_status}</h2>

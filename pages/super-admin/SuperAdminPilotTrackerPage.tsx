@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { pilotCustomerOnboardingService, PilotCustomer, PilotStage } from '../../services/pilotCustomerOnboardingService';
+import { launchModeService } from '../../services/launchModeService';
 
 const SuperAdminPilotTrackerPage: React.FC = () => {
   const [pilots, setPilots] = useState<PilotCustomer[]>([]);
@@ -25,9 +26,67 @@ const SuperAdminPilotTrackerPage: React.FC = () => {
     }
   };
 
+  const currentMode = launchModeService.getLaunchModeReadinessSummary();
+
   return (
-    <div className="p-6">
-      <div className="flexjustify-between items-center mb-6">
+    <div className="p-6 space-y-6">
+      {/* Limited Live / Launch Mode Indicator Panel */}
+      <div className="bg-slate-900 text-white rounded-2xl p-6 border border-slate-800 shadow-lg">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-800 pb-4 mb-4">
+          <div>
+            <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+              <span className="text-[10px] uppercase tracking-wider bg-indigo-500/20 text-indigo-300 font-bold px-2.5 py-0.5 rounded-full">
+                Sistem Canlılık Modu
+              </span>
+              <span className={`text-[10px] uppercase tracking-wider font-bold px-2.5 py-0.5 rounded-full ${
+                currentMode.mode === 'limited_live_manual_billing' ? 'bg-amber-500/20 text-amber-300' : 'bg-blue-500/20 text-blue-300'
+              }`}>
+                {currentMode.name}
+              </span>
+            </div>
+            <h2 className="text-xl font-bold tracking-tight">Limited Live & Offline Billing Console</h2>
+          </div>
+          <div className="flex gap-2">
+            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
+              currentMode.manualBillingEnabled ? 'bg-green-500/15 text-green-400' : 'bg-red-500/15 text-red-400'
+            }`}>
+              ● Manuel Faturalandırma: {currentMode.manualBillingEnabled ? 'AÇIK' : 'KAPALI'}
+            </span>
+            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
+              !currentMode.onlinePaymentEnabled ? 'bg-amber-500/15 text-amber-400' : 'bg-green-500/15 text-green-400'
+            }`}>
+              ● Online Ödeme (POS): {currentMode.onlinePaymentEnabled ? 'AKTİF' : 'DEVRE DIŞI'}
+            </span>
+          </div>
+        </div>
+
+        <p className="text-slate-400 text-xs md:text-sm mb-4 leading-relaxed">
+          {currentMode.description}
+        </p>
+
+        {!currentMode.onlinePaymentEnabled && (
+          <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 text-xs md:text-sm text-amber-300 mb-6 flex items-start gap-2.5">
+            <span className="text-base">⚠️</span>
+            <div>
+              <strong>Önemli Canlıya Geçiş Kuralı:</strong> Bu modda online ödeme tamamen kapalıdır. Kaydolan tüm kiracıların/salonların abonelik durumları LARİ kurucuları tarafından elden/havale tahsilatına müteakip manuel olarak aktifleştirilir.
+            </div>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <Link to="/super-admin/provisioning" className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold text-center text-xs transition">
+            👤 Kiracı Provisioning Portalına Git →
+          </Link>
+          <a href="/#/docs?path=docs/MANUAL_BILLING_TENANT_OPERATIONS.md" target="_blank" className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg font-semibold text-center text-xs transition border border-slate-700">
+            📖 Manuel Faturalandırma Kuralları
+          </a>
+          <a href="/#/docs?path=docs/LIVE_ROUTE_AND_CTA_SMOKE_TEST.md" target="_blank" className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg font-semibold text-center text-xs transition border border-slate-700">
+            🔍 Rota Duman Testi Kılavuzu
+          </a>
+        </div>
+      </div>
+
+      <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Pilot Customer Onboarding Tracker</h1>
         <button 
           onClick={handleRegisterNewPilot}

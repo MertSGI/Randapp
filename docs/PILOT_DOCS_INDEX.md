@@ -111,6 +111,10 @@ Saha yayılımı ve pilot lansman öncesinde teknik ve operasyonel duman testler
 * **[Manual Pilot Commercial Operations Checklist](./MANUAL_PILOT_COMMERCIAL_OPERATIONS_CHECKLIST.md):** Mali ve yasal uyarılar, ücretsiz/ücretli manuel pilot muhasebe süreçleri ve taahhüt edilmeyecekler listesi.
 * **[First 7-Day Pilot Monitoring Scorecard](./FIRST_7_DAY_PILOT_MONITORING_SCORECARD.md):** Pilot salonun haftalık sayısal ve niteliksel metrikleri, yeşil/sarı/kırmızı başarı skorları değerlendirme tablosu.
 * **[First Pilot Issue Triage Board](./FIRST_PILOT_ISSUE_TRIAGE_BOARD.md):** Saha denemelerinde karşılaşılan hata ve taleplerin Blocker/Major/Minor/Improvement olarak sınıflandırılması ve çözüme kavuşturulma panosu.
+* **[PAYMENTLESS LIMITED LIVE LAUNCH PLAN](./PAYMENTLESS_LIMITED_LIVE_LAUNCH_PLAN.md):** Online ödeme kapalıyken elden/havale ödeme tahsilatı ile kısıtlı canlıya alma stratejik planı.
+* **[MANUAL BILLING TENANT OPERATIONS](./MANUAL_BILLING_TENANT_OPERATIONS.md):** Kiracı hesaplarının manuel aktivasyonu, askıya alınması ve haftalık operasyonel denetim kılavuzu.
+* **[LIMITED LIVE MINIMUM INFRASTRUCTURE CHECKLIST](./LIMITED_LIVE_MINIMUM_INFRASTRUCTURE_CHECKLIST.md):** Minimum sunucu, veritabanı (Supabase RLS), wildcard alan adı ve duman testleri canlıya geçiş kontrol listesi.
+* **[ONLINE PAYMENT ENABLEMENT LATER PLAN](./ONLINE_PAYMENT_ENABLEMENT_LATER_PLAN.md):** Manuel aboneleri bozmadan ve veri kaybı yaşamadan tam otomatik kredi kartlı sanal POS altyapısına geçiş yol haritası.
 
 
 

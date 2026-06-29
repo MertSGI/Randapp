@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { planService } from '../services/planService';
+import { launchModeService } from '../services/launchModeService';
 import { useLanguage } from '../contexts/LanguageContext';
 import { translations } from '../utils/translations';
 import { tenantRegistrationService, RegistrationData } from '../services/tenantRegistrationService';
@@ -167,7 +168,15 @@ export default function RegistrationPage() {
              {language === 'tr' ? 'İşletmeni Oluştur' : 'Create Your Business'}
           </h1>
           <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-xl">
-             {language === 'tr' ? '14 günlük ücretsiz denemeyi başlatmak için kartınızı güvenli ödeme sayfasında doğrulamanız gerekir. LARİ kart bilgilerinizi doğrudan almaz. 14 gün içinde iptal ederseniz ücret ödemezsiniz; iptal etmezseniz seçtiğiniz plan deneme sonunda otomatik olarak başlar.' : 'To start your 14-day free trial, you must verify your card on the secure payment page. LARİ does not collect your card details directly. If you cancel within 14 days, you will not be charged; if you do not cancel, your selected plan will automatically start at the end of the trial.'}
+             {!launchModeService.isOnlinePaymentEnabled() ? (
+                language === 'tr'
+                  ? 'Kayıt işlemini tamamladıktan sonra hesabınız manuel aktivasyon sürecine alınır. Online ödeme sistemi devreye girene kadar aboneliğiniz LARİ ekibi tarafından yönetilecektir.'
+                  : 'After completing the registration, your account will be manually activated. The LARİ team will manage your subscription until online payments are enabled.'
+              ) : (
+                language === 'tr'
+                  ? '14 günlük ücretsiz denemeyi başlatmak için kartınızı güvenli ödeme sayfasında doğrulamanız gerekir. LARİ kart bilgilerinizi doğrudan almaz. 14 gün içinde iptal ederseniz ücret ödemezsiniz; iptal etmezseniz seçtiğiniz plan deneme sonunda otomatik olarak başlar.'
+                  : 'To start your 14-day free trial, you must verify your card on the secure payment page. LARİ does not collect your card details directly. If you cancel within 14 days, you will not be charged; if you do not cancel, your selected plan will automatically start at the end of the trial.'
+              )}
           </p>
 
           {error && (
@@ -257,7 +266,13 @@ export default function RegistrationPage() {
             </div>
 
             <button disabled={loading} type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-500/30 transition transform hover:-translate-y-0.5 disabled:opacity-70 disabled:hover:translate-y-0 text-lg">
-               {loading ? 'İşleniyor...' : (language === 'tr' ? 'Kartla 14 Gün Ücretsiz Başlat' : 'Start 14-Day Free Trial with Card')}
+               {loading ? 'İşleniyor...' : (
+               !launchModeService.isOnlinePaymentEnabled() ? (
+                 language === 'tr' ? 'Hemen Kaydol ve Başla' : 'Register and Start Now'
+               ) : (
+                 language === 'tr' ? 'Kartla 14 Gün Ücretsiz Başlat' : 'Start 14-Day Free Trial with Card'
+               )
+             )}
             </button>
             <p className="text-xs text-center text-slate-500 mt-4">
               Zaten hesabınız var mı? <Link to="/login" className="text-blue-600 font-medium hover:underline">Giriş Yap</Link>
