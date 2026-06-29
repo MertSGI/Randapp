@@ -890,6 +890,111 @@ export interface Incident {
   metadata?: any;
 }
 
+// === LEGAL & POLICY READINESS MODEL ===
+export type LegalDocumentType =
+  | 'terms_of_service'
+  | 'privacy_policy'
+  | 'kvkk_clarification_text'
+  | 'cookie_policy'
+  | 'data_processing_terms'
+  | 'acceptable_use_policy'
+  | 'subscription_terms'
+  | 'booking_terms'
+  | 'cancellation_policy'
+  | 'communication_consent_text'
+  | 'marketing_consent_text'
+  | 'media_consent_text';
+
+export type LegalDocumentStatus =
+  | 'draft'
+  | 'review_required'
+  | 'active'
+  | 'archived';
+
+export interface LegalDocumentVersion {
+  id: string;
+  type: LegalDocumentType;
+  version: string;
+  status: LegalDocumentStatus;
+  locale: string;
+  title: string;
+  summary: string;
+  content: string;
+  effectiveAt?: string;
+  archivedAt?: string;
+  requiresAcceptance: boolean;
+  createdAt: string;
+  updatedAt: string;
+  reviewedBy?: string;
+  metadata?: any;
+}
+
+export type PolicyAcceptanceActorType =
+  | 'tenant_owner'
+  | 'customer'
+  | 'staff'
+  | 'super_admin';
+
+export type PolicyAcceptanceSource =
+  | 'registration'
+  | 'booking'
+  | 'self_service'
+  | 'admin_panel'
+  | 'super_admin'
+  | 'manual_import';
+
+export interface PolicyAcceptanceRecord {
+  id: string;
+  tenantId?: string;
+  actorType: PolicyAcceptanceActorType;
+  actorId?: string;
+  actorDisplayName?: string;
+  actorContact?: string;
+  documentType: LegalDocumentType;
+  documentVersion: string;
+  acceptedAt: string;
+  acceptanceSource: PolicyAcceptanceSource;
+  ipAddress?: string;
+  userAgent?: string;
+  locale: string;
+  consentSnapshot?: string; // Captured text or configuration at acceptance time
+  revokedAt?: string;
+  metadata?: any;
+}
+
+// === DATA RIGHTS REQUESTS MODEL ===
+export type DataRightsRequestType =
+  | 'access'
+  | 'export'
+  | 'deletion'
+  | 'correction'
+  | 'consent_withdrawal';
+
+export type DataRightsRequestStatus =
+  | 'submitted'
+  | 'in_review'
+  | 'completed'
+  | 'rejected'
+  | 'cancelled';
+
+export interface DataRightsRequest {
+  id: string;
+  tenantId?: string;
+  requesterType: 'customer' | 'tenant_owner' | 'staff';
+  requesterName?: string;
+  requesterContact?: string;
+  type: DataRightsRequestType;
+  status: DataRightsRequestStatus;
+  description: string;
+  relatedCustomerId?: string;
+  relatedAppointmentId?: string;
+  createdAt: string;
+  updatedAt: string;
+  completedAt?: string;
+  internalNotes?: string;
+  metadata?: any;
+}
+
 
 
 

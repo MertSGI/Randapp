@@ -41,6 +41,7 @@ import SuperAdminPilotTrackerPage from './pages/super-admin/SuperAdminPilotTrack
 import SuperAdminManualProvisioningPage from './pages/super-admin/SuperAdminManualProvisioningPage';
 import SuperAdminSchedulerPage from './pages/super-admin/SuperAdminSchedulerPage';
 import SuperAdminObservabilityPage from './pages/super-admin/SuperAdminObservabilityPage';
+import SuperAdminLegalPage from './pages/super-admin/SuperAdminLegalPage';
 import SitePreviewPage from './pages/admin/SitePreviewPage';
 
 import CustomerLoginPage from './pages/customer/CustomerLoginPage';
@@ -142,6 +143,7 @@ const AppFlowSwitcher: React.FC = () => {
         <Route path="/super-admin/provisioning" element={<SuperAdminManualProvisioningPage />} />
         <Route path="/super-admin/scheduler" element={<SuperAdminSchedulerPage />} />
         <Route path="/super-admin/observability" element={<SafeErrorBoundary><SuperAdminObservabilityPage /></SafeErrorBoundary>} />
+        <Route path="/super-admin/legal" element={<SafeErrorBoundary><SuperAdminLegalPage /></SafeErrorBoundary>} />
       </Route>
       <Route path="/super-admin/tenant-preview/:tenantId" element={
         <ProtectedRoute allowedRoles={['super_admin']}>

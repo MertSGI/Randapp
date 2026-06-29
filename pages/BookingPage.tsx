@@ -298,6 +298,84 @@ const BookingPage: React.FC = () => {
        });
     }).catch(console.error);
 
+    import('../services/policyAcceptanceService').then(({ policyAcceptanceService }) => {
+       const actorId = formData.phone || formData.email || 'anonymous';
+       policyAcceptanceService.recordPolicyAcceptance({
+          tenantId: tenant.id,
+          actorType: 'customer',
+          actorId,
+          actorDisplayName: formData.name,
+          actorContact: formData.phone || formData.email,
+          documentType: 'booking_terms',
+          acceptanceSource: 'booking'
+       });
+       if (consentForms.reminderConsent) {
+          policyAcceptanceService.recordPolicyAcceptance({
+             tenantId: tenant.id,
+             actorType: 'customer',
+             actorId,
+             actorDisplayName: formData.name,
+             actorContact: formData.phone || formData.email,
+             documentType: 'communication_consent_text',
+             acceptanceSource: 'booking'
+          });
+       }
+       if (consentForms.marketingConsent) {
+          policyAcceptanceService.recordPolicyAcceptance({
+             tenantId: tenant.id,
+             actorType: 'customer',
+             actorId,
+             actorDisplayName: formData.name,
+             actorContact: formData.phone || formData.email,
+             documentType: 'marketing_consent_text',
+             acceptanceSource: 'booking'
+          });
+       }
+    }).catch(console.error);
+
+    import('../services/consentLedgerService').then(({ consentLedgerService }) => {
+       const actorId = formData.phone || formData.email || 'anonymous';
+       consentLedgerService.recordConsent({
+          tenantId: tenant.id,
+          actorType: 'customer',
+          actorId,
+          contact: formData.phone || formData.email,
+          consentType: 'booking_transactional',
+          status: consentForms.requiredBookingConsent ? 'granted' : 'denied',
+          source: 'booking_page',
+          legalDocumentType: 'booking_terms'
+       });
+       consentLedgerService.recordConsent({
+          tenantId: tenant.id,
+          actorType: 'customer',
+          actorId,
+          contact: formData.phone || formData.email,
+          consentType: 'communication',
+          status: consentForms.reminderConsent ? 'granted' : 'denied',
+          source: 'booking_page',
+          legalDocumentType: 'communication_consent_text'
+       });
+       consentLedgerService.recordConsent({
+          tenantId: tenant.id,
+          actorType: 'customer',
+          actorId,
+          contact: formData.phone || formData.email,
+          consentType: 'marketing',
+          status: consentForms.marketingConsent ? 'granted' : 'denied',
+          source: 'booking_page',
+          legalDocumentType: 'marketing_consent_text'
+         });
+       consentLedgerService.recordConsent({
+          tenantId: tenant.id,
+          actorType: 'customer',
+          actorId,
+          contact: formData.phone || formData.email,
+          consentType: 'referral_campaign',
+          status: consentForms.referralConsent ? 'granted' : 'denied',
+          source: 'booking_page'
+       });
+    }).catch(console.error);
+
     if (saveProfile) {
       customerService.saveCustomerProfile(tenant.id, {
         fullName: formData.name,

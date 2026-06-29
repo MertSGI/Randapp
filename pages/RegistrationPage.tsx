@@ -108,6 +108,40 @@ export default function RegistrationPage() {
            consentService.recordBusinessOwnerTermsAcceptance(result.tenantId || 'unknown_tenant', formData.ownerEmail);
         }).catch(e => console.error(e));
 
+        import('../services/policyAcceptanceService').then(({ policyAcceptanceService }) => {
+           policyAcceptanceService.recordPolicyAcceptance({
+             tenantId: result.tenantId || 'unknown_tenant',
+             actorType: 'tenant_owner',
+             actorId: formData.ownerEmail,
+             actorDisplayName: `${formData.ownerName} ${formData.ownerSurname}`,
+             actorContact: formData.ownerPhone,
+             documentType: 'terms_of_service',
+             acceptanceSource: 'registration'
+           });
+           policyAcceptanceService.recordPolicyAcceptance({
+             tenantId: result.tenantId || 'unknown_tenant',
+             actorType: 'tenant_owner',
+             actorId: formData.ownerEmail,
+             actorDisplayName: `${formData.ownerName} ${formData.ownerSurname}`,
+             actorContact: formData.ownerPhone,
+             documentType: 'privacy_policy',
+             acceptanceSource: 'registration'
+           });
+        }).catch(e => console.error(e));
+
+        import('../services/consentLedgerService').then(({ consentLedgerService }) => {
+           consentLedgerService.recordConsent({
+             tenantId: result.tenantId || 'unknown_tenant',
+             actorType: 'tenant_owner',
+             actorId: formData.ownerEmail,
+             contact: formData.ownerPhone,
+             consentType: 'booking_transactional',
+             status: 'granted',
+             source: 'registration_page',
+             legalDocumentType: 'terms_of_service'
+           });
+        }).catch(e => console.error(e));
+
         // Depending on local vs prod mode, we would redirect to a real checkout init or admin
         // For now, render checkout preview (handoff)
         setRegisteredTenantId(result.tenantId || null);

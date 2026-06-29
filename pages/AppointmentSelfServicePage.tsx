@@ -40,6 +40,12 @@ const AppointmentSelfServicePage: React.FC = () => {
   const [newTime, setNewTime] = useState('');
   const [rescheduleNote, setRescheduleNote] = useState('');
 
+  // KVKK / Data Rights Form state
+  const [showKvkkForm, setShowKvkkForm] = useState(false);
+  const [kvkkType, setKvkkType] = useState<'access' | 'export' | 'deletion' | 'consent_withdrawal'>('export');
+  const [kvkkDesc, setKvkkDesc] = useState('');
+  const [kvkkSuccess, setKvkkSuccess] = useState<string | null>(null);
+
   useEffect(() => {
     if (token) {
       loadSelfServiceDetails();
@@ -465,6 +471,99 @@ const AppointmentSelfServicePage: React.FC = () => {
               <li>• Erteleme talepleri salon yöneticisi tarafından kontrol edilerek yer durumuna göre onaylanmaktadır.</li>
               <li>• Katılmayacağınız randevuları iptal etmelisiniz; no-show limitleri aşıldığında online rezervasyon hakkınız engellenir.</li>
             </ul>
+          </div>
+
+          {/* KVKK / Data Rights Section */}
+          <div className="border-t border-gray-100 dark:border-slate-700/60 pt-6 mt-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest">Kişisel Verilerin Korunması (KVKK)</h4>
+                <p className="text-[10px] text-gray-400 mt-1">6698 Sayılı Kanun kapsamındaki haklarınızı buradan talep edebilirsiniz.</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowKvkkForm(!showKvkkForm);
+                  setKvkkSuccess(null);
+                }}
+                className="text-xs font-semibold text-blue-600 hover:text-blue-700 hover:underline dark:text-blue-400"
+              >
+                {showKvkkForm ? 'Kapat' : 'Talep Oluştur'}
+              </button>
+            </div>
+
+            {showKvkkForm && (
+              <div className="mt-4 p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-gray-100 dark:border-slate-800 space-y-3">
+                {kvkkSuccess ? (
+                  <div className="text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 p-3 rounded-lg border border-emerald-100 dark:border-emerald-900/40">
+                    {kvkkSuccess}
+                  </div>
+                ) : (
+                  <form onSubmit={(e) => {
+                    e.preventDefault();
+                    if (!kvkkDesc.trim()) return;
+                    import('../services/dataRightsRequestService').then(({ dataRightsRequestService }) => {
+                      dataRightsRequestService.createDataRightsRequest({
+                        tenantId: tokenObj?.tenantId || '',
+                        requesterType: 'customer',
+                        requesterName: appointment?.user_name || 'Ziyaretçi Müşteri',
+                        requesterContact: appointment?.phone || appointment?.user_email || '',
+                        type: kvkkType as any,
+                        description: kvkkDesc,
+                        relatedCustomerId: appointment?.customerId,
+                        relatedAppointmentId: appointment?.id
+                      });
+                      setKvkkSuccess('KVKK Veri Hakkı Başvurunuz kaydedilmiştir. Kimlik doğrulaması sonrasında yasal süre (30 gün) içerisinde talebiniz sonuçlandırılıp tarafınıza bilgi verilecektir.');
+                      setKvkkDesc('');
+                    }).catch(err => {
+                      console.error('Data rights submit failed:', err);
+                    });
+                  }} className="space-y-3">
+                    <div>
+                      <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Talep Türü</label>
+                      <select
+                        value={kvkkType}
+                        onChange={(e) => setKvkkType(e.target.value as any)}
+                        className="w-full text-xs rounded-lg border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-2 text-gray-800 dark:text-white focus:ring-1 focus:ring-blue-500"
+                      >
+                        <option value="export">Verilerimin Kopyasını Almak (Erişim/Taşınabilirlik)</option>
+                        <option value="deletion">Hesabımı ve Tüm Randevularımı Silmek (Unutulma Hakkı)</option>
+                        <option value="correction">Verilerimi Güncellemek/Düzeltmek</option>
+                        <option value="consent_withdrawal">İletişim/Pazarlama İznimi İptal Etmek (Rıza Geri Çekme)</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Açıklama & Doğrulama Bilgisi</label>
+                      <textarea
+                        required
+                        rows={3}
+                        value={kvkkDesc}
+                        onChange={(e) => setKvkkDesc(e.target.value)}
+                        placeholder="Örn: Bu telefon numarasına ait tüm randevu kayıtlarımın ve kişisel bilgilerimin kalıcı olarak silinmesini istiyorum."
+                        className="w-full text-xs rounded-lg border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-2 text-gray-800 dark:text-white focus:ring-1 focus:ring-blue-500"
+                      />
+                    </div>
+
+                    <div className="flex justify-end gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setShowKvkkForm(false)}
+                        className="text-xs font-semibold text-gray-500 hover:bg-gray-100 px-3 py-1.5 rounded-lg dark:hover:bg-slate-800"
+                      >
+                        Vazgeç
+                      </button>
+                      <button
+                        type="submit"
+                        className="text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-lg transition-colors"
+                      >
+                        Talebi Gönder
+                      </button>
+                    </div>
+                  </form>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
