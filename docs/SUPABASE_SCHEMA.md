@@ -67,3 +67,16 @@ This document describes the mapping of application entities into Supabase tables
   - `uploaded_by` (uuid) REFERENCES auth.users(id) (optional)
   - `metadata` (jsonb) (dimensions, browser, device, backup markers)
 
+## Paymentless Core Operations (Added in 2026-06-20 Migration)
+
+To support complete self-service tracking, approvals, consent, and audit logs:
+
+- **Appointment Access Tokens (`appointment_access_tokens`)**: Tracks tokens for secure customer self-service actions without requiring login credentials.
+- **Appointment Change Requests (`appointment_change_requests`)**: Holds customer or salon cancellation/rescheduling proposals awaiting approval.
+- **Communication Outbox (`communication_outbox`)**: Stagers queued notifications (SMS, WhatsApp, email) to prevent double-sends and maintain a local log trace.
+- **Audit Events (`audit_events`)**: Logs operator state updates, logins, policy overrides, and billing changes for compliance.
+- **Support Tickets (`support_tickets`)**: Allows tenant owners to log technical issues or feature requests with LARI engineers directly.
+- **Policy Acceptances (`policy_acceptances`)**: Collects user-agent, timestamped consent, and IP mappings for KVKK terms.
+- **Consent Ledger (`consent_ledger`)**: Records digital signatures and granular permissions granted/withdrawn by customers.
+- **Data Rights Requests (`data_rights_requests`)**: Tracks personal data extraction or deletion requests under KVKK laws.
+

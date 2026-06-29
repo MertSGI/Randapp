@@ -73,43 +73,33 @@ const supabaseProviders = {
   campaign: createPilotBypassProxy(rawSupabaseProviders.campaign, localProviders.campaign),
 };
 
+import { repositoryFactory } from '../repositoryFactory';
+
 /**
  * Returns the currently active BusinessProfileRepository based on the environment data source mode.
  */
 export const getBusinessProfileRepository = (): BusinessProfileRepository => {
-  if (dataSourceConfig.mode === 'supabase') {
-    return supabaseProviders.businessProfile;
-  }
-  return localProviders.businessProfile;
+  return repositoryFactory.getBusinessProfileRepository();
 };
 
 /**
  * Returns the currently active CatalogRepository based on the environment data source mode.
  */
 export const getCatalogRepository = (): CatalogRepository => {
-  if (dataSourceConfig.mode === 'supabase') {
-    return supabaseProviders.catalog;
-  }
-  return localProviders.catalog;
+  return repositoryFactory.getCatalogRepository();
 };
 
 /**
  * Returns the currently active BookingRepository based on the environment data source mode.
  */
 export const getBookingRepository = (): BookingRepository => {
-  if (dataSourceConfig.mode === 'supabase') {
-    return supabaseProviders.booking;
-  }
-  return localProviders.booking;
+  return repositoryFactory.getBookingRepository();
 };
 
 /**
  * Returns the currently active CampaignRepository based on the environment data source mode.
  */
 export const getCampaignRepository = (): CampaignRepository => {
-  if (dataSourceConfig.mode === 'supabase') {
-    return supabaseProviders.campaign;
-  }
-  return localProviders.campaign;
+  return repositoryFactory.getCampaignRepository();
 };
 

@@ -22,6 +22,14 @@ To ensure that the LARİ multi-tenant architecture remains secure and leak-proof
 | **communication_outbox**| ❌ No | ✅ Yes (Full) | ❌ No | ✅ Yes (Full) | ✅ Yes | ✅ Yes (primary) | ❌ No | `created_at` |
 | **custom_domain_requests**| ❌ No | ✅ Yes (Create/Read) | ❌ No | ✅ Yes (Full) | ✅ Yes | ✅ Yes (primary) | ❌ No | `created_at`, `updated_at` |
 | **media_records** | ✅ Yes | ✅ Yes (Full) | ❌ No | ✅ Yes (Full) | ✅ Yes | ✅ Yes (primary) | ❌ No | `created_at` |
+| **appointment_access_tokens**| ✅ Yes (Token select)| ✅ Yes (Full) | ❌ No | ✅ Yes (Full) | ✅ Yes | ✅ Yes | ❌ No | `created_at` |
+| **appointment_change_requests**| ❌ No | ✅ Yes (Full) | ✅ Yes (Propose) | ✅ Yes (Full) | ✅ Yes | ✅ Yes | ❌ No | `created_at` |
+| **communication_outbox** | ❌ No | ✅ Yes (Full) | ❌ No | ✅ Yes (Full) | ✅ Yes | ✅ Yes | ❌ No | `created_at`, `updated_at` |
+| **audit_events** | ❌ No | ✅ Yes (Read-only) | ❌ No | ✅ Yes (Full) | ✅ Yes | ✅ Yes | ❌ No | `created_at` |
+| **support_tickets** | ❌ No | ✅ Yes (Full) | ❌ No | ✅ Yes (Full) | ✅ Yes | ✅ Yes | ❌ No | `created_at`, `updated_at` |
+| **policy_acceptances** | ❌ No | ✅ Yes (Reporting)| ✅ Yes (Accept) | ✅ Yes (Full) | ✅ Yes | ✅ Yes | ❌ No | `accepted_at` |
+| **consent_ledger** | ❌ No | ✅ Yes (Full) | ✅ Yes (Insertion) | ✅ Yes (Full) | ✅ Yes | ✅ Yes | ❌ No | `created_at` |
+| **data_rights_requests** | ❌ No | ✅ Yes (Full) | ❌ No | ✅ Yes (Full) | ✅ Yes | ✅ Yes | ❌ No | `created_at`, `updated_at` |
 
 ---
 
@@ -91,6 +99,41 @@ To ensure that the LARİ multi-tenant architecture remains secure and leak-proof
         *   Authenticated tenant owners can read any files matching their logged `tenant_id`.
     *   `INSERT / UPDATE`: Only authenticated tenant owners can write or modify documents representing their own `tenant_id`.
     *   `DELETE`: Blocked; files are archived via status updates. Only the server `service_role` can run hard deletion cleanups.
+
+### Appointment Access Tokens (`appointment_access_tokens`)
+*   **Purpose**: Self-service verification links.
+*   **Policies**:
+    *   `SELECT`: Public can query by hashed token.
+    *   `INSERT / UPDATE / DELETE`: Tenant owners or systems only.
+
+### Appointment Change Requests (`appointment_change_requests`)
+*   **Purpose**: Cancellation and rescheduling requests.
+*   **Policies**:
+    *   `SELECT`: Tenant owners can see all requests for their tenant.
+    *   `INSERT`: Allowed for public bookings.
+    *   `UPDATE`: Approved or rejected only by tenant owners.
+
+### Audit Events (`audit_events`)
+*   **Purpose**: Security event tracking.
+*   **Policies**:
+    *   `SELECT`: Read-only for authenticated tenant owners.
+    *   `INSERT`: Read-only/write allowed from system actions. No direct public manipulation.
+
+### Support Tickets (`support_tickets`)
+*   **Purpose**: Technical assistance logs.
+*   **Policies**:
+    *   `SELECT / INSERT / UPDATE`: Bound to owning tenant's session.
+
+### Policy Acceptances (`policy_acceptances`) & Consent Ledger (`consent_ledger`)
+*   **Purpose**: Digital signatures and legal consent compliance logs.
+*   **Policies**:
+    *   `SELECT`: Tenant owners can fetch consent summaries.
+    *   `INSERT`: Allowed publicly on sign-off/registration events.
+
+### Data Rights Requests (`data_rights_requests`)
+*   **Purpose**: KVKK personal data request tracking.
+*   **Policies**:
+    *   `SELECT / INSERT / UPDATE`: Owner-restricted. No public leaks.
 
 ### Supabase Storage Bucket Policies
 To enforce folder-level access restrictions directly inside our bucket objects:
