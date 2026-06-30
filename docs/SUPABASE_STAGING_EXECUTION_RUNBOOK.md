@@ -180,9 +180,12 @@ If a migration fails or data pollution occurs on staging:
 
 ---
 
-## 9. When to Stop and Abort
+## 10. Related Resources
 
-**ABORT IMMEDIATELY** if:
-- You observe an HTTP `200` response from raw anonymous client queries returning multiple different tenants' appointments or profiles (critical RLS leak!).
-- The browser console reveals any network payloads referencing `service_role` keys.
-- Online card processing or payments are requested/authorized during checkout operations.
+For detailed bootstrap steps, identity designs, and checklists, consult these related resources:
+- **[Supabase Auth RLS Bootstrap Runbook](./SUPABASE_AUTH_RLS_BOOTSTRAP_RUNBOOK.md)**: Detailed step-by-step auth/role setup.
+- **[Supabase RLS Identity Model Decision](./SUPABASE_RLS_IDENTITY_MODEL_DECISION.md)**: Details on why we use users_profile database lookup.
+- **[Supabase Staging Auth Seed Plan](./SUPABASE_STAGING_AUTH_SEED_PLAN.md)**: Seeding rules and sequence.
+- **[Supabase Staging Execution Checklist](./SUPABASE_STAGING_EXECUTION_CHECKLIST.md)**: The sequential preflight checklist.
+- **[Paymentless Staging Seed SQL](../supabase/seed/paymentless_staging_seed.sql)**: Transaction-safe repeatable seed script.
+

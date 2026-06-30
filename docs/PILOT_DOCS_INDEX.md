@@ -132,6 +132,11 @@ Gerçek Supabase veritabanı ve güvenli ortamların canlıya geçiş öncesinde
 * **[Supabase Staging Execution Runbook](./SUPABASE_STAGING_EXECUTION_RUNBOOK.md):** Gerçek Supabase staging veritabanının kurulması, şema migrasyonu, yetki yönetimi ve duman testlerinin sırayla uygulanması rehberi.
 * **[RLS Tenant Isolation Smoke Test Plan](./SUPABASE_RLS_TENANT_ISOLATION_SMOKE_TEST.md):** PostgreSQL satır seviyesi güvenlik (RLS) politikalarının ve kiracı izolasyon bariyerlerinin doğrulanması için sorgular ve test senaryoları planı.
 * **[Supabase Staging Seed Data Plan](./SUPABASE_STAGING_SEED_DATA_PLAN.md):** Staging ortamı için KVKK uyumlu, gerçekçi ancak hayali test verileri populate etme, yönetme ve temizleme planı.
+* **[Supabase Auth RLS Bootstrap Runbook](./SUPABASE_AUTH_RLS_BOOTSTRAP_RUNBOOK.md):** Gerçek staging ortamı için e-posta doğrulaması, Super Admin ve tenant sahibi hesaplarının adım adım oluşturulma rehberi.
+* **[Supabase RLS Identity Model Decision](./SUPABASE_RLS_IDENTITY_MODEL_DECISION.md):** JWT özel iddiaları (claims) yerine real-time users_profile tablosu referansını neden ana yöntem seçtiğimizin teknik gerekçesi.
+* **[Supabase Staging Auth Seed Plan](./SUPABASE_STAGING_AUTH_SEED_PLAN.md):** Staging test verilerinin hiyerarşik yüklenme sırası, çakışmasız deterministic UUID yapısı ve KVKK maskeleme kuralları.
+* **[Supabase Staging Execution Checklist](./SUPABASE_STAGING_EXECUTION_CHECKLIST.md):** Canlıya kilitlenme (production cutover) öncesinde kurucular için 20 adımdan oluşan sıralı Go/No-Go preflight kontrol listesi.
+* **[Staging Seeding SQL Script](../supabase/seed/paymentless_staging_seed.sql):** Melis Güzellik pilot salonu için tüm katalog ve personel yapısını sıfırdan kuran tekrarlanabilir SQL betiği.
 
 
 

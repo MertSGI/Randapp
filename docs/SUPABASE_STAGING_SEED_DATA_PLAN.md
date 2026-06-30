@@ -132,16 +132,12 @@ Before applying any seed data to a staging or production database, the following
 
 ---
 
-## 7. Cleanup & Purge Strategy
+## 8. Related Resources
 
-To wipe all staging records and restore a clean testing environment:
+For detailed bootstrap steps, identity designs, and checklists, consult these related resources:
+- **[Supabase Auth RLS Bootstrap Runbook](./SUPABASE_AUTH_RLS_BOOTSTRAP_RUNBOOK.md)**: Detailed step-by-step auth/role setup.
+- **[Supabase RLS Identity Model Decision](./SUPABASE_RLS_IDENTITY_MODEL_DECISION.md)**: Details on why we use users_profile database lookup.
+- **[Supabase Staging Auth Seed Plan](./SUPABASE_STAGING_AUTH_SEED_PLAN.md)**: Seeding rules and sequence.
+- **[Supabase Staging Execution Checklist](./SUPABASE_STAGING_EXECUTION_CHECKLIST.md)**: The sequential preflight checklist.
+- **[Paymentless Staging Seed SQL](../supabase/seed/paymentless_staging_seed.sql)**: Transaction-safe repeatable seed script.
 
-```sql
-BEGIN;
-DELETE FROM appointment_access_tokens WHERE tenant_id = '550e8400-e29b-41d4-a716-446655440000';
-DELETE FROM appointments WHERE tenant_id = '550e8400-e29b-41d4-a716-446655440000';
-DELETE FROM services WHERE tenant_id = '550e8400-e29b-41d4-a716-446655440000';
-DELETE FROM staff WHERE tenant_id = '550e8400-e29b-41d4-a716-446655440000';
-DELETE FROM tenants WHERE id = '550e8400-e29b-41d4-a716-446655440000';
-COMMIT;
-```

@@ -17,6 +17,7 @@ All migrations in `supabase/migrations/` must be applied in the exact alphabetic
 7. **`20260619_lari_rls_policy_draft.sql`** — Consolidated unified RLS security rules.
 8. **`20260620_paymentless_production_core_tables.sql`** — Self-service and paymentless tracking tables.
 9. **`20260621_paymentless_production_repository_columns.sql`** — Manual/offline billing support columns.
+10. **`20260622_paymentless_production_rls_identity_alignment.sql`** — Aligns core tables with users_profile lookup canonical RLS identity model.
 
 ---
 
@@ -56,14 +57,14 @@ All migrations in `supabase/migrations/` must be applied in the exact alphabetic
 | `business_verification_reviews`| `20260601_lari_core_schema_alignment.sql` | — | `20260601`, `20260619` |
 | `notification_templates` | `20260601_lari_core_schema_alignment.sql` | — | `20260601`, `20260619` |
 | `notification_logs` | `20260601_lari_core_schema_alignment.sql` | — | `20260601`, `20260619` |
-| `appointment_access_tokens` | `20260620_paymentless_production_core_tables.sql`| — | `20260620_paymentless_production_core_tables.sql` |
-| `appointment_change_requests` | `20260620_paymentless_production_core_tables.sql`| — | `20260620_paymentless_production_core_tables.sql` |
-| `communication_outbox` | `20260620_paymentless_production_core_tables.sql`| — | `20260620_paymentless_production_core_tables.sql` |
-| `audit_events` | `20260620_paymentless_production_core_tables.sql`| — | `20260620_paymentless_production_core_tables.sql` |
-| `support_tickets` | `20260620_paymentless_production_core_tables.sql`| — | `20260620_paymentless_production_core_tables.sql` |
-| `policy_acceptances` | `20260620_paymentless_production_core_tables.sql`| — | `20260620_paymentless_production_core_tables.sql` |
-| `consent_ledger` | `20260620_paymentless_production_core_tables.sql`| — | `20260620_paymentless_production_core_tables.sql` |
-| `data_rights_requests` | `20260620_paymentless_production_core_tables.sql`| — | `20260620_paymentless_production_core_tables.sql` |
+| `appointment_access_tokens` | `20260620_paymentless_production_core_tables.sql`| — | `20260622_paymentless_production_rls_identity_alignment.sql` |
+| `appointment_change_requests` | `20260620_paymentless_production_core_tables.sql`| — | `20260622_paymentless_production_rls_identity_alignment.sql` |
+| `communication_outbox` | `20260620_paymentless_production_core_tables.sql`| — | `20260622_paymentless_production_rls_identity_alignment.sql` |
+| `audit_events` | `20260620_paymentless_production_core_tables.sql`| — | `20260622_paymentless_production_rls_identity_alignment.sql` |
+| `support_tickets` | `20260620_paymentless_production_core_tables.sql`| — | `20260622_paymentless_production_rls_identity_alignment.sql` |
+| `policy_acceptances` | `20260620_paymentless_production_core_tables.sql`| — | `20260622_paymentless_production_rls_identity_alignment.sql` |
+| `consent_ledger` | `20260620_paymentless_production_core_tables.sql`| — | `20260622_paymentless_production_rls_identity_alignment.sql` |
+| `data_rights_requests` | `20260620_paymentless_production_core_tables.sql`| — | `20260622_paymentless_production_rls_identity_alignment.sql` |
 
 ---
 
