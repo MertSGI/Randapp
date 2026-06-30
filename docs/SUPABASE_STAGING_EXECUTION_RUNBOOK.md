@@ -52,11 +52,22 @@ VITE_SUPABASE_ANON_KEY=<your-anon-public-key>
 
 ---
 
-## 4. Migration Application Order
+## 4. Migration Application Order & Preflight Verification
 
-To prevent table duplication and execution errors, migrations must be run in the correct chronological or alphanumeric sequence. Standard Supabase CLI runs them alphabetically:
+> **CRITICAL GATE**: Static QA passing locally is beneficial but does not guarantee live database success. Active migrations **must** be conflict-free before deploying to real staging. 
 
-1. `001_initial_schema.sql` (Note: If `001` or `20260526_initial_schema.sql` contain overlapping tables, do not execute both. The recommended baseline path is to run `001` through `005` in order, then execute any delta updates).
+To prevent table duplication and execution errors, we have isolated historical conflicts:
+* **Archived**: `20260526_initial_schema.sql` has been moved to `/supabase/archive/` to prevent duplicate table creation errors during alphanumeric execution.
+* **Never manually skip migrations**: The migrations folder contains only the canonical active sequence. Never skip active migrations unless explicitly instructed by the `MIGRATION_APPLY_MANIFEST.md`.
+
+### Mandatory Pre-staging QA Sequence:
+1. **Run Migration Integrity QA**: Run `npm run qa:supabase-migration-integrity` to verify that there are no duplicate tables, types, indexes, or policies.
+2. **Apply Migrations**: Push migrations via Supabase CLI (`supabase db push`) or execute them in the exact order specified in `/supabase/MIGRATION_APPLY_MANIFEST.md`.
+3. **Run RLS Isolation Tests**: Execute the SQL assertions in `supabase/tests/paymentless_production_rls_smoke.sql` to verify Row Level Security boundaries.
+4. **Run App-Level Smoke Tests**: Execute `npm run smoke:supabase-paymentless-staging` only after target staging credentials are fully configured in `.env`.
+
+### Canonical Active Sequence:
+1. `001_initial_schema.sql` (Canonical initial database baseline)
 2. `002_subscription_alignment.sql`
 3. `003_provisioning_onboarding.sql`
 4. `004_iyzico_provider_alignment.sql`
@@ -68,7 +79,7 @@ To prevent table duplication and execution errors, migrations must be run in the
 
 *Applying Migrations*:
 - Using Supabase CLI: `supabase db push`
-- Using Supabase SQL Editor: Copy and paste migrations in order, or execute sequentially.
+- Using Supabase SQL Editor: Copy and paste active migrations in exact order as detailed in `/supabase/MIGRATION_APPLY_MANIFEST.md`.
 
 ---
 

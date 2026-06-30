@@ -127,6 +127,8 @@ Saha yayılımı ve pilot lansman öncesinde teknik ve operasyonel duman testler
 
 Gerçek Supabase veritabanı ve güvenli ortamların canlıya geçiş öncesindeki hazırlık kılavuzları ve test senaryoları:
 
+* **[Supabase Canonical Migration Apply Strategy](./SUPABASE_CANONICAL_MIGRATION_APPLY_STRATEGY.md):** Veritabanı baselining, çakışma çözümleme adımları ve güvenli güncelleme kuralları.
+* **[Supabase Migration Apply Manifest](../supabase/MIGRATION_APPLY_MANIFEST.md):** Canlı ve staging ortamlar için sıralı aktif veritabanı migrasyon listesi ve veri tablosu sahiplik matrisi.
 * **[Supabase Staging Execution Runbook](./SUPABASE_STAGING_EXECUTION_RUNBOOK.md):** Gerçek Supabase staging veritabanının kurulması, şema migrasyonu, yetki yönetimi ve duman testlerinin sırayla uygulanması rehberi.
 * **[RLS Tenant Isolation Smoke Test Plan](./SUPABASE_RLS_TENANT_ISOLATION_SMOKE_TEST.md):** PostgreSQL satır seviyesi güvenlik (RLS) politikalarının ve kiracı izolasyon bariyerlerinin doğrulanması için sorgular ve test senaryoları planı.
 * **[Supabase Staging Seed Data Plan](./SUPABASE_STAGING_SEED_DATA_PLAN.md):** Staging ortamı için KVKK uyumlu, gerçekçi ancak hayali test verileri populate etme, yönetme ve temizleme planı.

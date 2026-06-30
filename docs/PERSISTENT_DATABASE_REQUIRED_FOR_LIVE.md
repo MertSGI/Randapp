@@ -65,7 +65,15 @@ Canlı veritabanı entegrasyonunun sorunsuz çalıştığını doğrulamak için
 
 Static code quality and QA checks are important, but do not fully guarantee live database compatibility. A successful **real staging smoke test** is a strict prerequisite for any production live cutover. iyzico credit card processing is not required for these staging procedures.
 
+### Core Database Safety Guidelines:
+* **Static QA is not enough**: Code compiling and passing local unit tests does not prove that schema migrations or row-level security policy statements are correct. Active migrations must be verified conflict-free before pushing to real staging.
+* **Never manually skip migrations**: Always execute the active migrations in alphabetical/chronological sequence. No file should be manually skipped unless detailed in `/supabase/MIGRATION_APPLY_MANIFEST.md`.
+* **Integrity First**: Always run the migration integrity suite (`npm run qa:supabase-migration-integrity`) prior to running staging smoke tests to capture schema, policy, and compliance leaks.
+* **RLS Assertions**: Row Level Security smoke tests (`supabase/tests/paymentless_production_rls_smoke.sql`) must be run directly on the database after applying migrations to verify multi-tenant isolation.
+* **App-Level Verification**: Run the app-level staging smoke test (`npm run smoke:supabase-paymentless-staging`) only after the staging credentials are fully configured in the `.env` file.
+
 ### Execution Resources:
+- **Canonical Apply Manifest**: [Migration Apply Manifest](../supabase/MIGRATION_APPLY_MANIFEST.md)
 - **Execution Runbook**: [Supabase Staging Execution Runbook](./SUPABASE_STAGING_EXECUTION_RUNBOOK.md)
 - **Staging Env Preflight Script**: `npm run qa:supabase-staging-env` ([preflight script](../scripts/verify-supabase-staging-env.mjs))
 - **Migration Integrity Script**: `npm run qa:supabase-migration-integrity` ([migration script](../scripts/verify-supabase-migration-integrity.mjs))

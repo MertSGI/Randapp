@@ -4,6 +4,18 @@ This document outlines the test scenarios, queries, and roles required to verify
 
 ---
 
+## Preflight Verification Checklist & Gates
+
+Row Level Security policies represent our final defense line. However, static policy drafts and checks are not enough. The RLS isolation smoke tests must be executed as part of the following multi-stage verification pipeline:
+
+1. **Conflict-Free Migrations**: Run `npm run qa:supabase-migration-integrity` to ensure active migrations are free from duplicate statements. 
+2. **Apply Active Path**: Ensure migrations are fully pushed in the correct chronological order as described in `/supabase/MIGRATION_APPLY_MANIFEST.md` before applying RLS assertions.
+3. **Never Skip Migrations**: Never manually bypass or skip database migrations during execution.
+4. **Execute RLS Smoke Test**: Execute the SQL assertions documented below immediately after database migrations are completed.
+5. **Execute App-Level Smoke Test**: Run `npm run smoke:supabase-paymentless-staging` only after target staging environment variables are successfully filled in `.env`.
+
+---
+
 ## 1. Test Architecture Overview
 
 Row Level Security (RLS) is LARİ's primary defense line against cross-tenant leaks. We simulate different user classes using PostgreSQL's session-level configuration variables (`SET LOCAL`) in a transactional sandbox environment.

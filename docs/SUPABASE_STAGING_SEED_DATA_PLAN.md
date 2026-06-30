@@ -4,6 +4,16 @@ This document maps out the specific seed data to populate a fresh Supabase Stagi
 
 ---
 
+## Pre-seeding Quality Gates & Requirements
+
+Before applying any seed data to a staging or production database, the following preflight validation sequence **must** be executed and passed:
+1. **Migration Integrity QA**: Run `npm run qa:supabase-migration-integrity` to confirm the active migration graph is free from duplicates or conflicts.
+2. **Deterministic Apply**: Ensure active migrations have been applied to the target database in the exact order documented in `/supabase/MIGRATION_APPLY_MANIFEST.md` using `supabase db push`.
+3. **Never skip migrations**: Skipping active migrations is strictly forbidden unless noted in the manifest.
+4. **App-level Smoke Test**: Only load seed data before performing your automated or manual app-level staging tests.
+
+---
+
 ## 1. Seed Tenant & Subscription
 
 ### Tenant: Melis Güzellik & Nail Art

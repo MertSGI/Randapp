@@ -9,7 +9,7 @@ ADD COLUMN IF NOT EXISTS created_from_checkout_session VARCHAR(255),
 ADD COLUMN IF NOT EXISTS sales_notes TEXT;
 
 -- Part 2: Create tenant_onboarding_progress table
-CREATE TABLE public.tenant_onboarding_progress (
+CREATE TABLE IF NOT EXISTS public.tenant_onboarding_progress (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     tenant_id UUID REFERENCES public.tenants(id) ON DELETE CASCADE UNIQUE NOT NULL,
     salon_info_completed BOOLEAN DEFAULT false,
