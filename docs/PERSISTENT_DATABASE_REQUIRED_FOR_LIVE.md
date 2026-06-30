@@ -58,3 +58,18 @@ Canlı veritabanı entegrasyonunun sorunsuz çalıştığını doğrulamak için
 1.  **Bağlantı Testi:** `/api/health` veya admin giriş sayfasında Supabase sunucusuna başarılı ping atıldığı doğrulanmalıdır.
 2.  **Yazma Testi:** Yeni bir hizmet veya personel eklendiğinde, verinin sayfayı yeniledikten sonra da ekranda kaldığı ve Supabase konsolunda ilgili satırın oluştuğu görülmelidir.
 3.  **İzolasyon Testi:** Tarayıcıda A salonu açıkken, gizli sekmede B salonu açılmalı ve B salonunun A salonuna ait personelleri veya randevuları kesinlikle göremediği teyit edilmelidir.
+
+---
+
+## 6. SUPABASE STAGING READINESS VERIFICATION PIPELINE
+
+Static code quality and QA checks are important, but do not fully guarantee live database compatibility. A successful **real staging smoke test** is a strict prerequisite for any production live cutover. iyzico credit card processing is not required for these staging procedures.
+
+### Execution Resources:
+- **Execution Runbook**: [Supabase Staging Execution Runbook](./SUPABASE_STAGING_EXECUTION_RUNBOOK.md)
+- **Staging Env Preflight Script**: `npm run qa:supabase-staging-env` ([preflight script](../scripts/verify-supabase-staging-env.mjs))
+- **Migration Integrity Script**: `npm run qa:supabase-migration-integrity` ([migration script](../scripts/verify-supabase-migration-integrity.mjs))
+- **RLS Tenant Isolation Smoke Test Plan**: [RLS Tenant Isolation Smoke Test](./SUPABASE_RLS_TENANT_ISOLATION_SMOKE_TEST.md) and SQL-level assertions [paymentless_production_rls_smoke.sql](../supabase/tests/paymentless_production_rls_smoke.sql)
+- **App-Level Staging Smoke Test**: [smoke-supabase-paymentless-staging.mjs](../scripts/smoke-supabase-paymentless-staging.mjs)
+- **Staging Seed Data Plan**: [Supabase Staging Seed Data Plan](./SUPABASE_STAGING_SEED_DATA_PLAN.md)
+

@@ -35,4 +35,13 @@ This matrix tracks the data layer readiness of core live flows for the **payment
 4. **Clean Decoupling**: Enforced. `repositoryFactory.ts` manages proxying for all services, ensuring that the application cleanly and non-destructively falls back to local data modes during pre-live staging (`pilot_demo` / `local_pre_live`).
 5. **Readiness Gate Hard Blockers**: Added. Core Priority 1 repositories (Business Profile, Services Catalog, Staff, Working Hours/Availability, Customers) are hard-blocked inside `productionReadinessGateService.ts` if their respective production-ready environment flags (`VITE_BUSINESS_PROFILE_REPO_READY`, `VITE_SERVICES_CATALOG_REPO_READY`, `VITE_STAFF_REPO_READY`, `VITE_AVAILABILITY_REPO_READY`, `VITE_CUSTOMER_REPO_READY`) are not explicitly set to `"true"`.
 6. **No-Fallback Storage Guard**: Verified. Core salon and client databases are added to the prohibited list in `productionStorageGuardService.ts`, ensuring that `localStorage` is strictly rejected for active production/live modes.
+7. **Staging Readiness Pipelines**: Integrated. Real staging smoke testing must pass before live cuts are allowed. Fictional seed data, preflight validations, and migration check scripts are established.
+
+- **Staging Execution Runbook**: [Runbook](./SUPABASE_STAGING_EXECUTION_RUNBOOK.md)
+- **Staging Environment Preflight Script**: [Preflight](../scripts/verify-supabase-staging-env.mjs)
+- **Migration Integrity Script**: [Migration Check](../scripts/verify-supabase-migration-integrity.mjs)
+- **RLS Tenant Isolation Smoke Test Plan**: [RLS Test Plan](./SUPABASE_RLS_TENANT_ISOLATION_SMOKE_TEST.md) and SQL-level assertions [paymentless_production_rls_smoke.sql](../supabase/tests/paymentless_production_rls_smoke.sql)
+- **App-Level Staging Smoke Test**: [smoke-supabase-paymentless-staging.mjs](../scripts/smoke-supabase-paymentless-staging.mjs)
+- **Staging Seed Data Plan**: [Staging Seed Data Plan](./SUPABASE_STAGING_SEED_DATA_PLAN.md)
+
 

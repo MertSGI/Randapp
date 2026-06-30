@@ -121,5 +121,16 @@ Saha yayılımı ve pilot lansman öncesinde teknik ve operasyonel duman testler
 * **[MANUAL TENANT ACTIVATION LIVE RUNBOOK](./MANUAL_TENANT_ACTIVATION_LIVE_RUNBOOK.md):** Kurucular tarafından yeni salon kiracısı aktivasyon adımları, lisanslama ve operasyon rehberi.
 * **[MANUAL TO ONLINE PAYMENT MIGRATION RUNBOOK](./MANUAL_TO_ONLINE_PAYMENT_MIGRATION_RUNBOOK.md):** Manuel aboneleri bozmadan kredi kartlı sanal POS altyapısına veri kaybı yaşamadan kesintisiz geçiş kılavuzu.
 
+---
+
+## 8. Supabase Canlı Hazırlık ve Staging Doğrulama (Supabase Staging & Execution Verification)
+
+Gerçek Supabase veritabanı ve güvenli ortamların canlıya geçiş öncesindeki hazırlık kılavuzları ve test senaryoları:
+
+* **[Supabase Staging Execution Runbook](./SUPABASE_STAGING_EXECUTION_RUNBOOK.md):** Gerçek Supabase staging veritabanının kurulması, şema migrasyonu, yetki yönetimi ve duman testlerinin sırayla uygulanması rehberi.
+* **[RLS Tenant Isolation Smoke Test Plan](./SUPABASE_RLS_TENANT_ISOLATION_SMOKE_TEST.md):** PostgreSQL satır seviyesi güvenlik (RLS) politikalarının ve kiracı izolasyon bariyerlerinin doğrulanması için sorgular ve test senaryoları planı.
+* **[Supabase Staging Seed Data Plan](./SUPABASE_STAGING_SEED_DATA_PLAN.md):** Staging ortamı için KVKK uyumlu, gerçekçi ancak hayali test verileri populate etme, yönetme ve temizleme planı.
+
+
 
 

@@ -80,3 +80,17 @@ Canlı yayına geçiş düğmesine basılmadan önce tüm maddelerin **PASSED** 
 *   **Destek Kanalı:** Salon sahipleriyle doğrudan kurulan WhatsApp Destek Grubu.
 *   **Yanıt Süresi SLA:** Kritik bloklayan randevu hataları için maksimum 15 dakika, diğer sorular için en geç 2 saat içinde yanıt verilecektir.
 *   **Haftalık Kontrol:** Her Pazar günü, tüm salonların rezervasyon sayıları ve veritabanı bütünlüğü manuel olarak denetlenecektir.
+
+---
+
+## 7. SUPABASE STAGING SMOKE TEST & READINESS INTEGRATION
+
+Static QA passing is highly beneficial, but does not equal a successful physical database execution. Paymentless production cutover strictly requires a successful real staging smoke test before deploying live. Note that **iyzico is not required** for paymentless production staging.
+
+- **Execution Runbook**: [Supabase Staging Execution Runbook](./SUPABASE_STAGING_EXECUTION_RUNBOOK.md)
+- **Staging Env Preflight QA**: Verified via `npm run qa:supabase-staging-env` ([Preflight Script](../scripts/verify-supabase-staging-env.mjs))
+- **Migration Integrity QA**: Verified via `npm run qa:supabase-migration-integrity` ([Migration Script](../scripts/verify-supabase-migration-integrity.mjs))
+- **RLS Tenant Isolation Smoke Test Plan**: Detailed in [RLS Tenant Isolation Smoke Test](./SUPABASE_RLS_TENANT_ISOLATION_SMOKE_TEST.md) and SQL-level assertions [paymentless_production_rls_smoke.sql](../supabase/tests/paymentless_production_rls_smoke.sql)
+- **App-Level Staging Smoke Test**: [smoke-supabase-paymentless-staging.mjs](../scripts/smoke-supabase-paymentless-staging.mjs)
+- **Staging Seed Data Plan**: [Supabase Staging Seed Data Plan](./SUPABASE_STAGING_SEED_DATA_PLAN.md)
+

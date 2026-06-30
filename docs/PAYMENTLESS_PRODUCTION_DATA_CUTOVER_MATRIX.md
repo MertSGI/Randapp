@@ -46,3 +46,13 @@ In this mode, all transaction-critical domains (such as Tenant registration, Sta
     *   Authentication is strictly handled by Supabase Auth (`supabase.auth.onAuthStateChange`). Local session mocks must be completely locked in production.
 3.  **RLS Hardening:**
     *   Row Level Security policies on Supabase tables (especially `tenants`, `appointments`, `customers`, and `consent_ledger`) must be activated and verified before the first pilot client goes live.
+4.  **Staging Environment Validation Gate:**
+    *   Passing local pre-live checks is beneficial, but does not equal a physical database success. A **successful real staging smoke test** is a hard block before proceeding to production. Note that **iyzico is not required** for staging verification.
+
+- **Staging Execution Runbook**: [Runbook](./SUPABASE_STAGING_EXECUTION_RUNBOOK.md)
+- **Staging Environment Preflight Script**: [Preflight](../scripts/verify-supabase-staging-env.mjs)
+- **Migration Integrity Script**: [Migration Check](../scripts/verify-supabase-migration-integrity.mjs)
+- **RLS Tenant Isolation Smoke Test Plan**: [RLS Test Plan](./SUPABASE_RLS_TENANT_ISOLATION_SMOKE_TEST.md) and SQL-level assertions [paymentless_production_rls_smoke.sql](../supabase/tests/paymentless_production_rls_smoke.sql)
+- **App-Level Staging Smoke Test**: [smoke-supabase-paymentless-staging.mjs](../scripts/smoke-supabase-paymentless-staging.mjs)
+- **Staging Seed Data Plan**: [Staging Seed Data Plan](./SUPABASE_STAGING_SEED_DATA_PLAN.md)
+
