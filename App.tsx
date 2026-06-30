@@ -113,14 +113,14 @@ const AppFlowSwitcher: React.FC = () => {
       <Route path="/customer" element={<Navigate to="/customer/appointments" replace />} />
 
       {/* 3. Admin Routes */}
-      <Route element={<ProtectedRoute allowedRoles={['salon_owner', 'super_admin']}><AdminLayout /></ProtectedRoute>}>
+      <Route element={<ProtectedRoute allowedRoles={['tenant_owner', 'super_admin']}><AdminLayout /></ProtectedRoute>}>
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/admin/*" element={<AdminPage />} />
       </Route>
       {/* Admin preview route doesn't need standard admin layout so we place it outside it or with a minimal layout*/}
       <Route path="/admin-preview" element={<Navigate to="/admin/site-preview" replace />} />
       <Route path="/admin/site-preview" element={
-        <ProtectedRoute allowedRoles={['salon_owner']}>
+        <ProtectedRoute allowedRoles={['tenant_owner']}>
           <SitePreviewPage />
         </ProtectedRoute>
       } />

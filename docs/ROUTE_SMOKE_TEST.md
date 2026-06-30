@@ -34,7 +34,7 @@ The application uses multiple distinct layouts depending on the user context and
 
 **Expected Layout:** `AdminLayout`
 **Expected Nav:** Salon Admin title, Siteyi Görüntüle, Logged in User Email. Inner tabs: Kurulum, Randevular, Hizmetler, Çalışanlar, Raporlar, Abonelik, Ayarlar.
-**Expected Role:** `salon_owner` (also accessible by `super_admin`)
+**Expected Role:** `tenant_owner` (also accessible by `super_admin`)
 
 - [ ] `/#/admin` -> Renders Setup/Overview
 - [ ] `/#/admin/kurulum` -> Renders OnboardingWizard
@@ -60,4 +60,4 @@ The application uses multiple distinct layouts depending on the user context and
 - [ ] `/#/super-admin/onboarding` -> Expected future placeholder
 - [ ] `/#/super-admin/reports` -> Expected future placeholder
 
-*Verify:* Must completely block or redirect `salon_owner` or unauthenticated users.
+*Verify:* Must completely block or redirect `tenant_owner` or unauthenticated users.

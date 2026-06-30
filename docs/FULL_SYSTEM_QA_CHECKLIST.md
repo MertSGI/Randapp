@@ -36,7 +36,7 @@
 - [x] **Upload & Media Rendering**: Multi-cover image carousels and gallery popups are fully functional and respect files natively uploaded from device UI.
 - [x] **Booking Lock Before Live**: If the tenant's `setupStatus` is not `live`, visiting `/#/book` without preview permissions shows a locked "Hizmet Geçici Olarak Kapalı" screen.
 - [x] **Booking Flow Unlocked After Approval**: Once Super Admin approves, customers can access the full Booking Flow.
-- [x] **Security / Preview Lock**: `?preview=true` works ONLY if the user is `super_admin` OR `salon_owner` of the matching `tenantId`. Anonymous users remain blocked.
+- [x] **Security / Preview Lock**: `?preview=true` works ONLY if the user is `super_admin` OR `tenant_owner` of the matching `tenantId`. Anonymous users remain blocked.
 - [x] **Maps Redirection**: "Yol Tarifi Al" and "Haritada Aç" generate correct Google Maps search URLs.
 - [x] **Contact Actions**: WhatsApp routing is functional for sending appointment confirmations and manual contact.
 - [x] **Multilingual Bookings (I18N)**: Booking widget and Customer Website accurately swap labels between Turkish and English globally, saving preferences per browser.

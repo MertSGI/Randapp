@@ -18,7 +18,7 @@ const LoginPage: React.FC = () => {
     if (!isLoading && currentUser) {
       if (currentUser.role === 'super_admin') {
         navigate('/super-admin', { replace: true });
-      } else if (currentUser.role === 'salon_owner') {
+      } else if (currentUser.role === 'tenant_owner') {
         navigate('/admin', { replace: true });
       } else {
         navigate('/', { replace: true });

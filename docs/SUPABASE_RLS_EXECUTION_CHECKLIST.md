@@ -46,8 +46,8 @@ VALUES
 ```
 
 ### Adım B: Supabase Auth Üzerinden Test Kullanıcıları Oluşturun
-1.  **Owner A (Ahmet):** Supabase Auth sekmesinden `owner_a@randevulari.com` e-posta adresiyle bir kullanıcı oluşturun. Oluşan `id` (UUID) değerini kopyalayın ve `public.users_profile` tablosuna `role = 'salon_owner'` ve `tenant_id = 'aaaaaaaa-1111-2222-3333-aaaaaaaaaaaa'` olarak bağlayın.
-2.  **Owner B (Buse):** `owner_b@randevulari.com` adresiyle bir kullanıcı oluşturun. `role = 'salon_owner'` ve `tenant_id = 'bbbbbbbb-1111-2222-3333-bbbbbbbbbbbb'` olarak kaydedin.
+1.  **Owner A (Ahmet):** Supabase Auth sekmesinden `owner_a@randevulari.com` e-posta adresiyle bir kullanıcı oluşturun. Oluşan `id` (UUID) değerini kopyalayın ve `public.users_profile` tablosuna `role = 'tenant_owner'` ve `tenant_id = 'aaaaaaaa-1111-2222-3333-aaaaaaaaaaaa'` olarak bağlayın.
+2.  **Owner B (Buse):** `owner_b@randevulari.com` adresiyle bir kullanıcı oluşturun. `role = 'tenant_owner'` ve `tenant_id = 'bbbbbbbb-1111-2222-3333-bbbbbbbbbbbb'` olarak kaydedin.
 3.  **Super Admin (Cem):** `super_admin@randevulari.com` adresiyle bir kullanıcı oluşturun. `role = 'super_admin'` olarak kaydedin.
 
 ---

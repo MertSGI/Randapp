@@ -97,7 +97,7 @@ export const MockDiagnosticTool: React.FC = () => {
 
       // 3. Referral
       const camps = referralService.getCampaigns(tenantId);
-      await referralService.saveCampaign({ id: 'ui_camp_99', tenantId, campaignType: 'customer_referral', title: 'UI Test', description: '', rewardType: 'discount', rewardValue: '1', active: true, createdBy: 'salon_owner' });
+      await referralService.saveCampaign({ id: 'ui_camp_99', tenantId, campaignType: 'customer_referral', title: 'UI Test', description: '', rewardType: 'discount', rewardValue: '1', active: true, createdBy: 'tenant_owner' });
       let pC = referralService.getCampaigns(tenantId).length === camps.length + 1;
       await referralService.deleteCampaign('ui_camp_99');
       let pD = referralService.getCampaigns(tenantId).length === camps.length;

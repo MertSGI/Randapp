@@ -25,7 +25,7 @@ The staging environment seeds two distinct authentication contexts:
 - **Fictional Tenant Owner Email**: `melis-owner-staging@example.com`
 - **Tenant Slug**: `melis-guzellik`
 - **Tenant UUID**: `aaaa1111-a1a1-a1a1-a1a1-aaaaaaaaaaaa`
-- **Assigned Role**: `salon_owner`
+- **Assigned Role**: `tenant_owner`
 
 ---
 

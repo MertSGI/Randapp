@@ -13,7 +13,7 @@ The canonical roles registered in `public.users_profile.role` are:
 | Role Name | Scope | Description |
 | :--- | :--- | :--- |
 | `super_admin` | Platform-wide | Bypass RLS policies on all tables. Authorized to perform global actions. |
-| `salon_owner` | Tenant-scoped | Full read/write within their specified `tenant_id` namespace. Equivalent to `'tenant_owner'`. |
+| `tenant_owner` | Tenant-scoped | Full read/write within their specified `tenant_id` namespace. Equivalent to `'tenant_owner'`. |
 | `admin` | Tenant-scoped | Full operational read/write access (catalog, staff, slots) within their tenant workspace. |
 | `staff` | Tenant-scoped | Restricted operational read access (assigned appointments and calendars). |
 | `customer` | Tenant-scoped | Access limited to own reservations, customer profile, and personal history logs. |
@@ -70,8 +70,8 @@ Follow these exact steps when launching a fresh Supabase staging database:
 
    -- Link owner UUID to Tenant ID
    INSERT INTO public.users_profile (id, tenant_id, name, role, active)
-   VALUES ('<PASTED-TENANT-OWNER-UUID>', 'aaaa1111-a1a1-a1a1-a1a1-aaaaaaaaaaaa', 'Melis Owner', 'salon_owner', true)
-   ON CONFLICT (id) DO UPDATE SET tenant_id = 'aaaa1111-a1a1-a1a1-a1a1-aaaaaaaaaaaa', role = 'salon_owner';
+   VALUES ('<PASTED-TENANT-OWNER-UUID>', 'aaaa1111-a1a1-a1a1-a1a1-aaaaaaaaaaaa', 'Melis Owner', 'tenant_owner', true)
+   ON CONFLICT (id) DO UPDATE SET tenant_id = 'aaaa1111-a1a1-a1a1-a1a1-aaaaaaaaaaaa', role = 'tenant_owner';
    ```
 
 ---

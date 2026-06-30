@@ -30,7 +30,7 @@ VALUES (
     'REPLACE-WITH-AUTHENTICATED-USER-ID', 
     '11111111-1111-1111-1111-111111111111', 
     'Admin User', 
-    'salon_owner', 
+    'tenant_owner', 
     true
 ) ON CONFLICT (id) DO NOTHING;
 */

@@ -55,7 +55,7 @@ CREATE POLICY "Salon owners can read own business profile"
             SELECT 1 FROM public.users_profile up
             WHERE up.id = (select auth.uid()) 
             AND up.tenant_id = tenant_business_profiles.tenant_id
-            AND up.role = 'salon_owner'
+            AND up.role = 'tenant_owner'
         )
     );
 
@@ -67,7 +67,7 @@ CREATE POLICY "Salon owners can insert own business profile"
             SELECT 1 FROM public.users_profile up
             WHERE up.id = (select auth.uid()) 
             AND up.tenant_id = tenant_business_profiles.tenant_id
-            AND up.role = 'salon_owner'
+            AND up.role = 'tenant_owner'
         )
     );
 
@@ -79,7 +79,7 @@ CREATE POLICY "Salon owners can update own business profile"
             SELECT 1 FROM public.users_profile up
             WHERE up.id = (select auth.uid()) 
             AND up.tenant_id = tenant_business_profiles.tenant_id
-            AND up.role = 'salon_owner'
+            AND up.role = 'tenant_owner'
         )
     )
     WITH CHECK (
@@ -87,7 +87,7 @@ CREATE POLICY "Salon owners can update own business profile"
             SELECT 1 FROM public.users_profile up
             WHERE up.id = (select auth.uid()) 
             AND up.tenant_id = tenant_business_profiles.tenant_id
-            AND up.role = 'salon_owner'
+            AND up.role = 'tenant_owner'
         )
     );
 

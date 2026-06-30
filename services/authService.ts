@@ -7,7 +7,7 @@ const MOCK_ADMIN_USER: User = {
   tenantId: 'tenant_demo',
   name: 'Demo Admin',
   email: 'admin@randapp.com', // mock email
-  role: 'salon_owner',
+  role: 'tenant_owner',
   active: true,
 };
 
@@ -44,7 +44,7 @@ export const authService = {
         tenantId: profile?.tenant_id || 'tenant_demo', // TODO: strictly derive from profile in prod
         name: profile?.name || data.user.email || 'User',
         email: data.user.email || email,
-        role: (profile?.role as Role) || 'salon_owner', // TODO: strictly derive from profile in prod
+        role: (profile?.role as Role) || 'tenant_owner', // TODO: strictly derive from profile in prod
         active: profile?.active ?? true,
       };
     }
@@ -94,7 +94,7 @@ export const authService = {
         tenantId: profile?.tenant_id || 'tenant_demo', // TODO: strictly derive from profile in prod
         name: profile?.name || data.user.email || 'User',
         email: data.user.email || '',
-        role: (profile?.role as Role) || 'salon_owner', // TODO: strictly derive from profile in prod
+        role: (profile?.role as Role) || 'tenant_owner', // TODO: strictly derive from profile in prod
         active: profile?.active ?? true,
       };
     }

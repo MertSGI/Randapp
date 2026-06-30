@@ -21,7 +21,7 @@ Aşağıdaki tablo, platformun tüm ana rotalarını, hedef kitlesini, birincil 
 | **`/demo`** (İnteraktif Demo) | Herkes | "Hızlı Demo Başlat" | `/demo` içi simülatör | Hayır | **Hazır** | Gerçek bir veritabanı kiracısı oluşturmaz, yerel durumdadır. | Yok |
 | **`/register`** (Yeni Kayıt) | Herkes | "Salonumu Kaydet" | `/admin` (Kayıt sonrası otomatik) | Hayır | **Hazır** | Hukuki metinlerin pre-live onay kutuları zorunludur. | Yok |
 | **`/login`** (Üye Girişi) | Herkes | "Giriş Yap" | `/admin` veya `/super-admin` | Hayır | **Hazır** | Rol bazlı yönlendirme düzgündür. | Yok |
-| **`/admin`** (Salon Paneli) | Salon Sahibi | "Randevu Ekle", "Profil Kaydet" | Panel içi sekmeler | **Evet** (salon_owner / super_admin) | **Hazır** | Yetkisiz erişimde `/login` sayfasına yönlendirir. | Yok |
+| **`/admin`** (Salon Paneli) | Salon Sahibi | "Randevu Ekle", "Profil Kaydet" | Panel içi sekmeler | **Evet** (tenant_owner / super_admin) | **Hazır** | Yetkisiz erişimde `/login` sayfasına yönlendirir. | Yok |
 | **`/book`** (Genel Randevu) | Herkes | "Saat Seç", "Randevu Onayla" | Özet / Teşekkür sayfası | Hayır | **Hazır** | URL kiracı parametresi yoksa varsayılan test salonu yüklenir. | Bilgi |
 | **`/:tenantSlug`** | Herkes | "Hizmet Seç", "Randevu Tamamla" | `/book` içi kiracı yükleme | Hayır | **Hazır** | Geçersiz slug girilirse 404 sayfasına yönlendirir. | Yok |
 | **`/booking/:tenantSlug`** | Herkes | "Hizmet ve Personel Seç" | `/book` içi kiracı yükleme | Hayır | **Hazır** | Slug ile tam entegre çalışır. | Yok |

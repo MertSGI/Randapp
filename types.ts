@@ -1,4 +1,4 @@
-export type Role = 'super_admin' | 'salon_owner' | 'staff' | 'customer';
+export type Role = 'super_admin' | 'tenant_owner' | 'staff' | 'customer';
 
 export interface BusinessBranch {
   id: string;

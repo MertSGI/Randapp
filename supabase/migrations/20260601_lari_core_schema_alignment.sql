@@ -161,12 +161,12 @@ CREATE POLICY "Tenant admins can manage staff_services" ON public.staff_services
 -- availability_rules
 CREATE POLICY "Public read availability_rules" ON public.availability_rules FOR SELECT USING (true);
 CREATE POLICY "Tenant admins can manage availability_rules" ON public.availability_rules FOR ALL USING (
-    tenant_id IN (SELECT tenant_id FROM public.users_profile WHERE id = auth.uid() AND role IN ('salon_owner', 'admin', 'super_admin'))
+    tenant_id IN (SELECT tenant_id FROM public.users_profile WHERE id = auth.uid() AND role IN ('tenant_owner', 'admin', 'super_admin'))
 );
 
 -- customer_memory (Strictly private)
 CREATE POLICY "Tenant staff can read/manage customer_memory" ON public.customer_memory FOR ALL USING (
-    tenant_id IN (SELECT tenant_id FROM public.users_profile WHERE id = auth.uid() AND role IN ('salon_owner', 'admin', 'staff', 'super_admin'))
+    tenant_id IN (SELECT tenant_id FROM public.users_profile WHERE id = auth.uid() AND role IN ('tenant_owner', 'admin', 'staff', 'super_admin'))
 );
 
 -- payment_events
@@ -179,7 +179,7 @@ CREATE POLICY "Super admins can manage verification reviews" ON public.business_
     EXISTS (SELECT 1 FROM public.users_profile WHERE id = auth.uid() AND role = 'super_admin')
 );
 CREATE POLICY "Tenant owners can read own verification reviews" ON public.business_verification_reviews FOR SELECT USING (
-    tenant_id IN (SELECT tenant_id FROM public.users_profile WHERE id = auth.uid() AND role IN ('salon_owner', 'admin'))
+    tenant_id IN (SELECT tenant_id FROM public.users_profile WHERE id = auth.uid() AND role IN ('tenant_owner', 'admin'))
 );
 
 -- notification_templates
@@ -190,7 +190,7 @@ CREATE POLICY "Super admins can modify notification templates" ON public.notific
 
 -- notification_logs
 CREATE POLICY "Tenant admins can read notification logs" ON public.notification_logs FOR SELECT USING (
-    tenant_id IN (SELECT tenant_id FROM public.users_profile WHERE id = auth.uid() AND role IN ('salon_owner', 'admin', 'super_admin'))
+    tenant_id IN (SELECT tenant_id FROM public.users_profile WHERE id = auth.uid() AND role IN ('tenant_owner', 'admin', 'super_admin'))
 );
 CREATE POLICY "Super admins can manage notification logs" ON public.notification_logs FOR ALL USING (
     EXISTS (SELECT 1 FROM public.users_profile WHERE id = auth.uid() AND role = 'super_admin')

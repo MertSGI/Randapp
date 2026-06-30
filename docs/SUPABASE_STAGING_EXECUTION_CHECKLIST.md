@@ -47,7 +47,7 @@ This document details the exact, step-by-step checklist that **must** be execute
   - Copy the generated user UUID.
 
 - [ ] **10. Insert `users_profile` Mappings**
-  - Run the SQL queries documented in `docs/SUPABASE_AUTH_RLS_BOOTSTRAP_RUNBOOK.md` to link the auth user UUIDs to `super_admin` and `salon_owner` roles respectively.
+  - Run the SQL queries documented in `docs/SUPABASE_AUTH_RLS_BOOTSTRAP_RUNBOOK.md` to link the auth user UUIDs to `super_admin` and `tenant_owner` roles respectively.
 
 - [ ] **11. Seed Melis Güzellik Tenant**
   - Apply the safe, fictional test data directly to the staging database:

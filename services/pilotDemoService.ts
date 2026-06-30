@@ -80,7 +80,7 @@ const PILOT_USER: User = {
   tenantId: DEMO_PILOT_TENANT_ID,
   name: 'Demo Sahibi',
   email: 'owner@lumina.local',
-  role: 'salon_owner',
+  role: 'tenant_owner',
   active: true,
 };
 

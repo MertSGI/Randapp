@@ -78,7 +78,7 @@ export const tenantRegistrationService = {
         id: `usr-${tenantId}`,
         tenant_id: tenantId,
         email: data.ownerEmail,
-        role: 'salon_owner',
+        role: 'tenant_owner',
         name: `${data.ownerName} ${data.ownerSurname}`,
         onboarding_completed: false
       };

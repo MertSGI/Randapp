@@ -544,7 +544,7 @@ export const appointmentSelfServiceService = {
           await repo.updateChangeRequest(requestId, {
             status: 'applied',
             resolvedAt,
-            resolvedBy: 'salon_owner'
+            resolvedBy: 'tenant_owner'
           });
 
           // Queue outbox approval event
@@ -573,7 +573,7 @@ export const appointmentSelfServiceService = {
           await repo.updateChangeRequest(requestId, {
             status: 'applied',
             resolvedAt,
-            resolvedBy: 'salon_owner'
+            resolvedBy: 'tenant_owner'
           });
 
           // Queue outbox approval event
@@ -600,7 +600,7 @@ export const appointmentSelfServiceService = {
         await repo.updateChangeRequest(requestId, {
           status: 'rejected',
           resolvedAt,
-          resolvedBy: 'salon_owner'
+          resolvedBy: 'tenant_owner'
         });
 
         communicationEventService.queueCommunicationEvent({

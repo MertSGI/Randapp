@@ -18,7 +18,7 @@ const SitePreviewPage: React.FC = () => {
     const [businessProfile, setBusinessProfile] = useState<SalonBusinessProfile | null>(null);
 
     useEffect(() => {
-        if (tenant && currentUser && currentUser.role === 'salon_owner') {
+        if (tenant && currentUser && currentUser.role === 'tenant_owner') {
             getStaffList(tenant.id, { activeOnly: true }).then(setStaffList);
             getServices(tenant.id, { activeOnly: true }).then(setServicesList);
             businessProfileService.getPublicBusinessProfile(tenant.id).then(setBusinessProfile);
@@ -29,7 +29,7 @@ const SitePreviewPage: React.FC = () => {
         return <div className="p-8 text-center">{language === 'tr' ? 'Yükleniyor...' : 'Loading...'}</div>;
     }
 
-    if (currentUser?.role !== 'salon_owner') {
+    if (currentUser?.role !== 'tenant_owner') {
         return <div className="p-8 text-center text-red-600">{language === 'tr' ? 'Yetkisiz erişim' : 'Unauthorized Access'}</div>;
     }
 

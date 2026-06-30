@@ -28,7 +28,7 @@ BEGIN
     -- Clean old mocks if present
     DELETE FROM public.appointments WHERE id IN (appt_a, appt_b);
     DELETE FROM public.users_profile WHERE id IN (owner_a_id, owner_b_id);
-    DELETE FROM public.tenants WHERE id IN (tenant, tenant_b);
+    DELETE FROM public.tenants WHERE id IN (tenant_a, tenant_b);
 
     -- 1. Create Tenants
     INSERT INTO public.tenants (id, slug, name, status, public_site_status)
@@ -45,8 +45,8 @@ BEGIN
     -- 3. Create Users Profiles
     INSERT INTO public.users_profile (id, tenant_id, name, role, active)
     VALUES
-      (owner_a_id, tenant_a, 'Melis A', 'salon_owner', true),
-      (owner_b_id, tenant_b, 'Buse B', 'salon_owner', true);
+      (owner_a_id, tenant_a, 'Melis A', 'tenant_owner', true),
+      (owner_b_id, tenant_b, 'Buse B', 'tenant_owner', true);
 
     -- 4. Create Services
     INSERT INTO public.services (id, tenant_id, name, price, duration, active)

@@ -8,7 +8,7 @@ export function canPreviewTenantSite(currentUser: User | null, tenantId: string 
     return true;
   }
   
-  if (currentUser.role === 'salon_owner' && currentUser.tenantId === tenantId) {
+  if (currentUser.role === 'tenant_owner' && currentUser.tenantId === tenantId) {
     return true;
   }
   

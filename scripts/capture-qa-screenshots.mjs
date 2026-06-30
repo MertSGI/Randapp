@@ -792,7 +792,7 @@ async function captureScreenshots() {
         id: "usr_admin",
         name: "Cemil Kaya",
         email: "admin@randapp.com",
-        role: "salon_owner",
+        role: "tenant_owner",
         tenantId: "tenant_demo",
       }),
     );

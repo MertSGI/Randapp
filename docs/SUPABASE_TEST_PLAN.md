@@ -18,7 +18,7 @@ This document outlines how to manually test the Supabase integration and verify 
        '<YOUR_AUTH_USER_UID>', 
        '11111111-1111-1111-1111-111111111111', 
        'Admin User', 
-       'salon_owner', 
+       'tenant_owner', 
        true
    );
    ```

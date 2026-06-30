@@ -109,7 +109,7 @@ async function runTests() {
       rewardType: 'discount',
       rewardValue: '10',
       active: true,
-      createdBy: 'salon_owner'
+      createdBy: 'tenant_owner'
     });
     
     let currentCamps = referralService.getCampaigns(tenantId);

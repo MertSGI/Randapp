@@ -48,11 +48,11 @@ BEGIN
 
     -- Insert User Profile A (Salon Owner A)
     INSERT INTO public.users_profile (id, tenant_id, name, role, active)
-    VALUES (owner_a_id, tenant_a_id, 'Ahmet - Owner A', 'salon_owner', true);
+    VALUES (owner_a_id, tenant_a_id, 'Ahmet - Owner A', 'tenant_owner', true);
 
     -- Insert User Profile B (Salon Owner B)
     INSERT INTO public.users_profile (id, tenant_id, name, role, active)
-    VALUES (owner_b_id, tenant_b_id, 'Buse - Owner B', 'salon_owner', true);
+    VALUES (owner_b_id, tenant_b_id, 'Buse - Owner B', 'tenant_owner', true);
 
     -- Insert Super Admin Profile
     INSERT INTO public.users_profile (id, tenant_id, name, role, active)
