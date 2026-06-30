@@ -33,3 +33,6 @@ This matrix tracks the data layer readiness of core live flows for the **payment
 2. **Cancellation Approvals**: Completed. Change request workflows (both cancellations and reschedules) are persisted in the `appointment_change_requests` table with full history and reviewed-by logs.
 3. **Legal Compliance**: Completed. Policy and consent records are safely tracked and logged in the `policy_acceptances` and `consent_ledgers` tables.
 4. **Clean Decoupling**: Enforced. `repositoryFactory.ts` manages proxying for all services, ensuring that the application cleanly and non-destructively falls back to local data modes during pre-live staging (`pilot_demo` / `local_pre_live`).
+5. **Readiness Gate Hard Blockers**: Added. Core Priority 1 repositories (Business Profile, Services Catalog, Staff, Working Hours/Availability, Customers) are hard-blocked inside `productionReadinessGateService.ts` if their respective production-ready environment flags (`VITE_BUSINESS_PROFILE_REPO_READY`, `VITE_SERVICES_CATALOG_REPO_READY`, `VITE_STAFF_REPO_READY`, `VITE_AVAILABILITY_REPO_READY`, `VITE_CUSTOMER_REPO_READY`) are not explicitly set to `"true"`.
+6. **No-Fallback Storage Guard**: Verified. Core salon and client databases are added to the prohibited list in `productionStorageGuardService.ts`, ensuring that `localStorage` is strictly rejected for active production/live modes.
+

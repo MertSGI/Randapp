@@ -44,7 +44,28 @@ export class SupabaseBookingRepository implements BookingRepository {
       const res = await fetchSupabase(`/rest/v1/appointments?id=eq.${appointmentId}&select=*`);
       if (!res.ok) return null;
       const data = await res.json();
-      return data[0] || null;
+      const a = data[0];
+      if (!a) return null;
+      return {
+        id: a.id,
+        tenantId: a.tenant_id,
+        userId: a.user_id,
+        customerId: a.customer_id,
+        user_name: a.user_name,
+        user_email: a.user_email,
+        phone: a.phone,
+        serviceId: a.service_id,
+        staffId: a.staff_id,
+        date: a.date,
+        time: a.time,
+        status: a.status,
+        notes: a.notes,
+        cancelReason: a.cancel_reason,
+        cancelledAt: a.cancelled_at,
+        cancelledBy: a.cancelled_by,
+        createdAt: a.created_at,
+        syncedToGoogle: a.synced_to_google || false
+      };
     } catch { return null; }
   }
 
@@ -54,6 +75,7 @@ export class SupabaseBookingRepository implements BookingRepository {
       headers: { 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
       body: JSON.stringify({
         tenant_id: tenantId,
+        customer_id: input.customerId,
         user_name: input.user_name,
         user_email: input.user_email,
         phone: input.phone,
@@ -67,7 +89,27 @@ export class SupabaseBookingRepository implements BookingRepository {
     });
     if (!res.ok) throw new Error('Supabase insert failed');
     const data = await res.json();
-    return data[0];
+    const a = data[0];
+    return {
+      id: a.id,
+      tenantId: a.tenant_id,
+      userId: a.user_id,
+      customerId: a.customer_id,
+      user_name: a.user_name,
+      user_email: a.user_email,
+      phone: a.phone,
+      serviceId: a.service_id,
+      staffId: a.staff_id,
+      date: a.date,
+      time: a.time,
+      status: a.status,
+      notes: a.notes,
+      cancelReason: a.cancel_reason,
+      cancelledAt: a.cancelled_at,
+      cancelledBy: a.cancelled_by,
+      createdAt: a.created_at,
+      syncedToGoogle: a.synced_to_google || false
+    };
   }
 
   async updateAppointment(appointmentId: string, patch: Partial<Appointment>): Promise<Appointment | null> {

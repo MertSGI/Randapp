@@ -44,6 +44,11 @@ export const productionReadinessGateService = {
     const appRepoReady = env.VITE_APPOINTMENT_REPO_READY === 'true';
     const billingRepoReady = env.VITE_BILLING_REPO_READY === 'true';
     const tokenStorageReady = env.VITE_TOKEN_STORAGE_READY === 'true';
+    const businessProfileRepoReady = env.VITE_BUSINESS_PROFILE_REPO_READY === 'true';
+    const servicesCatalogRepoReady = env.VITE_SERVICES_CATALOG_REPO_READY === 'true';
+    const staffRepoReady = env.VITE_STAFF_REPO_READY === 'true';
+    const availabilityRepoReady = env.VITE_AVAILABILITY_REPO_READY === 'true';
+    const customerRepoReady = env.VITE_CUSTOMER_REPO_READY === 'true';
 
     // Operations verified flags
     const backupPlanVerified = env.VITE_BACKUP_PLAN_VERIFIED === 'true';
@@ -62,6 +67,11 @@ export const productionReadinessGateService = {
       appRepoReady,
       billingRepoReady,
       tokenStorageReady,
+      businessProfileRepoReady,
+      servicesCatalogRepoReady,
+      staffRepoReady,
+      availabilityRepoReady,
+      customerRepoReady,
       backupPlanVerified,
       routeSmokeTestPassed,
       mediaStorageConnected: env.VITE_MEDIA_STORAGE_CONNECTED === 'true',
@@ -101,6 +111,21 @@ export const productionReadinessGateService = {
       }
       if (!envState.tokenStorageReady) {
         blockers.push('Müşteri self-servis token depolaması (self-service token storage) üretim için hazır işaretlenmemiş (VITE_TOKEN_STORAGE_READY="true" olmalı).');
+      }
+      if (!envState.businessProfileRepoReady) {
+        blockers.push('İşletme profili deposu (business profile repository) üretim için hazır işaretlenmemiş (VITE_BUSINESS_PROFILE_REPO_READY="true" olmalı).');
+      }
+      if (!envState.servicesCatalogRepoReady) {
+        blockers.push('Hizmet kataloğu deposu (services catalog repository) üretim için hazır işaretlenmemiş (VITE_SERVICES_CATALOG_REPO_READY="true" olmalı).');
+      }
+      if (!envState.staffRepoReady) {
+        blockers.push('Personel deposu (staff repository) üretim için hazır işaretlenmemiş (VITE_STAFF_REPO_READY="true" olmalı).');
+      }
+      if (!envState.availabilityRepoReady) {
+        blockers.push('Çalışma saatleri deposu (availability repository) üretim için hazır işaretlenmemiş (VITE_AVAILABILITY_REPO_READY="true" olmalı).');
+      }
+      if (!envState.customerRepoReady) {
+        blockers.push('Müşteri deposu (customer repository) üretim için hazır işaretlenmemiş (VITE_CUSTOMER_REPO_READY="true" olmalı).');
       }
       if (!envState.backupPlanVerified) {
         blockers.push('Yedekleme ve veri kurtarma planı doğrulanmamış (VITE_BACKUP_PLAN_VERIFIED="true" olmalı).');
