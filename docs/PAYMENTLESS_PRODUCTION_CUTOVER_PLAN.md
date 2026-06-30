@@ -87,6 +87,7 @@ Canlı yayına geçiş düğmesine basılmadan önce tüm maddelerin **PASSED** 
 
 Static QA passing is highly beneficial, but does not equal a successful physical database execution. Paymentless production cutover strictly requires a successful real staging smoke test before deploying live. Note that **iyzico is not required** for paymentless production staging.
 
+- **Go/No-Go Decision Report**: [Paymentless Go/No-Go Decision Report](./PAYMENTLESS_PRODUCTION_GO_NO_GO_REPORT.md)
 - **Real Staging Operator Guide**: [Real Staging Operator Guide](./REAL_SUPABASE_STAGING_EXECUTION_OPERATOR_GUIDE.md)
 - **Staging Execution Result Log**: [Staging Execution Result Log](./SUPABASE_STAGING_EXECUTION_RESULT_LOG.md)
 - **Staging Browser Smoke Checklist**: [Staging Browser Smoke Checklist](./SUPABASE_STAGING_BROWSER_SMOKE_CHECKLIST.md)

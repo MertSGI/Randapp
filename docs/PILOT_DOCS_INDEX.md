@@ -128,6 +128,7 @@ Saha yayılımı ve pilot lansman öncesinde teknik ve operasyonel duman testler
 Gerçek Supabase veritabanı ve güvenli ortamların canlıya geçiş öncesindeki hazırlık kılavuzları ve test senaryoları:
 
 * **[Real Staging Operator Guide](./REAL_SUPABASE_STAGING_EXECUTION_OPERATOR_GUIDE.md):** Gerçek fiziksel Supabase staging projesi kurulum ve operasyon rehberi.
+* **[Paymentless Go/No-Go Decision Report](./PAYMENTLESS_PRODUCTION_GO_NO_GO_REPORT.md):** Canlıya geçiş öncesinde tüm statik ve fiziksel testlerin değerlendirildiği resmi Go/No-Go raporu.
 * **[Staging Execution Result Log](./SUPABASE_STAGING_EXECUTION_RESULT_LOG.md):** Staging duman testlerinin sonuçlarının belgelendiği resmi kanıt dosyası şablonu.
 * **[Staging Browser Smoke Checklist](./SUPABASE_STAGING_BROWSER_SMOKE_CHECKLIST.md):** Tarayıcı üzerinden yapılacak uçtan uca fonksiyonel ve güvenlik duman testi kontrol listesi.
 * **[Staging Command Sheet](./SUPABASE_STAGING_COMMAND_SHEET.md):** Staging ve yerel QA duman testleri için hızlı terminal komut çizelgesi.
