@@ -91,5 +91,24 @@ This document details the exact, step-by-step checklist that **must** be execute
     ```
 
 - [ ] **20. Decide Go/No-Go for Paymentless Production**
-  - Review the results of the 19 preflight steps.
-  - If all tests pass with zero critical leakage alerts, proceed with production release approval!
+  - Review the results of the 19 preflight steps and document them in [Staging Execution Result Log](./SUPABASE_STAGING_EXECUTION_RESULT_LOG.md).
+  - Perform all browser validation flows detailed in [Staging Browser Smoke Checklist](./SUPABASE_STAGING_BROWSER_SMOKE_CHECKLIST.md).
+  - Verify that no service-role secrets are exposed or committed.
+  - If all tests pass with zero critical leakage alerts, sign off the result log with a clear **PASS** and proceed with production release approval!
+
+---
+
+## 🔗 Related Resources
+- **[Real Staging Operator Guide](./REAL_SUPABASE_STAGING_EXECUTION_OPERATOR_GUIDE.md)**: Physical staging workflow and configuration.
+- **[Staging Execution Result Log](./SUPABASE_STAGING_EXECUTION_RESULT_LOG.md)**: Staging run results evidence sheet.
+- **[Staging Browser Smoke Checklist](./SUPABASE_STAGING_BROWSER_SMOKE_CHECKLIST.md)**: End-to-end browser verification checklist.
+- **[Staging Command Sheet](./SUPABASE_STAGING_COMMAND_SHEET.md)**: Developer quick command references.
+- **[Supabase Staging Execution Runbook](./SUPABASE_STAGING_EXECUTION_RUNBOOK.md)**: Standard runbook for staging execution.
+
+---
+
+## 🚫 Gate Warnings
+- **STAGING IS REQUIRED**: Paymentless production cannot proceed until real physical staging passes and results are logged.
+- **ONLINE PAYMENT NOT REQUIRED**: Real online payment via iyzico, SMS providers, or email providers is NOT required for staging or launch.
+- **NO LOCALSTORAGE FOR LIVE**: Using browser `localStorage` is strictly forbidden for live operational tenant data. Real persistent databases (Supabase Postgres) are mandatory.
+

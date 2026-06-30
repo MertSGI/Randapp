@@ -127,6 +127,10 @@ Saha yayılımı ve pilot lansman öncesinde teknik ve operasyonel duman testler
 
 Gerçek Supabase veritabanı ve güvenli ortamların canlıya geçiş öncesindeki hazırlık kılavuzları ve test senaryoları:
 
+* **[Real Staging Operator Guide](./REAL_SUPABASE_STAGING_EXECUTION_OPERATOR_GUIDE.md):** Gerçek fiziksel Supabase staging projesi kurulum ve operasyon rehberi.
+* **[Staging Execution Result Log](./SUPABASE_STAGING_EXECUTION_RESULT_LOG.md):** Staging duman testlerinin sonuçlarının belgelendiği resmi kanıt dosyası şablonu.
+* **[Staging Browser Smoke Checklist](./SUPABASE_STAGING_BROWSER_SMOKE_CHECKLIST.md):** Tarayıcı üzerinden yapılacak uçtan uca fonksiyonel ve güvenlik duman testi kontrol listesi.
+* **[Staging Command Sheet](./SUPABASE_STAGING_COMMAND_SHEET.md):** Staging ve yerel QA duman testleri için hızlı terminal komut çizelgesi.
 * **[Supabase Canonical Migration Apply Strategy](./SUPABASE_CANONICAL_MIGRATION_APPLY_STRATEGY.md):** Veritabanı baselining, çakışma çözümleme adımları ve güvenli güncelleme kuralları.
 * **[Supabase Migration Apply Manifest](../supabase/MIGRATION_APPLY_MANIFEST.md):** Canlı ve staging ortamlar için sıralı aktif veritabanı migrasyon listesi ve veri tablosu sahiplik matrisi.
 * **[Supabase Staging Execution Runbook](./SUPABASE_STAGING_EXECUTION_RUNBOOK.md):** Gerçek Supabase staging veritabanının kurulması, şema migrasyonu, yetki yönetimi ve duman testlerinin sırayla uygulanması rehberi.

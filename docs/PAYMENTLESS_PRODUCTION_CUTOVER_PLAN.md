@@ -87,10 +87,22 @@ Canlı yayına geçiş düğmesine basılmadan önce tüm maddelerin **PASSED** 
 
 Static QA passing is highly beneficial, but does not equal a successful physical database execution. Paymentless production cutover strictly requires a successful real staging smoke test before deploying live. Note that **iyzico is not required** for paymentless production staging.
 
+- **Real Staging Operator Guide**: [Real Staging Operator Guide](./REAL_SUPABASE_STAGING_EXECUTION_OPERATOR_GUIDE.md)
+- **Staging Execution Result Log**: [Staging Execution Result Log](./SUPABASE_STAGING_EXECUTION_RESULT_LOG.md)
+- **Staging Browser Smoke Checklist**: [Staging Browser Smoke Checklist](./SUPABASE_STAGING_BROWSER_SMOKE_CHECKLIST.md)
+- **Staging Command Sheet**: [Staging Command Sheet](./SUPABASE_STAGING_COMMAND_SHEET.md)
 - **Execution Runbook**: [Supabase Staging Execution Runbook](./SUPABASE_STAGING_EXECUTION_RUNBOOK.md)
 - **Staging Env Preflight QA**: Verified via `npm run qa:supabase-staging-env` ([Preflight Script](../scripts/verify-supabase-staging-env.mjs))
 - **Migration Integrity QA**: Verified via `npm run qa:supabase-migration-integrity` ([Migration Script](../scripts/verify-supabase-migration-integrity.mjs))
 - **RLS Tenant Isolation Smoke Test Plan**: Detailed in [RLS Tenant Isolation Smoke Test](./SUPABASE_RLS_TENANT_ISOLATION_SMOKE_TEST.md) and SQL-level assertions [paymentless_production_rls_smoke.sql](../supabase/tests/paymentless_production_rls_smoke.sql)
 - **App-Level Staging Smoke Test**: [smoke-supabase-paymentless-staging.mjs](../scripts/smoke-supabase-paymentless-staging.mjs)
 - **Staging Seed Data Plan**: [Supabase Staging Seed Data Plan](./SUPABASE_STAGING_SEED_DATA_PLAN.md)
+
+---
+
+## 8. MANDATORY STAGING GATE WARNINGS
+* **STAGING RUN PASS IS MANDATORY**: You cannot run paymentless production cutover until a real physical Supabase Staging smoke test passes and is officially recorded in the [Staging Execution Result Log](./SUPABASE_STAGING_EXECUTION_RESULT_LOG.md) with a clear `PASS`.
+* **ONLINE PAYMENT IS EXEMPT**: Online payment via iyzico, SMS gateway connections, or real communication providers is NOT required for staging or cutover launch.
+* **NO LOCALSTORAGE FOR PRODUCTION**: Under no circumstances can client-side `localStorage` be used for live operational salon data. Persistent databases (Supabase Postgres) are strictly required.
+
 

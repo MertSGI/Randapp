@@ -73,6 +73,10 @@ Static code quality and QA checks are important, but do not fully guarantee live
 * **App-Level Verification**: Run the app-level staging smoke test (`npm run smoke:supabase-paymentless-staging`) only after the staging credentials are fully configured in the `.env` file.
 
 ### Execution Resources:
+- **Real Staging Operator Guide**: [Real Staging Operator Guide](./REAL_SUPABASE_STAGING_EXECUTION_OPERATOR_GUIDE.md)
+- **Staging Execution Result Log**: [Staging Execution Result Log](./SUPABASE_STAGING_EXECUTION_RESULT_LOG.md)
+- **Staging Browser Smoke Checklist**: [Staging Browser Smoke Checklist](./SUPABASE_STAGING_BROWSER_SMOKE_CHECKLIST.md)
+- **Staging Command Sheet**: [Staging Command Sheet](./SUPABASE_STAGING_COMMAND_SHEET.md)
 - **Canonical Apply Manifest**: [Migration Apply Manifest](../supabase/MIGRATION_APPLY_MANIFEST.md)
 - **Execution Runbook**: [Supabase Staging Execution Runbook](./SUPABASE_STAGING_EXECUTION_RUNBOOK.md)
 - **Staging Env Preflight Script**: `npm run qa:supabase-staging-env` ([preflight script](../scripts/verify-supabase-staging-env.mjs))
@@ -80,4 +84,12 @@ Static code quality and QA checks are important, but do not fully guarantee live
 - **RLS Tenant Isolation Smoke Test Plan**: [RLS Tenant Isolation Smoke Test](./SUPABASE_RLS_TENANT_ISOLATION_SMOKE_TEST.md) and SQL-level assertions [paymentless_production_rls_smoke.sql](../supabase/tests/paymentless_production_rls_smoke.sql)
 - **App-Level Staging Smoke Test**: [smoke-supabase-paymentless-staging.mjs](../scripts/smoke-supabase-paymentless-staging.mjs)
 - **Staging Seed Data Plan**: [Supabase Staging Seed Data Plan](./SUPABASE_STAGING_SEED_DATA_PLAN.md)
+
+---
+
+## 7. MANDATORY STAGING GATE WARNINGS
+* **STAGING SUCCESS REQUIRED**: Paymentless production cannot proceed under any circumstances before a real physical Supabase Staging smoke test passes. This pass must be officially documented in the [Staging Execution Result Log](./SUPABASE_STAGING_EXECUTION_RESULT_LOG.md).
+* **ONLINE PAYMENT EXEMPT**: Real online payment via iyzico, SMS integrations, or real message gateway providers is NOT required for staging or launching.
+* **NO LOCALSTORAGE**: Using `localStorage` is strictly forbidden for live operational tenant data. Real persistent databases (Supabase Postgres) are mandatory.
+
 

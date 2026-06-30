@@ -183,9 +183,22 @@ If a migration fails or data pollution occurs on staging:
 ## 10. Related Resources
 
 For detailed bootstrap steps, identity designs, and checklists, consult these related resources:
+- **[Real Staging Operator Guide](./REAL_SUPABASE_STAGING_EXECUTION_OPERATOR_GUIDE.md)**: Physical staging workflow and configuration.
+- **[Staging Execution Result Log](./SUPABASE_STAGING_EXECUTION_RESULT_LOG.md)**: Staging run results evidence sheet.
+- **[Staging Browser Smoke Checklist](./SUPABASE_STAGING_BROWSER_SMOKE_CHECKLIST.md)**: End-to-end browser verification checklist.
+- **[Staging Command Sheet](./SUPABASE_STAGING_COMMAND_SHEET.md)**: Developer quick command references.
 - **[Supabase Auth RLS Bootstrap Runbook](./SUPABASE_AUTH_RLS_BOOTSTRAP_RUNBOOK.md)**: Detailed step-by-step auth/role setup.
 - **[Supabase RLS Identity Model Decision](./SUPABASE_RLS_IDENTITY_MODEL_DECISION.md)**: Details on why we use users_profile database lookup.
 - **[Supabase Staging Auth Seed Plan](./SUPABASE_STAGING_AUTH_SEED_PLAN.md)**: Seeding rules and sequence.
 - **[Supabase Staging Execution Checklist](./SUPABASE_STAGING_EXECUTION_CHECKLIST.md)**: The sequential preflight checklist.
 - **[Paymentless Staging Seed SQL](../supabase/seed/paymentless_staging_seed.sql)**: Transaction-safe repeatable seed script.
+
+---
+
+## 11. Production Release Gates & Prerequisites
+
+1. **Mandatory Real Staging Smoke Pass**: Paymentless production cannot proceed under any circumstances before a real physical Supabase Staging smoke test passes. This pass must be fully documented and evidenced in the [Staging Execution Result Log](./SUPABASE_STAGING_EXECUTION_RESULT_LOG.md) with a clear `PASS` status.
+2. **Third-Party Integrations Exempt**: Online payment via **iyzico is NOT required** for staging or paymentless launch. Similarly, real SMS, WhatsApp, or email provider integrations are not required.
+3. **No localStorage for Live Data**: Using `localStorage` is strictly forbidden for live-critical operational data. Real persistent databases (Supabase Postgres) are mandatory for live salon operations.
+
 
