@@ -83,7 +83,7 @@ const AppointmentSelfServicePage: React.FC = () => {
         setBranches(loadedBranches);
 
         // Fetch requests for this appointment
-        const allRequests = appointmentSelfServiceService.getAllChangeRequests();
+        const allRequests = await appointmentSelfServiceService.getAllChangeRequestsAsync(data.appointment.tenantId);
         const relevant = allRequests.filter(r => r.appointmentId === data.appointment.id);
         setPendingRequests(relevant);
       } else {

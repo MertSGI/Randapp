@@ -4,13 +4,11 @@ import {
   AppointmentChangeRequest, 
   BookingPolicy 
  } from '../types';
-import { getBookingRepository } from './repositories';
+import { getBookingRepository, getSelfServiceRepository } from './repositories';
 import { communicationEventService } from './communicationEventService';
 import { tenantService } from './tenantService';
 import { auditLogService } from './auditLogService';
 
-const TOKENS_STORAGE_KEY = 'lari_appointment_tokens';
-const REQUESTS_STORAGE_KEY = 'lari_appointment_change_requests';
 const POLICY_STORAGE_KEY = 'lari_tenant_booking_policies';
 
 // Default booking policy per Part 5
@@ -30,42 +28,39 @@ export const DEFAULT_BOOKING_POLICY: BookingPolicy = {
 };
 
 export const appointmentSelfServiceService = {
-  // Helper to load all tokens from localStorage
-  getAllTokens(): AppointmentAccessToken[] {
-    if (typeof window === 'undefined') return [];
-    try {
-      const stored = localStorage.getItem(TOKENS_STORAGE_KEY);
-      return stored ? JSON.parse(stored) : [];
-    } catch (e) {
-      console.error('Failed to parse appointment self-service tokens', e);
-      return [];
-    }
+  // Asynchronous replacement for loaded tokens
+  async getAllTokensAsync(tenantId: string): Promise<AppointmentAccessToken[]> {
+    const repo = getSelfServiceRepository();
+    const list = await repo.listTokens(tenantId);
+    return list.map(t => ({
+      id: t.id,
+      tenantId: t.tenantId,
+      appointmentId: t.appointmentId,
+      tokenHash: t.tokenHash,
+      purpose: 'view', // mapped
+      status: t.usedAt ? 'used' : 'active',
+      expiresAt: t.expiresAt,
+      createdAt: t.createdAt
+    }));
   },
 
-  // Helper to save all tokens to localStorage
-  saveAllTokens(tokens: AppointmentAccessToken[]) {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(TOKENS_STORAGE_KEY, JSON.stringify(tokens));
-    }
-  },
-
-  // Helper to load all change requests from localStorage
-  getAllChangeRequests(): AppointmentChangeRequest[] {
-    if (typeof window === 'undefined') return [];
-    try {
-      const stored = localStorage.getItem(REQUESTS_STORAGE_KEY);
-      return stored ? JSON.parse(stored) : [];
-    } catch (e) {
-      console.error('Failed to parse appointment change requests', e);
-      return [];
-    }
-  },
-
-  // Helper to save all change requests to localStorage
-  saveAllChangeRequests(requests: AppointmentChangeRequest[]) {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(REQUESTS_STORAGE_KEY, JSON.stringify(requests));
-    }
+  // Asynchronous replacement for loaded change requests
+  async getAllChangeRequestsAsync(tenantId: string): Promise<AppointmentChangeRequest[]> {
+    const repo = getSelfServiceRepository();
+    const list = await repo.listChangeRequests(tenantId);
+    return list.map(r => ({
+      id: r.id,
+      tenantId: r.tenantId,
+      appointmentId: r.appointmentId,
+      customerId: r.customerId || '',
+      type: r.requestType === 'cancellation' ? 'cancellation' : 'reschedule',
+      status: r.status === 'applied' ? 'applied' : r.status === 'approved' ? 'approved' : r.status === 'rejected' ? 'rejected' : 'requested',
+      reason: r.reason,
+      requestedDateTime: r.proposedDate && r.proposedTime ? `${r.proposedDate} ${r.proposedTime}` : r.requestedDateTime,
+      customerNote: r.reason,
+      createdAt: r.createdAt,
+      updatedAt: r.createdAt
+    }));
   },
 
   // Helper to load booking policy for a tenant
@@ -93,12 +88,12 @@ export const appointmentSelfServiceService = {
   },
 
   // Part 3: createAppointmentAccessToken
-  createAppointmentAccessToken(
+  async createAppointmentAccessToken(
     tenantId: string, 
     appointmentId: string, 
     purpose: AppointmentAccessToken['purpose']
-  ): string {
-    const tokens = this.getAllTokens();
+  ): Promise<string> {
+    const repo = getSelfServiceRepository();
     
     // Generate secure simulated plain token
     const token = `apt_tok_${Math.random().toString(36).substring(2, 9)}${Math.random().toString(36).substring(2, 9)}`;
@@ -107,19 +102,14 @@ export const appointmentSelfServiceService = {
     // 7 days expiration default
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
     
-    const newToken: AppointmentAccessToken = {
+    await repo.createToken(tenantId, {
       id,
-      tenantId,
       appointmentId,
-      tokenHash: token, // local pre-live mode uses plain mapping as tokenHash
-      purpose,
-      status: 'active',
+      tokenHash: token,
       expiresAt,
+      purpose,
       createdAt: new Date().toISOString()
-    };
-
-    tokens.push(newToken);
-    this.saveAllTokens(tokens);
+    });
 
     try {
       auditLogService.logAuditEvent({
@@ -146,17 +136,15 @@ export const appointmentSelfServiceService = {
   },
 
   // Part 3: validateAppointmentAccessToken
-  validateAppointmentAccessToken(token: string): boolean {
-    const tokens = this.getAllTokens();
-    const tokenObj = tokens.find(t => t.tokenHash === token);
+  async validateAppointmentAccessToken(token: string): Promise<boolean> {
+    const repo = getSelfServiceRepository();
+    const tokenObj = await repo.getTokenByHash(token);
     
     if (!tokenObj) return false;
-    if (tokenObj.status !== 'active') return false;
+    if (tokenObj.usedAt) return false;
     
     const expired = new Date(tokenObj.expiresAt).getTime() < Date.now();
     if (expired) {
-      tokenObj.status = 'expired';
-      this.saveAllTokens(tokens);
       return false;
     }
     
@@ -165,16 +153,29 @@ export const appointmentSelfServiceService = {
 
   // Part 3: getAppointmentByAccessToken
   async getAppointmentByAccessToken(token: string): Promise<{ appointment: Appointment; tokenObj: AppointmentAccessToken } | null> {
-    if (!this.validateAppointmentAccessToken(token)) return null;
-    
-    const tokens = this.getAllTokens();
-    const tokenObj = tokens.find(t => t.tokenHash === token);
+    const repo = getSelfServiceRepository();
+    const tokenObj = await repo.getTokenByHash(token);
     if (!tokenObj) return null;
+    
+    const isExpired = new Date(tokenObj.expiresAt).getTime() < Date.now();
+    if (isExpired || tokenObj.usedAt) return null;
 
     try {
       const appointment = await getBookingRepository().getAppointmentById(tokenObj.appointmentId);
       if (!appointment || appointment.tenantId !== tokenObj.tenantId) return null;
-      return { appointment, tokenObj };
+      
+      const mappedTokenObj: AppointmentAccessToken = {
+        id: tokenObj.id,
+        tenantId: tokenObj.tenantId,
+        appointmentId: tokenObj.appointmentId,
+        tokenHash: tokenObj.tokenHash,
+        purpose: 'view',
+        status: 'active',
+        expiresAt: tokenObj.expiresAt,
+        createdAt: tokenObj.createdAt || new Date().toISOString()
+      };
+
+      return { appointment, tokenObj: mappedTokenObj };
     } catch (e) {
       console.error('Error fetching appointment by access token', e);
       return null;
@@ -182,30 +183,15 @@ export const appointmentSelfServiceService = {
   },
 
   // Part 3: revokeAppointmentAccessToken
-  revokeAppointmentAccessToken(tokenId: string): boolean {
-    const tokens = this.getAllTokens();
-    const tIndex = tokens.findIndex(t => t.id === tokenId);
-    if (tIndex > -1) {
-      tokens[tIndex].status = 'revoked';
-      this.saveAllTokens(tokens);
-      return true;
-    }
-    return false;
+  async revokeAppointmentAccessToken(tokenId: string): Promise<boolean> {
+    const repo = getSelfServiceRepository();
+    await repo.updateToken(tokenId, { usedAt: new Date().toISOString() });
+    return true;
   },
 
-  // Part 3: expireAppointmentAccessTokens
+  // Part 3: expireAppointmentAccessTokens (legacy sync bypass)
   expireAppointmentAccessTokens(): void {
-    const tokens = this.getAllTokens();
-    let updated = false;
-    tokens.forEach(t => {
-      if (t.status === 'active' && new Date(t.expiresAt).getTime() < Date.now()) {
-        t.status = 'expired';
-        updated = true;
-      }
-    });
-    if (updated) {
-      this.saveAllTokens(tokens);
-    }
+    // Left as no-op to prevent sync compile errors since Supabase db handles expiration or we check dynamically in validateAppointmentAccessToken
   },
 
   // Helpers to calculate timing
@@ -235,9 +221,7 @@ export const appointmentSelfServiceService = {
     }
 
     const isLate = this.isCancellationLate(appointment, policy);
-    
-    // Create change request
-    const requests = this.getAllChangeRequests();
+    const repo = getSelfServiceRepository();
     const id = `req_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
     const newRequest: AppointmentChangeRequest = {
@@ -273,12 +257,7 @@ export const appointmentSelfServiceService = {
       });
       
       // Mark token as used
-      tokenObj.status = 'used';
-      tokenObj.usedAt = new Date().toISOString();
-      
-      const tokens = this.getAllTokens();
-      const updatedTokens = tokens.map(t => t.id === tokenObj.id ? tokenObj : t);
-      this.saveAllTokens(updatedTokens);
+      await repo.updateToken(tokenObj.id, { usedAt: new Date().toISOString() });
       
       finalMessage = 'Randevunuz iptal edilmiştir.';
     } else {
@@ -286,8 +265,17 @@ export const appointmentSelfServiceService = {
       finalMessage = 'Randevunuza 24 saatten az süre kaldığı için iptal talebiniz salon onayına gönderilmiştir.';
     }
 
-    requests.push(newRequest);
-    this.saveAllChangeRequests(requests);
+    await repo.createChangeRequest(tokenObj.tenantId, {
+      id,
+      appointmentId: appointment.id,
+      requestType: 'cancellation',
+      requestedBy: 'customer',
+      proposedDate: null,
+      proposedTime: null,
+      reason,
+      status: newRequest.status,
+      createdAt: newRequest.createdAt
+    });
 
     try {
       auditLogService.logAuditEvent({
@@ -359,8 +347,9 @@ export const appointmentSelfServiceService = {
       return { success: false, message: 'Bu işletme için randevu erteleme/değişiklik talebi devre dışı bırakılmıştır.' };
     }
 
-    const requests = this.getAllChangeRequests();
+    const repo = getSelfServiceRepository();
     const id = `req_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+    const [proposedDate, proposedTime] = requestedDateTime.split(' ');
 
     const newRequest: AppointmentChangeRequest = {
       id,
@@ -375,8 +364,17 @@ export const appointmentSelfServiceService = {
       updatedAt: new Date().toISOString()
     };
 
-    requests.push(newRequest);
-    this.saveAllChangeRequests(requests);
+    await repo.createChangeRequest(tokenObj.tenantId, {
+      id,
+      appointmentId: appointment.id,
+      requestType: 'reschedule',
+      requestedBy: 'customer',
+      proposedDate: proposedDate || null,
+      proposedTime: proposedTime || null,
+      reason: note,
+      status: 'requested',
+      createdAt: newRequest.createdAt
+    });
 
     try {
       auditLogService.logAuditEvent({
@@ -416,8 +414,8 @@ export const appointmentSelfServiceService = {
           businessName: bizName,
           date: appointment.date,
           time: appointment.time,
-          newDate: requestedDateTime.split(' ')[0],
-          newTime: requestedDateTime.split(' ')[1] || '',
+          newDate: proposedDate || '',
+          newTime: proposedTime || '',
           notes: note
         }
       });
@@ -438,6 +436,7 @@ export const appointmentSelfServiceService = {
     if (!validation) return false;
 
     const { appointment, tokenObj } = validation;
+    const repo = getSelfServiceRepository();
 
     try {
       // Confirm the appointment status
@@ -446,11 +445,7 @@ export const appointmentSelfServiceService = {
       });
 
       // Mark token as used
-      tokenObj.status = 'used';
-      tokenObj.usedAt = new Date().toISOString();
-      const tokens = this.getAllTokens();
-      const updatedTokens = tokens.map(t => t.id === tokenObj.id ? tokenObj : t);
-      this.saveAllTokens(updatedTokens);
+      await repo.updateToken(tokenObj.id, { usedAt: new Date().toISOString() });
 
       try {
         auditLogService.logAuditEvent({
@@ -498,16 +493,17 @@ export const appointmentSelfServiceService = {
   },
 
   // Part 3: getSelfServiceReadinessSummary
-  getSelfServiceReadinessSummary(tenantId: string) {
-    const tokens = this.getAllTokens().filter(t => t.tenantId === tenantId);
-    const requests = this.getAllChangeRequests().filter(r => r.tenantId === tenantId);
+  async getSelfServiceReadinessSummary(tenantId: string) {
+    const repo = getSelfServiceRepository();
+    const tokens = await repo.listTokens(tenantId);
+    const requests = await repo.listChangeRequests(tenantId);
 
     return {
       totalTokensGenerated: tokens.length,
-      activeTokensCount: tokens.filter(t => t.status === 'active').length,
+      activeTokensCount: tokens.filter(t => !t.usedAt).length,
       totalRequestsCount: requests.length,
-      pendingCancellations: requests.filter(r => r.type === 'cancellation' && r.status === 'requested').length,
-      pendingReschedules: requests.filter(r => r.type === 'reschedule' && r.status === 'requested').length
+      pendingCancellations: requests.filter(r => r.requestType === 'cancellation' && r.status === 'requested').length,
+      pendingReschedules: requests.filter(r => r.requestType === 'reschedule' && r.status === 'requested').length
     };
   },
 
@@ -518,27 +514,24 @@ export const appointmentSelfServiceService = {
     status: 'approved' | 'rejected', 
     ownerNote?: string
   ): Promise<boolean> {
-    const requests = this.getAllChangeRequests();
-    const reqIndex = requests.findIndex(r => r.id === requestId && r.tenantId === tenantId);
-    if (reqIndex === -1) return false;
-
-    const req = requests[reqIndex];
+    const repo = getSelfServiceRepository();
+    const requests = await repo.listChangeRequests(tenantId);
+    const req = requests.find(r => r.id === requestId);
+    if (!req) return false;
     if (req.status !== 'requested') return false;
 
     try {
       const appointment = await getBookingRepository().getAppointmentById(req.appointmentId);
       if (!appointment) return false;
 
-      req.status = status === 'approved' ? 'approved' : 'rejected';
-      req.ownerNote = ownerNote;
-      req.reviewedAt = new Date().toISOString();
-      req.reviewedBy = 'salon_owner';
+      const updatedStatus = status === 'approved' ? 'approved' : 'rejected';
+      const resolvedAt = new Date().toISOString();
 
       const tenant = await tenantService.getTenantById(tenantId);
       const bizName = tenant?.branding?.businessName || tenant?.name || 'Güzellik Salonu';
 
       if (status === 'approved') {
-        if (req.type === 'cancellation') {
+        if (req.requestType === 'cancellation') {
           // Cancel appointment
           await getBookingRepository().cancelAppointment(appointment.id, req.reason || 'Müşteri iptal talebi', 'customer');
           await getBookingRepository().updateAppointment(appointment.id, {
@@ -547,7 +540,12 @@ export const appointmentSelfServiceService = {
             cancelledAt: new Date().toISOString(),
             cancelledBy: 'customer'
           });
-          req.status = 'applied';
+          
+          await repo.updateChangeRequest(requestId, {
+            status: 'applied',
+            resolvedAt,
+            resolvedBy: 'salon_owner'
+          });
 
           // Queue outbox approval event
           communicationEventService.queueCommunicationEvent({
@@ -565,14 +563,18 @@ export const appointmentSelfServiceService = {
               notes: ownerNote || ''
             }
           });
-        } else if (req.type === 'reschedule' && req.requestedDateTime) {
+        } else if (req.requestType === 'reschedule' && req.proposedDate && req.proposedTime) {
           // Apply reschedule
-          const [newDate, newTime] = req.requestedDateTime.split(' ');
           await getBookingRepository().updateAppointment(appointment.id, {
-            date: newDate,
-            time: newTime
+            date: req.proposedDate,
+            time: req.proposedTime
           });
-          req.status = 'applied';
+          
+          await repo.updateChangeRequest(requestId, {
+            status: 'applied',
+            resolvedAt,
+            resolvedBy: 'salon_owner'
+          });
 
           // Queue outbox approval event
           communicationEventService.queueCommunicationEvent({
@@ -587,21 +589,27 @@ export const appointmentSelfServiceService = {
               businessName: bizName,
               oldDate: appointment.date,
               oldTime: appointment.time,
-              date: newDate,
-              time: newTime,
+              date: req.proposedDate,
+              time: req.proposedTime,
               notes: ownerNote || ''
             }
           });
         }
       } else {
         // Rejected
+        await repo.updateChangeRequest(requestId, {
+          status: 'rejected',
+          resolvedAt,
+          resolvedBy: 'salon_owner'
+        });
+
         communicationEventService.queueCommunicationEvent({
           tenantId,
           customerId: appointment.id,
           appointmentId: appointment.id,
           audience: 'customer',
           channel: 'whatsapp',
-          type: req.type === 'cancellation' ? 'cancellation_request_rejected' as any : 'reschedule_request_rejected' as any,
+          type: req.requestType === 'cancellation' ? 'cancellation_request_rejected' as any : 'reschedule_request_rejected' as any,
           contextArgs: {
             customerName: appointment.user_name || 'Müşteri',
             businessName: bizName,
@@ -612,7 +620,6 @@ export const appointmentSelfServiceService = {
         });
       }
 
-      this.saveAllChangeRequests(requests);
       return true;
     } catch (e) {
       console.error('Error reviewing change request', e);

@@ -1,19 +1,48 @@
 import { dataSourceConfig } from '../dataSourceConfig';
 
 // Repository Types
-import { BusinessProfileRepository, CatalogRepository, BookingRepository, CampaignRepository } from './types';
+import { 
+  BusinessProfileRepository, 
+  CatalogRepository, 
+  BookingRepository, 
+  CampaignRepository,
+  TenantRepository,
+  SubscriptionRepository,
+  ManualProvisioningRepository,
+  SelfServiceRepository,
+  CommunicationOutboxRepository,
+  AuditEventRepository,
+  SupportTicketRepository,
+  PolicyAndConsentRepository
+} from './types';
 
 // Local Implementations
 import { LocalBusinessProfileRepository } from './localBusinessProfileRepository';
 import { LocalCatalogRepository } from './localCatalogRepository';
 import { LocalBookingRepository } from './localBookingRepository';
 import { LocalCampaignRepository } from './localCampaignRepository';
+import { LocalTenantRepository } from './localTenantRepository';
+import { LocalSubscriptionRepository } from './localSubscriptionRepository';
+import { LocalManualProvisioningRepository } from './localManualProvisioningRepository';
+import { LocalSelfServiceRepository } from './localSelfServiceRepository';
+import { LocalCommunicationOutboxRepository } from './localCommunicationOutboxRepository';
+import { LocalAuditEventRepository } from './localAuditEventRepository';
+import { LocalSupportTicketRepository } from './localSupportTicketRepository';
+import { LocalPolicyAndConsentRepository } from './localPolicyAndConsentRepository';
 
 // Supabase Implementations
 import { SupabaseBusinessProfileRepository } from './supabaseBusinessProfileRepository';
 import { SupabaseCatalogRepository } from './supabaseCatalogRepository';
 import { SupabaseBookingRepository } from './supabaseBookingRepository';
 import { SupabaseCampaignRepository } from './supabaseCampaignRepository';
+import { SupabaseTenantRepository } from './supabaseTenantRepository';
+import { SupabaseSubscriptionRepository } from './supabaseSubscriptionRepository';
+import { SupabaseManualProvisioningRepository } from './supabaseManualProvisioningRepository';
+import { SupabaseSelfServiceRepository } from './supabaseSelfServiceRepository';
+import { SupabaseCommunicationOutboxRepository } from './supabaseCommunicationOutboxRepository';
+import { SupabaseAuditEventRepository } from './supabaseAuditEventRepository';
+import { SupabaseSupportTicketRepository } from './supabaseSupportTicketRepository';
+import { SupabasePolicyAndConsentRepository } from './supabasePolicyAndConsentRepository';
 
 // Singleton instances for local providers to maintain state easily if needed
 const localProviders = {
@@ -21,6 +50,14 @@ const localProviders = {
   catalog: new LocalCatalogRepository(),
   booking: new LocalBookingRepository(),
   campaign: new LocalCampaignRepository(),
+  tenant: new LocalTenantRepository(),
+  subscription: new LocalSubscriptionRepository(),
+  manualProvisioning: new LocalManualProvisioningRepository(),
+  selfService: new LocalSelfServiceRepository(),
+  communicationOutbox: new LocalCommunicationOutboxRepository(),
+  auditEvent: new LocalAuditEventRepository(),
+  supportTicket: new LocalSupportTicketRepository(),
+  policyAndConsent: new LocalPolicyAndConsentRepository(),
 };
 
 const rawSupabaseProviders = {
@@ -28,6 +65,14 @@ const rawSupabaseProviders = {
   catalog: new SupabaseCatalogRepository(),
   booking: new SupabaseBookingRepository(),
   campaign: new SupabaseCampaignRepository(),
+  tenant: new SupabaseTenantRepository(),
+  subscription: new SupabaseSubscriptionRepository(),
+  manualProvisioning: new SupabaseManualProvisioningRepository(),
+  selfService: new SupabaseSelfServiceRepository(),
+  communicationOutbox: new SupabaseCommunicationOutboxRepository(),
+  auditEvent: new SupabaseAuditEventRepository(),
+  supportTicket: new SupabaseSupportTicketRepository(),
+  policyAndConsent: new SupabasePolicyAndConsentRepository(),
 };
 
 // Pilot demo bypass helper proxy
@@ -71,6 +116,14 @@ const supabaseProviders = {
   catalog: createPilotBypassProxy(rawSupabaseProviders.catalog, localProviders.catalog),
   booking: createPilotBypassProxy(rawSupabaseProviders.booking, localProviders.booking),
   campaign: createPilotBypassProxy(rawSupabaseProviders.campaign, localProviders.campaign),
+  tenant: createPilotBypassProxy(rawSupabaseProviders.tenant, localProviders.tenant),
+  subscription: createPilotBypassProxy(rawSupabaseProviders.subscription, localProviders.subscription),
+  manualProvisioning: createPilotBypassProxy(rawSupabaseProviders.manualProvisioning, localProviders.manualProvisioning),
+  selfService: createPilotBypassProxy(rawSupabaseProviders.selfService, localProviders.selfService),
+  communicationOutbox: createPilotBypassProxy(rawSupabaseProviders.communicationOutbox, localProviders.communicationOutbox),
+  auditEvent: createPilotBypassProxy(rawSupabaseProviders.auditEvent, localProviders.auditEvent),
+  supportTicket: createPilotBypassProxy(rawSupabaseProviders.supportTicket, localProviders.supportTicket),
+  policyAndConsent: createPilotBypassProxy(rawSupabaseProviders.policyAndConsent, localProviders.policyAndConsent),
 };
 
 import { repositoryFactory } from '../repositoryFactory';
@@ -101,5 +154,61 @@ export const getBookingRepository = (): BookingRepository => {
  */
 export const getCampaignRepository = (): CampaignRepository => {
   return repositoryFactory.getCampaignRepository();
+};
+
+/**
+ * Returns the currently active TenantRepository based on the environment data source mode.
+ */
+export const getTenantRepository = (): TenantRepository => {
+  return repositoryFactory.getTenantRepository();
+};
+
+/**
+ * Returns the currently active SubscriptionRepository based on the environment data source mode.
+ */
+export const getSubscriptionRepository = (): SubscriptionRepository => {
+  return repositoryFactory.getSubscriptionRepository();
+};
+
+/**
+ * Returns the currently active ManualProvisioningRepository based on the environment data source mode.
+ */
+export const getManualProvisioningRepository = (): ManualProvisioningRepository => {
+  return repositoryFactory.getManualProvisioningRepository();
+};
+
+/**
+ * Returns the currently active SelfServiceRepository based on the environment data source mode.
+ */
+export const getSelfServiceRepository = (): SelfServiceRepository => {
+  return repositoryFactory.getSelfServiceRepository();
+};
+
+/**
+ * Returns the currently active CommunicationOutboxRepository based on the environment data source mode.
+ */
+export const getCommunicationOutboxRepository = (): CommunicationOutboxRepository => {
+  return repositoryFactory.getCommunicationOutboxRepository();
+};
+
+/**
+ * Returns the currently active AuditEventRepository based on the environment data source mode.
+ */
+export const getAuditEventRepository = (): AuditEventRepository => {
+  return repositoryFactory.getAuditEventRepository();
+};
+
+/**
+ * Returns the currently active SupportTicketRepository based on the environment data source mode.
+ */
+export const getSupportTicketRepository = (): SupportTicketRepository => {
+  return repositoryFactory.getSupportTicketRepository();
+};
+
+/**
+ * Returns the currently active PolicyAndConsentRepository based on the environment data source mode.
+ */
+export const getPolicyAndConsentRepository = (): PolicyAndConsentRepository => {
+  return repositoryFactory.getPolicyAndConsentRepository();
 };
 

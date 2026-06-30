@@ -75,6 +75,47 @@ export interface SubscriptionRepository {
   createPendingCheckout(tenantId: string, planId: string): Promise<any>;
   updateSubscriptionStatus(tenantId: string, status: string): Promise<void>;
   listPaymentEvents(tenantId: string): Promise<any[]>;
+  updateManualSubscription(tenantId: string, options: any): Promise<any>;
+}
+
+export interface ManualProvisioningRepository {
+  getProvisioningLog(tenantId: string): Promise<any | null>;
+  logProvisioningSuccess(tenantId: string, log: any): Promise<void>;
+}
+
+export interface SelfServiceRepository {
+  listTokens(tenantId: string): Promise<any[]>;
+  getTokenByHash(tokenHash: string): Promise<any | null>;
+  createToken(tenantId: string, input: any): Promise<any>;
+  updateToken(tokenId: string, patch: any): Promise<void>;
+  listChangeRequests(tenantId: string): Promise<any[]>;
+  createChangeRequest(tenantId: string, input: any): Promise<any>;
+  updateChangeRequest(requestId: string, patch: any): Promise<void>;
+}
+
+export interface CommunicationOutboxRepository {
+  listEvents(tenantId: string): Promise<any[]>;
+  enqueueEvent(tenantId: string, event: any): Promise<any>;
+  updateDeliveryStatus(tenantId: string, eventId: string, status: string, notes?: string): Promise<void>;
+}
+
+export interface AuditEventRepository {
+  listEvents(tenantId?: string): Promise<any[]>;
+  createEvent(event: any): Promise<any>;
+}
+
+export interface SupportTicketRepository {
+  listTickets(tenantId?: string): Promise<any[]>;
+  createTicket(ticket: any): Promise<any>;
+  updateTicket(ticketId: string, patch: any): Promise<any>;
+}
+
+export interface PolicyAndConsentRepository {
+  listAcceptances(tenantId?: string): Promise<any[]>;
+  createAcceptance(acceptance: any): Promise<any>;
+  listConsentRecords(tenantId?: string): Promise<any[]>;
+  createConsentRecord(consent: any): Promise<any>;
+  updateConsentRecord(consentId: string, patch: any): Promise<void>;
 }
 
 export interface SuperAdminRepository {

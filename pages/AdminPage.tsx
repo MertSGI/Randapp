@@ -130,7 +130,7 @@ const AdminPage: React.FC = () => {
     const staffData = await getStaffList(tenant.id);
     setStaffList(staffData);
 
-    const requests = appointmentSelfServiceService.getAllChangeRequests().filter(r => r.tenantId === tenant.id);
+    const requests = await appointmentSelfServiceService.getAllChangeRequestsAsync(tenant.id);
     setChangeRequests(requests);
     
     const policy = appointmentSelfServiceService.getBookingPolicy(tenant.id);

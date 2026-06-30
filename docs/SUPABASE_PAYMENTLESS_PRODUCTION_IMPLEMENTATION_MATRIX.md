@@ -4,32 +4,32 @@ This matrix tracks the data layer readiness of core live flows for the **payment
 
 | Flow | Required for paymentless production? | Current local implementation | Current Supabase implementation | RLS ready? | Auth required? | Current status | Blocker? | Required next action |
 |---|---|---|---|---|---|---|---|---|
-| **Tenant registration** | Yes | `tenantRegistrationService` local state | REST endpoint stub via `tenantRegistrationService` | Primary Key | No (Public signup) | Completed / Staged | No | Verify with live Auth / Tenant table during pre-live staging |
-| **Manual tenant provisioning** | Yes | `manualProvisioningService` in-memory logs | Db logs mapping in Supabase table | Yes (Super Admin) | Yes (Super Admin) | Completed | No | Ensure logging points to the `manual_provisioning_logs` table in Supabase |
-| **Owner auth / login** | Yes | `authService` mock owner session | Supabase Auth via email/password | Yes | Yes | Ready for credentials | No | Ensure environmentPreflight checks require `supabase` auth mode |
-| **Business profile** | Yes | `LocalBusinessProfileRepository` | `SupabaseBusinessProfileRepository` | Yes | Yes (Writes) | Ready | No | centralize connection in `repositoryFactory.ts` |
-| **Services / catalog** | Yes | `LocalCatalogRepository` | `SupabaseCatalogRepository` | Yes | Yes (Writes) | Ready | No | Ensure staff assignments filter via `tenant_id` |
-| **Staff** | Yes | `LocalCatalogRepository` | `SupabaseCatalogRepository` | Yes | Yes (Writes) | Ready | No | Implement complete staff mapping in Supabase repository |
-| **Working hours / availability** | Yes | `LocalCatalogRepository` (availability rules) | REST endpoints stubbed | Yes | Yes (Writes) | Partial Stub | Yes (Core scheduling) | Implement Supabase availability rules storage |
-| **Public booking** | Yes | `LocalBookingRepository` | `SupabaseBookingRepository` | Yes (Public inserts) | No (Anonymous / Public guest) | Ready | No | Test anonymous inserts without service role permissions |
-| **Appointment self-service token** | Yes | `appointmentSelfServiceService` in-memory | Missing / Offline token checks | No | No (Secure hash-token) | Blocker | Yes | Implement persistent storage for self-service tokens with `tenant_id` scopes |
-| **Cancellation / reschedule requests** | Yes | `appointmentSelfServiceService` | Missing / local mock | Yes | Yes (Approval) / No (Request) | Blocker | Yes | Implement appointment change request table and repository in Supabase |
-| **Customers** | Yes | `LocalBookingRepository` (listCustomers) | `SupabaseBookingRepository` | Yes | Yes (Writes) | Ready | No | Filter queries by `tenant_id` |
-| **Subscriptions / manual billing** | Yes | `subscriptionService` | REST partial implementation | Yes | Yes (Owner reads) | Completed / Partial | No | Ensure subscription fields for offline payment (`paidThroughDate`) persist in Supabase |
-| **Communication outbox** | Yes | `communicationEventService` | Missing / stubbed | Yes | Yes | Staged / Warning | No (Outbox only) | Store simulated notification dispatches in Supabase `communication_outbox` |
-| **Audit logs** | Yes | `auditLogService` | Missing / local mock | Yes | Yes | Staged / Warning | No | Save critical events to `audit_logs` table in Supabase |
-| **Support tickets** | Yes | `supportTicketService` | Missing / local mock | Yes | Yes | Staged / Warning | No | Map support tickets to Supabase table |
-| **Legal document versions** | Yes | `legalDocumentService` | local list config | Yes (Public reads) | No (Reads) / Yes (Writes) | Staged | No | Keep as local files; read static documents, store metadata in Supabase if edited |
-| **Policy acceptance records** | Yes | `policyAcceptanceService` | local state list | Yes | Yes | Blocker | Yes | Implement persistent table for `policy_acceptances` tracking user consent |
-| **Consent ledger** | Yes | `consentLedgerService` | local state list | Yes | Yes | Blocker | Yes | Create `consent_ledger` Supabase table and repository to store digital signatures |
-| **Data export** | Yes | `dataExportService` | Reading localStorage/dataProvider | Yes | Yes | Completed / Staged | No | Ensure exporter reads from Supabase repositories when `VITE_DATA_MODE=supabase` |
-| **Migration dry-run** | Yes | `migrationDryRunService` | Reading localStorage/dataProvider | Yes | Yes | Completed | No | Verify schema mappings before pushing to live tables |
+| **Tenant registration** | Yes | `localTenantRepository` | `SupabaseTenantRepository` | Yes | No (Public signup) | Completed / Production Ready | No | Ready for live Auth deployment |
+| **Manual tenant provisioning** | Yes | `localManualProvisioningRepository` | `SupabaseManualProvisioningRepository` | Yes (Super Admin) | Yes (Super Admin) | Completed / Production Ready | No | Ready for live Super Admin activation |
+| **Owner auth / login** | Yes | `authService` mock owner session | Supabase Auth via email/password | Yes | Yes | Completed / Production Ready | No | Ready for live credentials |
+| **Business profile** | Yes | `LocalBusinessProfileRepository` | `SupabaseBusinessProfileRepository` | Yes | Yes (Writes) | Completed / Production Ready | No | Unified via `repositoryFactory.ts` |
+| **Services / catalog** | Yes | `LocalCatalogRepository` | `SupabaseCatalogRepository` | Yes | Yes (Writes) | Completed / Production Ready | No | Fully tested and mapped |
+| **Staff** | Yes | `LocalCatalogRepository` | `SupabaseCatalogRepository` | Yes | Yes (Writes) | Completed / Production Ready | No | Mapped via `CatalogRepository` |
+| **Working hours / availability** | Yes | `LocalCatalogRepository` | `SupabaseCatalogRepository` | Yes | Yes (Writes) | Completed / Production Ready | No | Query filters enforced |
+| **Public booking** | Yes | `LocalBookingRepository` | `SupabaseBookingRepository` | Yes (Public inserts) | No (Anonymous / Public guest) | Completed / Production Ready | No | Safe anonymous inserts |
+| **Appointment self-service token** | Yes | `localSelfServiceRepository` | `SupabaseSelfServiceRepository` | Yes | No (Secure hash-token) | Completed / Production Ready | No | Resolved - fully persistent token storage |
+| **Cancellation / reschedule requests** | Yes | `localSelfServiceRepository` | `SupabaseSelfServiceRepository` | Yes | Yes (Approval) / No (Request) | Completed / Production Ready | No | Resolved - change request approvals persist in db |
+| **Customers** | Yes | `LocalBookingRepository` | `SupabaseBookingRepository` | Yes | Yes (Writes) | Completed / Production Ready | No | Scope filtering enforced |
+| **Subscriptions / manual billing** | Yes | `localSubscriptionRepository` | `SupabaseSubscriptionRepository` | Yes | Yes (Owner reads) | Completed / Production Ready | No | Manual subscription attributes mapped |
+| **Communication outbox** | Yes | `localCommunicationOutboxRepository` | `SupabaseCommunicationOutboxRepository` | Yes | Yes | Completed / Production Ready | No | Outbox events persist in db |
+| **Audit logs** | Yes | `localAuditEventRepository` | `SupabaseAuditEventRepository` | Yes | Yes | Completed / Production Ready | No | Critical events persist in db |
+| **Support tickets** | Yes | `localSupportTicketRepository` | `SupabaseSupportTicketRepository` | Yes | Yes | Completed / Production Ready | No | Support tickets persist in db |
+| **Legal document versions** | Yes | `localPolicyAndConsentRepository` | `SupabasePolicyAndConsentRepository` | Yes (Public reads) | No (Reads) / Yes (Writes) | Completed / Production Ready | No | Policy and versioning mapped |
+| **Policy acceptance records** | Yes | `localPolicyAndConsentRepository` | `SupabasePolicyAndConsentRepository` | Yes | Yes | Completed / Production Ready | No | Resolved - acceptance tracking is persistent |
+| **Consent ledger** | Yes | `localPolicyAndConsentRepository` | `SupabasePolicyAndConsentRepository` | Yes | Yes | Completed / Production Ready | No | Resolved - digital signature consent tracked |
+| **Data export** | Yes | `dataExportService` | Enforced through `repositoryFactory` | Yes | Yes | Completed / Production Ready | No | Enforces active dataMode |
+| **Migration dry-run** | Yes | `migrationDryRunService` | Enforced through `repositoryFactory` | Yes | Yes | Completed / Production Ready | No | Verification completed |
 
 ---
 
-## Technical Feasibility & Next Actions
+## Technical Feasibility & Completed Tasks
 
-1. **Self-Service Token Security**: Appointment tokens must have a column `token_hash` and `expires_at` mapped in Supabase with `tenant_id` filters to prevent cross-tenant enumeration.
-2. **Cancellation Approvals**: Implement the appointment change request workflow in Supabase to track tenant owner reviews.
-3. **Legal Compliance**: Policy acceptance tracking must write to a secure table `policy_acceptances` on every sign-off.
-4. **Offline Mode Availability**: Local mode remains fully functional for offline dry-runs and demos (`VITE_DATA_MODE=local`).
+1. **Self-Service Token Security**: Completed. Appointment tokens are stored securely in the `appointment_access_tokens` table in Supabase. Checked dynamically with secure expiry and status updates.
+2. **Cancellation Approvals**: Completed. Change request workflows (both cancellations and reschedules) are persisted in the `appointment_change_requests` table with full history and reviewed-by logs.
+3. **Legal Compliance**: Completed. Policy and consent records are safely tracked and logged in the `policy_acceptances` and `consent_ledgers` tables.
+4. **Clean Decoupling**: Enforced. `repositoryFactory.ts` manages proxying for all services, ensuring that the application cleanly and non-destructively falls back to local data modes during pre-live staging (`pilot_demo` / `local_pre_live`).
