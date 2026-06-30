@@ -156,6 +156,22 @@ export const repositoryFactory = {
     return localBooking;
   },
 
+  getServiceCatalogRepository(): CatalogRepository {
+    return this.getCatalogRepository();
+  },
+
+  getStaffRepository(): CatalogRepository {
+    return this.getCatalogRepository();
+  },
+
+  getAvailabilityRepository(): CatalogRepository {
+    return this.getCatalogRepository();
+  },
+
+  getCustomerRepository(): BookingRepository {
+    return this.getBookingRepository();
+  },
+
   getCampaignRepository(): CampaignRepository {
     const launchMode = launchModeService.getCurrentLaunchMode();
     const dataMode = getDataSourceMode();

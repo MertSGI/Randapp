@@ -179,4 +179,83 @@ export class SupabaseCatalogRepository implements CatalogRepository {
     });
     return (await res.json())[0];
   }
+
+  async archiveService(tenantId: string, serviceId: string): Promise<boolean> {
+    const res = await fetchSupabase(`/rest/v1/services?id=eq.${serviceId}&tenant_id=eq.${tenantId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ active: false })
+    });
+    return res.ok;
+  }
+
+  async listPublicActiveServicesByTenantSlug(slug: string): Promise<Service[]> {
+    try {
+      const tenantRes = await fetchSupabase(`/rest/v1/tenants?slug=eq.${slug}&select=*`);
+      if (!tenantRes.ok) return [];
+      const tenantData = await tenantRes.json();
+      if (!tenantData[0]) return [];
+      
+      const tenantId = tenantData[0].id;
+      return this.listServices(tenantId, { activeOnly: true });
+    } catch (err) {
+      console.error('Error listPublicActiveServicesByTenantSlug:', err);
+      return [];
+    }
+  }
+
+  async archiveStaff(tenantId: string, staffId: string): Promise<boolean> {
+    const res = await fetchSupabase(`/rest/v1/staff?id=eq.${staffId}&tenant_id=eq.${tenantId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ active: false })
+    });
+    return res.ok;
+  }
+
+  async listPublicActiveStaffByTenantSlug(slug: string): Promise<Staff[]> {
+    try {
+      const tenantRes = await fetchSupabase(`/rest/v1/tenants?slug=eq.${slug}&select=*`);
+      if (!tenantRes.ok) return [];
+      const tenantData = await tenantRes.json();
+      if (!tenantData[0]) return [];
+      
+      const tenantId = tenantData[0].id;
+      return this.listStaff(tenantId, { activeOnly: true });
+    } catch (err) {
+      console.error('Error listPublicActiveStaffByTenantSlug:', err);
+      return [];
+    }
+  }
+
+  async getAvailability(tenantId: string): Promise<any> {
+    return this.listAvailabilityRules(tenantId);
+  }
+
+  async updateAvailability(tenantId: string, input: any): Promise<any> {
+    // Check if rule exists or create one
+    const rules = await this.listAvailabilityRules(tenantId);
+    if (rules.length > 0) {
+      const firstRule = rules[0];
+      await this.updateAvailabilityRule(firstRule.id, input);
+      return { ...firstRule, ...input };
+    } else {
+      return this.createAvailabilityRule(tenantId, input);
+    }
+  }
+
+  async getPublicAvailabilityByTenantSlug(slug: string): Promise<any> {
+    try {
+      const tenantRes = await fetchSupabase(`/rest/v1/tenants?slug=eq.${slug}&select=*`);
+      if (!tenantRes.ok) return [];
+      const tenantData = await tenantRes.json();
+      if (!tenantData[0]) return [];
+      
+      const tenantId = tenantData[0].id;
+      return this.getAvailability(tenantId);
+    } catch (err) {
+      console.error('Error getPublicAvailabilityByTenantSlug:', err);
+      return [];
+    }
+  }
 }

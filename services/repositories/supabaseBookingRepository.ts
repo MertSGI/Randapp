@@ -181,4 +181,30 @@ export class SupabaseBookingRepository implements BookingRepository {
         })
     });
   }
+
+  async getCustomer(tenantId: string, customerId: string): Promise<any | null> {
+    try {
+      const res = await fetchSupabase(`/rest/v1/customers?id=eq.${customerId}&tenant_id=eq.${tenantId}&select=*`);
+      if (!res.ok) return null;
+      const data = await res.json();
+      return data[0] || null;
+    } catch { return null; }
+  }
+
+  async updateCustomer(tenantId: string, customerId: string, patch: any): Promise<any | null> {
+    const res = await fetchSupabase(`/rest/v1/customers?id=eq.${customerId}&tenant_id=eq.${tenantId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
+      body: JSON.stringify(patch)
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data[0];
+  }
+
+  async createOrFindCustomerForBooking(tenantId: string, input: any): Promise<any> {
+    const existing = await this.findCustomerByPhoneOrEmail(tenantId, input.phone, input.email);
+    if (existing) return existing;
+    return this.createOrUpdateCustomer(tenantId, input);
+  }
 }

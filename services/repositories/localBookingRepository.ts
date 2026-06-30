@@ -224,4 +224,20 @@ export class LocalBookingRepository implements BookingRepository {
     const currentNotes = customer.internalNotes || [];
     await this.updateCustomerMemory(customerId, { internalNotes: [...currentNotes, note] });
   }
+
+  async getCustomer(tenantId: string, customerId: string): Promise<any | null> {
+    const cust = await this.getCustomerById(customerId);
+    if (cust && cust.tenantId === tenantId) return cust;
+    return null;
+  }
+
+  async updateCustomer(tenantId: string, customerId: string, patch: any): Promise<any | null> {
+    return this.createOrUpdateCustomer(tenantId, { id: customerId, ...patch });
+  }
+
+  async createOrFindCustomerForBooking(tenantId: string, input: any): Promise<any> {
+    const existing = await this.findCustomerByPhoneOrEmail(tenantId, input.phone, input.email);
+    if (existing) return existing;
+    return this.createOrUpdateCustomer(tenantId, input);
+  }
 }

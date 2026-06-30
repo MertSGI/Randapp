@@ -39,6 +39,10 @@ export class LocalBusinessProfileRepository implements BusinessProfileRepository
     return getMockProfile(tenantId);
   }
 
+  async getBusinessProfile(tenantId: string): Promise<SalonBusinessProfile | null> {
+    return this.getProfile(tenantId);
+  }
+
   async updateProfile(tenantId: string, patch: Partial<SalonBusinessProfile>): Promise<SalonBusinessProfile | null> {
     const existing = await this.getProfile(tenantId);
     if (!existing) return null;
@@ -52,6 +56,16 @@ export class LocalBusinessProfileRepository implements BusinessProfileRepository
     
     localStorage.setItem(`mock_business_profile_${tenantId}`, JSON.stringify(updated));
     return updated;
+  }
+
+  async updateBusinessProfile(tenantId: string, patch: Partial<SalonBusinessProfile>): Promise<SalonBusinessProfile | null> {
+    return this.updateProfile(tenantId, patch);
+  }
+
+  async getPublicBusinessProfileBySlug(slug: string): Promise<SalonBusinessProfile | null> {
+    // Return sample profile for local testing matching the slug
+    const tenantId = `tenant_${slug}`;
+    return this.getProfile(tenantId);
   }
 
   async submitForReview(tenantId: string): Promise<void> {

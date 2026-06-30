@@ -45,7 +45,11 @@ export const productionStorageGuardService = {
       'self_service_tokens',
       'legal_acceptances',
       'consent_ledger',
-      'data_rights_requests'
+      'data_rights_requests',
+      'business_profile',
+      'services_catalog',
+      'staff',
+      'availability'
     ];
 
     if (prohibitedDomains.includes(domain)) {

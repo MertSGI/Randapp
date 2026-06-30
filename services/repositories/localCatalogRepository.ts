@@ -202,4 +202,47 @@ export class LocalCatalogRepository implements CatalogRepository {
     localStorage.setItem(`randapp:${tenantId}:availability_rules`, JSON.stringify(rules));
     return newRule;
   }
+
+  async archiveService(tenantId: string, serviceId: string): Promise<boolean> {
+    await this.updateService(serviceId, { active: false });
+    return true;
+  }
+
+  async listPublicActiveServicesByTenantSlug(slug: string): Promise<Service[]> {
+    const tenantId = `tenant_${slug}`;
+    return this.listServices(tenantId, { activeOnly: true });
+  }
+
+  async archiveStaff(tenantId: string, staffId: string): Promise<boolean> {
+    await this.updateStaff(staffId, { active: false });
+    return true;
+  }
+
+  async listPublicActiveStaffByTenantSlug(slug: string): Promise<Staff[]> {
+    const tenantId = `tenant_${slug}`;
+    return this.listStaff(tenantId, { activeOnly: true });
+  }
+
+  async getAvailability(tenantId: string): Promise<any> {
+    return this.listAvailabilityRules(tenantId);
+  }
+
+  async updateAvailability(tenantId: string, input: any): Promise<any> {
+    const rules = await this.listAvailabilityRules(tenantId);
+    if (rules.length > 0) {
+      const firstRule = rules[0];
+      const updated = { ...firstRule, ...input };
+      const index = rules.findIndex((r: any) => r.id === firstRule.id);
+      rules[index] = updated;
+      localStorage.setItem(`randapp:${tenantId}:availability_rules`, JSON.stringify(rules));
+      return updated;
+    } else {
+      return this.createAvailabilityRule(tenantId, input);
+    }
+  }
+
+  async getPublicAvailabilityByTenantSlug(slug: string): Promise<any> {
+    const tenantId = `tenant_${slug}`;
+    return this.getAvailability(tenantId);
+  }
 }

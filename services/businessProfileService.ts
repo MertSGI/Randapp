@@ -4,17 +4,21 @@ import { getBusinessProfileRepository } from './repositories';
 export const businessProfileService = {
   async getBusinessProfile(tenantId: string): Promise<SalonBusinessProfile | null> {
     const repo = getBusinessProfileRepository();
-    return repo.getProfile(tenantId);
+    return repo.getBusinessProfile(tenantId);
   },
 
   async updateBusinessProfile(tenantId: string, profileData: Partial<SalonBusinessProfile>): Promise<SalonBusinessProfile | null> {
     const repo = getBusinessProfileRepository();
-    return repo.updateProfile(tenantId, profileData);
+    return repo.updateBusinessProfile(tenantId, profileData);
   },
 
   async getPublicBusinessProfile(tenantId: string): Promise<SalonBusinessProfile | null> {
-      // In a real app this would bypass some auth or use anon key specifically for public reads
       return this.getBusinessProfile(tenantId);
+  },
+
+  async getPublicBusinessProfileBySlug(slug: string): Promise<SalonBusinessProfile | null> {
+    const repo = getBusinessProfileRepository();
+    return repo.getPublicBusinessProfileBySlug(slug);
   },
 
   getMockProfile(tenantId: string): SalonBusinessProfile {

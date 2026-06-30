@@ -150,6 +150,34 @@ export const getBookingRepository = (): BookingRepository => {
 };
 
 /**
+ * Returns the currently active CatalogRepository for Service Catalog.
+ */
+export const getServiceCatalogRepository = (): CatalogRepository => {
+  return repositoryFactory.getServiceCatalogRepository();
+};
+
+/**
+ * Returns the currently active CatalogRepository for Staff.
+ */
+export const getStaffRepository = (): CatalogRepository => {
+  return repositoryFactory.getStaffRepository();
+};
+
+/**
+ * Returns the currently active CatalogRepository for Availability/Working Hours.
+ */
+export const getAvailabilityRepository = (): CatalogRepository => {
+  return repositoryFactory.getAvailabilityRepository();
+};
+
+/**
+ * Returns the currently active BookingRepository for Customers.
+ */
+export const getCustomerRepository = (): BookingRepository => {
+  return repositoryFactory.getCustomerRepository();
+};
+
+/**
  * Returns the currently active CampaignRepository based on the environment data source mode.
  */
 export const getCampaignRepository = (): CampaignRepository => {

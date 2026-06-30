@@ -1,6 +1,7 @@
 import { getStaffList } from './staffService';
 import { Staff } from '../types';
 import { getAppointments } from './appointmentService';
+import { getAvailabilityRepository } from './repositories';
 
 export interface TimeSlot {
   time: string; // HH:mm
@@ -8,6 +9,21 @@ export interface TimeSlot {
 }
 
 export const availabilityService = {
+  async getWorkingHours(tenantId: string): Promise<any> {
+    const repo = getAvailabilityRepository();
+    return repo.getAvailability(tenantId);
+  },
+
+  async updateWorkingHours(tenantId: string, input: any): Promise<any> {
+    const repo = getAvailabilityRepository();
+    return repo.updateAvailability(tenantId, input);
+  },
+
+  async getPublicWorkingHoursBySlug(slug: string): Promise<any> {
+    const repo = getAvailabilityRepository();
+    return repo.getPublicAvailabilityByTenantSlug(slug);
+  },
+
   getAvailableSlotsForStaff(tenantId: string, staffId: string, serviceId: string, dateStr: string): Promise<TimeSlot[]> {
      return new Promise((resolve) => {
         // Mock generation
